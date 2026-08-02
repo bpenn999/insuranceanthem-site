@@ -1,10 +1,20 @@
 ---
 title: "What Medicare doesn't pay for"
+seoTitle: "What Medicare Doesn't Pay For | Long-Term Care Gaps"
+description: "Custodial long-term care, the 100-day skilled nursing limit, dental, vision and hearing — the gaps Medicare never covered, and three ways to handle them."
 summary: "Most people find the gap at the worst possible moment — standing in a hospital discharge meeting being asked where their parent is going next. It is a much better conversation to have ten years early."
-description: "The care Medicare was never designed to cover: custodial long-term care, the 100-day skilled nursing limit, dental, vision and hearing. What the gap actually costs in Arizona and the three honest ways to handle it."
+category: Long-Term Care
 publishedAt: 2026-07-24
-topic: Long-Term Care
 readMinutes: 9
+relatedProducts: [long-term-care, medicare-advantage]
+relatedTools: [medicare-cost-estimator]
+faqs:
+  - q: "Does Medicare pay for a nursing home?"
+    a: "Only for skilled care, and only up to 100 days per benefit period following a qualifying hospital stay, with a daily coinsurance from day 21. Custodial care — help with bathing, dressing and eating — is not covered at all, and that is the care most people end up needing."
+  - q: "Does Medicare cover dental, vision or hearing?"
+    a: "Original Medicare covers essentially none of it. Many Medicare Advantage plans include an allowance for each, which is one of the genuine arguments in their favour — but read what the allowance actually covers before assuming it stretches to a crown or a hearing aid."
+  - q: "When is the right time to look at long-term care coverage?"
+    a: "Late fifties to early seventies, in reasonable health, is the window where it is most solvable. Both age and health drive price and eligibility, and both move in one direction."
 ---
 
 There is a specific conversation I have had more times than any other, and it almost always happens in a hospital corridor.

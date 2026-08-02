@@ -1,0 +1,472 @@
+---
+import type { GetStaticPaths } from 'astro';
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Kinetic from '../../components/Kinetic.astro';
+import Breadcrumbs from '../../components/Breadcrumbs.astro';
+import Faq from '../../components/Faq.astro';
+import ProductIcon from '../../components/ProductIcon.astro';
+import site, { abs } from '../../config/site';
+import { productBySlug } from '../../data/products';
+import { toolBySlug } from '../../data/tools';
+
+export const getStaticPaths = (async () => {
+  const posts = await getCollection('learn', ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, all: posts },
+  }));
+}) satisfies GetStaticPaths;
+
+const { post, all } = Astro.props;
+const { Content, headings } = await render(post);
+const d = post.data;
+
+/** Same category first, then most recent. */
+const related = all
+  .filter((p) => p.id !== post.id)
+  .sort((a, b) => {
+    const sameA = a.data.category === d.category ? 0 : 1;
+    const sameB = b.data.category === d.category ? 0 : 1;
+    if (sameA !== sameB) return sameA - sameB;
+    return b.data.publishedAt.getTime() - a.data.publishedAt.getTime();
+  })
+  .slice(0, 3);
+
+const products = d.relatedProducts.map(productBySlug).filter(Boolean);
+const tools = d.relatedTools.map(toolBySlug).filter(Boolean);
+
+// Only h2s — an article's h3s would make the contents list noise rather than a map.
+const toc = headings.filter((h) => h.depth === 2);
+
+const path = `/learn/${post.id}/`;
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Learn', path: '/learn/' },
+  { name: d.title, path },
+];
+
+const fmt = (date: Date) =>
+  date.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+
+const schemaNodes: Record<string, unknown>[] = [
+  {
+    '@type': 'Article',
+    '@id': `${abs(path)}#article`,
+    headline: d.title,
+    name: d.title,
+    description: d.description,
+    abstract: d.summary,
+    articleSection: d.category,
+    datePublished: d.publishedAt.toISOString(),
+    dateModified: (d.updatedAt ?? d.publishedAt).toISOString(),
+    wordCount: post.body?.trim().split(/\s+/).length ?? undefined,
+    timeRequired: `PT${d.readMinutes}M`,
+    author: { '@id': `${site.origin}/#brian-penner` },
+    publisher: { '@id': `${site.origin}/#organization` },
+    mainEntityOfPage: abs(path),
+    isPartOf: { '@id': `${abs('/learn/')}#collection` },
+    inLanguage: 'en-US',
+    isAccessibleForFree: true,
+    about: { '@type': 'Thing', name: d.category },
+  },
+];
+
+if (d.faqs.length) {
+  schemaNodes.push({
+    '@type': 'FAQPage',
+    '@id': `${abs(path)}#faq`,
+    mainEntity: d.faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  });
+}
+---
+
+<BaseLayout
+  title={d.seoTitle}
+  description={d.description}
+  path={path}
+  type="article"
+  publishedAt={d.publishedAt.toISOString()}
+  modifiedAt={(d.updatedAt ?? d.publishedAt).toISOString()}
+  breadcrumbs={breadcrumbs}
+  schemaNodes={schemaNodes}
+  density="light"
+>
+  <article class="art" data-caustics="0.15">
+    <header class="art__head">
+      <div class="wrap wrap--narrow">
+        <Breadcrumbs items={breadcrumbs} />
+        <p class="art__meta">
+          <span class="art__cat">{d.category}</span>
+          <span aria-hidden="true">·</span>
+          <time datetime={d.publishedAt.toISOString()}>{fmt(d.publishedAt)}</time>
+          <span aria-hidden="true">·</span>
+          <span>{d.readMinutes} min read</span>
+        </p>
+        <h1 class="art__title"><Kinetic text={d.title} stagger={24} max={400} /></h1>
+        <p class="art__summary" data-rise data-armed style="--rise-delay:160ms">{d.summary}</p>
+        {d.updatedAt && <p class="art__updated">Updated {fmt(d.updatedAt)}</p>}
+      </div>
+    </header>
+
+    <div class="wrap wrap--narrow">
+      {
+        toc.length > 2 && (
+          <nav class="toc" aria-label="On this page" data-rise data-armed>
+            <p class="toc__label">On this page</p>
+            <ol>
+              {toc.map((h) => (
+                <li><a href={`#${h.slug}`}>{h.text}</a></li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
+
+      <div class="prose art__body">
+        <Content />
+      </div>
+
+      {
+        d.faqs.length > 0 && (
+          <section class="art__faq" aria-labelledby="art-faq-h">
+            <h2 id="art-faq-h" class="art__faq-h">Common questions</h2>
+            <Faq items={d.faqs} openFirst />
+          </section>
+        )
+      }
+
+      <!-- Compliance note on every article, not only in the footer. -->
+      <aside class="art__note">
+        <p>
+          <strong>A note on the numbers.</strong> Figures on this page are for plan year
+          {new Date().getFullYear()} and come from one place —
+          they update site-wide when CMS publishes the next year's amounts. Plan benefits,
+          networks and formularies change every plan year regardless. Before acting on anything
+          here, <a href={site.consult.url}>confirm the current details</a>.
+        </p>
+      </aside>
+
+      {
+        (products.length > 0 || tools.length > 0) && (
+          <aside class="art__related">
+            {products.length > 0 && (
+              <div class="art__related-group">
+                <p class="art__related-label">Related coverage</p>
+                <ul>
+                  {products.map((p) => (
+                    <li>
+                      <a href={`/${p!.slug}/`}>
+                        <span class="art__related-icon" aria-hidden="true">
+                          <ProductIcon name={p!.icon} />
+                        </span>
+                        <span>
+                          <strong>{p!.name}</strong>
+                          <em>{p!.blurb}</em>
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {tools.length > 0 && (
+              <div class="art__related-group">
+                <p class="art__related-label">Work it out yourself</p>
+                <ul>
+                  {tools.map((t) => (
+                    <li>
+                      <a href={`/tools/${t!.slug}/`}>
+                        <span class="art__related-icon" aria-hidden="true">
+                          <ProductIcon name={t!.icon} />
+                        </span>
+                        <span>
+                          <strong>{t!.name}</strong>
+                          <em>{t!.minutes} min · free · nothing stored</em>
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </aside>
+        )
+      }
+
+      <!-- Bottom CTA — the 15-minute call from site config. -->
+      <aside class="art__cta" data-rise data-armed>
+        <p class="art__cta-eyebrow">Still have a question?</p>
+        <h2 class="art__cta-h">The part an article can't do.</h2>
+        <p class="art__cta-body">
+          General guidance stops at your own doctors, your own prescriptions and your own ZIP
+          code. That check takes about {site.consult.minutes} minutes on the phone, costs nothing,
+          and there is no product at the end of it unless one belongs there.
+        </p>
+        <div class="btn-row">
+          <a href={site.consult.url} class="btn btn--lg" data-magnetic="0.28">{site.consult.label}</a>
+          <a href={site.phone.href} class="btn btn--ghost btn--lg" data-magnetic="0.2">
+            Call {site.phone.display}
+          </a>
+        </div>
+        <p class="art__cta-meta">
+          {site.agent.name} · {site.agent.title} · NPN {site.agent.npn} · {site.hours.display}
+        </p>
+      </aside>
+
+      <aside class="art__author">
+        <div class="art__author-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32">
+            <path d="M16 2.5 3.5 8v9.2c0 7.1 5.1 11.6 12.5 14.3 7.4-2.7 12.5-7.2 12.5-14.3V8L16 2.5Z"
+                  fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+            <path d="M10 16.6h3.4l1.5-4 2.2 7 1.6-3h3.3"
+                  fill="none" stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </div>
+        <div>
+          <p class="art__author-name">{site.agent.name}</p>
+          <p class="art__author-bio">
+            {site.agent.title} · {site.agent.experience} in Medicare · NPN {site.agent.npn}.
+            Based in {site.address.display}, serving {site.serviceArea.slice(0, 3).join(', ')} and
+            north Phoenix.
+          </p>
+          <p class="art__author-links">
+            <a href="/about/" class="link">More about Brian</a>
+            <span aria-hidden="true">·</span>
+            <a href={site.phone.href} class="link">{site.phone.display}</a>
+          </p>
+        </div>
+      </aside>
+    </div>
+  </article>
+
+  {
+    related.length > 0 && (
+      <section class="section band--warm" data-caustics="0.16">
+        <div class="wrap wrap--narrow">
+          <h2 class="more__head">Keep reading</h2>
+          <ul class="more">
+            {related.map((r) => (
+              <li>
+                <a href={`/learn/${r.id}/`}>
+                  <span class="more__cat">{r.data.category} · {r.data.readMinutes} min</span>
+                  <span class="more__title">{r.data.title}</span>
+                  <span class="more__summary">{r.data.summary}</span>
+                </a>
+              </li>
+            ))}
+          </ul>
+          <p class="more__all"><a href="/learn/" class="link">All guides</a></p>
+        </div>
+      </section>
+    )
+  }
+</BaseLayout>
+
+<style>
+  .art { padding-block: clamp(2rem, 5vw, 3.5rem) clamp(2.5rem, 6vw, 4rem); }
+
+  .art__head { margin-bottom: var(--s-6); }
+  .art__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: var(--t-xs);
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+    margin-bottom: var(--s-4);
+  }
+  .art__cat {
+    color: var(--navy);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .art__title { font-size: var(--t-4xl); max-width: 21ch; }
+  .art__summary {
+    margin-top: var(--s-5);
+    font-size: var(--t-lg);
+    color: var(--ink-muted);
+    line-height: 1.6;
+    max-width: 58ch;
+  }
+  .art__updated { margin-top: var(--s-4); font-size: var(--t-xs); color: var(--ink-faint); }
+
+  /* --- table of contents --- */
+  .toc {
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    padding: var(--s-5);
+    margin-bottom: var(--s-7);
+  }
+  .toc__label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: var(--s-3);
+  }
+  .toc ol {
+    margin: 0;
+    padding-left: 1.15rem;
+    display: grid;
+    gap: 0.4rem;
+    font-size: var(--t-sm);
+  }
+  .toc li::marker { color: var(--ink-faint); font-variant-numeric: tabular-nums; }
+  .toc a {
+    color: var(--ink-body);
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    transition: background-size 380ms var(--ease), color 200ms ease;
+    padding-bottom: 1px;
+  }
+  .toc a:hover { color: var(--navy); background-size: 100% 1px; }
+
+  .art__body { margin-bottom: var(--s-8); }
+
+  /* --- faq --- */
+  .art__faq { margin-bottom: var(--s-7); }
+  .art__faq-h { font-size: var(--t-2xl); margin-bottom: var(--s-5); }
+
+  /* --- compliance note --- */
+  .art__note {
+    padding: var(--s-5);
+    background: color-mix(in srgb, var(--porcelain-warm) 90%, transparent);
+    border-left: 2px solid var(--navy);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: var(--t-sm);
+    color: var(--ink-body);
+    line-height: 1.65;
+    margin-bottom: var(--s-6);
+  }
+
+  /* --- related products + tools --- */
+  .art__related {
+    display: grid;
+    gap: var(--s-6);
+    padding: var(--s-6) 0;
+    border-block: 1px solid var(--rule);
+    margin-bottom: var(--s-7);
+  }
+  .art__related-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: var(--s-4);
+  }
+  .art__related ul { list-style: none; padding: 0; display: grid; gap: var(--s-3); }
+  .art__related a {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--s-4);
+    padding: var(--s-3);
+    margin: calc(var(--s-3) * -1);
+    border-radius: var(--radius);
+    color: inherit;
+    transition: background-color 220ms var(--ease);
+  }
+  .art__related a:hover { background: var(--navy-wash); }
+  .art__related-icon {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    flex: none;
+    border-radius: 50%;
+    background: var(--navy-wash);
+    color: var(--navy);
+  }
+  .art__related a:hover .art__related-icon { background: #fff; }
+  .art__related strong { display: block; font-size: var(--t-sm); color: var(--ink); }
+  .art__related em {
+    display: block;
+    font-style: normal;
+    font-size: var(--t-xs);
+    color: var(--ink-muted);
+    line-height: 1.5;
+    margin-top: 0.1rem;
+  }
+
+  @media (min-width: 720px) {
+    .art__related { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-7); }
+  }
+
+  /* --- bottom CTA --- */
+  .art__cta {
+    background: var(--navy);
+    color: #C7DAE8;
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    margin-bottom: var(--s-7);
+  }
+  .art__cta-eyebrow {
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: #9CC0DC;
+    margin-bottom: var(--s-2);
+  }
+  .art__cta-h { color: #fff; font-size: var(--t-2xl); margin-bottom: var(--s-3); max-width: 18ch; }
+  .art__cta-body { font-size: var(--t-sm); line-height: 1.65; max-width: 52ch; margin-bottom: var(--s-5); }
+  .art__cta .btn-row { margin-bottom: var(--s-4); }
+  .art__cta-meta { font-size: var(--t-xs); color: #92B0C7; line-height: 1.5; }
+
+  /* --- author --- */
+  .art__author {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--s-4);
+    align-items: start;
+    padding-top: var(--s-6);
+    border-top: 1px solid var(--rule);
+  }
+  .art__author-mark {
+    width: 3rem; height: 3rem;
+    display: grid; place-items: center;
+    border-radius: 50%;
+    background: var(--navy-wash);
+    color: var(--navy);
+  }
+  .art__author-mark svg { width: 26px; height: 26px; }
+  .art__author-name { font-family: var(--font-display); font-size: var(--t-lg); color: var(--ink); }
+  .art__author-bio { font-size: var(--t-sm); color: var(--ink-muted); line-height: 1.6; margin-top: 0.2rem; }
+  .art__author-links {
+    margin-top: var(--s-3);
+    font-size: var(--t-sm);
+    display: flex;
+    gap: 0.5rem;
+    color: var(--ink-faint);
+  }
+
+  /* --- keep reading --- */
+  .more__head { font-size: var(--t-2xl); margin-bottom: var(--s-5); }
+  .more { list-style: none; padding: 0; display: grid; gap: 0; }
+  .more > li { border-top: 1px solid var(--rule); }
+  .more > li:last-child { border-bottom: 1px solid var(--rule); }
+  .more a { display: grid; gap: 0.3rem; padding: var(--s-5) 0; color: inherit; }
+  .more__cat {
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--navy);
+  }
+  .more__title { font-family: var(--font-display); font-size: var(--t-lg); color: var(--ink); }
+  .more a:hover .more__title { color: var(--navy); }
+  .more__summary { font-size: var(--t-sm); color: var(--ink-muted); line-height: 1.6; }
+  .more__all { margin-top: var(--s-5); font-size: var(--t-sm); }
+</style>

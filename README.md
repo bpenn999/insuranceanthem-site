@@ -24,7 +24,7 @@ npm run verify     # typecheck + unit tests + build + built-output audit
 | `npm run check` | `astro check` — 0 errors, 0 warnings, 0 hints expected |
 | `npm test` | Unit tests for the enrollment + IRMAA arithmetic (`node:test`) |
 | `npm run audit` | Audits `/dist`: broken links, compliance text, sitemap coverage, template residue |
-| `npm run e2e` | Headless-Chrome checks of every interactive tool. Needs `npm run preview` on **:4331** first |
+| `npm run e2e` | Headless-Chrome checks of every tool, the Learn hub and every article. Needs `npm run preview` on **:4331** first |
 | `npm run verify` | check → test → build → audit |
 
 `npm run e2e` drives Chrome over the DevTools Protocol with zero dependencies.
@@ -85,6 +85,55 @@ to the email hand-off if the endpoint errors, so an enquiry is never silently lo
 
 ---
 
+## Adding a Learn article
+
+Drop a `.md` file into `src/content/learn/`. That is the whole process — the hub
+card, the route, the Article + FAQPage + BreadcrumbList JSON-LD, the breadcrumbs,
+the category chip, the related-reading block and the sitemap entry all generate
+from frontmatter. No code changes.
+
+```yaml
+---
+title: "Full headline, written for humans"
+seoTitle: "≤60 chars — the <title> tag"          # build fails over 60
+description: "≤155 chars — the meta description"  # build fails over 155
+summary: "Card excerpt on the hub and the lede under the H1."
+category: "Part D"        # one of the six in src/content.config.ts
+publishedAt: 2026-08-02
+readMinutes: 9
+featured: false           # pins to the top of the hub
+relatedProducts: [part-d, medicare-supplement]   # slugs from products.ts
+relatedTools: [medicare-cost-estimator]          # slugs from tools.ts
+faqs:                     # 2+ entries → FAQPage schema; omit to skip
+  - q: "A question people actually ask"
+    a: "A complete answer, because this is what Google may quote."
+---
+```
+
+**Never type a dollar figure.** Use a token and it stays correct forever:
+
+| Token | Renders |
+| --- | --- |
+| `{{year}}` | the current plan year |
+| `{{partB.premium}}` | the standard Part B premium |
+| `{{partB.deductible}}` | the Part B deductible |
+| `{{partA.deductible}}` | the Part A hospital deductible |
+| `{{partD.cap}}` | the Part D out-of-pocket cap |
+| `{{irmaa.singleStart}}` | the first IRMAA threshold, single |
+| `{{irmaa.t1.partB}}` | tier-1 Part B total |
+
+The full list is in `plugins/remark-medicare-figures.mjs`. An unknown token
+**fails the build** rather than shipping `{{typo}}` to a live page.
+
+`npm run audit` then checks every article for the schema stack, the SEO field
+limits, links to at least one product page and one tool, the booking CTA, and
+that nothing is published under `/learn/` without a source file.
+
+> `/articles/` was the original hub. It was consolidated into `/learn/` so the
+> site has one place to read rather than two; `public/_redirects` 301s the old
+> URLs. To split them apart again, restore `src/pages/articles/` and drop those
+> redirect lines.
+
 ## The annual update
 
 **`src/data/medicare-figures.ts` is the only place dollar figures live.**
@@ -121,11 +170,13 @@ src/
   styles/global.css       ← Porcelain design system + the motion/reduced-motion layer
   components/             ← Kinetic, HeroFunnel, LeadForm, Schema, Header, Footer, …
   layouts/                ← BaseLayout, ToolLayout, LegalLayout
-  pages/                  ← 26 routes
-  content/articles/       ← Markdown articles (content collection)
+  pages/                  ← 34 routes
+  content/learn/          ← Markdown articles (drop-in; see below)
+  pages/learn/            ← Hub + [...slug] route, both fully data-driven
+plugins/                  ← remark plugin: {{figure}} tokens → real numbers
 test/logic.test.mjs       ← 40 unit tests
 scripts/audit.mjs         ← Built-output audit
-scripts/e2e.mjs           ← 79 headless-browser checks
+scripts/e2e.mjs           ← 205 headless-browser checks
 ```
 
 Adding a product, a service-area city or a tool means adding one entry to the

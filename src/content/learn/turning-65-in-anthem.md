@@ -1,10 +1,20 @@
 ---
 title: "Turning 65 in Anthem: the window that matters, and the one that never comes back"
+seoTitle: "Turning 65: Medicare Enrollment Windows | Anthem AZ"
+description: "The seven-month Initial Enrollment Period and the six-month Medigap window that never returns — what each one decides, and the penalties for missing them."
 summary: "There are two enrollment windows around your 65th birthday. Everybody hears about the first one. The second is the one that quietly decides what coverage you can buy for the rest of your life."
-description: "A plain-English guide to Medicare enrollment at 65 in Anthem, AZ — the seven-month Initial Enrollment Period, the six-month Medigap open enrollment window, and the penalties for getting the timing wrong."
+category: Enrollment
 publishedAt: 2026-06-18
-topic: Enrollment
 readMinutes: 8
+relatedProducts: [medicare-supplement, medicare-advantage]
+relatedTools: [enrollment-timeline, plan-type-finder]
+faqs:
+  - q: "When does my Initial Enrollment Period start?"
+    a: "Three months before the month you turn 65. It runs seven months total — the three months before, your birthday month, and the three months after. If you were born on the first of a month, every date shifts a month earlier."
+  - q: "What happens if I miss my Medigap open enrollment window?"
+    a: "Arizona carriers can medically underwrite your application, which means they can charge you more or decline you outright based on your health. The window runs six months from the first day of the month you are both 65 and enrolled in Part B, and it does not come back."
+  - q: "Can I delay Part B without a penalty?"
+    a: "Only if you have creditable coverage through active employment — yours or your spouse’s. Retiree coverage and COBRA do not count, and if the employer has fewer than 20 employees Medicare usually becomes the primary payer at 65 whether you enrolled or not."
 ---
 
 The mail starts about four months before your birthday, and it does not stop. Glossy envelopes with a return address you half recognise. Phone calls from numbers in area codes you have never visited. Somewhere in that pile are two or three things that genuinely matter, and the rest is noise designed to look exactly like them.

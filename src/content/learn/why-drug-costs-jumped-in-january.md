@@ -1,10 +1,20 @@
 ---
 title: "Why your prescription costs jumped in January"
+seoTitle: "Why Your Part D Drug Costs Jumped in January"
+description: "Formulary tiers, pharmacy status and your deductible all reset on 1 January. What changed, what you can do mid-year, and how to avoid it next time."
 summary: "Your plan did not make a mistake and your pharmacy did not overcharge you. Three things reset every 1 January, and any one of them can add hundreds to your year without your premium moving a cent."
-description: "Why Medicare Part D drug costs change every January — formulary tiers, preferred pharmacy networks and the deductible reset — and what you can and cannot do about it mid-year."
+category: Part D
 publishedAt: 2026-07-09
-topic: Part D
 readMinutes: 7
+relatedProducts: [part-d, medicare-supplement]
+relatedTools: [medicare-cost-estimator, enrollment-timeline]
+faqs:
+  - q: "Why did my prescription cost more in January than in December?"
+    a: "Three things reset on 1 January: your drug can move to a higher formulary tier, your pharmacy can lose preferred status, and your plan deductible starts again. Any one of them can change your cost without your premium moving at all."
+  - q: "Can I switch drug plans in the middle of the year?"
+    a: "Usually not. The Annual Enrollment Period runs 15 October to 7 December. Mid-year changes need a Special Enrollment Period, Extra Help eligibility, or a Medicare Advantage Open Enrollment switch between 1 January and 31 March."
+  - q: "What is the Part D out-of-pocket cap?"
+    a: "For 2026 it is $2,100. Once your out-of-pocket spending on covered drugs reaches it, the plan pays 100% of covered drugs for the rest of the year. Premiums do not count toward the cap."
 ---
 
 Every January the same call comes in, usually within the first two weeks, usually from somebody who is genuinely worried they have been defrauded.

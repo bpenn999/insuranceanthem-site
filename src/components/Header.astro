@@ -10,7 +10,7 @@ const nav = [
   { label: 'Medicare Plans', href: '/medicare-plans/', children: products.map((p) => ({ label: p.name, href: `/${p.slug}/`, blurb: p.blurb })) },
   { label: 'Free Tools', href: '/tools/' },
   { label: 'Service Area', href: '/service-area/' },
-  { label: 'Articles', href: '/articles/' },
+  { label: 'Learn', href: '/learn/' },
   { label: 'About', href: '/about/' },
 ];
 ---
@@ -91,7 +91,7 @@ const nav = [
       {products.map((p) => <li><a href={`/${p.slug}/`}>{p.name}</a></li>)}
       <li><a href="/tools/">Free Tools</a></li>
       <li><a href="/service-area/">Service Area</a></li>
-      <li><a href="/articles/">Articles</a></li>
+      <li><a href="/learn/">Learn</a></li>
       <li><a href="/about/">About Brian</a></li>
       <li><a href="/contact/">Contact</a></li>
     </ul>

@@ -1,0 +1,19 @@
+# Cloudflare Pages redirects.
+#
+# /articles/ was the original content hub. It was consolidated into /learn/ so
+# the site has one place to read rather than two competing ones. These keep any
+# existing links and indexed URLs working.
+/articles/                     /learn/            301
+/articles/:slug                /learn/:slug       301
+/articles/:slug/               /learn/:slug/      301
+
+# Common guesses for the content hub.
+/blog                          /learn/            301
+/blog/                         /learn/            301
+/blog/:slug                    /learn/:slug/      301
+/guides                        /learn/            301
+/guides/                       /learn/            301
+
+# The product pages live at the root, not under /services/.
+/services                      /medicare-plans/   301
+/services/                     /medicare-plans/   301

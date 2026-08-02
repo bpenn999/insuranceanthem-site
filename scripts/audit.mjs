@@ -85,6 +85,105 @@ for (const f of htmls) {
   if (!/application\/ld\+json/.test(html)) note(`NO JSON-LD on ${r}`);
 }
 
+// ── 6a. parse the sitemap (needed by the Learn checks below) ─────────────────
+const smIndex = readFileSync(join(DIST, 'sitemap-index.xml'), 'utf8');
+const smFiles = [...smIndex.matchAll(/<loc>[^<]*\/(sitemap-\d+\.xml)<\/loc>/g)].map((m) => m[1]);
+const smUrls = new Set();
+for (const sf of smFiles) {
+  for (const m of readFileSync(join(DIST, sf), 'utf8')
+    .matchAll(/<loc>https:\/\/insuranceanthem\.com([^<]*)<\/loc>/g)) {
+    smUrls.add(m[1] || '/');
+  }
+}
+
+// ── 6b. the Learn hub and every article in it ────────────────────────────────
+// The hub is data-driven, so these checks verify the *derived* output rather
+// than a hand-maintained list: whatever is in src/content/learn/ must appear on
+// the hub, have its own route, and carry the full structured-data stack.
+{
+  const learnDir = 'src/content/learn';
+  let sources = [];
+  try {
+    sources = readdirSync(learnDir).filter((f) => f.endsWith('.md'));
+  } catch {
+    note('MISSING src/content/learn — the Learn collection has no source files');
+  }
+
+  const slugs = sources.map((f) => f.replace(/\.md$/, ''));
+  console.log(`Learn articles in source: ${slugs.length}`);
+
+  if (!routes.has('/learn/')) note('NO /learn/ HUB PAGE BUILT');
+
+  const hubPath = join(DIST, 'learn', 'index.html');
+  let hub = '';
+  try { hub = readFileSync(hubPath, 'utf8'); } catch { /* reported above */ }
+
+  for (const slug of slugs) {
+    const route = `/learn/${slug}/`;
+
+    // 1. the article built at all
+    if (!routes.has(route)) { note(`LEARN ARTICLE NOT BUILT  ${route}`); continue; }
+
+    // 2. it is linked from the hub — a post nobody can reach is not published
+    if (hub && !hub.includes(`href="${route}"`)) {
+      note(`NOT LINKED FROM THE HUB  ${route}`);
+    }
+
+    // 3. it is in the sitemap
+    if (!smUrls.has(route)) note(`LEARN ARTICLE NOT IN SITEMAP  ${route}`);
+
+    const html = readFileSync(join(DIST, 'learn', slug, 'index.html'), 'utf8');
+
+    // 4. Article + FAQPage structured data
+    if (!html.includes('"@type":"Article"')) note(`NO Article SCHEMA on ${route}`);
+    if (!html.includes('"@type":"FAQPage"')) note(`NO FAQPage SCHEMA on ${route}`);
+    if (!html.includes('"@type":"BreadcrumbList"')) note(`NO BreadcrumbList SCHEMA on ${route}`);
+
+    // 5. SEO field limits — Google truncates beyond these
+    const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? '';
+    const bare = title.replace(/\s*\|\s*Insurance Anthem\s*$/, '');
+    if (bare.length > 60) note(`SEO TITLE ${bare.length} chars (>60) on ${route}`);
+    const desc = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? '';
+    if (desc.length > 155) note(`META DESCRIPTION ${desc.length} chars (>155) on ${route}`);
+
+    // 6. internal links to product and tool pages — the whole point of the hub
+    //    is to route readers toward the pages that answer their next question
+    const productLinks = [...html.matchAll(/href="\/(medicare-advantage|medicare-supplement|part-d|long-term-care)\//g)];
+    const toolLinks = [...html.matchAll(/href="\/tools\/[a-z-]+\//g)];
+    if (productLinks.length === 0) note(`NO PRODUCT PAGE LINKS on ${route}`);
+    if (toolLinks.length === 0) note(`NO TOOL LINKS on ${route}`);
+
+    // 7. the booking CTA
+    if (!html.includes('15-minute')) note(`NO 15-MINUTE CALL CTA on ${route}`);
+
+    // 8. year-stamped figures, and no unresolved figure tokens
+    if (/\{\{[a-zA-Z]/.test(html)) note(`UNRESOLVED FIGURE TOKEN on ${route}`);
+
+    // 9. substance — the brief called for 1,500+ words
+    const text = html
+      .replace(/<script[\s\S]*?<\/script>/g, ' ')
+      .replace(/<style[\s\S]*?<\/style>/g, ' ')
+      .replace(/<[^>]+>/g, ' ');
+    const words = text.split(/\s+/).filter(Boolean).length;
+    if (words < 1200) note(`THIN CONTENT ${words} words on ${route}`);
+  }
+
+  // Nothing should be published under /learn/ that has no source file — that is
+  // the orphan-page class of bug, invisible to any crawl-based audit.
+  for (const r of routes) {
+    if (!r.startsWith('/learn/') || r === '/learn/') continue;
+    const slug = r.slice('/learn/'.length).replace(/\/$/, '');
+    if (!slugs.includes(slug)) note(`ORPHAN LEARN ROUTE with no source file  ${r}`);
+  }
+
+  // The hub must be reachable from the global nav, or it may as well not exist.
+  const home = readFileSync(join(DIST, 'index.html'), 'utf8');
+  if (!home.includes('href="/learn/"')) note('LEARN NOT LINKED FROM THE HOME PAGE NAV/FOOTER');
+
+  // The old hub must not still be live alongside the new one.
+  if (routes.has('/articles/')) note('BOTH /articles/ AND /learn/ ARE LIVE — two competing hubs');
+}
+
 // ── 7. phone number consistency (one source of truth) ────────────────────────
 const phones = new Set();
 for (const f of htmls) {
@@ -94,14 +193,6 @@ console.log(`Phone strings found: ${[...phones].join(', ')}`);
 if (phones.size > 1) note(`MULTIPLE PHONE NUMBERS: ${[...phones].join(', ')}`);
 
 // ── 8. sitemap covers every route (the orphan-page trap) ─────────────────────
-const smIndex = readFileSync(join(DIST,'sitemap-index.xml'),'utf8');
-const smFiles = [...smIndex.matchAll(/<loc>[^<]*\/(sitemap-\d+\.xml)<\/loc>/g)].map(m=>m[1]);
-const smUrls = new Set();
-for (const sf of smFiles) {
-  for (const m of readFileSync(join(DIST,sf),'utf8').matchAll(/<loc>https:\/\/insuranceanthem\.com([^<]*)<\/loc>/g)) {
-    smUrls.add(m[1] || '/');
-  }
-}
 console.log(`Sitemap URLs: ${smUrls.size}`);
 const EXPECT_ABSENT = new Set(['/404.html','/404/']);
 for (const r of routes) {

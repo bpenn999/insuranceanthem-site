@@ -93,6 +93,23 @@ export const site = {
   },
 
   /**
+   * The short intro call every article closes with.
+   *
+   * `url` is currently an on-site contact link because no calendar is wired up
+   * yet. Swap it for a real scheduler (a GHL calendar, Calendly, …) and every
+   * article CTA, plus the Learn hub, points at the booking page instead — no
+   * other edits. If you point it off-site, widen `connect-src`/`form-action`
+   * in public/_headers to match.
+   */
+  consult: {
+    minutes: 15,
+    url: '/contact/?intent=15-minute-call',
+    label: 'Book a free 15-minute call',
+    /** Used in body copy, e.g. "a free 15-minute call" */
+    phrase: 'free 15-minute call',
+  },
+
+  /**
    * Lead endpoint. EMPTY ON PURPOSE — this is a static site with no backend,
    * so the contact form falls back to opening a prefilled email instead of
    * pretending to submit somewhere. Set this to a CRM/webhook URL (GHL inbound

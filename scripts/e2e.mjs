@@ -504,6 +504,146 @@ console.log('\nTool — cost estimator');
   await closePage(p);
 }
 
+// ── 7b. the Learn hub ────────────────────────────────────────────────────────
+console.log('\nLearn — hub');
+const LEARN_SLUGS = [
+  'medicare-advantage-vs-medigap',
+  'medicare-part-d-explained',
+  'irmaa-explained',
+  'late-enrollment-penalties',
+  'medicare-enrollment-periods',
+  'medicare-out-of-pocket-costs',
+  'special-enrollment-periods',
+  'medicare-advantage-networks',
+];
+{
+  const p = await openPage('/learn/');
+
+  const hub = await evaluate(p, `
+    return {
+      cards: document.querySelectorAll('[data-learn-grid] > li').length,
+      chips: document.querySelectorAll('.cat').length,
+      hrefs: [...document.querySelectorAll('[data-learn-grid] a')].map(a => a.getAttribute('href')),
+      h1: document.querySelector('h1')?.textContent.trim(),
+      navLearn: !!document.querySelector('.nav-desktop a[href="/learn/"]'),
+      footerLearn: !!document.querySelector('.site-footer a[href="/learn/"]'),
+    };
+  `);
+  check('hub renders a card per article', hub.cards >= 11, String(hub.cards));
+  check('every required article is on the hub',
+    LEARN_SLUGS.every((s) => hub.hrefs.includes(`/learn/${s}/`)),
+    LEARN_SLUGS.filter((s) => !hub.hrefs.includes(`/learn/${s}/`)).join(', '));
+  check('"Learn" is in the top nav', hub.navLearn);
+  check('"Learn" is in the footer', hub.footerLearn);
+  check('hub h1 has no double spaces', !/\s{2,}/.test(hub.h1 || 'x'), hub.h1);
+
+  check('category chips filter the grid', await evaluate(p, `
+    const chip = [...document.querySelectorAll('.cat')].find(c => c.dataset.cat === 'Enrollment');
+    if (!chip) return false;
+    chip.click();
+    const cards = [...document.querySelectorAll('[data-learn-grid] > li')];
+    const shown = cards.filter(c => !c.hidden);
+    return shown.length > 0
+        && shown.length < cards.length
+        && shown.every(c => c.dataset.cat === 'Enrollment')
+        && chip.getAttribute('aria-pressed') === 'true';
+  `));
+  check('filtering writes a shareable ?topic= param', await evaluate(p, `
+    return new URL(location.href).searchParams.get('topic') === 'Enrollment';
+  `));
+  check('"All" restores every card', await evaluate(p, `
+    document.querySelector('.cat[data-cat="all"]').click();
+    return [...document.querySelectorAll('[data-learn-grid] > li')].every(c => !c.hidden);
+  `));
+  check('no console errors', p.consoleErrors.length === 0, p.consoleErrors.join(' | '));
+  await closePage(p);
+
+  // Deep link straight into a filtered view.
+  const q = await openPage('/learn/?topic=Costs');
+  check('?topic= deep link applies on load', await evaluate(q, `
+    const shown = [...document.querySelectorAll('[data-learn-grid] > li')].filter(c => !c.hidden);
+    return shown.length > 0 && shown.every(c => c.dataset.cat === 'Costs');
+  `));
+  await closePage(q);
+}
+
+// ── 7c. every required article ───────────────────────────────────────────────
+console.log('\nLearn — articles');
+for (const slug of LEARN_SLUGS) {
+  const p = await openPage(`/learn/${slug}/`);
+  const a = await evaluate(p, `
+    const ld = [...document.querySelectorAll('script[type="application/ld+json"]')]
+      .flatMap(s => { try { return JSON.parse(s.textContent)['@graph'] || []; } catch { return []; } });
+    const types = ld.map(n => n['@type']);
+    const article = ld.find(n => n['@type'] === 'Article');
+    const faq = ld.find(n => n['@type'] === 'FAQPage');
+    const text = document.body.innerText;
+    return {
+      h1s: document.querySelectorAll('h1').length,
+      title: document.title,
+      desc: document.querySelector('meta[name=description]')?.content || '',
+      canonical: document.querySelector('link[rel=canonical]')?.href || '',
+      types,
+      faqCount: faq?.mainEntity?.length ?? 0,
+      faqRendered: document.querySelectorAll('.art__faq details').length,
+      crumbs: document.querySelectorAll('.crumbs li').length,
+      productLinks: document.querySelectorAll('a[href^="/medicare-advantage/"], a[href^="/medicare-supplement/"], a[href^="/part-d/"], a[href^="/long-term-care/"]').length,
+      toolLinks: document.querySelectorAll('a[href^="/tools/"]').length,
+      ctaHref: document.querySelector('.art__cta a.btn')?.getAttribute('href') || '',
+      hasYear: /\\b2026\\b/.test(text),
+      unresolved: /\\{\\{[a-zA-Z]/.test(document.body.innerHTML),
+      words: text.split(/\\s+/).filter(Boolean).length,
+      datePublished: article?.datePublished || '',
+    };
+  `);
+
+  const bare = a.title.replace(/\s*\|\s*Insurance Anthem\s*$/, '');
+  const ok = (label, cond, detail) => check(`${slug} — ${label}`, cond, detail);
+
+  ok('single h1', a.h1s === 1, String(a.h1s));
+  ok(`SEO title ≤60 (${bare.length})`, bare.length <= 60 && bare.length > 10, bare);
+  ok(`meta description ≤155 (${a.desc.length})`, a.desc.length <= 155 && a.desc.length > 40, a.desc);
+  ok('canonical points at insuranceanthem.com', a.canonical === `https://insuranceanthem.com/learn/${slug}/`, a.canonical);
+  ok('Article + FAQPage + BreadcrumbList schema',
+    a.types.includes('Article') && a.types.includes('FAQPage') && a.types.includes('BreadcrumbList'),
+    a.types.join(','));
+  ok('FAQ schema matches the rendered FAQ', a.faqCount >= 3 && a.faqCount === a.faqRendered,
+    `schema ${a.faqCount} vs rendered ${a.faqRendered}`);
+  ok('breadcrumbs rendered', a.crumbs === 3, String(a.crumbs));
+  ok('links to a product page', a.productLinks > 0, String(a.productLinks));
+  ok('links to a tool', a.toolLinks > 0, String(a.toolLinks));
+  ok('15-minute booking CTA', a.ctaHref.includes('15-minute'), a.ctaHref);
+  ok('year-stamped 2026 figures', a.hasYear);
+  ok('no unresolved {{tokens}}', !a.unresolved);
+  ok('substantive length', a.words > 1200, `${a.words} rendered words`);
+  ok('no console errors', p.consoleErrors.length === 0, p.consoleErrors.join(' | '));
+  await closePage(p);
+}
+
+// ── 7d. the old hub is gone, and article motion is the light variant ─────────
+console.log('\nLearn — consolidation & motion density');
+{
+  const p = await openPage(`/learn/${LEARN_SLUGS[0]}/`);
+  check('article pages use the light motion density', await evaluate(p, `
+    return document.documentElement.dataset.density === 'light';
+  `));
+  check('caustics run dimmer than the home page', await evaluate(p, `
+    const v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--caustics-opacity'));
+    return v > 0 && v <= 0.25;
+  `));
+  check('article still reveals its content', await evaluate(p, `
+    const armed = [...document.querySelectorAll('[data-armed]')].filter(el => {
+      const r = el.getBoundingClientRect();
+      return r.top >= 0 && r.bottom <= innerHeight * 0.85 && r.height > 0;
+    });
+    return armed.length > 0 && armed.every(el => el.hasAttribute('data-revealed'));
+  `));
+  await closePage(p);
+
+  const gone = await fetch(`${BASE}/articles/`).then((r) => r.status).catch(() => 0);
+  check('the old /articles/ hub no longer builds', gone === 404, `got ${gone}`);
+}
+
 // ── 8. reduced motion + mobile nav ───────────────────────────────────────────
 console.log('\nAccessibility');
 {

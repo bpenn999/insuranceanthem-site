@@ -1,0 +1,331 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import site, { abs } from '../../config/site';
+
+/**
+ * The Learn hub. Everything on this page derives from the collection — dropping
+ * a new .md file into src/content/learn/ adds a card here, a route, structured
+ * data and a sitemap entry with no code change.
+ */
+const posts = (await getCollection('learn', ({ data }) => !data.draft)).sort((a, b) => {
+  if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+  return b.data.publishedAt.getTime() - a.data.publishedAt.getTime();
+});
+
+// Category filter chips, built from what actually exists rather than a fixed list.
+const categories = [...new Set(posts.map((p) => p.data.category))].sort();
+
+const title = 'Learn: Medicare Guides & Explainers';
+const description = `Plain-English Medicare guides from ${site.agent.name} — enrollment windows, Advantage vs Medigap, Part D, IRMAA, penalties and out-of-pocket costs, with current ${new Date().getFullYear()} figures.`;
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Learn', path: '/learn/' },
+];
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+
+const schemaNodes = [
+  {
+    '@type': 'CollectionPage',
+    '@id': `${abs('/learn/')}#collection`,
+    url: abs('/learn/'),
+    name: title,
+    description,
+    isPartOf: { '@id': `${site.origin}/#website` },
+    about: 'Medicare',
+    mainEntity: {
+      '@type': 'ItemList',
+      numberOfItems: posts.length,
+      itemListElement: posts.map((p, i) => ({
+        '@type': 'ListItem',
+        position: i + 1,
+        url: abs(`/learn/${p.id}/`),
+        name: p.data.title,
+      })),
+    },
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path="/learn/"
+  breadcrumbs={breadcrumbs}
+  schemaNodes={schemaNodes}
+>
+  <PageHero
+    eyebrow="Learn"
+    title="Medicare, explained properly."
+    lede={`The questions that come up most, answered at length rather than in a paragraph. Every dollar figure is current for ${new Date().getFullYear()} and labelled with the plan year it applies to. No sign-up, no gate.`}
+    breadcrumbs={breadcrumbs}
+    caustics="0.46"
+  >
+    <div class="btn-row">
+      <a href={site.consult.url} class="btn btn--lg" data-magnetic="0.3">{site.consult.label}</a>
+      <a href="/tools/" class="btn btn--ghost btn--lg" data-magnetic="0.22">Try the free tools</a>
+    </div>
+  </PageHero>
+
+  <section class="section section--tight" data-caustics="0.22">
+    <div class="wrap">
+      {
+        categories.length > 1 && (
+          <nav class="cats" aria-label="Filter by topic" data-rise data-armed>
+            <button class="cat is-active" type="button" data-cat="all" aria-pressed="true">
+              All <span class="cat__n">{posts.length}</span>
+            </button>
+            {categories.map((c) => (
+              <button class="cat" type="button" data-cat={c} aria-pressed="false">
+                {c} <span class="cat__n">{posts.filter((p) => p.data.category === c).length}</span>
+              </button>
+            ))}
+          </nav>
+        )
+      }
+
+      {
+        posts.length === 0 ? (
+          <p class="empty">No guides published yet — check back shortly.</p>
+        ) : (
+          <ul class="cards" data-learn-grid>
+            {posts.map((p, i) => (
+              <li data-cat={p.data.category} data-rise data-armed
+                  style={`--rise-delay:${Math.min(i * 60, 320)}ms`}>
+                <a href={`/learn/${p.id}/`} class="card-link">
+                  <article class="card card--hover post">
+                    <header class="post__head">
+                      <span class="post__cat">{p.data.category}</span>
+                      <span class="post__time">{p.data.readMinutes} min</span>
+                    </header>
+                    <h2 class="post__title">{p.data.title}</h2>
+                    <p class="post__excerpt">{p.data.summary}</p>
+                    <footer class="post__foot">
+                      <time datetime={p.data.publishedAt.toISOString()}>
+                        {fmt(p.data.publishedAt)}
+                      </time>
+                      <span class="post__more">
+                        Read
+                        <svg viewBox="0 0 14 10" aria-hidden="true">
+                          <path d="M9 1l4 4-4 4M13 5H1" fill="none" stroke="currentColor"
+                                stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                        </svg>
+                      </span>
+                    </footer>
+                  </article>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+
+      <p class="cards__none" data-learn-empty hidden>
+        Nothing in that topic yet. <button type="button" data-cat-reset class="link">Show everything</button>.
+      </p>
+    </div>
+  </section>
+
+  <section class="section band--warm" data-caustics="0.2">
+    <div class="wrap wrap--narrow">
+      <SectionHead
+        eyebrow="How to use this"
+        title="Reading is the cheap part."
+      />
+      <div class="prose">
+        <p>
+          Everything here is written to be useful on its own — no article ends with
+          "and that's why you should call me". Several of them tell you plainly when the answer
+          is to do nothing.
+        </p>
+        <p>
+          But every guide reaches the same wall eventually, and it is worth naming: general
+          information cannot tell you whether <em>your</em> cardiologist is in <em>that</em>
+          network, or what <em>your</em> medication list costs on each plan's formulary. That part
+          needs your actual details, and it is the part I do.
+        </p>
+        <p>
+          If a guide raises a question about your own situation, the fastest route to an answer is
+          a <a href={site.consult.url}>{site.consult.phrase}</a>. It costs nothing and there is no
+          product at the end of it unless one belongs there.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Bring me the question the article didn't answer."
+    body={`That is usually the one that matters. ${site.agent.name}, ${site.agent.experience} in Medicare, based in ${site.address.display}.`}
+    cta={site.consult.label}
+  />
+</BaseLayout>
+
+<style>
+  /* --- category chips --- */
+  .cats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-2);
+    margin-bottom: var(--s-6);
+    padding-bottom: var(--s-5);
+    border-bottom: 1px solid var(--rule);
+  }
+  .cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    padding: 0.45rem 0.9rem;
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    color: var(--ink-muted);
+    background: color-mix(in srgb, var(--surface) 80%, transparent);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    transition: color 220ms var(--ease), border-color 220ms var(--ease),
+                background-color 220ms var(--ease);
+  }
+  .cat:hover { color: var(--navy); border-color: color-mix(in srgb, var(--navy) 40%, transparent); }
+  .cat.is-active {
+    color: #fff;
+    background: var(--navy);
+    border-color: var(--navy);
+  }
+  .cat__n {
+    font-variant-numeric: tabular-nums;
+    opacity: 0.65;
+    font-weight: 500;
+  }
+
+  /* --- card grid --- */
+  .cards {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-4);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 20rem), 1fr));
+  }
+  .cards > li { display: flex; }
+  .cards > li[hidden] { display: none; }
+  .cards .card-link { display: flex; width: 100%; }
+
+  .post { display: flex; flex-direction: column; width: 100%; }
+
+  .post__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin-bottom: var(--s-4);
+  }
+  .post__cat {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--navy);
+  }
+  .post__time {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 0.12rem 0.55rem;
+    flex: none;
+  }
+
+  .post__title {
+    font-size: var(--t-lg);
+    line-height: 1.25;
+    margin-bottom: var(--s-3);
+    transition: color 220ms ease;
+  }
+  .card-link:hover .post__title { color: var(--navy); }
+
+  .post__excerpt {
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: var(--s-5);
+  }
+
+  .post__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--rule-soft);
+    font-size: var(--t-xs);
+    color: var(--ink-faint);
+  }
+  .post__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .post__more svg { width: 13px; height: 9px; transition: transform 340ms var(--ease); }
+  .card-link:hover .post__more svg { transform: translateX(4px); }
+
+  .empty, .cards__none { color: var(--ink-muted); }
+  .cards__none { margin-top: var(--s-6); }
+  .cards__none[hidden] { display: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-link:hover .post__more svg { transform: none; }
+  }
+</style>
+
+<script>
+  /**
+   * Category filtering. Progressive enhancement — with JS off the chips simply
+   * do not render as interactive and every card stays visible.
+   */
+  const chips = document.querySelectorAll<HTMLButtonElement>('.cat');
+  const grid = document.querySelector<HTMLElement>('[data-learn-grid]');
+  const none = document.querySelector<HTMLElement>('[data-learn-empty]');
+
+  if (chips.length && grid) {
+    const cards = Array.from(grid.children) as HTMLElement[];
+
+    const apply = (cat: string) => {
+      let shown = 0;
+      for (const card of cards) {
+        const match = cat === 'all' || card.dataset.cat === cat;
+        card.hidden = !match;
+        if (match) shown++;
+      }
+      chips.forEach((c) => {
+        const on = c.dataset.cat === cat;
+        c.classList.toggle('is-active', on);
+        c.setAttribute('aria-pressed', String(on));
+      });
+      if (none) none.hidden = shown > 0;
+
+      // Keep the URL shareable without adding a history entry per click.
+      const url = new URL(location.href);
+      if (cat === 'all') url.searchParams.delete('topic');
+      else url.searchParams.set('topic', cat);
+      history.replaceState(null, '', url);
+    };
+
+    chips.forEach((c) => c.addEventListener('click', () => apply(c.dataset.cat || 'all')));
+    document.querySelector('[data-cat-reset]')?.addEventListener('click', () => apply('all'));
+
+    // Deep-link support: /learn/?topic=Part%20D
+    const initial = new URLSearchParams(location.search).get('topic');
+    if (initial && [...chips].some((c) => c.dataset.cat === initial)) apply(initial);
+  }
+</script>
