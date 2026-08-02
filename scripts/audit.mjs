@@ -184,6 +184,138 @@ for (const sf of smFiles) {
   if (routes.has('/articles/')) note('BOTH /articles/ AND /learn/ ARE LIVE — two competing hubs');
 }
 
+// ── 6c. the footer, on every single page ─────────────────────────────────────
+// The footer is where the compliance obligations live, so "present on most
+// pages" is not good enough — it has to be identical and complete everywhere.
+{
+  const TOOL_SLUGS = [
+    'plan-type-finder', 'enrollment-timeline', 'medicare-cost-estimator', 'irmaa-estimator',
+    'plan-g-vs-plan-n', 'part-b-giveback', 'part-a-premium', 'cost-of-care',
+  ];
+  const PRODUCT_SLUGS = ['medicare-advantage', 'medicare-supplement', 'part-d', 'long-term-care'];
+  const COMPANY_LINKS = ['/about/', '/contact/', '/accessibility/', '/privacy/', '/terms/'];
+
+  for (const f of htmls) {
+    const html = readFileSync(f, 'utf8');
+    const r = routeOf(f);
+
+    const footer = html.slice(html.indexOf('<footer'));
+    if (!footer.startsWith('<footer')) { note(`NO FOOTER on ${r}`); continue; }
+
+    // Brand block
+    if (!footer.includes('Insurance Anthem')) note(`FOOTER: no wordmark on ${r}`);
+    if (!footer.includes('Brian Penner')) note(`FOOTER: no agent name on ${r}`);
+    if (!footer.includes('22+ Years')) note(`FOOTER: no experience line on ${r}`);
+    if (!footer.includes('NPN 8206556')) note(`FOOTER: no NPN on ${r}`);
+
+    // NAP block — one office
+    if (!footer.includes('Anthem, AZ 85086')) note(`FOOTER: no address on ${r}`);
+    if (!footer.includes('(623) 555-0100')) note(`FOOTER: no phone on ${r}`);
+    if (!footer.includes('brian@insuranceanthem.com')) note(`FOOTER: no email on ${r}`);
+
+    // The other brand's offices must never appear here.
+    for (const city of ['Moab', 'Monticello', 'Grand Junction']) {
+      if (footer.includes(city)) note(`FOOTER: WRONG-BRAND OFFICE "${city}" on ${r}`);
+    }
+
+    // Sitemap columns
+    for (const s of PRODUCT_SLUGS) {
+      if (!footer.includes(`href="/${s}/"`)) note(`FOOTER: missing service link /${s}/ on ${r}`);
+    }
+    if (!footer.includes('href="/learn/"')) note(`FOOTER: missing Learn hub link on ${r}`);
+    if (!footer.includes('href="/tools/"')) note(`FOOTER: missing Tools hub link on ${r}`);
+    for (const s of TOOL_SLUGS) {
+      if (!footer.includes(`href="/tools/${s}/"`)) note(`FOOTER: missing tool link ${s} on ${r}`);
+    }
+    for (const l of COMPANY_LINKS) {
+      if (!footer.includes(`href="${l}"`)) note(`FOOTER: missing company link ${l} on ${r}`);
+    }
+    // At least one Learn article, so the column is not just the hub link.
+    if (!/href="\/learn\/[a-z0-9-]+\//.test(footer)) {
+      note(`FOOTER: no Learn articles listed on ${r}`);
+    }
+
+    // CTA row
+    if (!footer.includes('15-minute')) note(`FOOTER: no 15-minute call CTA on ${r}`);
+
+    // Compliance block
+    if (!footer.includes('Licensed in 18 states')) note(`FOOTER: no licensing line on ${r}`);
+    if (!/&copy; 2026|© 2026/.test(footer)) note(`FOOTER: no 2026 copyright on ${r}`);
+  }
+
+  // ── the TPMO disclaimer: exactly once per page, in the footer ──────────────
+  const TPMO = 'We do not offer every plan available in your area';
+  const NONAFF = 'not connected with or endorsed by the United States government';
+  for (const f of htmls) {
+    const html = readFileSync(f, 'utf8');
+    const r = routeOf(f);
+
+    const tpmoCount = html.split(TPMO).length - 1;
+    if (tpmoCount === 0) note(`NO TPMO DISCLAIMER on ${r}`);
+    else if (tpmoCount > 1) note(`TPMO DISCLAIMER x${tpmoCount} on ${r} — must appear exactly once`);
+
+    const nonAffCount = html.split(NONAFF).length - 1;
+    if (nonAffCount === 0) note(`NO NON-AFFILIATION STATEMENT on ${r}`);
+    else if (nonAffCount > 1) note(`NON-AFFILIATION x${nonAffCount} on ${r} — must appear exactly once`);
+
+    // And it must be inside the footer, not floating in page content.
+    const footerStart = html.indexOf('<footer');
+    if (tpmoCount === 1 && html.indexOf(TPMO) < footerStart) {
+      note(`TPMO DISCLAIMER IS OUTSIDE THE FOOTER on ${r}`);
+    }
+  }
+}
+
+// ── 6d. every tool builds, is linked, and behaves like a tool ────────────────
+{
+  const TOOLS = [
+    'plan-type-finder', 'enrollment-timeline', 'medicare-cost-estimator', 'irmaa-estimator',
+    'plan-g-vs-plan-n', 'part-b-giveback', 'part-a-premium', 'cost-of-care',
+  ];
+  console.log(`Tools expected: ${TOOLS.length}`);
+
+  const hub = readFileSync(join(DIST, 'tools', 'index.html'), 'utf8');
+
+  for (const slug of TOOLS) {
+    const route = `/tools/${slug}/`;
+    if (!routes.has(route)) { note(`TOOL NOT BUILT  ${route}`); continue; }
+    if (!hub.includes(`href="${route}"`)) note(`TOOL NOT ON THE HUB GRID  ${route}`);
+    if (!smUrls.has(route)) note(`TOOL NOT IN SITEMAP  ${route}`);
+
+    const html = readFileSync(join(DIST, 'tools', slug, 'index.html'), 'utf8');
+
+    if (!html.includes('"@type":"WebApplication"')) note(`NO WebApplication SCHEMA on ${route}`);
+    if (!html.includes('"@type":"BreadcrumbList"')) note(`NO BreadcrumbList SCHEMA on ${route}`);
+    if (!/class="crumbs"/.test(html)) note(`NO RENDERED BREADCRUMBS on ${route}`);
+
+    const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? '';
+    if (title.length < 15) note(`WEAK SEO TITLE on ${route}`);
+    const desc = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? '';
+    if (desc.length < 50) note(`WEAK META DESCRIPTION on ${route}`);
+
+    // Bottom CTA to the booking link
+    if (!html.includes('15-minute')) note(`NO 15-MINUTE CALL CTA on ${route}`);
+
+    // Year-stamped and estimate-framed — these are the compliance guardrails
+    if (!/\b2026\b/.test(html)) note(`NOT YEAR-STAMPED on ${route}`);
+    if (!/estimate|Estimate/.test(html)) note(`NOT ESTIMATE-FRAMED on ${route}`);
+    if (!/noscript/.test(html)) note(`NO NOSCRIPT FALLBACK on ${route}`);
+
+    // A calculator must not name a carrier or product.
+    const CARRIERS = /\b(Humana|Aetna|UnitedHealthcare|UnitedHealth|Cigna|Wellcare|Anthem Blue|Blue Cross|Devoted Health|Alignment Health)\b/;
+    if (CARRIERS.test(html.replace(/Insurance Anthem/g, ''))) {
+      note(`CARRIER NAMED on ${route}`);
+    }
+  }
+
+  // Nothing under /tools/ that is not a registered tool.
+  for (const r of routes) {
+    if (!r.startsWith('/tools/') || r === '/tools/') continue;
+    const slug = r.slice('/tools/'.length).replace(/\/$/, '');
+    if (!TOOLS.includes(slug)) note(`ORPHAN TOOL ROUTE  ${r}`);
+  }
+}
+
 // ── 7. phone number consistency (one source of truth) ────────────────────────
 const phones = new Set();
 for (const f of htmls) {

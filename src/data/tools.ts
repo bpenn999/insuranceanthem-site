@@ -9,7 +9,7 @@ export interface Tool {
   /** Short verb phrase for the tile CTA */
   cta: string;
   minutes: number;
-  icon: 'compass' | 'calendar' | 'calculator' | 'list';
+  icon: 'compass' | 'calendar' | 'calculator' | 'list' | 'scale' | 'refund' | 'home';
 }
 
 export const tools: Tool[] = [
@@ -48,6 +48,42 @@ export const tools: Tool[] = [
     cta: 'Check my bracket',
     minutes: 1,
     icon: 'list',
+  },
+  {
+    slug: 'plan-g-vs-plan-n',
+    name: 'Plan G vs Plan N',
+    blurb:
+      'Plan N costs less each month but adds copays and leaves excess charges to you. Find the number of visits where the two swap places.',
+    cta: 'Find my breakeven',
+    minutes: 2,
+    icon: 'scale',
+  },
+  {
+    slug: 'part-b-giveback',
+    name: 'Part B Giveback Estimator',
+    blurb:
+      'Some Advantage plans pay back part of your Part B premium. See what a giveback is actually worth — and what it does not touch.',
+    cta: 'Estimate my giveback',
+    minutes: 1,
+    icon: 'refund',
+  },
+  {
+    slug: 'part-a-premium',
+    name: 'Part A Premium Calculator',
+    blurb:
+      'Most people get Part A free on 40 work quarters. Fewer than that and there are two tiers — find out which one applies to you.',
+    cta: 'Check my quarters',
+    minutes: 1,
+    icon: 'calendar',
+  },
+  {
+    slug: 'cost-of-care',
+    name: 'Cost of Care Estimator',
+    blurb:
+      'In-home help, assisted living or skilled nursing — what each realistically costs per year in Arizona, and what Medicare pays toward it.',
+    cta: 'Estimate care costs',
+    minutes: 2,
+    icon: 'home',
   },
 ];
 

@@ -1,0 +1,264 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+import { PLAN_YEAR, IRMAA_TAX_YEAR, partB, giveback, usd } from '../../data/medicare-figures';
+---
+
+<ToolLayout
+  slug="part-b-giveback"
+  title={`Part B Giveback Estimator ${PLAN_YEAR} — Premium Reduction`}
+  description={`See what a Medicare Advantage Part B giveback is actually worth against the ${PLAN_YEAR} standard premium of ${usd(partB.standardPremium, 2)} — and what it does not reduce.`}
+  h1="What's a Part B giveback worth?"
+  lede={`Some Medicare Advantage plans pay back part of your Part B premium. It is a real benefit and it is also the single most oversold thing in Medicare marketing. Here is the arithmetic.`}
+>
+  <form id="gb" novalidate>
+    <div class="t-field">
+      <label for="gb-amount">Giveback amount the plan advertises <span class="t-unit">/ month</span></label>
+      <input type="number" id="gb-amount" name="amount" min="0" max="250" step="0.10"
+             inputmode="decimal" value="50" />
+      <span class="t-hint">
+        A plan cannot give back more than the standard premium of
+        {usd(giveback.maxMonthly, 2)} a month.
+      </span>
+    </div>
+
+    <fieldset class="t-fieldset">
+      <legend>Do you pay an IRMAA surcharge?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="irmaa" value="no" checked /><span><strong>No</strong><em>My {IRMAA_TAX_YEAR} income was below the threshold</em></span></label>
+        <label class="t-option"><input type="radio" name="irmaa" value="yes" /><span><strong>Yes</strong><em>I pay more than the standard premium</em></span></label>
+        <label class="t-option"><input type="radio" name="irmaa" value="unsure" /><span><strong>Not sure</strong></span></label>
+      </div>
+    </fieldset>
+
+    <div class="t-field" id="gb-surcharge-wrap" hidden>
+      <label for="gb-surcharge">Your IRMAA surcharge on Part B <span class="t-unit">/ month</span></label>
+      <input type="number" id="gb-surcharge" name="surcharge" min="0" max="600" step="0.10"
+             inputmode="decimal" value="81.20" />
+      <span class="t-hint">
+        The amount above {usd(partB.standardPremium, 2)}. Not sure?
+        <a href="/tools/irmaa-estimator/">Work it out here</a>.
+      </span>
+    </div>
+
+    <div class="t-actions">
+      <button type="submit" class="btn btn--lg" data-magnetic="0.24">Show me the maths</button>
+      <button type="reset" class="btn btn--ghost">Reset</button>
+    </div>
+    <p class="t-error" id="gb-error" role="alert"></p>
+  </form>
+
+  <div class="t-result" id="gb-result" hidden role="region" aria-live="polite" aria-label="Your giveback">
+    <p class="t-result__eyebrow">{PLAN_YEAR} effect</p>
+    <h2 class="t-result__head" id="gb-head"></h2>
+    <div class="t-stats" id="gb-stats"></div>
+    <div class="t-result__body" id="gb-body"></div>
+    <div class="t-actions">
+      <a href="/contact/?intent=15-minute-call" class="btn btn--lg" data-magnetic="0.24">
+        Check whether the plan is actually right
+      </a>
+    </div>
+  </div>
+
+  <div slot="disclaimer">
+    <p>
+      Calculated in your browser from {PLAN_YEAR} figures and what you entered. Nothing is
+      transmitted or stored.
+    </p>
+    <p>
+      <strong>This shows the premium effect only.</strong> It says nothing about whether the plan
+      offering the giveback is a good plan — that depends on its network, its formulary and its
+      out-of-pocket maximum. No plan or carrier is named here.
+    </p>
+  </div>
+
+  <div slot="explainer">
+    <h2>What a giveback actually is</h2>
+    <div class="prose">
+      <p>
+        Its proper name is the <strong>Part B premium reduction benefit</strong>. Certain Medicare
+        Advantage plans use part of their federal payment to cover some or all of your Part B
+        premium. It is credited through Social Security, so it appears as a smaller deduction from
+        your monthly benefit rather than as a payment from the plan.
+      </p>
+      <p>
+        It is entirely legitimate. It is also the thing daytime television advertising shouts about
+        hardest, which is worth keeping in proportion.
+      </p>
+
+      <h3>Three things it does not do</h3>
+      <ul>
+        <li>
+          <strong>It does not reduce your IRMAA surcharge.</strong> The giveback applies to the
+          standard premium only. If your income puts you in an IRMAA bracket, that surcharge is
+          still owed in full. This is the detail most often left out.
+        </li>
+        <li>
+          <strong>It does not make the plan free.</strong> You still pay whatever the plan charges,
+          plus copays as you use care, up to its out-of-pocket maximum.
+        </li>
+        <li>
+          <strong>It does not travel with you.</strong> Leave the plan and the giveback stops.
+        </li>
+      </ul>
+
+      <h3>Why the trade-off deserves a hard look</h3>
+      <p>
+        A plan that hands back {usd(50, 2)} a month is giving you {usd(600)} a year. Real money.
+        But the plan pays for it somewhere, and it is usually one of three places: a narrower
+        network, higher copays, or fewer supplemental benefits.
+      </p>
+      <p>
+        Which means the giveback is only a good deal if the plan clears the checks that matter
+        first. In order:
+      </p>
+      <ol>
+        <li>Are your doctors in the network? If not, nothing else matters.</li>
+        <li>What is the out-of-pocket maximum? That decides what a bad year costs.</li>
+        <li>How does your medication list price on its formulary?</li>
+        <li><em>Then</em> compare the giveback.</li>
+      </ol>
+      <p>
+        A {usd(600)} annual giveback on a plan that costs you your cardiologist, or puts a drug on
+        a higher tier, is not a saving. More on that in
+        <a href="/learn/medicare-advantage-networks/">how Advantage networks work</a>.
+      </p>
+
+      <h3>Availability is genuinely local</h3>
+      <p>
+        Giveback plans exist in some counties and not others, and the amounts vary. Availability in
+        Maricopa County is not the same as elsewhere in Arizona, and it changes every plan year.
+        This site deliberately does not publish plan names or counts — those go stale, and a stale
+        number is worse than no number.
+      </p>
+      <p>
+        If you already pay an IRMAA surcharge, the higher-value question is usually not the
+        giveback at all — it is whether you can
+        <a href="/learn/irmaa-explained/">appeal the surcharge</a>, which for a recent retiree is
+        often worth several times more.
+      </p>
+    </div>
+  </div>
+</ToolLayout>
+
+<style>
+  .t-unit { font-weight: 400; color: var(--ink-faint); font-size: 0.85em; }
+</style>
+
+<script>
+  import { partB, giveback, usd } from '../../data/medicare-figures';
+
+  const form = document.getElementById('gb') as HTMLFormElement | null;
+  if (form) {
+    const err = document.getElementById('gb-error')!;
+    const result = document.getElementById('gb-result')!;
+    const head = document.getElementById('gb-head')!;
+    const stats = document.getElementById('gb-stats')!;
+    const body = document.getElementById('gb-body')!;
+    const surchargeWrap = document.getElementById('gb-surcharge-wrap')!;
+
+    const num = (n: string) => {
+      const el = form.elements.namedItem(n) as HTMLInputElement;
+      const v = Number(el?.value);
+      return Number.isFinite(v) && v >= 0 ? v : 0;
+    };
+
+    const syncIrmaa = () => {
+      surchargeWrap.hidden =
+        (form.elements.namedItem('irmaa') as RadioNodeList).value !== 'yes';
+    };
+    form.querySelectorAll('input[name="irmaa"]').forEach((r) =>
+      r.addEventListener('change', syncIrmaa)
+    );
+    syncIrmaa();
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      let amount = num('amount');
+      if (amount <= 0) {
+        err.textContent = 'Enter the giveback amount the plan advertises.';
+        return;
+      }
+
+      // A plan cannot give back more than the standard premium.
+      const capped = amount > giveback.maxMonthly;
+      if (capped) amount = giveback.maxMonthly;
+      err.textContent = '';
+
+      const irmaaMode = (form.elements.namedItem('irmaa') as RadioNodeList).value;
+      const surcharge = irmaaMode === 'yes' ? num('surcharge') : 0;
+
+      const grossPremium = partB.standardPremium + surcharge;
+      const netPremium = Math.max(0, grossPremium - amount);
+      const annual = amount * 12;
+      const pctOfStandard = (amount / partB.standardPremium) * 100;
+
+      head.textContent =
+        amount >= partB.standardPremium
+          ? 'That covers your entire standard Part B premium.'
+          : `That is ${usd(annual)} a year back in your pocket.`;
+
+      stats.innerHTML = `
+        <div class="t-stat">
+          <span class="t-stat__value">${usd(grossPremium, 2)}</span>
+          <span class="t-stat__label">Part B before giveback</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${usd(netPremium, 2)}</span>
+          <span class="t-stat__label">Part B after giveback</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${usd(annual)}</span>
+          <span class="t-stat__label">Back per year</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${Math.round(pctOfStandard)}%</span>
+          <span class="t-stat__label">Of the standard premium</span>
+        </div>
+      `;
+
+      const paras: string[] = [];
+
+      paras.push(
+        `<p>Your Part B premium goes from <strong>${usd(grossPremium, 2)}</strong> to <strong>${usd(netPremium, 2)}</strong> a month, credited through Social Security as a smaller deduction rather than a payment from the plan. Over twelve months that is <strong>${usd(annual)}</strong>.</p>`
+      );
+
+      if (capped) {
+        paras.push(
+          `<p><strong>Capped at the standard premium.</strong> You entered more than ${usd(giveback.maxMonthly, 2)}, and no plan can give back more than the standard Part B premium — there is nothing above that to reduce. The figures above use the cap. If a plan is advertising more than this, read the offer again carefully.</p>`
+        );
+      }
+
+      if (surcharge > 0) {
+        paras.push(
+          `<p><strong>Your IRMAA surcharge is untouched.</strong> The giveback reduces the standard premium only, so the ${usd(surcharge, 2)} a month you pay because of your income is still owed in full — that is ${usd(surcharge * 12)} a year the giveback does not reach. Medicare marketing very rarely mentions this.</p>`
+        );
+        paras.push(
+          `<p>Which points at a bigger opportunity: if you have retired since your IRMAA was set, <a href="/learn/irmaa-explained/">appealing it with form SSA-44</a> can be worth several times more than the giveback. Worth doing that first.</p>`
+        );
+      } else if (irmaaMode === 'unsure') {
+        paras.push(
+          `<p><strong>Worth checking whether IRMAA applies to you.</strong> If your income is above the threshold you pay a surcharge on top of the standard premium — and a giveback does not reduce it. The <a href="/tools/irmaa-estimator/">IRMAA estimator</a> will place you in about a minute.</p>`
+        );
+      }
+
+      paras.push(
+        `<p><strong>Now the part that decides whether this is a good deal.</strong> The plan funds that ${usd(annual)} somewhere, and it is normally a narrower network, higher copays, or fewer extras. Before the giveback counts for anything, the plan has to pass three checks: your doctors in-network, an out-of-pocket maximum you can live with, and your medications priced sensibly on its formulary. A giveback on a plan that costs you a specialist is not a saving.</p>`
+      );
+
+      paras.push(
+        `<p class="t-fineprint">Giveback availability and amounts vary by county and change every plan year. This shows the premium effect only, not whether the plan is right for you.</p>`
+      );
+
+      body.innerHTML = paras.join('');
+      result.hidden = false;
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    form.addEventListener('reset', () => {
+      result.hidden = true;
+      err.textContent = '';
+      window.setTimeout(syncIrmaa, 0);
+    });
+  }
+</script>

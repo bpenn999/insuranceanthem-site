@@ -1,0 +1,313 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+import { PLAN_YEAR, partA, usd } from '../../data/medicare-figures';
+---
+
+<ToolLayout
+  slug="part-a-premium"
+  title={`Part A Premium Calculator ${PLAN_YEAR} — Work Quarters`}
+  description={`Most people get Medicare Part A free on 40 work quarters. Fewer than that and there are two tiers — ${usd(partA.premiumByQuarters.reduced)} or ${usd(partA.premiumByQuarters.full)} a month in ${PLAN_YEAR}.`}
+  h1="Will I pay for Part A?"
+  lede={`Most people never do — 40 quarters of Medicare-covered work earns it premium-free for life. Below that there are two tiers, and a spouse's record can change the answer entirely.`}
+>
+  <form id="pa" novalidate>
+    <fieldset class="t-fieldset">
+      <legend>How long did you work and pay Medicare taxes?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="mode" value="years" checked /><span><strong>I know roughly how many years</strong><em>Easier — four quarters per full year</em></span></label>
+        <label class="t-option"><input type="radio" name="mode" value="quarters" /><span><strong>I know my exact quarters</strong><em>From my Social Security statement</em></span></label>
+      </div>
+    </fieldset>
+
+    <div class="t-field" id="pa-years-wrap">
+      <label for="pa-years">Years of Medicare-covered work</label>
+      <input type="number" id="pa-years" name="years" min="0" max="60" step="1"
+             inputmode="numeric" value="12" />
+      <span class="t-hint">Any year you paid Medicare payroll tax counts, including part years.</span>
+    </div>
+
+    <div class="t-field" id="pa-quarters-wrap" hidden>
+      <label for="pa-quarters">Quarters of coverage</label>
+      <input type="number" id="pa-quarters" name="quarters" min="0" max="200" step="1"
+             inputmode="numeric" value="48" />
+      <span class="t-hint">
+        Shown on your Social Security statement at
+        <a href="https://www.ssa.gov/myaccount/" rel="noopener">ssa.gov/myaccount</a>.
+      </span>
+    </div>
+
+    <fieldset class="t-fieldset">
+      <legend>Are you married, divorced after 10+ years, or widowed?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="spouse" value="no" checked /><span><strong>No</strong></span></label>
+        <label class="t-option"><input type="radio" name="spouse" value="yes" /><span><strong>Yes</strong><em>You may qualify on their record instead</em></span></label>
+      </div>
+    </fieldset>
+
+    <div class="t-actions">
+      <button type="submit" class="btn btn--lg" data-magnetic="0.24">Check my Part A</button>
+      <button type="reset" class="btn btn--ghost">Reset</button>
+    </div>
+    <p class="t-error" id="pa-error" role="alert"></p>
+  </form>
+
+  <div class="t-result" id="pa-result" hidden role="region" aria-live="polite" aria-label="Your Part A premium">
+    <p class="t-result__eyebrow">{PLAN_YEAR} Part A</p>
+    <h2 class="t-result__head" id="pa-head"></h2>
+    <div class="t-stats" id="pa-stats"></div>
+    <div class="t-result__body" id="pa-body"></div>
+    <div class="t-actions">
+      <a href="/contact/?intent=15-minute-call" class="btn btn--lg" data-magnetic="0.24">
+        Talk through your options
+      </a>
+    </div>
+  </div>
+
+  <div slot="disclaimer">
+    <p>
+      Calculated in your browser from {PLAN_YEAR} figures. Nothing is transmitted or stored.
+    </p>
+    <p>
+      <strong>Social Security holds the official record</strong> of your quarters and makes the
+      actual determination. This estimates from what you enter — check your real figure at
+      ssa.gov/myaccount before planning around it.
+    </p>
+  </div>
+
+  <div slot="explainer">
+    <h2>How Part A eligibility works</h2>
+    <div class="prose">
+      <p>
+        Part A covers inpatient hospital care, skilled nursing after a qualifying stay, hospice and
+        some home health care. Unlike Part B, most people pay nothing for it — because they already
+        did, through payroll tax.
+      </p>
+
+      <h3>Quarters of coverage</h3>
+      <p>
+        You earn up to four "quarters of coverage" a year by working and paying Medicare taxes. The
+        earnings needed per quarter are modest and adjust annually, so most people who worked a
+        full year earn all four.
+      </p>
+
+      <div class="table-scroll">
+        <table>
+          <caption class="sr-only">{PLAN_YEAR} Part A premium by quarters of coverage</caption>
+          <thead>
+            <tr>
+              <th scope="col">Quarters</th>
+              <th scope="col">Roughly</th>
+              <th scope="col">{PLAN_YEAR} monthly premium</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">{partA.quartersForFree}+</th>
+              <td>10 years or more</td>
+              <td><strong>{usd(partA.premiumByQuarters.free)}</strong> — premium-free for life</td>
+            </tr>
+            <tr>
+              <th scope="row">{partA.quartersForReduced}–{partA.quartersForFree - 1}</th>
+              <td>About 7½ to 10 years</td>
+              <td>{usd(partA.premiumByQuarters.reduced)} — the 45%-reduced premium</td>
+            </tr>
+            <tr>
+              <th scope="row">Under {partA.quartersForReduced}</th>
+              <td>Under 7½ years</td>
+              <td>{usd(partA.premiumByQuarters.full)} — full premium</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        Note the shape of it: there is no sliding scale. Thirty-nine quarters and forty quarters are
+        {' '}{usd(partA.premiumByQuarters.reduced)} a month apart. If you are close to a threshold
+        and still able to work, a few more quarters can be worth a great deal.
+      </p>
+
+      <h3>You may qualify on a spouse's record</h3>
+      <p>
+        This is the part people most often do not know, and it resolves the question completely for
+        many of them. You can generally get premium-free Part A on your spouse's work record if you
+        are 65 or older and:
+      </p>
+      <ul>
+        <li>You are <strong>married</strong> and your spouse is at least 62 with 40 quarters, or</li>
+        <li>You are <strong>divorced</strong>, the marriage lasted at least 10 years, and you have not remarried, or</li>
+        <li>You are <strong>widowed</strong>, the marriage lasted at least 9 months, and you have not remarried before 60.</li>
+      </ul>
+      <p>
+        Somebody who spent their working life raising a family may have very few quarters of their
+        own and still qualify for premium-free Part A. It is always worth checking before accepting
+        a premium.
+      </p>
+
+      <h3>If you do have to pay</h3>
+      <ul>
+        <li>
+          <strong>Part B becomes mandatory.</strong> If you buy Part A, you must also enrol in and
+          pay for Part B.
+        </li>
+        <li>
+          <strong>The late enrollment penalty works differently.</strong> Premium Part A carries a
+          10% surcharge for late enrollment, but unlike Part B it lasts only twice the number of
+          years you delayed — not for life. See
+          <a href="/learn/late-enrollment-penalties/">late enrollment penalties</a>.
+        </li>
+        <li>
+          <strong>Help exists.</strong> Medicare Savings Programs can pay Part A and Part B
+          premiums for people who qualify, and the income limits are higher than most assume.
+        </li>
+        <li>
+          <strong>Working longer may still be an option.</strong> If you are within a few quarters
+          of a threshold, that is often the cheapest fix available.
+        </li>
+      </ul>
+      <p>
+        Whatever your Part A position, the cost-sharing is the same — the
+        {' '}{usd(partA.deductible)} deductible per benefit period and the daily coinsurance are
+        identical whether you pay a premium or not. Those are covered in
+        <a href="/learn/medicare-out-of-pocket-costs/">Medicare out-of-pocket costs</a>.
+      </p>
+    </div>
+  </div>
+</ToolLayout>
+
+<script>
+  import { partA, usd } from '../../data/medicare-figures';
+
+  const form = document.getElementById('pa') as HTMLFormElement | null;
+  if (form) {
+    const err = document.getElementById('pa-error')!;
+    const result = document.getElementById('pa-result')!;
+    const head = document.getElementById('pa-head')!;
+    const stats = document.getElementById('pa-stats')!;
+    const body = document.getElementById('pa-body')!;
+    const yearsWrap = document.getElementById('pa-years-wrap')!;
+    const quartersWrap = document.getElementById('pa-quarters-wrap')!;
+
+    const syncMode = () => {
+      const mode = (form.elements.namedItem('mode') as RadioNodeList).value;
+      yearsWrap.hidden = mode !== 'years';
+      quartersWrap.hidden = mode !== 'quarters';
+    };
+    form.querySelectorAll('input[name="mode"]').forEach((r) =>
+      r.addEventListener('change', syncMode)
+    );
+    syncMode();
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const mode = (form.elements.namedItem('mode') as RadioNodeList).value;
+      const raw = Number(
+        (form.elements.namedItem(mode === 'years' ? 'years' : 'quarters') as HTMLInputElement).value
+      );
+
+      if (!Number.isFinite(raw) || raw < 0) {
+        err.textContent = 'Please enter a positive number.';
+        return;
+      }
+      err.textContent = '';
+
+      // Four quarters per full year worked.
+      const quarters = mode === 'years' ? Math.floor(raw * 4) : Math.floor(raw);
+      const spouse = (form.elements.namedItem('spouse') as RadioNodeList).value === 'yes';
+
+      let premium: number;
+      let tier: string;
+      if (quarters >= partA.quartersForFree) {
+        premium = partA.premiumByQuarters.free;
+        tier = 'Premium-free';
+      } else if (quarters >= partA.quartersForReduced) {
+        premium = partA.premiumByQuarters.reduced;
+        tier = 'Reduced';
+      } else {
+        premium = partA.premiumByQuarters.full;
+        tier = 'Full';
+      }
+
+      const shortBy = Math.max(0, partA.quartersForFree - quarters);
+
+      head.textContent =
+        premium === 0
+          ? 'Your Part A is premium-free.'
+          : `On your own record, Part A would cost ${usd(premium)} a month.`;
+
+      stats.innerHTML = `
+        <div class="t-stat">
+          <span class="t-stat__value">${quarters}</span>
+          <span class="t-stat__label">Quarters of coverage</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${tier}</span>
+          <span class="t-stat__label">Premium tier</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${usd(premium)}</span>
+          <span class="t-stat__label">Per month</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${usd(premium * 12)}</span>
+          <span class="t-stat__label">Per year</span>
+        </div>
+      `;
+
+      const paras: string[] = [];
+
+      if (premium === 0) {
+        paras.push(
+          `<p>${quarters} quarters is at or above the ${partA.quartersForFree} needed, so you have earned Part A premium-free for life. Nothing to pay and nothing to do — this is how most people get Part A.</p>`
+        );
+        paras.push(
+          `<p>Part B is the separate decision, and it does have a premium and a late enrollment penalty attached. That is the one with deadlines worth watching — see the <a href="/tools/enrollment-timeline/">enrollment window checker</a>.</p>`
+        );
+      } else {
+        paras.push(
+          `<p>At ${quarters} quarters you are <strong>${shortBy} short</strong> of the ${partA.quartersForFree} needed for premium-free Part A, which puts you in the ${tier.toLowerCase()}-premium tier at ${usd(premium)} a month — ${usd(premium * 12)} over a year.</p>`
+        );
+
+        if (spouse) {
+          paras.push(
+            `<p><strong>Before you accept that, check your spouse's record.</strong> You said you are married, divorced after ten or more years, or widowed — any of which may qualify you for premium-free Part A on their work history instead of your own. Somebody who spent their working life raising a family can have very few quarters and still pay nothing. This is the single most common way this result turns out to be wrong, and it is worth confirming with Social Security before paying anything.</p>`
+          );
+        } else {
+          paras.push(
+            `<p><strong>One thing worth checking anyway.</strong> If you are married, divorced after a marriage of ten years or more, or widowed, you may qualify on a spouse's record rather than your own — even if you answered no above because you were not sure it applied. It costs nothing to ask Social Security.</p>`
+          );
+        }
+
+        if (quarters >= partA.quartersForReduced) {
+          paras.push(
+            `<p><strong>You are in the reduced tier, not the full one.</strong> At ${partA.quartersForReduced}–${partA.quartersForFree - 1} quarters the premium is ${usd(partA.premiumByQuarters.reduced)} rather than ${usd(partA.premiumByQuarters.full)} — a saving of ${usd(partA.premiumByQuarters.full - partA.premiumByQuarters.reduced)} a month over the bottom tier.</p>`
+          );
+        }
+
+        if (shortBy <= 8) {
+          paras.push(
+            `<p><strong>You are close.</strong> ${shortBy} more ${shortBy === 1 ? 'quarter' : 'quarters'} — roughly ${(shortBy / 4).toFixed(shortBy % 4 === 0 ? 0 : 1)} ${shortBy <= 4 ? 'year' : 'years'} of Medicare-covered work — would make Part A free for life, saving ${usd(premium * 12)} every year from then on. If working a little longer is realistic, the arithmetic strongly favours it.</p>`
+          );
+        }
+
+        paras.push(
+          `<p><strong>Two more things if you do end up paying.</strong> Buying Part A means you must also enrol in and pay for Part B. And Medicare Savings Programs can cover both premiums for people who qualify — the income limits are higher than most people assume, and plenty who qualify never apply.</p>`
+        );
+      }
+
+      paras.push(
+        `<p class="t-fineprint">Social Security holds the official record and makes the determination. Confirm your actual quarters at ssa.gov/myaccount.</p>`
+      );
+
+      body.innerHTML = paras.join('');
+      result.hidden = false;
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    form.addEventListener('reset', () => {
+      result.hidden = true;
+      err.textContent = '';
+      window.setTimeout(syncMode, 0);
+    });
+  }
+</script>

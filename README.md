@@ -22,7 +22,7 @@ npm run verify     # typecheck + unit tests + build + built-output audit
 | `npm run build` | Static build to `/dist` |
 | `npm run preview` | Serve `/dist` locally |
 | `npm run check` | `astro check` — 0 errors, 0 warnings, 0 hints expected |
-| `npm test` | Unit tests for the enrollment + IRMAA arithmetic (`node:test`) |
+| `npm test` | Unit tests for the enrollment, IRMAA, Part A and care-cost figures (`node:test`) |
 | `npm run audit` | Audits `/dist`: broken links, compliance text, sitemap coverage, template residue |
 | `npm run e2e` | Headless-Chrome checks of every tool, the Learn hub and every article. Needs `npm run preview` on **:4331** first |
 | `npm run verify` | check → test → build → audit |
@@ -147,6 +147,13 @@ fact sheet (released 2025-11-14) and the published 2026 IRMAA tables. The unit
 tests in `test/logic.test.mjs` assert those exact figures, so a stale or
 mistyped edit fails `npm test` rather than shipping.
 
+Two non-CMS datasets also live there and update on their own cadence:
+
+- **Medigap Plan G/N cost sharing** — standardised by federal law, so it only
+  changes when the benefit design does.
+- **`careCosts`** — CareScout (Genworth) Cost of Care Survey, fielded 2025 and
+  published March 2026. A new edition lands roughly annually.
+
 `src/data/compliance.ts` holds the TPMO disclaimer. It follows the **CY2027**
 final rule — the SHIP reference is deliberately removed. Do not re-add it; the
 audit script fails if it reappears.
@@ -170,13 +177,13 @@ src/
   styles/global.css       ← Porcelain design system + the motion/reduced-motion layer
   components/             ← Kinetic, HeroFunnel, LeadForm, Schema, Header, Footer, …
   layouts/                ← BaseLayout, ToolLayout, LegalLayout
-  pages/                  ← 34 routes
+  pages/                  ← 38 routes
   content/learn/          ← Markdown articles (drop-in; see below)
   pages/learn/            ← Hub + [...slug] route, both fully data-driven
 plugins/                  ← remark plugin: {{figure}} tokens → real numbers
-test/logic.test.mjs       ← 40 unit tests
+test/logic.test.mjs       ← 55 unit tests
 scripts/audit.mjs         ← Built-output audit
-scripts/e2e.mjs           ← 205 headless-browser checks
+scripts/e2e.mjs           ← 323 headless-browser checks
 ```
 
 Adding a product, a service-area city or a tool means adding one entry to the
@@ -221,3 +228,5 @@ layer. `/accessibility/` documents the approach, including where it falls short.
 - [ ] Add real social profile URLs to `site.social` (empty entries are skipped in schema)
 - [ ] Point `leadEndpoint` at a CRM and widen the CSP `connect-src` to match
 - [ ] Confirm the CY2026 figures are still current if launching after November
+- [ ] Point `consult.url` at a real 15-minute calendar (currently an on-site
+      contact link); widen the CSP `form-action`/`connect-src` if it is off-site

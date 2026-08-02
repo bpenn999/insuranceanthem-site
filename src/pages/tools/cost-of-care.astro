@@ -1,0 +1,380 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+import { partA, careCosts, usd } from '../../data/medicare-figures';
+
+const az = careCosts.arizona;
+const nat = careCosts.national;
+---
+
+<ToolLayout
+  slug="cost-of-care"
+  title="Cost of Care Estimator — Arizona Long-Term Care"
+  description={`What in-home help, assisted living and skilled nursing actually cost in Arizona — ${careCosts.surveySource} ${careCosts.surveyYear} medians — and what Medicare pays toward each.`}
+  h1="What does care actually cost?"
+  lede={`The gap most people find in a hospital corridor. Here is what each kind of care runs in Arizona, what Medicare pays toward it, and what is left for you — with every figure editable, because medians hide a lot.`}
+>
+  <form id="coc" novalidate>
+    <fieldset class="t-fieldset">
+      <legend>What kind of care are you planning for?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="type" value="home" checked /><span><strong>Help at home</strong><em>Non-medical caregiver, hourly</em></span></label>
+        <label class="t-option"><input type="radio" name="type" value="assisted" /><span><strong>Assisted living</strong><em>Residential community, monthly</em></span></label>
+        <label class="t-option"><input type="radio" name="type" value="memory" /><span><strong>Memory care</strong><em>Dementia-specific residential</em></span></label>
+        <label class="t-option"><input type="radio" name="type" value="nursingSemi" /><span><strong>Nursing home — semi-private</strong></span></label>
+        <label class="t-option"><input type="radio" name="type" value="nursingPrivate" /><span><strong>Nursing home — private room</strong></span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="t-fieldset">
+      <legend>Which figures should we start from?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="region" value="az" checked /><span><strong>Arizona median</strong><em>{careCosts.surveySource} {careCosts.surveyYear}</em></span></label>
+        <label class="t-option"><input type="radio" name="region" value="national" /><span><strong>National median</strong><em>For comparison</em></span></label>
+      </div>
+    </fieldset>
+
+    <div class="t-row">
+      <div class="t-field" id="coc-rate-wrap">
+        <label for="coc-rate" id="coc-rate-label">Monthly cost</label>
+        <input type="number" id="coc-rate" name="rate" min="0" max="100000" step="1"
+               inputmode="numeric" value={az.assistedLivingMonthly} />
+        <span class="t-hint" id="coc-rate-hint">Edit this if you have a real local quote.</span>
+      </div>
+      <div class="t-field" id="coc-hours-wrap" hidden>
+        <label for="coc-hours">Hours of care <span class="t-unit">/ week</span></label>
+        <input type="number" id="coc-hours" name="hours" min="0" max="168" step="1"
+               inputmode="numeric" value={careCosts.assumedHomeHoursPerWeek} />
+        <span class="t-hint">The survey assumes {careCosts.assumedHomeHoursPerWeek} hours a week.</span>
+      </div>
+    </div>
+
+    <div class="t-field">
+      <label for="coc-years">How many years should we plan for?</label>
+      <input type="number" id="coc-years" name="years" min="0.25" max="20" step="0.25"
+             inputmode="decimal" value="3" />
+      <span class="t-hint">
+        Nobody knows this in advance, which is the whole problem. Try one year, then five.
+      </span>
+    </div>
+
+    <div class="t-actions">
+      <button type="submit" class="btn btn--lg" data-magnetic="0.24">Estimate the cost</button>
+      <button type="reset" class="btn btn--ghost">Reset</button>
+    </div>
+    <p class="t-error" id="coc-error" role="alert"></p>
+  </form>
+
+  <div class="t-result" id="coc-result" hidden role="region" aria-live="polite" aria-label="Estimated cost of care">
+    <p class="t-result__eyebrow">Estimated cost</p>
+    <h2 class="t-result__head" id="coc-head"></h2>
+    <div class="t-stats" id="coc-stats"></div>
+    <div class="t-result__body" id="coc-body"></div>
+    <div class="t-actions">
+      <a href="/contact/?intent=15-minute-call" class="btn btn--lg" data-magnetic="0.24">
+        Talk through how to cover this
+      </a>
+    </div>
+  </div>
+
+  <div slot="disclaimer">
+    <p>
+      Calculated in your browser from the figures you entered. Nothing is transmitted or stored.
+    </p>
+    <p>
+      <strong>Cost figures are medians from the {careCosts.surveySource} {careCosts.surveyYear}</strong>,
+      not quotes. Long-term care pricing varies more within a single metro than almost any other
+      number in this field — two assisted living communities twenty minutes apart can differ by
+      thousands a month. Treat these as a starting point and replace them with real local quotes.
+    </p>
+  </div>
+
+  <div slot="explainer">
+    <h2>What Medicare actually pays</h2>
+    <div class="prose">
+      <p>
+        This is the part that surprises people, usually at the worst possible moment. Medicare
+        covers <strong>skilled</strong> care — medical treatment and rehabilitation delivered by
+        licensed professionals. It does not cover <strong>custodial</strong> care, which is help
+        with bathing, dressing, eating, using the toilet and moving around.
+      </p>
+      <p>
+        Custodial care is what most people actually end up needing, and it is what lasts years
+        rather than weeks.
+      </p>
+
+      <div class="table-scroll">
+        <table>
+          <caption class="sr-only">What Medicare pays toward each kind of care</caption>
+          <thead>
+            <tr><th scope="col">Care</th><th scope="col">What Medicare pays</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Help at home (custodial)</th>
+              <td><strong>Nothing.</strong> Limited skilled home health only, and only while you need skilled care.</td>
+            </tr>
+            <tr>
+              <th scope="row">Assisted living</th>
+              <td><strong>Nothing</strong> toward room, board or personal care.</td>
+            </tr>
+            <tr>
+              <th scope="row">Memory care</th>
+              <td><strong>Nothing</strong> toward the residential cost.</td>
+            </tr>
+            <tr>
+              <th scope="row">Skilled nursing facility</th>
+              <td>Up to 100 days per benefit period after a qualifying hospital stay. Days 1–20 in full; days 21–100 at {usd(partA.snf21to100)} a day to you. Only while you need skilled care.</td>
+            </tr>
+            <tr>
+              <th scope="row">Long-term nursing home</th>
+              <td><strong>Nothing</strong> beyond that 100-day skilled window.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p>
+        Even the skilled benefit is narrower than it sounds. Coverage continues only while you need
+        skilled care — if you stabilise and still need help but no longer need a nurse or a
+        therapist, it ends, even on day 30 of 100. And the {usd(partA.snf21to100)} daily
+        coinsurance across days 21–100 comes to {usd(partA.snf21to100 * 80)} on its own.
+      </p>
+
+      <h3>{careCosts.surveyYear} medians</h3>
+      <div class="table-scroll">
+        <table>
+          <caption class="sr-only">Arizona and national median costs of care</caption>
+          <thead>
+            <tr><th scope="col">Care</th><th scope="col">Arizona</th><th scope="col">National</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">In-home caregiver</th>
+              <td>{usd(az.homeCareHourly)}/hour</td>
+              <td>{usd(nat.homeCareHourly)}/hour</td>
+            </tr>
+            <tr>
+              <th scope="row">Assisted living</th>
+              <td>{usd(az.assistedLivingMonthly)}/month</td>
+              <td>{usd(nat.assistedLivingMonthly)}/month</td>
+            </tr>
+            <tr>
+              <th scope="row">Memory care</th>
+              <td>{usd(az.memoryCareMonthly)}/month</td>
+              <td>—</td>
+            </tr>
+            <tr>
+              <th scope="row">Nursing home, semi-private</th>
+              <td>{usd(az.nursingSemiPrivateMonthly)}/month</td>
+              <td>{usd(nat.nursingSemiPrivateDaily)}/day</td>
+            </tr>
+            <tr>
+              <th scope="row">Nursing home, private</th>
+              <td>{usd(az.nursingPrivateMonthly)}/month</td>
+              <td>{usd(nat.nursingPrivateDaily)}/day</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="t-fineprint">
+        Source: {careCosts.surveySource}, fielded {careCosts.surveyYear}. Arizona figures are
+        statewide medians; Phoenix-metro pricing varies considerably around them.
+      </p>
+
+      <h3>The three honest ways to handle it</h3>
+      <ul>
+        <li>
+          <strong>Self-fund.</strong> If several years of care would not derail the surviving
+          spouse, this is a legitimate answer and sometimes the right one. What makes it fail is
+          underestimating the duration and forgetting there are usually two people.
+        </li>
+        <li>
+          <strong>Traditional long-term care insurance.</strong> Lowest cost per dollar of benefit;
+          pays nothing if care is never needed.
+        </li>
+        <li>
+          <strong>Hybrid life and long-term care.</strong> Pays for care if needed, a death benefit
+          if not. Costs more, and removes the objection that stops most people acting at all.
+        </li>
+      </ul>
+      <p>
+        Age and health drive both price and eligibility, and both move in one direction. Late
+        fifties to early seventies, in reasonable health, is the window where this is most
+        solvable — more in
+        <a href="/learn/what-medicare-does-not-pay-for/">what Medicare doesn't pay for</a>.
+      </p>
+    </div>
+  </div>
+</ToolLayout>
+
+<style>
+  .t-unit { font-weight: 400; color: var(--ink-faint); font-size: 0.85em; }
+</style>
+
+<script>
+  import { partA, careCosts, usd } from '../../data/medicare-figures';
+
+  const form = document.getElementById('coc') as HTMLFormElement | null;
+  if (form) {
+    const err = document.getElementById('coc-error')!;
+    const result = document.getElementById('coc-result')!;
+    const head = document.getElementById('coc-head')!;
+    const stats = document.getElementById('coc-stats')!;
+    const body = document.getElementById('coc-body')!;
+    const rateInput = document.getElementById('coc-rate') as HTMLInputElement;
+    const rateLabel = document.getElementById('coc-rate-label')!;
+    const rateHint = document.getElementById('coc-rate-hint')!;
+    const hoursWrap = document.getElementById('coc-hours-wrap')!;
+
+    const az = careCosts.arizona;
+    const nat = careCosts.national;
+
+    /** Default rate for each care type, per region. Home care is hourly; the rest monthly. */
+    const defaults = {
+      home: { az: az.homeCareHourly, national: nat.homeCareHourly, hourly: true, label: 'Help at home' },
+      assisted: { az: az.assistedLivingMonthly, national: nat.assistedLivingMonthly, hourly: false, label: 'Assisted living' },
+      memory: { az: az.memoryCareMonthly, national: az.memoryCareMonthly, hourly: false, label: 'Memory care' },
+      nursingSemi: {
+        az: az.nursingSemiPrivateMonthly,
+        national: Math.round((nat.nursingSemiPrivateDaily * 365) / 12),
+        hourly: false, label: 'Nursing home, semi-private',
+      },
+      nursingPrivate: {
+        az: az.nursingPrivateMonthly,
+        national: Math.round((nat.nursingPrivateDaily * 365) / 12),
+        hourly: false, label: 'Nursing home, private room',
+      },
+    } as const;
+
+    type CareKey = keyof typeof defaults;
+
+    const currentType = () => (form.elements.namedItem('type') as RadioNodeList).value as CareKey;
+    const currentRegion = () =>
+      (form.elements.namedItem('region') as RadioNodeList).value as 'az' | 'national';
+
+    /** Reset the rate field to the median whenever the care type or region changes. */
+    const syncDefaults = () => {
+      const d = defaults[currentType()];
+      const region = currentRegion();
+      rateInput.value = String(d[region]);
+      hoursWrap.hidden = !d.hourly;
+      rateLabel.textContent = d.hourly ? 'Hourly rate' : 'Monthly cost';
+      rateHint.textContent = d.hourly
+        ? `${region === 'az' ? 'Arizona' : 'National'} median is ${usd(d[region])} an hour. Edit if you have a real quote.`
+        : `${region === 'az' ? 'Arizona' : 'National'} median is ${usd(d[region])} a month. Edit if you have a real quote.`;
+    };
+
+    form.querySelectorAll('input[name="type"], input[name="region"]').forEach((r) =>
+      r.addEventListener('change', syncDefaults)
+    );
+    syncDefaults();
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const rate = Number(rateInput.value);
+      const years = Number((form.elements.namedItem('years') as HTMLInputElement).value);
+      const hours = Number((form.elements.namedItem('hours') as HTMLInputElement).value);
+
+      if (!Number.isFinite(rate) || rate <= 0) {
+        err.textContent = 'Enter a cost greater than zero.';
+        return;
+      }
+      if (!Number.isFinite(years) || years <= 0) {
+        err.textContent = 'Enter how many years to plan for.';
+        return;
+      }
+      err.textContent = '';
+
+      const type = currentType();
+      const d = defaults[type];
+
+      // Home care is priced hourly; everything else is already monthly.
+      const monthly = d.hourly ? (rate * hours * 52) / 12 : rate;
+      const annual = monthly * 12;
+      const total = annual * years;
+
+      // Medicare's contribution: nothing except the skilled-nursing window, and
+      // even there only the first 20 days are free.
+      const isNursing = type === 'nursingSemi' || type === 'nursingPrivate';
+      const dailyRate = monthly / 30.44;
+      const medicarePays = isNursing ? dailyRate * 20 : 0;
+      const yourShare = total - medicarePays;
+
+      head.textContent = `${d.label} for ${years === 1 ? 'a year' : `${years} years`}: about ${usd(total)}.`;
+
+      stats.innerHTML = `
+        <div class="t-stat">
+          <span class="t-stat__value">${usd(monthly)}</span>
+          <span class="t-stat__label">Per month</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${usd(annual)}</span>
+          <span class="t-stat__label">Per year</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${usd(total)}</span>
+          <span class="t-stat__label">Over ${years} ${years === 1 ? 'year' : 'years'}</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${usd(medicarePays)}</span>
+          <span class="t-stat__label">Medicare pays</span>
+        </div>
+      `;
+
+      const paras: string[] = [];
+
+      if (d.hourly) {
+        paras.push(
+          `<p>At ${usd(rate)} an hour for ${hours} hours a week, that is <strong>${usd(monthly)}</strong> a month and <strong>${usd(annual)}</strong> a year. Over ${years} ${years === 1 ? 'year' : 'years'}: <strong>${usd(total)}</strong>.</p>`
+        );
+        if (hours >= 100) {
+          paras.push(
+            `<p><strong>At ${hours} hours a week you are approaching round-the-clock care</strong>, which is where in-home help usually stops being the cheaper option. At that level, a residential community is often less expensive as well as more sustainable for the family.</p>`
+          );
+        }
+      } else {
+        paras.push(
+          `<p>At <strong>${usd(monthly)}</strong> a month, ${years} ${years === 1 ? 'year' : 'years'} of ${d.label.toLowerCase()} comes to <strong>${usd(total)}</strong>.</p>`
+        );
+      }
+
+      if (isNursing) {
+        paras.push(
+          `<p><strong>Medicare covers a small slice of this, and only under conditions.</strong> After a qualifying hospital stay, days 1–20 of skilled nursing are covered in full — worth roughly ${usd(medicarePays)} here. Days 21–100 carry a ${usd(partA.snf21to100)} daily coinsurance, which is ${usd(partA.snf21to100 * 80)} if you use them all. After day 100, nothing.</p>`
+        );
+        paras.push(
+          `<p>And that window only stays open while you need <em>skilled</em> care. Stabilise — still needing help, but no longer needing a nurse or therapist — and coverage ends, even on day 30. The remaining <strong>${usd(yourShare)}</strong> is yours.</p>`
+        );
+      } else {
+        paras.push(
+          `<p><strong>Medicare pays nothing toward this.</strong> Not a portion, not after a deductible — nothing. ${d.label} is custodial care, and Medicare was never designed to cover it. The full <strong>${usd(total)}</strong> comes from savings, from family, from an insurance policy bought earlier, or from Medicaid once assets are spent down.</p>`
+        );
+      }
+
+      if (years <= 2) {
+        paras.push(
+          `<p><strong>Try running this again with five years.</strong> ${years <= 1 ? 'A year' : 'Two years'} is survivable for most households. The reason long-term care is a planning problem rather than a budgeting one is that nobody knows the duration in advance, and the tail is long.</p>`
+        );
+      } else if (years >= 5) {
+        paras.push(
+          `<p><strong>${usd(total)} is the number worth sitting with.</strong> The question is not whether you could write that cheque once — it is whether writing it would leave a surviving spouse whole. That is the test that decides between self-funding and insuring.</p>`
+        );
+      }
+
+      paras.push(
+        `<p class="t-fineprint">Based on ${careCosts.surveySource} ${careCosts.surveyYear} medians. Pricing varies widely within the Phoenix metro — replace these with real local quotes before planning around them.</p>`
+      );
+
+      body.innerHTML = paras.join('');
+      result.hidden = false;
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    form.addEventListener('reset', () => {
+      result.hidden = true;
+      err.textContent = '';
+      window.setTimeout(syncDefaults, 0);
+    });
+  }
+</script>

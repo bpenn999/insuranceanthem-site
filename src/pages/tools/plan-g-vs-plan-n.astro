@@ -1,0 +1,360 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+import { PLAN_YEAR, partA, partB, medigap, usd } from '../../data/medicare-figures';
+---
+
+<ToolLayout
+  slug="plan-g-vs-plan-n"
+  title={`Plan G vs Plan N Calculator (${PLAN_YEAR}) — Medigap Breakeven`}
+  description={`Compare Medigap Plan G and Plan N using your own premiums and visit counts. Models Plan N's copays and Part B excess charges, and finds the breakeven point.`}
+  h1="Plan G or Plan N?"
+  lede={`Plan N costs less every month and hands some of it back in copays — plus the Part B excess charges it does not cover. Put your two quotes in and find the visit count where they swap places.`}
+>
+  <form id="gn" novalidate>
+    <h2 class="t-sec">The two quotes</h2>
+    <p class="t-hint t-sec-hint">
+      Use real quotes for the same carrier and age if you have them. Medigap benefits are
+      standardised by federal law, so Plan G is Plan G whoever sells it — only the price differs.
+    </p>
+
+    <div class="t-row">
+      <div class="t-field">
+        <label for="gn-g">Plan G premium <span class="t-unit">/ month</span></label>
+        <input type="number" id="gn-g" name="gPrem" min="0" max="1000" step="1" value="165" />
+      </div>
+      <div class="t-field">
+        <label for="gn-n">Plan N premium <span class="t-unit">/ month</span></label>
+        <input type="number" id="gn-n" name="nPrem" min="0" max="1000" step="1" value="130" />
+      </div>
+    </div>
+
+    <h2 class="t-sec">Your expected year</h2>
+
+    <div class="t-row">
+      <div class="t-field">
+        <label for="gn-office">Office visits <span class="t-unit">/ year</span></label>
+        <input type="number" id="gn-office" name="office" min="0" max="365" step="1" value="8" />
+        <span class="t-hint">Primary care and specialist</span>
+      </div>
+      <div class="t-field">
+        <label for="gn-er">ER visits <span class="t-unit">/ year</span></label>
+        <input type="number" id="gn-er" name="er" min="0" max="50" step="1" value="0" />
+        <span class="t-hint">Not resulting in admission</span>
+      </div>
+    </div>
+
+    <fieldset class="t-fieldset">
+      <legend>Do your providers accept Medicare assignment?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="excess" value="none" checked /><span><strong>Yes, all of them</strong><em>No excess charges — the usual case</em></span></label>
+        <label class="t-option"><input type="radio" name="excess" value="some" /><span><strong>Some do not</strong><em>Model excess charges on a share of my care</em></span></label>
+        <label class="t-option"><input type="radio" name="excess" value="unknown" /><span><strong>I don't know</strong><em>Show me what it would cost if some don't</em></span></label>
+      </div>
+    </fieldset>
+
+    <div class="t-field" id="gn-excess-wrap" hidden>
+      <label for="gn-excess-amt">Annual Medicare-approved charges from non-assignment providers</label>
+      <input type="number" id="gn-excess-amt" name="excessBase" min="0" max="200000" step="100" value="2000" />
+      <span class="t-hint">
+        Excess charges are capped at {Math.round(medigap.partBExcessMaxRate * 100)}% above the
+        Medicare-approved amount. Plan G covers them; Plan N does not.
+      </span>
+    </div>
+
+    <div class="t-actions">
+      <button type="submit" class="btn btn--lg" data-magnetic="0.24">Compare the two</button>
+      <button type="reset" class="btn btn--ghost">Reset</button>
+    </div>
+    <p class="t-error" id="gn-error" role="alert"></p>
+  </form>
+
+  <div class="t-result" id="gn-result" hidden role="region" aria-live="polite" aria-label="Plan G versus Plan N">
+    <p class="t-result__eyebrow">Estimated {PLAN_YEAR} total</p>
+    <h2 class="t-result__head" id="gn-head"></h2>
+    <div class="cost-cols" id="gn-cols"></div>
+    <div class="t-result__body" id="gn-body"></div>
+    <div class="t-actions">
+      <a href="/contact/?intent=15-minute-call" class="btn btn--lg" data-magnetic="0.24">
+        Get real quotes for both
+      </a>
+    </div>
+  </div>
+
+  <div slot="disclaimer">
+    <p>
+      Calculated in your browser from {PLAN_YEAR} federal figures and the numbers you entered.
+      Nothing is transmitted or stored.
+    </p>
+    <p>
+      <strong>This is an estimate, not a quote.</strong> Both columns include the {PLAN_YEAR} Part B
+      deductible of {usd(partB.deductible)}, which Plan G and Plan N both leave to you. Neither
+      column includes the standard Part B premium of {usd(partB.standardPremium, 2)} or a Part D
+      plan, because both are identical on either policy. No carrier or product is named.
+    </p>
+  </div>
+
+  <div slot="explainer">
+    <h2>What actually differs between them</h2>
+    <div class="prose">
+      <p>
+        Medigap plans are standardised by federal law. Plan G from one carrier covers exactly what
+        Plan G from another covers — identical benefits, whatever the branding. So the comparison
+        is never "which company", it is "which letter, at what price".
+      </p>
+
+      <div class="table-scroll">
+        <table>
+          <caption class="sr-only">Plan G compared with Plan N</caption>
+          <thead>
+            <tr><th scope="col">Cost</th><th scope="col">Plan G</th><th scope="col">Plan N</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Part A deductible ({usd(partA.deductible)})</th>
+              <td>Covered</td><td>Covered</td>
+            </tr>
+            <tr>
+              <th scope="row">Part B deductible</th>
+              <td>You pay {usd(partB.deductible)}</td>
+              <td>You pay {usd(partB.deductible)}</td>
+            </tr>
+            <tr>
+              <th scope="row">Part B coinsurance</th>
+              <td>Covered</td><td>Covered</td>
+            </tr>
+            <tr>
+              <th scope="row">Office visit</th>
+              <td>Nothing</td>
+              <td>Up to {usd(medigap.planN.officeCopay)} copay</td>
+            </tr>
+            <tr>
+              <th scope="row">Emergency room</th>
+              <td>Nothing</td>
+              <td>Up to {usd(medigap.planN.erCopay)}, waived if admitted</td>
+            </tr>
+            <tr>
+              <th scope="row">Part B excess charges</th>
+              <td>Covered</td>
+              <td><strong>Not covered</strong></td>
+            </tr>
+            <tr>
+              <th scope="row">Skilled nursing coinsurance</th>
+              <td>Covered</td><td>Covered</td>
+            </tr>
+            <tr>
+              <th scope="row">Foreign travel emergency</th>
+              <td>80%, to plan limits</td><td>80%, to plan limits</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>The excess-charge question matters in Arizona</h3>
+      <p>
+        A provider who does not accept Medicare assignment may bill up to
+        {' '}{Math.round(medigap.partBExcessMaxRate * 100)}% above the Medicare-approved amount.
+        Plan G absorbs that; Plan N leaves it with you.
+      </p>
+      <p>
+        Eight states ban excess charges outright — {medigap.excessChargeBannedStates.join(', ')}.
+        <strong>Arizona is not one of them</strong>, so this is a live consideration here rather
+        than a technicality. In practice the large majority of providers do accept assignment, and
+        you can simply ask before an appointment. But "mostly" is not "always", and a Plan N holder
+        who sees a non-participating specialist regularly can lose the premium saving.
+      </p>
+
+      <h3>The breakeven, in plain terms</h3>
+      <p>
+        Take the annual premium difference between the two policies. Divide by the Plan N office
+        copay. That is roughly how many visits a year you can make before Plan N stops being the
+        cheaper policy. Add excess charges and the breakeven arrives sooner.
+      </p>
+      <p>
+        Which means the honest answer depends on something only you know: how often you actually
+        sit in front of a doctor. Someone with three visits a year and a $35 monthly saving is
+        clearly better off on Plan N. Someone with twenty visits and a chronic condition usually
+        is not.
+      </p>
+
+      <h3>One thing this cannot model</h3>
+      <p>
+        Medigap premiums rise as you age, and Plan G and Plan N do not necessarily rise at the same
+        rate. A comparison of this year's quotes is a snapshot. Rate history — how a given carrier
+        has actually behaved at renewal over the last decade — is public information and is worth
+        as much as the opening price. That is a conversation rather than a calculator.
+      </p>
+      <p>
+        More on how supplements fit the wider picture is in
+        <a href="/learn/medicare-advantage-vs-medigap/">Advantage vs Medigap</a> and
+        <a href="/learn/medicare-out-of-pocket-costs/">Medicare out-of-pocket costs</a>.
+      </p>
+    </div>
+  </div>
+</ToolLayout>
+
+<style>
+  .t-sec {
+    font-family: var(--font-display);
+    font-size: var(--t-lg);
+    color: var(--ink);
+    margin-bottom: var(--s-4);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .t-sec:not(:first-child) { margin-top: var(--s-6); }
+  .t-sec-hint { margin-top: -0.75rem; margin-bottom: var(--s-5); }
+  .t-unit { font-weight: 400; color: var(--ink-faint); font-size: 0.85em; }
+</style>
+
+<script>
+  import { partB, medigap, usd } from '../../data/medicare-figures';
+
+  const form = document.getElementById('gn') as HTMLFormElement | null;
+  if (form) {
+    const err = document.getElementById('gn-error')!;
+    const result = document.getElementById('gn-result')!;
+    const head = document.getElementById('gn-head')!;
+    const cols = document.getElementById('gn-cols')!;
+    const body = document.getElementById('gn-body')!;
+    const excessWrap = document.getElementById('gn-excess-wrap')!;
+
+    const num = (n: string) => {
+      const el = form.elements.namedItem(n) as HTMLInputElement;
+      const v = Number(el?.value);
+      return Number.isFinite(v) && v >= 0 ? v : 0;
+    };
+
+    // Only ask for the excess-charge base when it is actually relevant.
+    const syncExcess = () => {
+      const mode = (form.elements.namedItem('excess') as RadioNodeList).value;
+      excessWrap.hidden = mode === 'none';
+    };
+    form.querySelectorAll('input[name="excess"]').forEach((r) =>
+      r.addEventListener('change', syncExcess)
+    );
+    syncExcess();
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const gPrem = num('gPrem');
+      const nPrem = num('nPrem');
+      if (gPrem === 0 && nPrem === 0) {
+        err.textContent = 'Enter at least one premium to compare.';
+        return;
+      }
+      err.textContent = '';
+
+      const office = num('office');
+      const er = num('er');
+      const mode = (form.elements.namedItem('excess') as RadioNodeList).value;
+      const excessBase = mode === 'none' ? 0 : num('excessBase');
+      const excess = excessBase * medigap.partBExcessMaxRate;
+
+      const gYear = gPrem * 12;
+      const nYear = nPrem * 12;
+
+      // Both letters leave the Part B deductible with you.
+      const deductible = partB.deductible;
+
+      const nCopays = office * medigap.planN.officeCopay + er * medigap.planN.erCopay;
+
+      const gTotal = gYear + deductible;
+      const nTotal = nYear + deductible + nCopays + excess;
+
+      const diff = Math.abs(gTotal - nTotal);
+      const nWins = nTotal < gTotal;
+      const close = diff < 200;
+
+      /* --- the breakeven: how many office visits before N loses --- */
+      const monthlyGap = gPrem - nPrem;
+      const annualGap = monthlyGap * 12;
+      let breakeven: number | null = null;
+      if (monthlyGap > 0 && medigap.planN.officeCopay > 0) {
+        breakeven = Math.floor((annualGap - excess) / medigap.planN.officeCopay);
+        if (breakeven < 0) breakeven = 0;
+      }
+
+      head.textContent = close
+        ? 'Close enough that cost is not the deciding factor.'
+        : nWins
+          ? `Plan N comes out about ${usd(diff)} cheaper this year.`
+          : `Plan G comes out about ${usd(diff)} cheaper this year.`;
+
+      const line = (label: string, value: number) =>
+        `<li><span>${label}</span><b>${usd(value)}</b></li>`;
+
+      cols.innerHTML = `
+        <div class="cost-col"${!close && !nWins ? ' data-winner' : ''}>
+          ${!close && !nWins ? '<span class="cost-col__flag">Lower this year</span>' : ''}
+          <p class="cost-col__name">Plan G</p>
+          <p class="cost-col__total">${usd(gTotal)}</p>
+          <p class="cost-col__per">for the year · ${usd(gTotal / 12)} a month</p>
+          <ul class="cost-col__lines">
+            ${line('Premiums', gYear)}
+            ${line('Part B deductible', deductible)}
+            ${line('Copays', 0)}
+            ${line('Excess charges', 0)}
+          </ul>
+        </div>
+        <div class="cost-col"${!close && nWins ? ' data-winner' : ''}>
+          ${!close && nWins ? '<span class="cost-col__flag">Lower this year</span>' : ''}
+          <p class="cost-col__name">Plan N</p>
+          <p class="cost-col__total">${usd(nTotal)}</p>
+          <p class="cost-col__per">for the year · ${usd(nTotal / 12)} a month</p>
+          <ul class="cost-col__lines">
+            ${line('Premiums', nYear)}
+            ${line('Part B deductible', deductible)}
+            ${line('Copays', nCopays)}
+            ${line('Excess charges', excess)}
+          </ul>
+        </div>
+      `;
+
+      const paras: string[] = [];
+
+      if (breakeven !== null) {
+        paras.push(
+          `<p><strong>Your breakeven is about ${breakeven} office ${breakeven === 1 ? 'visit' : 'visits'} a year.</strong> Plan N saves you ${usd(monthlyGap)} a month — ${usd(annualGap)} over the year${excess > 0 ? `, less ${usd(excess)} of excess charges` : ''} — and each office visit hands ${usd(medigap.planN.officeCopay)} of that back. Below ${breakeven} visits Plan N is ahead; above it, Plan G is.</p>`
+        );
+        paras.push(
+          `<p>You entered <strong>${office}</strong>, which puts you ${office < breakeven ? 'comfortably inside Plan N territory' : office === breakeven ? 'right on the line' : 'past the point where Plan G wins'}.</p>`
+        );
+      } else if (monthlyGap <= 0) {
+        paras.push(
+          `<p><strong>Plan N is not cheaper here.</strong> On the premiums you entered, Plan N costs the same or more per month than Plan G — and it still adds copays and leaves excess charges with you. If those are real quotes from the same carrier, Plan G is the straightforward choice. It is worth double-checking the figures, because that pricing is unusual.</p>`
+        );
+      }
+
+      if (excess > 0) {
+        paras.push(
+          `<p><strong>Excess charges are doing real work in this comparison.</strong> ${usd(excessBase)} of Medicare-approved charges from providers who do not accept assignment adds up to ${usd(excess)} on Plan N, and nothing on Plan G. Arizona permits excess charges, so this is worth pinning down rather than assuming — ask each provider whether they accept Medicare assignment before you choose a letter.</p>`
+        );
+      } else {
+        paras.push(
+          `<p><strong>This assumes every provider accepts Medicare assignment.</strong> Most do, and where that holds Plan N's main disadvantage disappears. But Arizona does permit excess charges, so it is worth confirming with the specialists you actually see rather than assuming — one non-participating provider can erase the premium saving.</p>`
+        );
+      }
+
+      if (close) {
+        paras.push(
+          `<p>The two land within ${usd(diff)} of each other, which for a year of healthcare is noise. When it is this close, decide on something else: carrier rate history, how the company handles claims, and whether you would rather have no copays at all.</p>`
+        );
+      }
+
+      paras.push(
+        `<p class="t-fineprint">Premiums rise with age and the two letters do not necessarily rise together, so this is a snapshot of one year. Carrier rate history matters as much as the opening price.</p>`
+      );
+
+      body.innerHTML = paras.join('');
+      result.hidden = false;
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    form.addEventListener('reset', () => {
+      result.hidden = true;
+      err.textContent = '';
+      window.setTimeout(syncExcess, 0);
+    });
+  }
+</script>

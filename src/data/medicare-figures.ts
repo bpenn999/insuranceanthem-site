@@ -40,10 +40,82 @@ export const partA = {
   coinsurance61to90: 434,
   /** Daily coinsurance, lifetime reserve days */
   lifetimeReserve: 868,
+  /** Total lifetime reserve days available, once ever */
+  lifetimeReserveDays: 60,
   /** Daily coinsurance, skilled nursing facility days 21–100 */
   snf21to100: 217,
   /** Monthly premium for those without enough work quarters (most people pay $0) */
   premiumIfUninsured: 565,
+
+  /**
+   * Part A premium by quarters of Medicare-covered employment.
+   *
+   * 40+ quarters is premium-free — that is how most people get Part A. Below
+   * that there are two tiers: 30–39 quarters qualifies for a 45% reduction
+   * ($565 × 0.55 ≈ $311), and under 30 quarters pays the full amount.
+   */
+  premiumByQuarters: {
+    /** 40 or more quarters */
+    free: 0,
+    /** 30–39 quarters — the 45%-reduced premium */
+    reduced: 311,
+    /** Fewer than 30 quarters — full premium */
+    full: 565,
+  },
+  /** Quarters needed for premium-free Part A */
+  quartersForFree: 40,
+  /** Minimum quarters for the reduced premium */
+  quartersForReduced: 30,
+};
+
+/**
+ * Medigap Plan G and Plan N cost sharing.
+ *
+ * Medigap benefits are standardised by federal law: Plan G from one carrier
+ * covers exactly what Plan G from another covers. Only price, rate history and
+ * service differ. These are the benefit rules, not any carrier's premiums.
+ */
+export const medigap = {
+  planG: {
+    /** Plan G leaves you the Part B deductible and essentially nothing else */
+    coversPartBExcess: true,
+    officeCopay: 0,
+    erCopay: 0,
+  },
+  planN: {
+    /** Plan N does NOT cover Part B excess charges */
+    coversPartBExcess: false,
+    /** Up to $20 per office visit */
+    officeCopay: 20,
+    /** Up to $50 per ER visit — waived if the visit results in admission */
+    erCopay: 50,
+    erCopayWaivedOnAdmission: true,
+  },
+  /**
+   * Part B excess charge: a provider who does not accept Medicare assignment
+   * may bill up to 15% above the Medicare-approved amount. Plan G covers this;
+   * Plan N does not.
+   *
+   * Eight states prohibit excess charges entirely (CT, MA, MN, NY, OH, PA, RI,
+   * VT). Arizona is NOT among them, so this is a live consideration here.
+   */
+  partBExcessMaxRate: 0.15,
+  excessChargeBannedStates: ['CT', 'MA', 'MN', 'NY', 'OH', 'PA', 'RI', 'VT'],
+};
+
+/**
+ * The Part B "giveback" — properly, the Part B premium reduction benefit.
+ *
+ * Some Medicare Advantage plans pay part or all of your Part B premium, which
+ * shows up as a reduced deduction from your Social Security payment.
+ *
+ * The critical honest detail: it reduces only the STANDARD premium portion. An
+ * IRMAA surcharge is unaffected and still owed in full.
+ */
+export const giveback = {
+  /** A plan cannot give back more than the standard premium */
+  maxMonthly: 202.9,
+  reducesIrmaa: false,
 };
 
 export const partD = {
@@ -147,6 +219,52 @@ export function lookupIrmaa(magi: number, filing: FilingStatus): IrmaaResult {
     surcharged: band.tier > 0,
   };
 }
+
+/**
+ * Long-term care costs.
+ *
+ * Source: CareScout (Genworth) Cost of Care Survey, fielded July–November 2025,
+ * published March 2026 — the most recent edition. Verified 2026-08-02.
+ *
+ * ⚠️  These are MEDIANS, and long-term care pricing varies more within a single
+ *     metro than almost any other figure on this site. They are a starting
+ *     point for a conversation, never a quote. The estimator built on them
+ *     lets every figure be overridden with a real local number.
+ *
+ * The 2025 survey merged "homemaker services" and "home health aide" into one
+ * non-medical caregiver category, so there is no longer a separate rate for each.
+ */
+export const careCosts = {
+  surveyYear: 2025,
+  surveySource: 'CareScout Cost of Care Survey',
+  /** The survey's standard assumption for in-home care hours */
+  assumedHomeHoursPerWeek: 44,
+
+  national: {
+    /** Non-medical caregiver, hourly */
+    homeCareHourly: 35,
+    /** Skilled private-duty nursing at home, hourly */
+    homeNurseHourly: 90,
+    /** Adult day health care, per day */
+    adultDayDaily: 95,
+    /** Assisted living community, per month */
+    assistedLivingMonthly: 6200,
+    /** Nursing home semi-private room, per day */
+    nursingSemiPrivateDaily: 315,
+    /** Nursing home private room, per day */
+    nursingPrivateDaily: 355,
+  },
+
+  arizona: {
+    homeCareHourly: 38,
+    assistedLivingMonthly: 6250,
+    /** Statewide median, per month */
+    nursingSemiPrivateMonthly: 8365,
+    nursingPrivateMonthly: 11437,
+    /** Memory care typically runs ~25% above assisted living */
+    memoryCareMonthly: 7800,
+  },
+};
 
 /** Late-enrollment penalties. */
 export const penalties = {

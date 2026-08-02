@@ -1,7 +1,6 @@
 ---
 import LegalLayout from '../layouts/LegalLayout.astro';
 import site from '../config/site';
-import { tpmoText, nonAffiliation } from '../data/compliance';
 ---
 
 <LegalLayout
@@ -13,8 +12,12 @@ import { tpmoText, nonAffiliation } from '../data/compliance';
   updated="August 2, 2026"
 >
   <h2>Required Medicare disclosures</h2>
-  <p><strong>{tpmoText()}</strong></p>
-  <p><strong>{nonAffiliation}</strong></p>
+  <p>
+    The CMS third-party marketing organisation disclaimer and our non-affiliation statement appear
+    in the footer of <strong>every page on this site</strong>, including this one — scroll down and
+    you will find them below. They are deliberately published once per page rather than repeated,
+    so there is a single authoritative wording rather than two copies to reconcile.
+  </p>
   <p>
     {site.name} is a licensed independent insurance agency. {site.agent.name} is a licensed
     insurance agent, National Producer Number {site.agent.npn}, licensed in

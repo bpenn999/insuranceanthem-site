@@ -644,6 +644,272 @@ console.log('\nLearn — consolidation & motion density');
   check('the old /articles/ hub no longer builds', gone === 404, `got ${gone}`);
 }
 
+// ── 7e. the footer, sampled across every page type ───────────────────────────
+console.log('\nFooter — every page type');
+for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
+                    '/learn/irmaa-explained/', '/service-area/anthem-az/', '/terms/']) {
+  const p = await openPage(path);
+  const f = await evaluate(p, `
+    const el = document.querySelector('footer.site-footer');
+    if (!el) return null;
+    // innerText returns text AFTER text-transform, so the agent line reads
+    // "22+ YEARS EXPERIENCE". Compare case-insensitively rather than asserting
+    // on how CSS happened to render it.
+    const raw = el.innerText;
+    const t = { includes: (s) => raw.toLowerCase().includes(s.toLowerCase()) };
+    const href = (h) => !!el.querySelector('a[href="' + h + '"]');
+    const body = document.body.innerText;
+    const TPMO = 'We do not offer every plan available in your area';
+    const NONAFF = 'not connected with or endorsed by the United States government';
+    const count = (hay, needle) => hay.split(needle).length - 1;
+    return {
+      wordmark: t.includes('Insurance Anthem'),
+      agent: t.includes('Brian Penner') && t.includes('22+ Years') && t.includes('NPN 8206556'),
+      nap: t.includes('Anthem, AZ 85086') && t.includes('(623) 555-0100') && t.includes('brian@insuranceanthem.com'),
+      wrongBrand: ['Moab','Monticello','Grand Junction'].filter(c => t.includes(c)),
+      services: ['/medicare-advantage/','/medicare-supplement/','/part-d/','/long-term-care/'].every(href),
+      learnHub: href('/learn/'),
+      learnArticles: el.querySelectorAll('a[href^="/learn/"]').length - 1,
+      toolsHub: href('/tools/'),
+      toolLinks: el.querySelectorAll('a[href^="/tools/"]').length - 1,
+      company: ['/about/','/contact/','/accessibility/','/privacy/','/terms/'].every(href),
+      ctaHref: el.querySelector('a.btn')?.getAttribute('href') || '',
+      ctaLabel: el.querySelector('a.btn')?.textContent.trim() || '',
+      licence: t.includes('Licensed in 18 states'),
+      copyright: /© 2026 Insurance Anthem/i.test(raw),
+      tpmoInFooter: count(raw, TPMO),
+      tpmoInPage: count(body, TPMO),
+      nonAffInPage: count(body, NONAFF),
+      overflow: document.documentElement.scrollWidth <= window.innerWidth + 1,
+    };
+  `);
+  const ok = (label, cond, detail) => check(`${path} — ${label}`, cond, detail);
+  ok('footer present', f !== null);
+  if (!f) { await closePage(p); continue; }
+  ok('brand block', f.wordmark && f.agent);
+  ok('NAP block', f.nap);
+  ok('no wrong-brand offices', f.wrongBrand.length === 0, f.wrongBrand.join(', '));
+  ok('Services column complete', f.services);
+  ok('Learn column with articles', f.learnHub && f.learnArticles >= 3, `${f.learnArticles} articles`);
+  ok('Tools column with all 8', f.toolsHub && f.toolLinks === 8, `${f.toolLinks} tools`);
+  ok('Company column complete', f.company);
+  ok('15-minute CTA', f.ctaHref.includes('15-minute') && /15-minute/.test(f.ctaLabel), `${f.ctaLabel} → ${f.ctaHref}`);
+  ok('licensing line', f.licence);
+  ok('2026 copyright', f.copyright);
+  ok('TPMO exactly once, in the footer', f.tpmoInPage === 1 && f.tpmoInFooter === 1,
+     `page ${f.tpmoInPage}, footer ${f.tpmoInFooter}`);
+  ok('non-affiliation exactly once', f.nonAffInPage === 1, String(f.nonAffInPage));
+  ok('no horizontal overflow', f.overflow);
+  await closePage(p);
+}
+
+// ── 7f. footer at mobile width ───────────────────────────────────────────────
+console.log('\nFooter — mobile');
+{
+  const p = await openPage('/');
+  await p.send('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 2, mobile: true });
+  await sleep(500);
+  check('mobile: footer columns stack without overflow', await evaluate(p, `
+    const f = document.querySelector('footer.site-footer');
+    return document.documentElement.scrollWidth <= window.innerWidth + 1
+        && f.getBoundingClientRect().width <= window.innerWidth + 1;
+  `));
+  check('mobile: every footer link is a reachable tap target', await evaluate(p, `
+    const links = [...document.querySelectorAll('footer.site-footer a')];
+    return links.length > 20 && links.every(a => {
+      const r = a.getBoundingClientRect();
+      return r.width > 0 && r.height > 0 && r.left >= -1 && r.right <= window.innerWidth + 1;
+    });
+  `));
+  await closePage(p);
+}
+
+// ── 7g. the four new calculators ─────────────────────────────────────────────
+console.log('\nTool — Plan G vs Plan N');
+{
+  const p = await openPage('/tools/plan-g-vs-plan-n/');
+  const light = await evaluate(p, `
+    const v = (id,val) => document.getElementById(id).value = val;
+    v('gn-g',165); v('gn-n',130); v('gn-office',3); v('gn-er',0);
+    document.getElementById('gn').requestSubmit();
+    return { hidden: document.getElementById('gn-result').hidden,
+             head: document.getElementById('gn-head').textContent,
+             body: document.getElementById('gn-body').textContent,
+             cols: document.getElementById('gn-cols').textContent };
+  `);
+  check('renders a comparison', !light.hidden && light.cols.includes('Plan G') && light.cols.includes('Plan N'));
+  // Shared comparison-column CSS lives in ToolLayout, not on one tool page. It
+  // used to live on the cost estimator, which meant a second tool reusing the
+  // markup rendered unstyled full-width blocks — invisible to a text-only check.
+  check('comparison columns are laid out side by side', await evaluate(p, `
+    const cols = [...document.querySelectorAll('.cost-col')];
+    if (cols.length !== 2) return false;
+    const [a, b] = cols.map(c => c.getBoundingClientRect());
+    const container = document.querySelector('.cost-cols').getBoundingClientRect();
+    return Math.abs(a.y - b.y) < 2 && a.width < container.width * 0.6;
+  `));
+  check('few visits favour Plan N', /Plan N comes out/.test(light.head), light.head);
+  check('states a breakeven visit count', /breakeven is about \d+ office/.test(light.body), light.body.slice(0, 120));
+  const heavy = await evaluate(p, `
+    document.getElementById('gn-office').value = 40;
+    document.getElementById('gn').requestSubmit();
+    return document.getElementById('gn-head').textContent;
+  `);
+  check('many visits flip it to Plan G', /Plan G comes out/.test(heavy), heavy);
+  check('excess-charge field appears only when relevant', await evaluate(p, `
+    const wrap = document.getElementById('gn-excess-wrap');
+    const before = wrap.hidden;
+    const r = document.querySelector('input[name="excess"][value="some"]');
+    r.checked = true; r.dispatchEvent(new Event('change'));
+    return before === true && wrap.hidden === false;
+  `));
+  check('excess charges are modelled at 15%', await evaluate(p, `
+    document.getElementById('gn-excess-amt').value = 2000;
+    document.getElementById('gn-office').value = 3;
+    document.getElementById('gn').requestSubmit();
+    // 15% of 2000 = 300, and it must land in the Plan N column only.
+    // Compare against whitespace-collapsed text, so the needle must be too.
+    const cols = document.getElementById('gn-cols').textContent.replace(/\\s/g,'');
+    return cols.includes('Excesscharges$300') && cols.includes('Excesscharges$0');
+  `));
+  check('no console errors', p.consoleErrors.length === 0, p.consoleErrors.join(' | '));
+  await closePage(p);
+}
+
+console.log('\nTool — Part B giveback');
+{
+  const p = await openPage('/tools/part-b-giveback/');
+  const base = await evaluate(p, `
+    document.getElementById('gb-amount').value = 50;
+    document.getElementById('gb').requestSubmit();
+    return { hidden: document.getElementById('gb-result').hidden,
+             stats: document.getElementById('gb-stats').textContent,
+             body: document.getElementById('gb-body').textContent };
+  `);
+  check('renders a result', !base.hidden);
+  check('nets $50 off the $202.90 premium', base.stats.includes('202.90') && base.stats.includes('152.90'), base.stats);
+  check('annualises to $600', base.stats.includes('$600'), base.stats);
+  check('caps a giveback above the standard premium', await evaluate(p, `
+    document.getElementById('gb-amount').value = 400;
+    document.getElementById('gb').requestSubmit();
+    return /Capped at the standard premium/.test(document.getElementById('gb-body').textContent);
+  `));
+  check('states that IRMAA is NOT reduced', await evaluate(p, `
+    document.getElementById('gb-amount').value = 50;
+    const r = document.querySelector('input[name="irmaa"][value="yes"]');
+    r.checked = true; r.dispatchEvent(new Event('change'));
+    document.getElementById('gb-surcharge').value = 81.20;
+    document.getElementById('gb').requestSubmit();
+    return /IRMAA surcharge is untouched/.test(document.getElementById('gb-body').textContent);
+  `));
+  check('no console errors', p.consoleErrors.length === 0, p.consoleErrors.join(' | '));
+  await closePage(p);
+}
+
+console.log('\nTool — Part A premium');
+{
+  const p = await openPage('/tools/part-a-premium/');
+  const free = await evaluate(p, `
+    document.getElementById('pa-years').value = 15;
+    document.getElementById('pa').requestSubmit();
+    return { head: document.getElementById('pa-head').textContent,
+             stats: document.getElementById('pa-stats').textContent };
+  `);
+  check('15 years → premium-free', /premium-free/.test(free.head) && free.stats.includes('60'), free.head);
+  const reduced = await evaluate(p, `
+    document.getElementById('pa-years').value = 8;
+    document.getElementById('pa').requestSubmit();
+    return document.getElementById('pa-stats').textContent;
+  `);
+  check('8 years (32 quarters) → the $311 reduced tier', reduced.includes('311') && reduced.includes('Reduced'), reduced);
+  const full = await evaluate(p, `
+    document.getElementById('pa-years').value = 5;
+    document.getElementById('pa').requestSubmit();
+    return document.getElementById('pa-stats').textContent;
+  `);
+  check('5 years (20 quarters) → the $565 full tier', full.includes('565') && full.includes('Full'), full);
+  check('boundary: exactly 40 quarters is free', await evaluate(p, `
+    const r = document.querySelector('input[name="mode"][value="quarters"]');
+    r.checked = true; r.dispatchEvent(new Event('change'));
+    document.getElementById('pa-quarters').value = 40;
+    document.getElementById('pa').requestSubmit();
+    return /premium-free/.test(document.getElementById('pa-head').textContent);
+  `));
+  check('boundary: 39 quarters is not free', await evaluate(p, `
+    document.getElementById('pa-quarters').value = 39;
+    document.getElementById('pa').requestSubmit();
+    return document.getElementById('pa-stats').textContent.includes('311');
+  `));
+  check('surfaces the spouse-record route', await evaluate(p, `
+    return /spouse/i.test(document.getElementById('pa-body').textContent);
+  `));
+  check('no console errors', p.consoleErrors.length === 0, p.consoleErrors.join(' | '));
+  await closePage(p);
+}
+
+console.log('\nTool — cost of care');
+{
+  const p = await openPage('/tools/cost-of-care/');
+  const al = await evaluate(p, `
+    const r = document.querySelector('input[name="type"][value="assisted"]');
+    r.checked = true; r.dispatchEvent(new Event('change'));
+    document.getElementById('coc-years').value = 3;
+    document.getElementById('coc').requestSubmit();
+    return { hidden: document.getElementById('coc-result').hidden,
+             rate: document.getElementById('coc-rate').value,
+             stats: document.getElementById('coc-stats').textContent,
+             body: document.getElementById('coc-body').textContent };
+  `);
+  check('renders a result', !al.hidden);
+  check('defaults to the Arizona assisted-living median', al.rate === '6250', al.rate);
+  check('assisted living: Medicare pays nothing', /Medicare pays nothing/.test(al.body), al.body.slice(0, 140));
+  check('3 years of assisted living ≈ $225,000', al.stats.includes('225,000'), al.stats);
+  const home = await evaluate(p, `
+    const r = document.querySelector('input[name="type"][value="home"]');
+    r.checked = true; r.dispatchEvent(new Event('change'));
+    return { rate: document.getElementById('coc-rate').value,
+             hoursShown: !document.getElementById('coc-hours-wrap').hidden };
+  `);
+  check('home care switches to an hourly rate and shows hours', home.rate === '38' && home.hoursShown,
+    JSON.stringify(home));
+  const nursing = await evaluate(p, `
+    const r = document.querySelector('input[name="type"][value="nursingSemi"]');
+    r.checked = true; r.dispatchEvent(new Event('change'));
+    document.getElementById('coc').requestSubmit();
+    return { stats: document.getElementById('coc-stats').textContent,
+             body: document.getElementById('coc-body').textContent };
+  `);
+  check('nursing home credits the 20 covered days', !/\$0.*Medicare pays/.test(nursing.stats.replace(/\s/g,'')) && /days 1–20/.test(nursing.body), nursing.body.slice(0, 140));
+  check('names the CareScout source', await evaluate(p, `
+    return /CareScout/.test(document.body.innerText);
+  `));
+  check('national toggle changes the default', await evaluate(p, `
+    const t = document.querySelector('input[name="type"][value="assisted"]');
+    t.checked = true; t.dispatchEvent(new Event('change'));
+    const azRate = document.getElementById('coc-rate').value;
+    const n = document.querySelector('input[name="region"][value="national"]');
+    n.checked = true; n.dispatchEvent(new Event('change'));
+    return azRate === '6250' && document.getElementById('coc-rate').value === '6200';
+  `));
+  check('no console errors', p.consoleErrors.length === 0, p.consoleErrors.join(' | '));
+  await closePage(p);
+}
+
+// ── 7h. the tools hub lists all eight ────────────────────────────────────────
+console.log('\nTools hub');
+{
+  const p = await openPage('/tools/');
+  const TOOL_SLUGS = ['plan-type-finder', 'enrollment-timeline', 'medicare-cost-estimator',
+    'irmaa-estimator', 'plan-g-vs-plan-n', 'part-b-giveback', 'part-a-premium', 'cost-of-care'];
+  const hub = await evaluate(p, `
+    return [...document.querySelectorAll('.tools a.card-link')].map(a => a.getAttribute('href'));
+  `);
+  check('hub grid lists all 8 tools', TOOL_SLUGS.every((s) => hub.includes(`/tools/${s}/`)),
+    TOOL_SLUGS.filter((s) => !hub.includes(`/tools/${s}/`)).join(', '));
+  check('no duplicate tiles', new Set(hub).size === hub.length, String(hub.length));
+  await closePage(p);
+}
+
 // ── 8. reduced motion + mobile nav ───────────────────────────────────────────
 console.log('\nAccessibility');
 {

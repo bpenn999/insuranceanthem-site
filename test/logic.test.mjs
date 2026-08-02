@@ -16,6 +16,9 @@ import {
   partB,
   partA,
   partD,
+  medigap,
+  giveback,
+  careCosts,
   PLAN_YEAR,
   IRMAA_TAX_YEAR,
 } from '../src/data/medicare-figures.ts';
@@ -231,6 +234,90 @@ describe('IRMAA — edges and extremes', () => {
       prevB = b.partBTotal;
       prevD = b.partDSurcharge;
     }
+  });
+});
+
+describe('Part A premium tiers', () => {
+  test('40+ quarters is premium-free', () => {
+    assert.equal(partA.premiumByQuarters.free, 0);
+    assert.equal(partA.quartersForFree, 40);
+  });
+  test('30–39 quarters is the 45%-reduced premium', () => {
+    assert.equal(partA.premiumByQuarters.reduced, 311);
+    assert.equal(partA.quartersForReduced, 30);
+    // CMS describes this as a 45% reduction off the full premium.
+    const expected = Math.round(partA.premiumByQuarters.full * 0.55);
+    assert.ok(
+      Math.abs(partA.premiumByQuarters.reduced - expected) <= 1,
+      `reduced ${partA.premiumByQuarters.reduced} should be ~55% of ${partA.premiumByQuarters.full} (${expected})`
+    );
+  });
+  test('under 30 quarters pays the full premium', () => {
+    assert.equal(partA.premiumByQuarters.full, 565);
+    assert.equal(partA.premiumByQuarters.full, partA.premiumIfUninsured);
+  });
+  test('the tiers are ordered and the thresholds do not overlap', () => {
+    assert.ok(partA.premiumByQuarters.free < partA.premiumByQuarters.reduced);
+    assert.ok(partA.premiumByQuarters.reduced < partA.premiumByQuarters.full);
+    assert.ok(partA.quartersForReduced < partA.quartersForFree);
+  });
+});
+
+describe('Medigap Plan G vs Plan N benefit rules', () => {
+  test('Plan G covers Part B excess charges; Plan N does not', () => {
+    assert.equal(medigap.planG.coversPartBExcess, true);
+    assert.equal(medigap.planN.coversPartBExcess, false);
+  });
+  test('Plan G has no copays', () => {
+    assert.equal(medigap.planG.officeCopay, 0);
+    assert.equal(medigap.planG.erCopay, 0);
+  });
+  test('Plan N copays are $20 office and $50 ER', () => {
+    assert.equal(medigap.planN.officeCopay, 20);
+    assert.equal(medigap.planN.erCopay, 50);
+    assert.equal(medigap.planN.erCopayWaivedOnAdmission, true);
+  });
+  test('excess charges are capped at 15%', () => {
+    assert.equal(medigap.partBExcessMaxRate, 0.15);
+  });
+  test('Arizona is not an excess-charge-banned state', () => {
+    // The Plan G/N tool leans on this being true for its market.
+    assert.ok(!medigap.excessChargeBannedStates.includes('AZ'));
+    assert.equal(medigap.excessChargeBannedStates.length, 8);
+  });
+});
+
+describe('Part B giveback', () => {
+  test('cannot exceed the standard premium', () => {
+    assert.equal(giveback.maxMonthly, partB.standardPremium);
+  });
+  test('does not reduce IRMAA — the detail marketing omits', () => {
+    assert.equal(giveback.reducesIrmaa, false);
+  });
+});
+
+describe('cost of care figures', () => {
+  test('sourced and dated', () => {
+    assert.equal(careCosts.surveyYear, 2025);
+    assert.match(careCosts.surveySource, /CareScout/);
+  });
+  test('national medians match the published survey', () => {
+    assert.equal(careCosts.national.homeCareHourly, 35);
+    assert.equal(careCosts.national.assistedLivingMonthly, 6200);
+    assert.equal(careCosts.national.nursingSemiPrivateDaily, 315);
+    assert.equal(careCosts.national.nursingPrivateDaily, 355);
+    assert.equal(careCosts.national.adultDayDaily, 95);
+  });
+  test('Arizona figures are present and internally ordered', () => {
+    const az = careCosts.arizona;
+    assert.ok(az.assistedLivingMonthly > 0);
+    // Care intensity should map to cost: assisted < memory < semi-private < private.
+    assert.ok(az.assistedLivingMonthly < az.memoryCareMonthly);
+    assert.ok(az.memoryCareMonthly < az.nursingSemiPrivateMonthly);
+    assert.ok(az.nursingSemiPrivateMonthly < az.nursingPrivateMonthly);
+  });
+  test('a private room costs more than a semi-private one, nationally too', () => {
+    assert.ok(careCosts.national.nursingPrivateDaily > careCosts.national.nursingSemiPrivateDaily);
   });
 });
 
