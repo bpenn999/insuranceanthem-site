@@ -3,12 +3,14 @@ import { getCollection } from 'astro:content';
 import site from '../config/site';
 import { products } from '../data/products';
 import { tools } from '../data/tools';
+import { locations } from '../data/locations';
 import { tpmoText, nonAffiliation, notAdvice } from '../data/compliance';
 
 /**
  * Site-wide footer.
  *
- * Blocks, in order: brand → NAP → sitemap columns → CTA row → compliance.
+ * Blocks, in order: advisor row → sitemap columns (incl. Contact/NAP) →
+ * wordmark → compliance. Structure mirrors Medicare On Main's footer.
  *
  * The TPMO disclaimer appears HERE AND NOWHERE ELSE. It is required once per
  * page; repeating it on a page (as the Terms page used to) is not "extra
@@ -34,69 +36,81 @@ const licenceLine = [
   `Licensed insurance agency in ${site.address.regionName}`,
 ].join(' · ');
 
-const learnTop = (await getCollection('learn', ({ data }) => !data.draft))
-  .sort((a, b) => {
-    if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
-    return b.data.publishedAt.getTime() - a.data.publishedAt.getTime();
-  })
-  .slice(0, 5);
+/**
+ * EVERY published guide is listed — no slice. The footer is the site's sitemap
+ * for readers and crawlers alike; truncating it to a "top 5" hides the newest
+ * articles from both. Publishing a guide adds it here with no edit to this file.
+ */
+const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort((a, b) => {
+  if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+  return b.data.publishedAt.getTime() - a.data.publishedAt.getTime();
+});
 ---
 
 <footer class="site-footer" data-caustics="0.18">
   <div class="wrap--wide">
 
-    <!-- ── Brand + NAP ────────────────────────────────────────────────── -->
-    <div class="foot__identity">
-      <div class="foot__brand">
-        <a href="/" class="foot__logo" aria-label={`${site.name} — home`}>
-          <svg viewBox="0 0 32 32" aria-hidden="true">
-            <path d="M16 2.5 3.5 8v9.2c0 7.1 5.1 11.6 12.5 14.3 7.4-2.7 12.5-7.2 12.5-14.3V8L16 2.5Z"
-                  fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
-            <path d="M10 16.6h3.4l1.5-4 2.2 7 1.6-3h3.3"
-                  fill="none" stroke="currentColor" stroke-width="1.6"
-                  stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          <span class="foot__wordmark">Insurance Anthem</span>
-        </a>
+    <!-- ── Advisor row ────────────────────────────────────────────────── -->
+    <div class="foot__advisor">
+      <a href="/" class="foot__logo" aria-label={`${site.name} — home`}>
+        <svg viewBox="0 0 32 32" aria-hidden="true">
+          <path d="M16 2.5 3.5 8v9.2c0 7.1 5.1 11.6 12.5 14.3 7.4-2.7 12.5-7.2 12.5-14.3V8L16 2.5Z"
+                fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+          <path d="M10 16.6h3.4l1.5-4 2.2 7 1.6-3h3.3"
+                fill="none" stroke="currentColor" stroke-width="1.6"
+                stroke-linecap="round" stroke-linejoin="round" />
+        </svg>
+      </a>
 
-        <p class="foot__tagline">{site.tagline}</p>
-
-        <p class="foot__agent">
-          <strong>{site.agent.name}</strong>
-          <span aria-hidden="true">·</span>
-          <span>{site.agent.experience} Experience</span>
-          <span aria-hidden="true">·</span>
-          <span>NPN {site.agent.npn}</span>
-        </p>
+      <div class="foot__advisor-txt">
+        <span class="foot__advisor-kicker">Your local advisor</span>
+        <strong>{site.agent.name}</strong>
+        {/* The experience + NPN pair is asserted by scripts/audit.mjs on every
+            page — it lives here and only here. Don't drop it from this line. */}
+        <span class="foot__advisor-line">
+          {site.agent.title} · {site.agent.experience} Experience · NPN {site.agent.npn}
+        </span>
+        <span class="foot__advisor-line">
+          {site.address.locality}, {site.address.region} · Licensed in {site.agent.statesLicensed} states
+        </span>
       </div>
 
-      <!-- NAP — one office, structured for both humans and parsers -->
-      <address class="foot__nap">
-        <p class="foot__nap-name">{site.legalName}</p>
-        <p class="foot__nap-line">{site.address.display}</p>
-        <p>
-          <a href={site.phone.href} class="foot__phone">{site.phone.display}</a>
-        </p>
-        <p><a href={`mailto:${site.email}`} class="foot__email">{site.email}</a></p>
-        <p class="foot__hours">{site.hours.display}</p>
-      </address>
+      <div class="foot__advisor-actions">
+        <a href={site.consult.url} class="btn btn--light" data-magnetic="0.26">
+          {site.consult.label}
+        </a>
+        <a href={site.phone.href} class="btn btn--onNavy">Call {site.phone.display}</a>
+      </div>
     </div>
 
     <!-- ── Sitemap ────────────────────────────────────────────────────── -->
     <nav class="foot__map" aria-label="Footer">
       <div class="foot__col">
-        <h2 class="foot__heading">Services</h2>
+        <h2 class="foot__heading">Company</h2>
         <ul>
-          {products.map((p) => <li><a href={`/${p.slug}/`}>{p.fullName}</a></li>)}
-          <li><a href="/medicare-plans/">Compare all four</a></li>
+          <li><a href="/about/">About Brian</a></li>
+          <li><a href="/service-area/">Service Area</a></li>
+          {locations.map((l) => <li><a href={`/service-area/${l.slug}/`}>Medicare in {l.city}</a></li>)}
+          <li><a href="/contact/">Contact</a></li>
+          <li><a href="/accessibility/">Accessibility</a></li>
+          <li><a href="/privacy/">Privacy Policy</a></li>
+          <li><a href="/terms/">Terms of Use</a></li>
         </ul>
       </div>
 
       <div class="foot__col">
-        <h2 class="foot__heading">Learn</h2>
+        <h2 class="foot__heading">Guides &amp; Articles</h2>
         <ul>
           <li><a href="/learn/">All guides</a></li>
-          {learnTop.map((a) => <li><a href={`/learn/${a.id}/`}>{a.data.title}</a></li>)}
+          {learnAll.map((a) => <li><a href={`/learn/${a.id}/`}>{a.data.title}</a></li>)}
+        </ul>
+      </div>
+
+      <div class="foot__col">
+        <h2 class="foot__heading">Plans &amp; Coverage</h2>
+        <ul>
+          {products.map((p) => <li><a href={`/${p.slug}/`}>{p.fullName}</a></li>)}
+          <li><a href="/medicare-plans/">Compare all four</a></li>
         </ul>
       </div>
 
@@ -108,35 +122,21 @@ const learnTop = (await getCollection('learn', ({ data }) => !data.draft))
         </ul>
       </div>
 
-      <div class="foot__col">
-        <h2 class="foot__heading">Company</h2>
-        <ul>
-          <li><a href="/about/">About Brian</a></li>
-          <li><a href="/service-area/">Service Area</a></li>
-          <li><a href="/contact/">Contact</a></li>
-          <li><a href="/accessibility/">Accessibility</a></li>
-          <li><a href="/privacy/">Privacy Policy</a></li>
-          <li><a href="/terms/">Terms of Use</a></li>
-        </ul>
+      <!-- NAP — one office, structured for both humans and parsers -->
+      <div class="foot__col foot__col--contact">
+        <h2 class="foot__heading">Contact</h2>
+        <address class="foot__nap">
+          <p class="foot__nap-name">{site.legalName}</p>
+          <p class="foot__nap-line">{site.address.display}</p>
+          <p><a href={site.phone.href} class="foot__phone">{site.phone.display}</a></p>
+          <p><a href={`mailto:${site.email}`} class="foot__email">{site.email}</a></p>
+          <p class="foot__hours">{site.hours.display}</p>
+        </address>
       </div>
     </nav>
 
-    <!-- ── CTA row ────────────────────────────────────────────────────── -->
-    <div class="foot__cta">
-      <div class="foot__cta-copy">
-        <p class="foot__cta-head">Not sure where to start?</p>
-        <p class="foot__cta-sub">
-          {site.consult.minutes} minutes on the phone, no cost, no obligation — and no product at
-          the end of it unless one belongs there.
-        </p>
-      </div>
-      <div class="foot__cta-actions">
-        <a href={site.consult.url} class="btn btn--light" data-magnetic="0.26">
-          {site.consult.label}
-        </a>
-        <a href={site.phone.href} class="btn btn--onNavy">Call {site.phone.display}</a>
-      </div>
-    </div>
+    <!-- ── Wordmark ───────────────────────────────────────────────────── -->
+    <div class="foot__wordmark"><span>Insurance <em>Anthem</em></span></div>
 
     <!-- ── Compliance — the ONLY place the TPMO disclaimer appears ─────── -->
     <div class="foot__legal">
@@ -170,10 +170,12 @@ const learnTop = (await getCollection('learn', ({ data }) => !data.draft))
     line-height: 1.65;
   }
 
-  /* ── brand + NAP ─────────────────────────────────────────────────── */
-  .foot__identity {
-    display: grid;
-    gap: var(--s-7);
+  /* ── advisor row ─────────────────────────────────────────────────── */
+  .foot__advisor {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: var(--s-4);
     padding-bottom: var(--s-7);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
@@ -181,30 +183,39 @@ const learnTop = (await getCollection('learn', ({ data }) => !data.draft))
   .foot__logo {
     display: inline-flex;
     align-items: center;
-    gap: 0.6rem;
+    justify-content: center;
     color: #fff;
-    margin-bottom: var(--s-4);
+    flex: none;
   }
-  .foot__logo svg { width: 30px; height: 30px; flex: none; }
-  .foot__wordmark {
+  .foot__logo svg { width: 46px; height: 46px; }
+
+  .foot__advisor-txt { display: flex; flex-direction: column; line-height: 1.35; }
+  .foot__advisor-kicker {
+    font-size: var(--t-xs);
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: #7FA3BE;
+    font-weight: 600;
+  }
+  .foot__advisor-txt strong {
     font-family: var(--font-display);
-    font-size: 1.35rem;
-    letter-spacing: -0.02em;
+    font-size: 1.5rem;
+    color: #fff;
+    letter-spacing: -0.015em;
   }
+  .foot__advisor-line { font-size: var(--t-sm); color: #A6BCCC; }
 
-  .foot__tagline { color: #A6BCCC; max-width: 38ch; margin-bottom: var(--s-4); }
-
-  .foot__agent {
+  .foot__advisor-actions {
+    margin-left: auto;
     display: flex;
     flex-wrap: wrap;
-    gap: 0.45rem;
-    font-size: var(--t-xs);
-    letter-spacing: 0.05em;
-    text-transform: uppercase;
-    color: #8FA8BA;
+    gap: var(--s-3);
   }
-  .foot__agent strong { color: #DCE8F1; font-weight: 600; }
+  @media (max-width: 720px) {
+    .foot__advisor-actions { margin-left: 0; }
+  }
 
+  /* ── NAP ─────────────────────────────────────────────────────────── */
   .foot__nap { font-style: normal; display: grid; gap: 0.3rem; align-content: start; }
   .foot__nap-name {
     font-size: var(--t-xs);
@@ -260,23 +271,29 @@ const learnTop = (await getCollection('learn', ({ data }) => !data.draft))
   }
   .foot__col a:hover { color: #fff; background-size: 100% 1px; }
 
-  /* ── CTA row ─────────────────────────────────────────────────────── */
-  .foot__cta {
-    display: grid;
-    gap: var(--s-5);
-    align-items: center;
-    padding-block: var(--s-7);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-  .foot__cta-head {
+  .foot__col--contact .foot__nap p { margin: 0; }
+
+  /* ── wordmark ────────────────────────────────────────────────────── */
+  .foot__wordmark { padding-block: var(--s-6) var(--s-5); }
+  .foot__wordmark span {
+    display: block;
     font-family: var(--font-display);
-    font-size: var(--t-xl);
+    font-weight: 600;
+    /* Sized to span the band edge-to-edge. Fraunces is optically sized, so the
+       width-per-em grows as the type shrinks — hence the lower vw below 860px.
+       nowrap + overflow:hidden is the backstop if a face ever measures wider. */
+    font-size: clamp(26px, 10vw, 60px);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
     color: #fff;
-    letter-spacing: -0.015em;
-    margin-bottom: 0.3rem;
+    white-space: nowrap;
+    overflow: hidden;
+    max-width: 100%;
   }
-  .foot__cta-sub { color: #A6BCCC; max-width: 48ch; }
-  .foot__cta-actions { display: flex; flex-wrap: wrap; gap: var(--s-3); }
+  @media (min-width: 860px) {
+    .foot__wordmark span { font-size: min(12vw, 175px); }
+  }
+  .foot__wordmark em { font-style: normal; color: #7FA3BE; }
 
   /* ── compliance ──────────────────────────────────────────────────── */
   .foot__legal {
@@ -303,14 +320,9 @@ const learnTop = (await getCollection('learn', ({ data }) => !data.draft))
   }
 
   /* ── responsive ──────────────────────────────────────────────────── */
-  @media (min-width: 640px) {
-    .foot__identity { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--s-8); }
-  }
   @media (min-width: 860px) {
-    .foot__map { grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    .foot__cta {
-      grid-template-columns: minmax(0, 1fr) auto;
-      gap: var(--s-7);
-    }
+    /* Five columns, MOM-style. Guides carries the longest titles, Contact the
+       widest unbreakable strings (email, phone), so both get extra track. */
+    .foot__map { grid-template-columns: 1fr 1.35fr 1.15fr 1fr 1.1fr; }
   }
 </style>
