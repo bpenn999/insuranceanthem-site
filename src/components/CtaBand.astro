@@ -1,0 +1,60 @@
+---
+import site from '../config/site';
+import Kinetic from './Kinetic.astro';
+
+interface Props {
+  title?: string;
+  body?: string;
+  /** Primary button label */
+  cta?: string;
+}
+
+const {
+  title = 'Let’s look at your actual options.',
+  body = `One conversation, no cost, no obligation. Bring your prescription list and your doctors — that is all it takes to do real work. You’ll speak to ${site.agent.name} directly.`,
+  cta = 'Book a free review',
+} = Astro.props;
+---
+
+<section class="section band--navy cta-band" data-caustics="0.32">
+  <div class="wrap cta-band__inner">
+    <div class="cta-band__copy">
+      <p class="eyebrow" data-rise data-armed>Next step</p>
+      <h2><Kinetic text={title} stagger={36} /></h2>
+      <p class="lede cta-band__body" data-rise data-armed style="--rise-delay:200ms">{body}</p>
+    </div>
+
+    <div class="cta-band__actions" data-rise data-armed style="--rise-delay:300ms">
+      <a href="/contact/" class="btn btn--light btn--lg" data-magnetic="0.3">{cta}</a>
+      <a href={site.phone.href} class="btn btn--onNavy btn--lg" data-magnetic="0.22">
+        Call {site.phone.display}
+      </a>
+      <p class="cta-band__hours">{site.hours.display}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .cta-band { border-block: 1px solid rgba(255, 255, 255, 0.08); }
+
+  .cta-band__inner {
+    display: grid;
+    gap: var(--s-7);
+    align-items: center;
+  }
+  .cta-band__copy h2 { max-width: 16ch; }
+  .cta-band__body { margin-top: var(--s-4); max-width: 46ch; }
+
+  .cta-band__actions { display: grid; gap: var(--s-3); }
+  .cta-band__hours {
+    font-size: var(--t-xs);
+    color: #92B0C7;
+    letter-spacing: 0.04em;
+    margin-top: var(--s-2);
+  }
+
+  @media (min-width: 860px) {
+    .cta-band__inner { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--s-9); }
+    .cta-band__actions { justify-items: stretch; }
+  }
+</style>

@@ -1,0 +1,401 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+import { PLAN_YEAR, partB, partD, usd } from '../../data/medicare-figures';
+---
+
+<ToolLayout
+  slug="medicare-cost-estimator"
+  title={`Medicare Annual Cost Estimator ${PLAN_YEAR} — Advantage vs Supplement`}
+  description={`Compare what a year on a Medicare Advantage plan would cost you against a Medicare Supplement plus Part D. Uses ${PLAN_YEAR} federal figures and your own expected usage. Free, runs in your browser.`}
+  h1="What will a year actually cost me?"
+  lede={`The comparison nobody does properly: not the premium, but the whole year. Enter what you expect to use and see both structures side by side using ${PLAN_YEAR} federal figures.`}
+>
+  <form id="cost" novalidate>
+    <h2 class="t-sec">Your expected year</h2>
+
+    <div class="t-row">
+      <div class="t-field">
+        <label for="c-primary">Primary care visits</label>
+        <input type="number" id="c-primary" name="primary" min="0" max="200" step="1" value="4" />
+      </div>
+      <div class="t-field">
+        <label for="c-specialist">Specialist visits</label>
+        <input type="number" id="c-specialist" name="specialist" min="0" max="200" step="1" value="3" />
+      </div>
+      <div class="t-field">
+        <label for="c-imaging">Labs, imaging &amp; tests</label>
+        <input type="number" id="c-imaging" name="imaging" min="0" max="200" step="1" value="4" />
+      </div>
+    </div>
+
+    <div class="t-row">
+      <div class="t-field">
+        <label for="c-hospital">Hospital admissions</label>
+        <input type="number" id="c-hospital" name="hospital" min="0" max="20" step="1" value="0" />
+        <span class="t-hint">Inpatient stays, not ER visits</span>
+      </div>
+      <div class="t-field">
+        <label for="c-drugs">Monthly drug cost, roughly</label>
+        <input type="number" id="c-drugs" name="drugs" min="0" max="5000" step="5" value="40" />
+        <span class="t-hint">What you pay at the counter now</span>
+      </div>
+    </div>
+
+    <h2 class="t-sec">The plans you're comparing</h2>
+    <p class="t-hint t-sec-hint">
+      Defaults are typical for the Anthem / north Phoenix area. Change them to match real quotes
+      and the comparison gets sharper.
+    </p>
+
+    <div class="t-row">
+      <div class="t-field">
+        <label for="c-ma-premium">Advantage plan premium <span class="t-unit">/ month</span></label>
+        <input type="number" id="c-ma-premium" name="maPremium" min="0" max="500" step="1" value="0" />
+      </div>
+      <div class="t-field">
+        <label for="c-ma-moop">Advantage out-of-pocket max <span class="t-unit">/ year</span></label>
+        <input type="number" id="c-ma-moop" name="maMoop" min="0" max="20000" step="100" value="5500" />
+      </div>
+    </div>
+
+    <div class="t-row">
+      <div class="t-field">
+        <label for="c-sup-premium">Supplement premium <span class="t-unit">/ month</span></label>
+        <input type="number" id="c-sup-premium" name="supPremium" min="0" max="1000" step="1" value="150" />
+        <span class="t-hint">Plan G, age 65, non-tobacco</span>
+      </div>
+      <div class="t-field">
+        <label for="c-pdp-premium">Part D plan premium <span class="t-unit">/ month</span></label>
+        <input type="number" id="c-pdp-premium" name="pdpPremium" min="0" max="300" step="1" value="35" />
+      </div>
+    </div>
+
+    <div class="t-actions">
+      <button type="submit" class="btn btn--lg" data-magnetic="0.24">Compare my year</button>
+      <button type="reset" class="btn btn--ghost">Reset</button>
+    </div>
+    <p class="t-error" id="cost-error" role="alert"></p>
+  </form>
+
+  <div class="t-result" id="cost-result" hidden role="region" aria-live="polite" aria-label="Your cost comparison">
+    <p class="t-result__eyebrow">Estimated {PLAN_YEAR} total</p>
+    <h2 class="t-result__head" id="cost-head"></h2>
+
+    <div class="cost-cols" id="cost-cols"></div>
+
+    <div class="t-result__body" id="cost-body"></div>
+    <div class="t-actions">
+      <a href="/contact/" class="btn btn--lg" data-magnetic="0.24">Get real numbers for your ZIP</a>
+    </div>
+  </div>
+
+  <div slot="disclaimer">
+    <p>
+      Calculated in your browser from {PLAN_YEAR} federal figures and the numbers you entered.
+      Nothing is transmitted or stored.
+    </p>
+    <p>
+      <strong>This is an estimate, not a quote.</strong> Both columns include the standard Part B
+      premium of {usd(partB.standardPremium, 2)} a month, which everyone pays either way. Real plan
+      premiums, copays and out-of-pocket maximums vary by plan and ZIP code, and drug costs depend
+      entirely on your specific medications and pharmacy. No specific plan is named or recommended
+      here.
+    </p>
+  </div>
+
+  <div slot="explainer">
+    <h2>What's inside each column</h2>
+    <div class="prose">
+      <p>
+        The whole point of this tool is that a premium comparison is not a cost comparison. A plan
+        with a $0 premium and $5,500 of exposure is not automatically cheaper than one with a $150
+        premium and almost none. Which wins depends on the year you actually have.
+      </p>
+
+      <h3>The Medicare Advantage column</h3>
+      <ul>
+        <li>The standard Part B premium — {usd(partB.standardPremium, 2)} a month, unavoidable</li>
+        <li>The plan's own premium, if it has one</li>
+        <li>Typical copays for each visit type you entered</li>
+        <li>An inpatient copay estimate per admission</li>
+        <li>Your drug costs, capped at the {PLAN_YEAR} Part D limit of {usd(partD.outOfPocketCap)}</li>
+        <li>The whole medical side capped at the plan's out-of-pocket maximum</li>
+      </ul>
+
+      <h3>The Supplement + Part D column</h3>
+      <ul>
+        <li>The standard Part B premium — the same {usd(partB.standardPremium, 2)} a month</li>
+        <li>Your Medigap premium</li>
+        <li>Your Part D plan premium</li>
+        <li>The {PLAN_YEAR} Part B deductible of {usd(partB.deductible)}, which Plan G leaves to you</li>
+        <li>Your drug costs, capped at the same {usd(partD.outOfPocketCap)} limit</li>
+        <li>
+          Essentially nothing else — that is what the supplement premium is buying. Visits,
+          imaging and hospital stays are covered after the deductible.
+        </li>
+      </ul>
+
+      <h3>Where this estimate is weakest</h3>
+      <p>
+        Three places, and they are worth naming rather than hiding:
+      </p>
+      <ul>
+        <li>
+          <strong>Copay assumptions.</strong> Advantage plan copays vary widely. The defaults here
+          are middle-of-the-road for this area, not any particular plan.
+        </li>
+        <li>
+          <strong>Drug costs.</strong> Entering a monthly figure assumes it stays flat, which real
+          formularies do not. Two plans with the same premium can differ by hundreds a year on the
+          same medication list.
+        </li>
+        <li>
+          <strong>Supplement premiums rise with age.</strong> A Plan G quote at 65 is not what you
+          will pay at 78. The gap between the two columns typically narrows over time — which is
+          an argument for looking at more than one year.
+        </li>
+      </ul>
+      <p>
+        None of that makes the comparison useless. It makes it a starting point —
+        <a href="/contact/">the real version</a> uses actual plans in your actual ZIP with your
+        actual prescriptions.
+      </p>
+    </div>
+  </div>
+</ToolLayout>
+
+<style>
+  .t-sec {
+    font-family: var(--font-display);
+    font-size: var(--t-lg);
+    color: var(--ink);
+    margin-bottom: var(--s-4);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .t-sec:not(:first-child) { margin-top: var(--s-6); }
+  .t-sec-hint { margin-top: -0.75rem; margin-bottom: var(--s-5); }
+  .t-unit { font-weight: 400; color: var(--ink-faint); font-size: 0.85em; }
+</style>
+
+<style is:global>
+  .cost-cols {
+    display: grid;
+    gap: var(--s-4);
+    margin: var(--s-5) 0;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+  .cost-col {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    padding: var(--s-5);
+    background: var(--porcelain);
+  }
+  .cost-col[data-winner] {
+    border-color: var(--navy);
+    background: var(--navy-wash);
+    box-shadow: 0 0 0 1px var(--navy);
+  }
+  .cost-col__name {
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    margin-bottom: var(--s-2);
+  }
+  .cost-col[data-winner] .cost-col__name { color: var(--navy); }
+  .cost-col__total {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 5vw, 2.4rem);
+    color: var(--ink);
+    line-height: 1;
+    letter-spacing: -0.025em;
+    font-variant-numeric: tabular-nums;
+  }
+  .cost-col[data-winner] .cost-col__total { color: var(--navy); }
+  .cost-col__per { font-size: var(--t-xs); color: var(--ink-faint); margin-bottom: var(--s-4); }
+  .cost-col__lines { list-style: none; padding: 0; display: grid; gap: 0.4rem; font-size: var(--t-sm); }
+  .cost-col__lines li {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--s-3);
+    color: var(--ink-muted);
+    padding-bottom: 0.4rem;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .cost-col__lines li:last-child { border-bottom: 0; }
+  .cost-col__lines b { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .cost-col__flag {
+    display: inline-block;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--navy);
+    background: #fff;
+    border: 1px solid var(--navy);
+    border-radius: 999px;
+    padding: 0.1rem 0.55rem;
+    margin-bottom: var(--s-3);
+  }
+</style>
+
+<script>
+  import { partB, partD, PLAN_YEAR, usd } from '../../data/medicare-figures';
+
+  /**
+   * Copay assumptions for the Advantage column. Deliberately middle-of-the-road
+   * for the Anthem / north Phoenix market rather than modelled on any one plan —
+   * every figure the user can't verify is one the tool has to own honestly.
+   */
+  const MA_COPAY = {
+    primary: 5,
+    specialist: 40,
+    imaging: 25,
+    /** per inpatient admission, roughly 5 days at a typical daily copay */
+    hospital: 1_500,
+  };
+
+  const form = document.getElementById('cost') as HTMLFormElement | null;
+  if (form) {
+    const err = document.getElementById('cost-error')!;
+    const result = document.getElementById('cost-result')!;
+    const head = document.getElementById('cost-head')!;
+    const cols = document.getElementById('cost-cols')!;
+    const body = document.getElementById('cost-body')!;
+
+    const num = (name: string) => {
+      const el = form.elements.namedItem(name) as HTMLInputElement;
+      const v = Number(el.value);
+      return Number.isFinite(v) && v >= 0 ? v : 0;
+    };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      const invalid = Array.from(form.querySelectorAll<HTMLInputElement>('input[type=number]'))
+        .find((i) => i.value !== '' && (!Number.isFinite(Number(i.value)) || Number(i.value) < 0));
+      if (invalid) {
+        err.textContent = 'Please use whole positive numbers.';
+        invalid.focus();
+        return;
+      }
+      err.textContent = '';
+
+      const visits = {
+        primary: num('primary'),
+        specialist: num('specialist'),
+        imaging: num('imaging'),
+        hospital: num('hospital'),
+      };
+      const drugsMonthly = num('drugs');
+      const drugsYear = Math.min(drugsMonthly * 12, partD.outOfPocketCap);
+
+      const partBYear = partB.standardPremium * 12;
+
+      /* ── Medicare Advantage ─────────────────────────────────────────── */
+      const maPremYear = num('maPremium') * 12;
+      const maMoop = num('maMoop');
+      const maMedicalRaw =
+        visits.primary * MA_COPAY.primary +
+        visits.specialist * MA_COPAY.specialist +
+        visits.imaging * MA_COPAY.imaging +
+        visits.hospital * MA_COPAY.hospital;
+      const maMedical = Math.min(maMedicalRaw, maMoop);
+      const maHitCap = maMedicalRaw > maMoop;
+      const maTotal = partBYear + maPremYear + maMedical + drugsYear;
+
+      /* ── Supplement + Part D ────────────────────────────────────────── */
+      const supPremYear = num('supPremium') * 12;
+      const pdpPremYear = num('pdpPremium') * 12;
+      // Plan G leaves the Part B deductible to you, and nothing else meaningful.
+      // Only charge it if any Part B service was actually used.
+      const usedPartB = visits.primary + visits.specialist + visits.imaging > 0;
+      const supMedical = usedPartB ? partB.deductible : 0;
+      const supTotal = partBYear + supPremYear + pdpPremYear + supMedical + drugsYear;
+
+      const diff = Math.abs(maTotal - supTotal);
+      const maWins = maTotal < supTotal;
+      const close = diff < 400;
+
+      head.textContent = close
+        ? 'Close enough that cost is not the deciding factor.'
+        : maWins
+          ? `Advantage comes out about ${usd(diff)} cheaper this year.`
+          : `The Supplement route comes out about ${usd(diff)} cheaper this year.`;
+
+      const line = (label: string, value: number) =>
+        `<li><span>${label}</span><b>${usd(value)}</b></li>`;
+
+      cols.innerHTML = `
+        <div class="cost-col"${!close && maWins ? ' data-winner' : ''}>
+          ${!close && maWins ? '<span class="cost-col__flag">Lower this year</span>' : ''}
+          <p class="cost-col__name">Medicare Advantage</p>
+          <p class="cost-col__total">${usd(maTotal)}</p>
+          <p class="cost-col__per">for the year · ${usd(maTotal / 12)} a month</p>
+          <ul class="cost-col__lines">
+            ${line('Part B premium', partBYear)}
+            ${line('Plan premium', maPremYear)}
+            ${line(maHitCap ? 'Medical (capped)' : 'Copays', maMedical)}
+            ${line('Prescriptions', drugsYear)}
+          </ul>
+        </div>
+        <div class="cost-col"${!close && !maWins ? ' data-winner' : ''}>
+          ${!close && !maWins ? '<span class="cost-col__flag">Lower this year</span>' : ''}
+          <p class="cost-col__name">Supplement + Part D</p>
+          <p class="cost-col__total">${usd(supTotal)}</p>
+          <p class="cost-col__per">for the year · ${usd(supTotal / 12)} a month</p>
+          <ul class="cost-col__lines">
+            ${line('Part B premium', partBYear)}
+            ${line('Supplement premium', supPremYear)}
+            ${line('Part D premium', pdpPremYear)}
+            ${line('Part B deductible', supMedical)}
+            ${line('Prescriptions', drugsYear)}
+          </ul>
+        </div>
+      `;
+
+      const paras: string[] = [];
+
+      if (close) {
+        paras.push(
+          `<p>The two columns land within ${usd(diff)} of each other, which for a year of healthcare is noise. When cost is a wash, the decision comes down to the things money does not measure: whether your doctors are in the network, whether you travel, and whether you would rather pay a predictable premium than a variable copay.</p>`
+        );
+      } else if (maWins) {
+        paras.push(
+          `<p>On the usage you entered, the Advantage plan is the cheaper year by about ${usd(diff)}. That is what Advantage plans are built to do for people who do not use a great deal of care.</p>`
+        );
+      } else {
+        paras.push(
+          `<p>On the usage you entered, the Supplement route wins by about ${usd(diff)}. Once you are in a clinic often enough, copays overtake the premium — which is exactly the crossover this tool exists to find.</p>`
+        );
+      }
+
+      if (maHitCap) {
+        paras.push(
+          `<p><strong>You hit the Advantage out-of-pocket maximum.</strong> The copays you entered came to ${usd(maMedicalRaw)}, so the plan's ${usd(maMoop)} cap took over. That cap is the real protection an Advantage plan offers — and it is also the number to compare between plans, far more than the premium.</p>`
+        );
+      }
+
+      if (drugsMonthly * 12 > partD.outOfPocketCap) {
+        paras.push(
+          `<p><strong>Your drug costs hit the ${PLAN_YEAR} Part D cap.</strong> At ${usd(drugsMonthly)} a month you would reach the ${usd(partD.outOfPocketCap)} annual limit partway through the year, after which covered drugs cost you nothing. Both columns reflect that. This cap is the single biggest recent improvement in Medicare for people with high drug costs — and it makes a careful Part D comparison worth more, not less, because <em>when</em> you hit it depends entirely on the plan's tiers.</p>`
+        );
+      }
+
+      paras.push(
+        `<p><strong>One year is not the whole story.</strong> Supplement premiums rise as you age; Advantage copays and networks reset every January. Run this again with a bad year — an admission, a new specialist — and see whether the answer flips. If it does, that tells you something the average year never will.</p>`
+      );
+
+      body.innerHTML = paras.join('');
+      result.hidden = false;
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    form.addEventListener('reset', () => {
+      result.hidden = true;
+      err.textContent = '';
+    });
+  }
+</script>

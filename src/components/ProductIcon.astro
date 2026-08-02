@@ -1,0 +1,76 @@
+---
+interface Props {
+  name: 'shield' | 'plus' | 'pill' | 'home' | 'compass' | 'calendar' | 'calculator' | 'list';
+  class?: string;
+}
+const { name, class: cls = '' } = Astro.props;
+---
+
+<svg
+  class:list={['picon', cls]}
+  viewBox="0 0 24 24"
+  fill="none"
+  stroke="currentColor"
+  stroke-width="1.25"
+  stroke-linecap="round"
+  stroke-linejoin="round"
+  aria-hidden="true"
+  focusable="false"
+>
+  {name === 'shield' && (
+    <>
+      <path d="M12 2.5 3.5 6v6.4c0 5 3.4 8.3 8.5 10.1 5.1-1.8 8.5-5.1 8.5-10.1V6L12 2.5Z" />
+      <path d="M8.4 12.2h2.2l1-2.6 1.5 5 1.1-2h2.4" />
+    </>
+  )}
+  {name === 'plus' && (
+    <>
+      <rect x="3" y="6.5" width="18" height="13.5" rx="2" />
+      <path d="M8.5 6.5V4.6a1.6 1.6 0 0 1 1.6-1.6h3.8a1.6 1.6 0 0 1 1.6 1.6v1.9" />
+      <path d="M12 10.4v5.7M9.2 13.2h5.6" />
+    </>
+  )}
+  {name === 'pill' && (
+    <>
+      <rect x="2.6" y="8.4" width="18.8" height="7.2" rx="3.6" transform="rotate(-38 12 12)" />
+      <path d="M9 9 15 15" />
+      <path d="M18.6 4.2 19.8 5.4" />
+    </>
+  )}
+  {name === 'home' && (
+    <>
+      <path d="M3.5 10.4 12 3.6l8.5 6.8V20a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1v-9.6Z" />
+      <path d="M12 17.2c-1.7-1-3.2-2-3.2-3.5a1.7 1.7 0 0 1 3.2-.8 1.7 1.7 0 0 1 3.2.8c0 1.5-1.5 2.5-3.2 3.5Z" />
+    </>
+  )}
+  {name === 'compass' && (
+    <>
+      <circle cx="12" cy="12" r="9" />
+      <path d="m15.4 8.6-2 4.8-4.8 2 2-4.8 4.8-2Z" />
+    </>
+  )}
+  {name === 'calendar' && (
+    <>
+      <rect x="3.2" y="5" width="17.6" height="16" rx="2" />
+      <path d="M3.2 9.8h17.6M8 3v4M16 3v4" />
+      <path d="M8.4 14.2h2.2M8.4 17.4h5.4" />
+    </>
+  )}
+  {name === 'calculator' && (
+    <>
+      <rect x="4.5" y="2.8" width="15" height="18.4" rx="2" />
+      <path d="M8 6.6h8v3.2H8z" />
+      <path d="M8.6 13.6h.01M12 13.6h.01M15.4 13.6h.01M8.6 17.2h.01M12 17.2h.01M15.4 17.2h.01" />
+    </>
+  )}
+  {name === 'list' && (
+    <>
+      <path d="M9 6.4h11M9 12h11M9 17.6h11" />
+      <path d="M4.4 6.4h.01M4.4 12h.01M4.4 17.6h.01" />
+    </>
+  )}
+</svg>
+
+<style>
+  .picon { width: 26px; height: 26px; }
+</style>

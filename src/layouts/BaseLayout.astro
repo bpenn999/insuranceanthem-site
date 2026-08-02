@@ -1,0 +1,96 @@
+---
+import '../styles/global.css';
+import BaseHead from '../components/BaseHead.astro';
+import Schema from '../components/Schema.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  path?: string;
+  image?: string;
+  type?: 'website' | 'article';
+  noindex?: boolean;
+  publishedAt?: string;
+  modifiedAt?: string;
+  schemaNodes?: Record<string, unknown>[];
+  breadcrumbs?: { name: string; path: string }[];
+  /** Article pages run a lighter motion density. */
+  density?: 'full' | 'light';
+}
+
+const {
+  title,
+  description,
+  path,
+  image,
+  type,
+  noindex,
+  publishedAt,
+  modifiedAt,
+  schemaNodes = [],
+  breadcrumbs = [],
+  density = 'full',
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang="en-US" data-density={density}>
+  <head>
+    <BaseHead
+      title={title}
+      description={description}
+      path={path}
+      image={image}
+      type={type}
+      noindex={noindex}
+      publishedAt={publishedAt}
+      modifiedAt={modifiedAt}
+    />
+    <Schema nodes={schemaNodes} breadcrumbs={breadcrumbs} />
+  </head>
+
+  <body>
+    <a href="#main" class="skip-link">Skip to main content</a>
+
+    <!-- Scroll progress. Purely decorative; hidden entirely under reduced motion. -->
+    <div class="scroll-progress" aria-hidden="true">
+      <div class="scroll-progress__bar"></div>
+    </div>
+
+    <!--
+      The water-caustics field. Fixed, full-viewport, z-index 0, behind every
+      pixel of content. Opacity is retuned per section by motion.ts so text
+      always clears WCAG AA; under reduced motion it renders one static frame.
+    -->
+    <canvas class="caustics" aria-hidden="true"></canvas>
+
+    <div class="page-shell">
+      <Header />
+      <main id="main">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+
+    <script>
+      import '../scripts/motion.ts';
+    </script>
+  </body>
+</html>
+
+<style is:global>
+  /* Article pages: less light behind the text, shorter reveals, no magnetism
+     on in-body links. Set once here rather than repeated per component. */
+  html[data-density='light'] {
+    --caustics-opacity: 0.22;
+  }
+  html[data-density='light'] .caustics { filter: blur(13px) saturate(1); }
+  html[data-density='light'].motion .kinetic .k-word {
+    transition-duration: 480ms, 520ms;
+  }
+  html[data-density='light'].motion [data-rise] {
+    transition-duration: 520ms, 540ms;
+  }
+</style>

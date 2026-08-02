@@ -1,0 +1,439 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Kinetic from '../components/Kinetic.astro';
+import HeroFunnel from '../components/HeroFunnel.astro';
+import TrustBar from '../components/TrustBar.astro';
+import SectionHead from '../components/SectionHead.astro';
+import ServicesGrid from '../components/ServicesGrid.astro';
+import ToolsPreview from '../components/ToolsPreview.astro';
+import Testimonials from '../components/Testimonials.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import site from '../config/site';
+import { homeFaqs } from '../data/faqs';
+import { locations } from '../data/locations';
+
+const title = `Medicare Help in Anthem, AZ | ${site.name}`;
+const description = `Independent Medicare guidance in Anthem, Arizona. ${site.agent.experience} helping neighbours in 85086 compare Medicare Advantage, Supplement, Part D and long-term care. No cost, no pressure — call ${site.phone.display}.`;
+
+const faqSchema = {
+  '@type': 'FAQPage',
+  mainEntity: homeFaqs.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+
+<BaseLayout title={title} description={description} path="/" schemaNodes={[faqSchema]}>
+  <!-- ── Hero ─────────────────────────────────────────────────────────── -->
+  <section class="hero" data-caustics="0.68">
+    <div class="wrap hero__inner">
+      <div class="hero__copy">
+        <p class="hero__eyebrow" data-rise data-armed>
+          <span class="hero__pin" aria-hidden="true"></span>
+          Anthem · Carefree · New River · North Phoenix
+        </p>
+
+        <h1 class="hero__title">
+          <Kinetic text="Medicare, explained by someone who lives here." stagger={44} />
+        </h1>
+
+        <p class="hero__lede" data-rise data-armed style="--rise-delay:260ms">
+          {site.agent.experience} in one lane, and one job: work out which plan actually fits your
+          doctors, your prescriptions and your budget — then get out of the way. No call centre,
+          no script, no charge.
+        </p>
+
+        <div class="hero__actions" data-rise data-armed style="--rise-delay:360ms">
+          <a href="/contact/" class="btn btn--lg" data-magnetic="0.3">Get a free plan review</a>
+          <a href={site.phone.href} class="btn btn--ghost btn--lg" data-magnetic="0.22">
+            Call {site.phone.display}
+          </a>
+        </div>
+
+        <p class="hero__meta" data-rise data-armed style="--rise-delay:440ms">
+          <strong>{site.agent.name}</strong> · {site.agent.title} · NPN {site.agent.npn}
+        </p>
+      </div>
+
+      <aside class="hero__funnel" aria-label="Start a free plan review" data-rise data-armed
+             style="--rise-delay:200ms">
+        <HeroFunnel />
+      </aside>
+    </div>
+  </section>
+
+  <!-- ── Trust bar ────────────────────────────────────────────────────── -->
+  <TrustBar />
+
+  <!-- ── Services ─────────────────────────────────────────────────────── -->
+  <section class="section" data-caustics="0.42">
+    <div class="wrap">
+      <SectionHead
+        eyebrow="What we do"
+        title="Four things, done properly."
+        lede="Medicare only. That is the whole practice — which is exactly why the answers are specific instead of general."
+      />
+      <ServicesGrid />
+      <p class="services__foot" data-rise data-armed>
+        Not sure which of these you need? That is the normal starting point.
+        <a href="/tools/plan-type-finder/" class="link">Answer six questions</a> and we will narrow it down.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── How it works ─────────────────────────────────────────────────── -->
+  <section class="section band--warm" data-caustics="0.3">
+    <div class="wrap">
+      <SectionHead
+        eyebrow="How it works"
+        title="Three steps. About forty minutes, total."
+        lede="Most of the work happens before any paperwork comes out."
+      />
+      <ol class="steps">
+        <li class="step" data-rise data-armed>
+          <span class="step__num" aria-hidden="true">01</span>
+          <h3 class="step__title">You tell me what matters</h3>
+          <p class="step__body">
+            Your doctors, your prescriptions with dosages, your pharmacy, whether you travel, and
+            what you can comfortably spend each month. Twenty minutes on the phone or at a kitchen
+            table in Anthem — your choice.
+          </p>
+        </li>
+        <li class="step" data-rise data-armed style="--rise-delay:110ms">
+          <span class="step__num" aria-hidden="true">02</span>
+          <h3 class="step__title">I run the comparison</h3>
+          <p class="step__body">
+            Every plan available in your ZIP, priced against your actual medication list at your
+            actual pharmacy, with your doctors checked against each network. Then I show you the
+            two or three that survive — including where each one falls short.
+          </p>
+        </li>
+        <li class="step" data-rise data-armed style="--rise-delay:220ms">
+          <span class="step__num" aria-hidden="true">03</span>
+          <h3 class="step__title">You decide, and I stay</h3>
+          <p class="step__body">
+            You pick. I handle the enrolment paperwork, and then I am still your agent — for the
+            billing question in March, the network change in July, and the review every fall
+            before the plan year rolls over.
+          </p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Free tools ───────────────────────────────────────────────────── -->
+  <section class="section" data-caustics="0.42">
+    <div class="wrap">
+      <SectionHead
+        eyebrow="Free tools"
+        title="Work some of it out yourself first."
+        lede="No email gate, no sign-up, nothing saved. Use them, close the tab, and call only if you want to."
+      />
+      <ToolsPreview />
+      <p class="services__foot" data-rise data-armed>
+        <a href="/tools/" class="link">See all free tools</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Advisor ──────────────────────────────────────────────────────── -->
+  <section class="section band--deep" data-caustics="0.26">
+    <div class="wrap advisor">
+      <div class="advisor__copy">
+        <p class="eyebrow" data-rise data-armed>Your advisor</p>
+        <h2><Kinetic text="Brian Penner" stagger={50} /></h2>
+        <p class="lede advisor__lede" data-rise data-armed style="--rise-delay:180ms">
+          {site.agent.experience} in Medicare, licensed in {site.agent.statesLicensed} states,
+          based in Anthem.
+        </p>
+        <div class="advisor__body" data-rise data-armed style="--rise-delay:250ms">
+          <p>
+            I am independent, which means I am not tied to one carrier's product shelf and I am not
+            paid more to steer you toward a particular plan. The carriers pay the same commission
+            whichever one you choose, and it costs you nothing either way — so the only thing left
+            to optimise is whether the plan is right.
+          </p>
+          <p>
+            After twenty-two years, the part I am actually good at is the unglamorous bit: reading
+            a formulary properly, catching the network change before it becomes a surprise bill,
+            and telling you plainly when the plan you are on is already the right one.
+          </p>
+        </div>
+        <div class="advisor__actions" data-rise data-armed style="--rise-delay:320ms">
+          <a href="/about/" class="btn btn--ghost" data-magnetic="0.24">More about Brian</a>
+        </div>
+      </div>
+
+      <ul class="advisor__facts" data-rise data-armed style="--rise-delay:200ms">
+        <li>
+          <span class="advisor__fact-value tabular" data-countup={site.agent.experienceYears}
+                data-suffix="+">{site.agent.experienceYears}+</span>
+          <span class="advisor__fact-label">Years in Medicare</span>
+        </li>
+        <li>
+          <span class="advisor__fact-value tabular" data-countup={site.agent.statesLicensed}
+                data-duration="1500">{site.agent.statesLicensed}</span>
+          <span class="advisor__fact-label">States licensed</span>
+        </li>
+        <li>
+          <span class="advisor__fact-value tabular">{site.agent.npn}</span>
+          <span class="advisor__fact-label">National Producer Number</span>
+        </li>
+        <li>
+          <span class="advisor__fact-value">$0</span>
+          <span class="advisor__fact-label">Cost to work with me</span>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Testimonials ─────────────────────────────────────────────────── -->
+  <section class="section" data-caustics="0.4">
+    <div class="wrap">
+      <SectionHead
+        eyebrow="In their words"
+        title="What people actually say afterwards."
+        align="center"
+      />
+      <Testimonials />
+    </div>
+  </section>
+
+  <!-- ── Service area ─────────────────────────────────────────────────── -->
+  <section class="section band--warm" data-caustics="0.28">
+    <div class="wrap area">
+      <div class="area__copy">
+        <p class="eyebrow" data-rise data-armed>Service area</p>
+        <h2><Kinetic text="Local means local." stagger={44} /></h2>
+        <p class="lede area__lede" data-rise data-armed style="--rise-delay:180ms">
+          Based in Anthem, 85086. Plan availability in Medicare is set county by county, and the
+          differences between neighbouring ZIPs are real — which is the whole argument for using
+          somebody who works this patch.
+        </p>
+      </div>
+      <ul class="area__list">
+        {
+          locations.map((l, i) => (
+            <li data-rise data-armed style={`--rise-delay:${i * 70}ms`}>
+              <a href={`/service-area/${l.slug}/`} class="area__link">
+                <span class="area__city">{l.city}</span>
+                <span class="area__zip">{l.zips.join(' · ')}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── FAQ ──────────────────────────────────────────────────────────── -->
+  <section class="section" data-caustics="0.3">
+    <div class="wrap wrap--narrow">
+      <SectionHead
+        eyebrow="Common questions"
+        title="The things everybody asks first."
+      />
+      <Faq items={homeFaqs} openFirst />
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style>
+  /* ── hero ─────────────────────────────────────────────────────────── */
+  .hero {
+    padding-block: clamp(3rem, 8vw, 6rem) clamp(3rem, 7vw, 5.5rem);
+  }
+  .hero__inner {
+    display: grid;
+    gap: clamp(2.5rem, 6vw, 4rem);
+    align-items: center;
+  }
+
+  .hero__eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: var(--s-5);
+  }
+  .hero__pin {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex: none;
+    position: relative;
+  }
+  .hero__pin::after {
+    content: '';
+    position: absolute;
+    inset: -5px;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    opacity: 0.35;
+  }
+
+  .hero__title {
+    font-size: var(--t-5xl);
+    max-width: 15ch;
+    letter-spacing: -0.03em;
+  }
+
+  .hero__lede {
+    margin-top: var(--s-5);
+    font-size: var(--t-lg);
+    color: var(--ink-muted);
+    max-width: 52ch;
+    line-height: 1.6;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+    margin-top: var(--s-7);
+  }
+
+  .hero__meta {
+    margin-top: var(--s-6);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--rule);
+    font-size: var(--t-xs);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .hero__meta strong { color: var(--ink-body); }
+
+  .hero__funnel { min-width: 0; }
+
+  @media (min-width: 960px) {
+    .hero__inner {
+      grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+      gap: clamp(3rem, 5vw, 5rem);
+    }
+  }
+
+  /* ── steps ────────────────────────────────────────────────────────── */
+  .steps {
+    list-style: none;
+    padding: 0;
+    counter-reset: step;
+    display: grid;
+    gap: var(--s-6);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  }
+  .step {
+    position: relative;
+    padding-top: var(--s-6);
+    border-top: 1px solid var(--rule);
+  }
+  .step__num {
+    position: absolute;
+    top: var(--s-5);
+    right: 0;
+    font-family: var(--font-display);
+    font-size: 2.75rem;
+    line-height: 1;
+    color: var(--navy);
+    opacity: 0.13;
+    letter-spacing: -0.03em;
+  }
+  .step__title { font-size: var(--t-lg); margin-bottom: var(--s-3); max-width: 14ch; }
+  .step__body { font-size: var(--t-sm); color: var(--ink-muted); line-height: 1.65; }
+
+  /* ── advisor ──────────────────────────────────────────────────────── */
+  .advisor { display: grid; gap: var(--s-8); align-items: start; }
+  .advisor__lede { margin-top: var(--s-4); }
+  .advisor__body { margin-top: var(--s-5); max-width: 58ch; color: var(--ink-body); }
+  .advisor__actions { margin-top: var(--s-6); }
+
+  .advisor__facts {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .advisor__facts li {
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    padding: var(--s-5);
+    display: grid;
+    gap: 0.25rem;
+  }
+  .advisor__fact-value {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    color: var(--navy);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .advisor__fact-label {
+    font-size: var(--t-xs);
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    line-height: 1.4;
+  }
+
+  @media (min-width: 900px) {
+    .advisor { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: var(--s-9); }
+  }
+
+  /* ── area ─────────────────────────────────────────────────────────── */
+  .area { display: grid; gap: var(--s-7); align-items: start; }
+  .area__lede { margin-top: var(--s-4); }
+  .area__list { list-style: none; padding: 0; display: grid; gap: 1px; background: var(--rule); }
+  .area__link {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: var(--s-4) var(--s-2);
+    background: color-mix(in srgb, var(--porcelain-warm) 96%, transparent);
+    transition: background-color 260ms var(--ease), padding-left 300ms var(--ease);
+  }
+  .area__link:hover {
+    background: var(--surface);
+    padding-left: var(--s-4);
+  }
+  .area__city {
+    font-family: var(--font-display);
+    font-size: var(--t-lg);
+    color: var(--ink);
+  }
+  .area__link:hover .area__city { color: var(--navy); }
+  .area__zip {
+    font-size: var(--t-xs);
+    color: var(--ink-faint);
+    letter-spacing: 0.06em;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (min-width: 860px) {
+    .area { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: var(--s-9); }
+  }
+
+  /* ── shared ───────────────────────────────────────────────────────── */
+  .services__foot {
+    margin-top: var(--s-6);
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .area__link:hover { padding-left: var(--s-2); }
+  }
+</style>

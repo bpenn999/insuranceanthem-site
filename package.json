@@ -1,0 +1,27 @@
+{
+  "name": "insuranceanthem-site",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Insurance Anthem — Medicare agency website (Anthem, AZ)",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "test": "node --experimental-strip-types --test test/*.test.mjs",
+    "audit": "node scripts/audit.mjs",
+    "e2e": "node scripts/e2e.mjs",
+    "verify": "npm run check && npm test && npm run build && npm run audit",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "astro": "^7.1.6"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.4",
+    "typescript": "^5.9.3"
+  }
+}

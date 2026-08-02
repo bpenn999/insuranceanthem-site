@@ -1,0 +1,104 @@
+---
+import { products } from '../data/products';
+import ProductIcon from './ProductIcon.astro';
+---
+
+<ul class="services">
+  {
+    products.map((p, i) => (
+      <li data-rise data-armed style={`--rise-delay:${i * 80}ms`}>
+        <a href={`/${p.slug}/`} class="card-link">
+          <article class="card card--hover service">
+            <span class="service__icon" aria-hidden="true">
+              <ProductIcon name={p.icon} />
+            </span>
+            <h3 class="service__title">{p.name}</h3>
+            <p class="service__blurb">{p.blurb}</p>
+            <span class="service__more">
+              <span class="service__more-text">Read more</span>
+              <svg viewBox="0 0 14 10" aria-hidden="true">
+                <path d="M9 1l4 4-4 4M13 5H1" fill="none" stroke="currentColor"
+                      stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </article>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .services {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+  .services > li { display: flex; }
+  .services .card-link { display: flex; width: 100%; }
+
+  .service {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: var(--s-6) var(--s-5);
+  }
+
+  .service__icon {
+    display: grid;
+    place-items: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--navy-wash);
+    color: var(--navy);
+    margin-bottom: var(--s-5);
+    transition: background-color 380ms var(--ease), color 380ms var(--ease),
+                transform 480ms var(--ease);
+  }
+  .card-link:hover .service__icon {
+    background: var(--navy);
+    color: #fff;
+    transform: translateY(-2px);
+  }
+
+  .service__title { font-size: var(--t-lg); margin-bottom: var(--s-2); }
+  .service__blurb {
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: var(--s-5);
+  }
+
+  .service__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--navy);
+  }
+  .service__more svg { width: 14px; height: 10px; transition: transform 340ms var(--ease); }
+  .card-link:hover .service__more svg { transform: translateX(4px); }
+
+  /* self-drawing underline on the "Read more" affordance */
+  .service__more-text {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    transition: background-size 420ms var(--ease);
+    padding-bottom: 2px;
+  }
+  .card-link:hover .service__more-text { background-size: 100% 1px; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-link:hover .service__icon { transform: none; }
+    .card-link:hover .service__more svg { transform: none; }
+  }
+</style>

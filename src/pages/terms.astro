@@ -1,0 +1,110 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+import site from '../config/site';
+import { tpmoText, nonAffiliation } from '../data/compliance';
+---
+
+<LegalLayout
+  title="Terms of Use"
+  description={`Terms of use for ${site.domain}, including required Medicare marketing disclosures and the limits of the information published here.`}
+  path="/terms/"
+  h1="Terms of Use"
+  lede="What this website is, what it is not, and the disclosures required of anyone marketing Medicare plans."
+  updated="August 2, 2026"
+>
+  <h2>Required Medicare disclosures</h2>
+  <p><strong>{tpmoText()}</strong></p>
+  <p><strong>{nonAffiliation}</strong></p>
+  <p>
+    {site.name} is a licensed independent insurance agency. {site.agent.name} is a licensed
+    insurance agent, National Producer Number {site.agent.npn}, licensed in
+    {' '}{site.agent.statesLicensed} states.
+  </p>
+
+  <h2>This site is information, not advice</h2>
+  <p>
+    Everything published here is general information about Medicare. It is not medical advice, not
+    legal advice and not tax advice, and it is not a recommendation of any specific insurance plan
+    for any specific person.
+  </p>
+  <p>
+    A recommendation requires knowing your circumstances — your providers, your medications, your
+    ZIP code, your finances. That is what a conversation is for, and nothing on this site
+    substitutes for one.
+  </p>
+
+  <h2>Accuracy and the passage of time</h2>
+  <p>
+    Medicare changes every plan year. Premiums, deductibles, coinsurance amounts, income
+    thresholds, plan benefits, provider networks and drug formularies are all reset annually, and
+    some change mid-year.
+  </p>
+  <p>
+    We label figures with the plan year they apply to and update them when new figures are
+    published. Even so, always confirm current details before acting on anything here. If a page
+    shows a plan year that has already passed, treat every number on it as historical.
+  </p>
+
+  <h2>The free tools</h2>
+  <p>
+    The calculators and checkers on this site produce <strong>estimates</strong>. They run entirely
+    in your browser using the figures you enter and published federal amounts for the stated plan
+    year.
+  </p>
+  <p>They are not quotes, and specifically:</p>
+  <ul>
+    <li>They do not price any actual insurance plan or name any carrier or product.</li>
+    <li>They do not check whether your doctors are in any network.</li>
+    <li>They do not price your medications against any plan's formulary.</li>
+    <li>
+      They do not make Social Security's IRMAA determination — Social Security does that and will
+      notify you directly.
+    </li>
+  </ul>
+  <p>
+    Use them to ask better questions. Do not use them as the basis for an enrollment decision on
+    their own.
+  </p>
+
+  <h2>No cost to you</h2>
+  <p>
+    There is never a fee to you for our services. Insurance carriers pay commissions to licensed
+    agents at rates set by the Centers for Medicare &amp; Medicaid Services. Your premium is
+    identical whether you enroll through us, through a call centre, or directly with the carrier.
+  </p>
+
+  <h2>Links to other sites</h2>
+  <p>
+    We link to Medicare.gov, the Social Security Administration and similar resources for your
+    convenience. We do not control those sites and are not responsible for their content. Following
+    a link means their terms and privacy policies apply, not ours.
+  </p>
+
+  <h2>Intellectual property</h2>
+  <p>
+    The text, design and code of this site are the property of {site.legalName}. You are welcome to
+    read it, print it and share links to it. Republishing the content as your own is not permitted.
+  </p>
+
+  <h2>Limitation of liability</h2>
+  <p>
+    This site is provided as-is. To the fullest extent permitted by law, {site.legalName} is not
+    liable for any loss arising from reliance on information published here. Your enrollment
+    decisions are made with the carrier and with Medicare, and the governing documents are the plan
+    documents — not this website.
+  </p>
+
+  <h2>Governing law</h2>
+  <p>
+    These terms are governed by the laws of the State of {site.address.regionName}, without regard
+    to conflict-of-law principles.
+  </p>
+
+  <h2>Questions</h2>
+  <p>
+    Email <a href={`mailto:${site.email}`}>{site.email}</a> or call
+    <a href={site.phone.href}>{site.phone.display}</a>. For information on all of your Medicare
+    options, contact <a href="https://www.medicare.gov" rel="noopener">Medicare.gov</a> or call
+    1-800-MEDICARE.
+  </p>
+</LegalLayout>

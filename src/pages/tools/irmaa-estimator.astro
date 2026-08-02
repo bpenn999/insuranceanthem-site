@@ -1,0 +1,252 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+import { PLAN_YEAR, IRMAA_TAX_YEAR, irmaaBrackets, usd } from '../../data/medicare-figures';
+
+const standard = irmaaBrackets[0];
+---
+
+<ToolLayout
+  slug="irmaa-estimator"
+  title={`${PLAN_YEAR} IRMAA Bracket Estimator — Medicare Part B & D Surcharge`}
+  description={`Find your ${PLAN_YEAR} Medicare IRMAA bracket from your ${IRMAA_TAX_YEAR} income. See the Part B and Part D surcharges before the Social Security letter arrives. Free, runs in your browser.`}
+  h1="Which IRMAA bracket am I in?"
+  lede={`Higher income means a surcharge on both Part B and Part D. Your ${PLAN_YEAR} bracket is set by your ${IRMAA_TAX_YEAR} tax return — so it is already decided, and you can see it now rather than in a letter.`}
+>
+  <form id="irmaa" novalidate>
+    <fieldset class="t-fieldset">
+      <legend>How did you file your {IRMAA_TAX_YEAR} tax return?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="filing" value="single" checked /><span><strong>Single</strong><em>Or head of household, or qualifying widow(er)</em></span></label>
+        <label class="t-option"><input type="radio" name="filing" value="joint" /><span><strong>Married filing jointly</strong></span></label>
+        <label class="t-option"><input type="radio" name="filing" value="separate" /><span><strong>Married filing separately</strong><em>Different table — narrower and steeper</em></span></label>
+      </div>
+    </fieldset>
+
+    <div class="t-field">
+      <label for="irmaa-magi">Your {IRMAA_TAX_YEAR} modified adjusted gross income</label>
+      <input type="number" id="irmaa-magi" name="magi" min="0" max="10000000" step="1000"
+             inputmode="numeric" placeholder="e.g. 95000" />
+      <span class="t-hint">
+        MAGI is your adjusted gross income plus any tax-exempt interest — line 11 of your
+        {IRMAA_TAX_YEAR} Form 1040, plus line 2a.
+      </span>
+    </div>
+
+    <div class="t-actions">
+      <button type="submit" class="btn btn--lg" data-magnetic="0.24">Find my bracket</button>
+      <button type="reset" class="btn btn--ghost">Clear</button>
+    </div>
+    <p class="t-error" id="irmaa-error" role="alert"></p>
+  </form>
+
+  <div class="t-result" id="irmaa-result" hidden role="region" aria-live="polite" aria-label="Your IRMAA bracket">
+    <p class="t-result__eyebrow">{PLAN_YEAR} bracket</p>
+    <h2 class="t-result__head" id="irmaa-head"></h2>
+    <div class="t-stats" id="irmaa-stats"></div>
+    <div class="t-result__body" id="irmaa-body"></div>
+    <div class="t-actions">
+      <a href="/contact/" class="btn btn--lg" data-magnetic="0.24">Ask about appealing an IRMAA</a>
+    </div>
+  </div>
+
+  <div slot="disclaimer">
+    <p>
+      Figures are the published {PLAN_YEAR} amounts and are calculated in your browser — nothing
+      you enter is sent anywhere or stored.
+    </p>
+    <p>
+      Social Security makes the actual determination and will send you a notice. This estimator
+      tells you what to expect; it is not that determination, and it does not account for Extra
+      Help, Medicare Savings Programs or an approved life-changing-event reduction.
+    </p>
+  </div>
+
+  <div slot="explainer">
+    <h2>The {PLAN_YEAR} brackets in full</h2>
+    <div class="prose">
+      <p>
+        Based on your <strong>{IRMAA_TAX_YEAR}</strong> modified adjusted gross income. Part B
+        figures are exact; the Part D column is a surcharge <em>added to</em> whatever your chosen
+        drug plan charges, not a total.
+      </p>
+
+      <div class="table-scroll">
+        <table>
+          <caption class="sr-only">{PLAN_YEAR} Medicare IRMAA brackets by filing status</caption>
+          <thead>
+            <tr>
+              <th scope="col">{IRMAA_TAX_YEAR} MAGI — single</th>
+              <th scope="col">{IRMAA_TAX_YEAR} MAGI — joint</th>
+              <th scope="col">Part B / month</th>
+              <th scope="col">Part D surcharge</th>
+            </tr>
+          </thead>
+          <tbody>
+            {
+              irmaaBrackets.map((b) => (
+                <tr>
+                  <td>
+                    {b.singleMax === null
+                      ? `${usd(b.singleMin)} and above`
+                      : b.tier === 0
+                        ? `Up to ${usd(b.singleMax)}`
+                        : `${usd(b.singleMin)} – ${usd(b.singleMax)}`}
+                  </td>
+                  <td>
+                    {b.jointMax === null
+                      ? `${usd(b.jointMin)} and above`
+                      : b.tier === 0
+                        ? `Up to ${usd(b.jointMax)}`
+                        : `${usd(b.jointMin)} – ${usd(b.jointMax)}`}
+                  </td>
+                  <td>{usd(b.partBTotal, 2)}</td>
+                  <td>{b.partDSurcharge === 0 ? '—' : `+${usd(b.partDSurcharge, 2)}`}</td>
+                </tr>
+              ))
+            }
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Three things worth knowing</h3>
+      <ul>
+        <li>
+          <strong>It is a cliff, not a slope.</strong> One dollar over a threshold moves you into
+          the whole bracket. Somebody at {usd(standard.singleMax! + 1)} pays the same surcharge as
+          somebody at {usd(irmaaBrackets[1].singleMax!)}. If you are near an edge, a Roth
+          conversion or a capital gain in December is worth thinking about carefully.
+        </li>
+        <li>
+          <strong>It is per person.</strong> A married couple both on Medicare each pay their own
+          surcharge, based on the same joint income. Double the numbers above for the household.
+        </li>
+        <li>
+          <strong>It is appealable — sometimes.</strong> If your income has dropped since
+          {' '}{IRMAA_TAX_YEAR} because of a qualifying life-changing event, you can ask Social
+          Security to use current income instead.
+        </li>
+      </ul>
+
+      <h3>What counts as a life-changing event</h3>
+      <p>
+        Social Security's form SSA-44 lists them: marriage, divorce or annulment, death of a
+        spouse, you or your spouse stopping work or reducing hours, loss of income-producing
+        property, loss of pension income, or an employer settlement payment.
+      </p>
+      <p>
+        <strong>Retirement counts.</strong> That is the big one, and the one most people miss. If
+        you retired and your income is now a fraction of what your {IRMAA_TAX_YEAR} return showed,
+        you are very likely paying a surcharge you do not owe. Filing SSA-44 with proof of the
+        event and your current income is usually straightforward — and it is worth real money.
+      </p>
+      <p>
+        Simply having a good year in {IRMAA_TAX_YEAR} and a worse one since is <em>not</em> on the
+        list. Neither is a one-off capital gain. The event has to be one of the eight.
+      </p>
+    </div>
+  </div>
+</ToolLayout>
+
+<script>
+  import {
+    lookupIrmaa,
+    PLAN_YEAR,
+    IRMAA_TAX_YEAR,
+    partB,
+    usd,
+    type FilingStatus,
+  } from '../../data/medicare-figures';
+
+  const form = document.getElementById('irmaa') as HTMLFormElement | null;
+  if (form) {
+    const err = document.getElementById('irmaa-error')!;
+    const result = document.getElementById('irmaa-result')!;
+    const head = document.getElementById('irmaa-head')!;
+    const stats = document.getElementById('irmaa-stats')!;
+    const body = document.getElementById('irmaa-body')!;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const magiRaw = (document.getElementById('irmaa-magi') as HTMLInputElement).value;
+
+      if (magiRaw === '') { err.textContent = 'Please enter your income.'; return; }
+      const magi = Number(magiRaw);
+      if (!Number.isFinite(magi) || magi < 0) { err.textContent = 'Please enter a positive number.'; return; }
+      err.textContent = '';
+
+      const filing = (form.elements.namedItem('filing') as RadioNodeList).value as FilingStatus;
+
+      // All the bracket logic lives in src/data/medicare-figures.ts so the
+      // boundary behaviour is testable rather than buried in a page script.
+      const { tier, partBTotal, partDSurcharge, monthlyExtra, upperEdge, surcharged } =
+        lookupIrmaa(magi, filing);
+
+      const tierLabel = tier === 0 ? 'Standard' : `Tier ${tier}`;
+      const nextEdge = upperEdge;
+
+      head.textContent = surcharged
+        ? `You're in an IRMAA bracket for ${PLAN_YEAR}.`
+        : `No IRMAA surcharge for ${PLAN_YEAR}.`;
+
+      stats.innerHTML = `
+        <div class="t-stat">
+          <span class="t-stat__value">${tierLabel}</span>
+          <span class="t-stat__label">${PLAN_YEAR} bracket</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${usd(partBTotal, 2)}</span>
+          <span class="t-stat__label">Part B per month</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${partDSurcharge ? '+' + usd(partDSurcharge, 2) : '—'}</span>
+          <span class="t-stat__label">Part D surcharge</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${usd(monthlyExtra * 12)}</span>
+          <span class="t-stat__label">Extra per year</span>
+        </div>
+      `;
+
+      const paras: string[] = [];
+
+      if (surcharged) {
+        paras.push(
+          `<p>On a ${IRMAA_TAX_YEAR} MAGI of ${usd(magi)}, your ${PLAN_YEAR} Part B premium is <strong>${usd(partBTotal, 2)}</strong> a month rather than the standard ${usd(partB.standardPremium, 2)}${partDSurcharge ? `, and a further <strong>${usd(partDSurcharge, 2)}</strong> a month is added to whatever your Part D plan charges` : ''}. That is <strong>${usd(monthlyExtra * 12)}</strong> more over the year than somebody in the standard bracket.</p>`
+        );
+        paras.push(
+          `<p><strong>If you have retired since ${IRMAA_TAX_YEAR}, read this bit.</strong> Retirement is one of Social Security's eight qualifying life-changing events. Filing form SSA-44 with proof of the event and your current income can move you down — sometimes all the way to standard. It is one of the most under-used forms in Medicare, and for a bracket like yours it is worth real money.</p>`
+        );
+      } else {
+        paras.push(
+          `<p>A ${IRMAA_TAX_YEAR} MAGI of ${usd(magi)} puts you below the first threshold, so you pay the standard ${usd(partB.standardPremium, 2)} Part B premium for ${PLAN_YEAR} and no Part D surcharge.</p>`
+        );
+      }
+
+      if (nextEdge !== null) {
+        const headroom = nextEdge - magi;
+        if (headroom > 0 && headroom <= 15_000) {
+          paras.push(
+            `<p><strong>You are close to an edge.</strong> Another ${usd(headroom)} of ${IRMAA_TAX_YEAR} income would have pushed you into the next bracket — and IRMAA is a cliff, not a slope, so that dollar costs the whole tier. Worth remembering for this year's Roth conversions, capital gains and required distributions, which set your bracket two years out.</p>`
+          );
+        }
+      }
+
+      paras.push(
+        `<p class="t-fineprint">Based on published ${PLAN_YEAR} figures. Social Security makes the actual determination and will notify you directly.</p>`
+      );
+
+      body.innerHTML = paras.join('');
+      result.hidden = false;
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    form.addEventListener('reset', () => {
+      result.hidden = true;
+      err.textContent = '';
+    });
+  }
+</script>
+
+<style is:global>
+  .t-fineprint { font-size: var(--t-xs); color: var(--ink-faint); }
+</style>

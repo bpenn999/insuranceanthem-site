@@ -1,0 +1,111 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+import site from '../config/site';
+---
+
+<LegalLayout
+  title="Accessibility"
+  description={`How ${site.domain} is built for accessibility — WCAG 2.2 AA contrast, keyboard navigation, reduced-motion support and screen-reader compatibility. Tell us if something doesn't work for you.`}
+  path="/accessibility/"
+  h1="Accessibility"
+  lede="This site is built for people who are, on average, over 65. Making it genuinely usable is not a compliance checkbox — it is the job."
+  updated="August 2, 2026"
+>
+  <h2>What we've done</h2>
+
+  <h3>Motion</h3>
+  <p>
+    This site has animated elements — a soft light effect behind the content, headings that reveal
+    as you scroll, numbers that count up. All of it is decorative.
+  </p>
+  <p>
+    If your device is set to <strong>reduce motion</strong>, every one of those is switched off
+    automatically. The background renders as a single still frame, all text is visible immediately
+    with no reveal, numbers show their final value, and the scroll progress bar is removed
+    entirely. Nothing moves and nothing is lost.
+  </p>
+  <p>
+    You can turn this on at the system level: <em>System Settings → Accessibility → Display →
+    Reduce Motion</em> on macOS and iOS, or <em>Settings → Accessibility → Visual Effects</em> on
+    Windows and Android. It applies to every site that respects it, not just this one.
+  </p>
+
+  <h3>Contrast and text</h3>
+  <p>
+    Text and background combinations meet or exceed the WCAG 2.2 AA contrast ratio of 4.5:1 for
+    body text and 3:1 for large text. The animated background is deliberately dialled down
+    section-by-section so that it never sits behind text at an intensity that would compromise
+    legibility — article pages run it at roughly a fifth of the intensity used on the home page.
+  </p>
+  <p>
+    Text sizes are set in relative units, so if you have increased your browser's default font size
+    the whole layout scales with it rather than clipping. The site is usable at 200% zoom without
+    horizontal scrolling.
+  </p>
+
+  <h3>Keyboard and screen readers</h3>
+  <ul>
+    <li>Every interactive element is reachable and operable by keyboard.</li>
+    <li>Focus indicators are visible and high-contrast — we never remove focus outlines.</li>
+    <li>A "skip to main content" link is the first thing a keyboard user reaches on every page.</li>
+    <li>Headings follow a proper hierarchy so screen-reader users can navigate by structure.</li>
+    <li>Form fields have real labels, and errors are announced rather than shown only in colour.</li>
+    <li>
+      Decorative graphics are hidden from assistive technology; meaningful ones carry text
+      alternatives.
+    </li>
+    <li>
+      In the multi-step tools, focus moves to each new question so keyboard and screen-reader users
+      are never left behind on the previous step.
+    </li>
+  </ul>
+
+  <h3>Without JavaScript</h3>
+  <p>
+    Every page of content on this site is fully readable with JavaScript disabled. Animation simply
+    does not run, and all content renders in its final visible state. The interactive calculators
+    do need JavaScript — where that is the case, the page says so and offers a phone number
+    instead.
+  </p>
+
+  <h2>Where we fall short</h2>
+  <p>
+    Being honest about the gaps is more useful than claiming there are none:
+  </p>
+  <ul>
+    <li>
+      Some tool results are dense blocks of text. They are readable, but a screen-reader user will
+      hear a lot at once.
+    </li>
+    <li>
+      The comparison table on the Medicare Plans page scrolls sideways on narrow screens. It is
+      keyboard-scrollable and properly marked up with row and column headers, but a wide table is
+      never ideal on a phone.
+    </li>
+    <li>
+      We have tested with keyboard navigation, VoiceOver and browser zoom. We have not done a
+      formal third-party audit.
+    </li>
+  </ul>
+
+  <h2>Tell us if something doesn't work</h2>
+  <p>
+    If any part of this site is difficult or impossible for you to use, please tell us. It is a bug
+    and we want to fix it.
+  </p>
+  <ul>
+    <li>Call <a href={site.phone.href}>{site.phone.display}</a></li>
+    <li>Email <a href={`mailto:${site.email}`}>{site.email}</a></li>
+  </ul>
+  <p>
+    And to be completely clear: <strong>you never have to use this website to work with us.</strong>
+    Everything here can be done by phone. If the easiest thing is to call and have somebody talk you
+    through it, that is a perfectly good way to do this — arguably the better one.
+  </p>
+
+  <h2>Standard we aim for</h2>
+  <p>
+    We aim to conform to the Web Content Accessibility Guidelines (WCAG) 2.2 at Level AA. We treat
+    that as a floor rather than a finish line.
+  </p>
+</LegalLayout>

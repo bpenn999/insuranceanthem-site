@@ -1,0 +1,82 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import ToolsPreview from '../../components/ToolsPreview.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import site from '../../config/site';
+
+const title = 'Free Medicare Tools';
+const description =
+  'Four free Medicare tools — plan type finder, enrollment window checker, annual cost estimator and IRMAA bracket estimator. No email required, nothing stored, nothing sold.';
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Free Tools', path: '/tools/' },
+];
+---
+
+<BaseLayout title={title} description={description} path="/tools/" breadcrumbs={breadcrumbs}>
+  <PageHero
+    eyebrow="Free tools"
+    title="Work it out yourself. Then call if you want to."
+    lede="Four small tools that answer the questions people ask before they are ready to talk to anybody. No email gate, no sign-up, nothing saved to a server."
+    breadcrumbs={breadcrumbs}
+  />
+
+  <section class="section section--tight" data-caustics="0.36">
+    <div class="wrap">
+      <ToolsPreview />
+    </div>
+  </section>
+
+  <section class="section band--warm" data-caustics="0.24">
+    <div class="wrap wrap--narrow">
+      <SectionHead
+        eyebrow="How these work"
+        title="Honest about what they can and can't do."
+      />
+      <div class="prose">
+        <p>
+          These run entirely in your browser. Nothing you type is sent anywhere, nothing is stored,
+          and there is no email box standing between you and the answer. Close the tab and it is
+          gone.
+        </p>
+        <p>
+          They are also not quotes. A real plan recommendation needs your specific doctors checked
+          against specific networks and your specific medications priced against specific
+          formularies — which is work that cannot honestly be done by a calculator. What these
+          tools do is get you to the right question faster, so that when we do talk, we start from
+          somewhere useful.
+        </p>
+        <h3>What they use</h3>
+        <ul>
+          <li>
+            <strong>Structural rules</strong> — enrollment windows, IRMAA brackets and the way
+            Medicare's parts fit together are set by federal rule, and the tools follow them.
+          </li>
+          <li>
+            <strong>Your own inputs</strong> — the cost estimator uses figures you supply about
+            your own expected usage rather than pretending to know them.
+          </li>
+          <li>
+            <strong>No plan database</strong> — the tools deliberately never show plan counts,
+            premiums or names, because a static page cannot keep those accurate and a wrong number
+            is worse than no number.
+          </li>
+        </ul>
+        <p>
+          Where a figure changes each year — the Part B premium, the IRMAA thresholds — it is
+          labelled with the year it applies to. If you are reading this after that year has
+          rolled over, treat it as approximate and
+          <a href="/contact/">ask me for the current number</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <CtaBand
+    title="When you'd rather just ask a person."
+    body={`No tool beats twenty minutes with somebody who does this all day. ${site.agent.name}, ${site.agent.experience}, based in ${site.address.locality} — and it costs nothing.`}
+  />
+</BaseLayout>

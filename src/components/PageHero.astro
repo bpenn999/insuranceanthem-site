@@ -1,0 +1,47 @@
+---
+import Kinetic from './Kinetic.astro';
+import Breadcrumbs from './Breadcrumbs.astro';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  breadcrumbs?: { name: string; path: string }[];
+  /** Caustics intensity behind this hero */
+  caustics?: string;
+}
+
+const { eyebrow, title, lede, breadcrumbs = [], caustics = '0.6' } = Astro.props;
+
+// `:empty` can't be relied on here — the indentation around <slot /> becomes a
+// text node, so the wrapper would keep its margin on pages that pass nothing.
+const hasSlot = Astro.slots.has('default');
+---
+
+<section class="page-hero" data-caustics={caustics}>
+  <div class="wrap">
+    {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
+    {eyebrow && <p class="eyebrow" data-rise data-armed>{eyebrow}</p>}
+    <h1><Kinetic text={title} stagger={38} /></h1>
+    {lede && <p class="lede page-hero__lede" data-rise data-armed style="--rise-delay:220ms">{lede}</p>}
+    <span class="draw-rule page-hero__rule" data-armed aria-hidden="true"></span>
+    {
+      hasSlot && (
+        <div class="page-hero__slot" data-rise data-armed style="--rise-delay:320ms">
+          <slot />
+        </div>
+      )
+    }
+  </div>
+</section>
+
+<style>
+  .page-hero {
+    padding-block: clamp(2.5rem, 6vw, 4.5rem) clamp(2rem, 4vw, 3rem);
+    position: relative;
+  }
+  .page-hero h1 { max-width: 20ch; }
+  .page-hero__lede { margin-top: var(--s-5); }
+  .page-hero__rule { max-width: 8rem; }
+  .page-hero__slot { margin-top: var(--s-6); }
+</style>

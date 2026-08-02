@@ -1,0 +1,141 @@
+---
+import site, { abs } from '../config/site';
+import { locations } from '../data/locations';
+import { products } from '../data/products';
+
+interface Props {
+  /** Extra JSON-LD nodes for this page (FAQPage, Article, Service, …) */
+  nodes?: Record<string, unknown>[];
+  breadcrumbs?: { name: string; path: string }[];
+}
+
+const { nodes = [], breadcrumbs = [] } = Astro.props;
+
+const orgId = `${site.origin}/#organization`;
+const personId = `${site.origin}/#brian-penner`;
+const siteId = `${site.origin}/#website`;
+
+const sameAs = Object.values(site.social).filter(Boolean);
+
+const graph: Record<string, unknown>[] = [
+  {
+    '@type': ['InsuranceAgency', 'LocalBusiness'],
+    '@id': orgId,
+    name: site.name,
+    legalName: site.legalName,
+    url: site.origin,
+    email: site.email,
+    telephone: site.phone.schema,
+    description: site.description,
+    image: abs('/og.png'),
+    logo: {
+      '@type': 'ImageObject',
+      url: abs('/favicon.svg'),
+    },
+    priceRange: 'Free consultation',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: site.address.locality,
+      addressRegion: site.address.region,
+      postalCode: site.address.postalCode,
+      addressCountry: site.address.country,
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: site.geo.latitude,
+      longitude: site.geo.longitude,
+    },
+    areaServed: locations.map((l) => ({
+      '@type': 'City',
+      name: l.city,
+      containedInPlace: {
+        '@type': 'AdministrativeArea',
+        name: `${l.county}, ${site.address.regionName}`,
+      },
+    })),
+    // Note: no `openingHours` string form — the structured spec below is the
+    // only representation, which keeps the two from drifting apart.
+    openingHoursSpecification: site.hours.schema.map((h) => ({
+      '@type': 'OpeningHoursSpecification',
+      dayOfWeek: h.days.map((d) => `https://schema.org/${d}`),
+      opens: h.opens,
+      closes: h.closes,
+    })),
+    knowsAbout: [
+      'Medicare Advantage',
+      'Medicare Supplement Insurance',
+      'Medigap',
+      'Medicare Part D',
+      'Long-Term Care Insurance',
+      'Medicare enrollment periods',
+    ],
+    founder: { '@id': personId },
+    employee: { '@id': personId },
+    ...(sameAs.length ? { sameAs } : {}),
+    hasOfferCatalog: {
+      '@type': 'OfferCatalog',
+      name: 'Medicare services',
+      itemListElement: products.map((p) => ({
+        '@type': 'Offer',
+        itemOffered: {
+          '@type': 'Service',
+          name: p.fullName,
+          description: p.blurb,
+          url: abs(`/${p.slug}/`),
+          serviceType: p.fullName,
+          provider: { '@id': orgId },
+        },
+      })),
+    },
+  },
+  {
+    '@type': 'Person',
+    '@id': personId,
+    name: site.agent.name,
+    jobTitle: site.agent.title,
+    worksFor: { '@id': orgId },
+    email: site.email,
+    telephone: site.phone.schema,
+    url: abs('/about/'),
+    knowsAbout: ['Medicare', 'Medicare Advantage', 'Medigap', 'Medicare Part D', 'Long-Term Care'],
+    identifier: {
+      '@type': 'PropertyValue',
+      name: 'National Producer Number',
+      value: site.agent.npn,
+    },
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: site.address.locality,
+      addressRegion: site.address.region,
+      addressCountry: site.address.country,
+    },
+  },
+  {
+    '@type': 'WebSite',
+    '@id': siteId,
+    url: site.origin,
+    name: site.name,
+    publisher: { '@id': orgId },
+    inLanguage: 'en-US',
+  },
+];
+
+if (breadcrumbs.length) {
+  graph.push({
+    '@type': 'BreadcrumbList',
+    itemListElement: breadcrumbs.map((b, i) => ({
+      '@type': 'ListItem',
+      position: i + 1,
+      name: b.name,
+      item: abs(b.path),
+    })),
+  });
+}
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@graph': [...graph, ...nodes],
+};
+---
+
+<script is:inline type="application/ld+json" set:html={JSON.stringify(jsonLd)} />

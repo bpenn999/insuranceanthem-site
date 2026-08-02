@@ -1,0 +1,280 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+---
+
+<ToolLayout
+  slug="enrollment-timeline"
+  title="Medicare Enrollment Window Checker — Free Date Calculator"
+  description="Enter your date of birth and get your exact Medicare Initial Enrollment Period, your Medigap open enrollment window, and every deadline that carries a lifetime penalty. Free, no email required."
+  h1="When can I enroll?"
+  lede="Enter your date of birth. You'll get your exact Initial Enrollment Period, the six-month Medigap window that never comes back, and the two annual windows that matter after that."
+>
+  <form id="ewc" novalidate>
+    <div class="t-field">
+      <label for="ewc-dob">Your date of birth</label>
+      <input type="date" id="ewc-dob" name="dob" required autocomplete="bday" />
+      <span class="t-hint">
+        Used only to do the arithmetic in your browser. Nothing is sent anywhere.
+      </span>
+    </div>
+
+    <fieldset class="t-fieldset">
+      <legend>Are you still covered by an employer group plan?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="employer" value="no" checked /><span><strong>No</strong><em>Retired, or on individual coverage</em></span></label>
+        <label class="t-option"><input type="radio" name="employer" value="yes" /><span><strong>Yes</strong><em>Through my own or my spouse's active employment</em></span></label>
+      </div>
+    </fieldset>
+
+    <div class="t-actions">
+      <button type="submit" class="btn btn--lg" data-magnetic="0.24">Show my dates</button>
+      <button type="reset" class="btn btn--ghost">Clear</button>
+    </div>
+    <p class="t-error" id="ewc-error" role="alert"></p>
+  </form>
+
+  <div class="t-result" id="ewc-result" hidden role="region" aria-live="polite" aria-label="Your enrollment dates">
+    <p class="t-result__eyebrow">Your windows</p>
+    <h2 class="t-result__head" id="ewc-head"></h2>
+    <div class="t-stats" id="ewc-stats"></div>
+    <ol class="t-timeline" id="ewc-timeline"></ol>
+    <div class="t-result__body" id="ewc-body"></div>
+    <div class="t-actions">
+      <a href="/contact/" class="btn btn--lg" data-magnetic="0.24">Get help hitting these dates</a>
+    </div>
+  </div>
+
+  <div slot="disclaimer">
+    <p>
+      All dates are calculated in your browser from the date you enter. Nothing is transmitted or
+      stored.
+    </p>
+    <p>
+      These are the standard federal windows. Special Enrollment Periods triggered by
+      circumstances — moving, losing coverage, qualifying for Extra Help, a plan leaving your area
+      — sit on top of them and are not shown here. If something in your situation is unusual, the
+      dates below are a starting point rather than the final word.
+    </p>
+  </div>
+
+  <div slot="explainer">
+    <h2>The windows, and what happens if you miss them</h2>
+    <div class="prose">
+      <h3>Initial Enrollment Period — seven months, once</h3>
+      <p>
+        Three months before the month you turn 65, the month itself, and three months after. Enroll
+        in the first three months and coverage starts on the first day of your birthday month.
+        Enroll during or after your birthday month and coverage is delayed — which is the quiet
+        reason to move early rather than on the deadline.
+      </p>
+      <p>
+        One oddity worth knowing: if you were born on the first of a month, Medicare treats you as
+        turning 65 the <em>previous</em> month, and every window shifts a month earlier. The
+        calculator above handles that.
+      </p>
+
+      <h3>Medigap open enrollment — six months, and it never returns</h3>
+      <p>
+        This is the single most consequential window in Medicare and the one people most often
+        walk past. It starts the first day of the month you are both 65 and enrolled in Part B, and
+        runs six months. Inside it, no carrier can refuse you a Medicare Supplement or charge you
+        more because of your health.
+      </p>
+      <p>
+        Outside it, Arizona carriers can medically underwrite. A diagnosis between now and then can
+        close a door that is standing open today. If a Supplement is anywhere in your thinking,
+        this is the deadline that matters.
+      </p>
+
+      <h3>The penalties, plainly</h3>
+      <ul>
+        <li>
+          <strong>Part B.</strong> 10% added to your premium for every full 12 months you could
+          have had Part B and did not — for as long as you have Medicare. Not for a year.
+          Permanently.
+        </li>
+        <li>
+          <strong>Part D.</strong> 1% of the national base premium for every month without
+          creditable drug coverage after your IEP, added permanently once you do enroll.
+        </li>
+      </ul>
+      <p>
+        Both are waived if you were covered by an employer group plan through active employment —
+        which is why the question above matters. If that applies to you, your clock starts when
+        that coverage ends, not at 65.
+      </p>
+
+      <h3>The two annual windows</h3>
+      <ul>
+        <li>
+          <strong>Annual Enrollment Period, 15 October – 7 December.</strong> Change anything:
+          Advantage plan, drug plan, or back to Original Medicare. Changes take effect 1 January.
+        </li>
+        <li>
+          <strong>Medicare Advantage Open Enrollment, 1 January – 31 March.</strong> If you are on
+          an Advantage plan, one switch to a different Advantage plan or back to Original Medicare.
+          Not available if you are on Original Medicare.
+        </li>
+      </ul>
+    </div>
+  </div>
+</ToolLayout>
+
+<script>
+  import { enrollmentWindows, nextAep, nextMaOep, utc } from '../../data/enrollment';
+
+  const form = document.getElementById('ewc') as HTMLFormElement | null;
+  if (form) {
+    const err = document.getElementById('ewc-error')!;
+    const result = document.getElementById('ewc-result')!;
+    const head = document.getElementById('ewc-head')!;
+    const stats = document.getElementById('ewc-stats')!;
+    const timeline = document.getElementById('ewc-timeline')!;
+    const body = document.getElementById('ewc-body')!;
+
+    const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+    /** Format a UTC-based date without letting the local timezone shift the day. */
+    const fmt = (d: Date) => `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}, ${d.getUTCFullYear()}`;
+    const fmtMonth = (d: Date) => `${MONTHS[d.getUTCMonth()]} ${d.getUTCFullYear()}`;
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const raw = (document.getElementById('ewc-dob') as HTMLInputElement).value;
+
+      if (!raw) {
+        err.textContent = 'Please enter your date of birth.';
+        return;
+      }
+
+      // Parse as UTC so the date never slides by a day in a western timezone.
+      const [yy, mm, dd] = raw.split('-').map(Number);
+      if (!yy || !mm || !dd) {
+        err.textContent = "That date doesn't look right.";
+        return;
+      }
+      const dob = utc(yy, mm - 1, dd);
+      const now = new Date();
+      const today = utc(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+
+      const age = (today.getTime() - dob.getTime()) / (365.2425 * 864e5);
+      if (age < 0) { err.textContent = 'That date is in the future.'; return; }
+      if (age > 120) { err.textContent = 'Please check that date of birth.'; return; }
+      err.textContent = '';
+
+      /* --- every window, from src/data/enrollment.ts ------------------- */
+      const w = enrollmentWindows(dob);
+      const {
+        bornFirst, iepStart, iepEnd, earlyDeadline,
+        coverageStart, medigapStart, medigapEnd,
+      } = w;
+      const anchorM = w.anchor.getUTCMonth();
+
+      const employer = (form.elements.namedItem('employer') as RadioNodeList).value === 'yes';
+
+      const aepNext = nextAep(today);
+      const maOepNext = nextMaOep(today);
+
+      /* --- headline ---------------------------------------------------- */
+      const daysTo = (d: Date) => Math.ceil((d.getTime() - today.getTime()) / 864e5);
+      const iepOpen = today >= iepStart && today <= iepEnd;
+      const iepPast = today > iepEnd;
+      const medigapOpen = today >= medigapStart && today <= medigapEnd;
+
+      if (iepOpen) {
+        head.textContent = 'Your Initial Enrollment Period is open right now.';
+      } else if (iepPast) {
+        head.textContent = 'Your Initial Enrollment Period has closed.';
+      } else {
+        head.textContent = `Your Initial Enrollment Period opens ${fmtMonth(iepStart)}.`;
+      }
+
+      /* --- stats ------------------------------------------------------- */
+      const statBlocks: string[] = [];
+      if (iepOpen) {
+        statBlocks.push(`<div class="t-stat"><span class="t-stat__value">${daysTo(iepEnd)}</span><span class="t-stat__label">Days left in your IEP</span></div>`);
+      } else if (!iepPast) {
+        statBlocks.push(`<div class="t-stat"><span class="t-stat__value">${daysTo(iepStart)}</span><span class="t-stat__label">Days until your IEP opens</span></div>`);
+      } else {
+        statBlocks.push(`<div class="t-stat"><span class="t-stat__value">${daysTo(aepNext.start) > 0 ? daysTo(aepNext.start) : 0}</span><span class="t-stat__label">Days until the next AEP</span></div>`);
+      }
+      statBlocks.push(`<div class="t-stat"><span class="t-stat__value">${fmtMonth(coverageStart)}</span><span class="t-stat__label">Earliest coverage start</span></div>`);
+      statBlocks.push(`<div class="t-stat"><span class="t-stat__value">${medigapOpen ? 'Open' : today < medigapStart ? 'Not yet' : 'Closed'}</span><span class="t-stat__label">Medigap window</span></div>`);
+      stats.innerHTML = statBlocks.join('');
+
+      /* --- timeline ---------------------------------------------------- */
+      const rows = [
+        {
+          when: `${fmtMonth(iepStart)} – ${fmtMonth(iepEnd)}`,
+          what: 'Initial Enrollment Period (7 months)',
+          note: `Sign up for Part A and Part B. Enroll on or before ${fmt(earlyDeadline)} and your coverage starts ${fmt(coverageStart)}. Enroll later in the window and the start date slides.`,
+          past: iepPast,
+        },
+        {
+          when: `${fmt(medigapStart)} – ${fmt(medigapEnd)}`,
+          what: 'Medigap open enrollment (6 months)',
+          note: 'The only period where a Medicare Supplement carrier cannot turn you down or surcharge you for your health. It does not come back.',
+          past: today > medigapEnd,
+        },
+        {
+          when: `${fmt(aepNext.start)} – ${fmt(aepNext.end)}`,
+          what: 'Annual Enrollment Period',
+          note: 'Change your Advantage plan, change your drug plan, or move between Original Medicare and Advantage. Takes effect 1 January.',
+          past: false,
+        },
+        {
+          when: `${fmt(maOepNext.start)} – ${fmt(maOepNext.end)}`,
+          what: 'Medicare Advantage Open Enrollment',
+          note: 'If you are on an Advantage plan: one switch to another Advantage plan or back to Original Medicare.',
+          past: false,
+        },
+      ];
+
+      timeline.innerHTML = rows
+        .map(
+          (r) => `<li${r.past ? ' data-past' : ''}>
+            <span class="t-timeline__when">${r.when}</span>
+            <span class="t-timeline__what">${r.what}</span>
+            <span class="t-timeline__note">${r.note}</span>
+          </li>`
+        )
+        .join('');
+
+      /* --- narrative --------------------------------------------------- */
+      const notes: string[] = [];
+
+      if (bornFirst) {
+        notes.push(
+          `<p><strong>Because you were born on the first of the month</strong>, Medicare treats you as turning 65 in ${MONTHS[anchorM]} rather than ${MONTHS[dob.getUTCMonth()]}. Every window above has been shifted a month earlier to match. It catches people out constantly.</p>`
+        );
+      }
+
+      if (employer) {
+        notes.push(
+          `<p><strong>You said you still have employer coverage.</strong> That changes things in your favour. If the plan is through active employment — yours or your spouse's — you can generally delay Part B without any late penalty, and you get an eight-month Special Enrollment Period once that employment or coverage ends. The dates above still apply to Part A, which most people take at 65 because it is premium-free.</p><p>Two cautions. Retiree coverage and COBRA are <em>not</em> active employment and do not protect you — the clock runs anyway. And if the employer has fewer than 20 employees, Medicare usually becomes the primary payer at 65 whether you enroll or not, which makes delaying expensive. Worth confirming with your benefits administrator before you rely on it.</p>`
+        );
+      } else if (iepPast) {
+        notes.push(
+          `<p><strong>Your Initial Enrollment Period has closed.</strong> If you enrolled on time, nothing here is a problem — you now work within the annual windows above. If you did not, and you did not have creditable coverage in the meantime, there may be a Part B and Part D penalty attached, and the General Enrollment Period (1 January – 31 March) is the route back in. Either way it is fixable, and worth a conversation rather than a guess.</p>`
+        );
+      } else if (iepOpen) {
+        notes.push(
+          `<p><strong>You are inside your window now.</strong> The practical advice is not to wait for the deadline: enrolling in the first three months is what gets your coverage started on ${fmt(coverageStart)} rather than later. It also leaves room to compare plans properly instead of choosing under time pressure.</p>`
+        );
+      } else {
+        notes.push(
+          `<p><strong>You have time — use some of it.</strong> Your window opens ${fmtMonth(iepStart)}. The people who end up happiest with their coverage are the ones who worked out which structure they wanted two or three months before they had to decide, rather than during the seven-month scramble.</p>`
+        );
+      }
+
+      body.innerHTML = notes.join('');
+      result.hidden = false;
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    form.addEventListener('reset', () => {
+      result.hidden = true;
+      err.textContent = '';
+    });
+  }
+</script>

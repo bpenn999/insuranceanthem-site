@@ -1,0 +1,97 @@
+---
+import { tools } from '../data/tools';
+import ProductIcon from './ProductIcon.astro';
+
+interface Props {
+  /** Show only the first n */
+  limit?: number;
+  /** Hide the tool matching this slug (used on tool pages themselves) */
+  exclude?: string;
+}
+const { limit, exclude } = Astro.props;
+
+let list = tools;
+if (exclude) list = list.filter((t) => t.slug !== exclude);
+if (limit) list = list.slice(0, limit);
+---
+
+<ul class="tools">
+  {
+    list.map((t, i) => (
+      <li data-rise data-armed style={`--rise-delay:${i * 70}ms`}>
+        <a href={`/tools/${t.slug}/`} class="card-link">
+          <article class="card card--hover tool">
+            <header class="tool__head">
+              <span class="tool__icon" aria-hidden="true"><ProductIcon name={t.icon} /></span>
+              <span class="tool__time">{t.minutes} min</span>
+            </header>
+            <h3 class="tool__title">{t.name}</h3>
+            <p class="tool__blurb">{t.blurb}</p>
+            <span class="tool__cta">
+              {t.cta}
+              <svg viewBox="0 0 14 10" aria-hidden="true">
+                <path d="M9 1l4 4-4 4M13 5H1" fill="none" stroke="currentColor"
+                      stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </span>
+          </article>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .tools {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+  }
+  .tools > li { display: flex; }
+  .tools .card-link { display: flex; width: 100%; }
+
+  .tool { display: flex; flex-direction: column; width: 100%; }
+
+  .tool__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--s-4);
+  }
+  .tool__icon { color: var(--navy); display: block; }
+  .tool__time {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 0.15rem 0.6rem;
+  }
+
+  .tool__title { font-size: var(--t-lg); margin-bottom: var(--s-2); }
+  .tool__blurb {
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: var(--s-5);
+  }
+  .tool__cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: var(--t-sm);
+    font-weight: 600;
+    color: var(--navy);
+  }
+  .tool__cta svg { width: 14px; height: 10px; transition: transform 340ms var(--ease); }
+  .card-link:hover .tool__cta svg { transform: translateX(4px); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-link:hover .tool__cta svg { transform: none; }
+  }
+</style>

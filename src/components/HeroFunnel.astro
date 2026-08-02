@@ -1,0 +1,417 @@
+---
+import site from '../config/site';
+
+/**
+ * Quote-interest funnel.
+ *
+ * This is a static site — there is no backend to post to, so the funnel does
+ * not pretend there is one. It gathers intent, gives an honest read on which
+ * direction fits, and hands off to /contact/ with the answers prefilled (and
+ * stashed in sessionStorage) so nobody has to type them twice.
+ *
+ * When a lead endpoint exists, set `data-endpoint` on the root and the submit
+ * step will POST the same payload before redirecting.
+ */
+---
+
+<div class="funnel" data-funnel>
+  <div class="funnel__head">
+    <p class="funnel__kicker">Free · 60 seconds · No obligation</p>
+    <div class="funnel__progress" role="presentation">
+      <span class="funnel__progress-bar" data-funnel-bar></span>
+    </div>
+  </div>
+
+  <form class="funnel__body" data-funnel-form novalidate>
+    <!-- Step 1 — intent -->
+    <fieldset class="funnel__step" data-step="1" data-active>
+      <legend class="funnel__q">What brings you here today?</legend>
+      <div class="funnel__choices">
+        <button type="button" class="choice" data-set="intent" data-value="turning-65">
+          <span class="choice__label">I'm turning 65</span>
+          <span class="choice__hint">First time on Medicare</span>
+        </button>
+        <button type="button" class="choice" data-set="intent" data-value="review">
+          <span class="choice__label">I have a plan already</span>
+          <span class="choice__hint">I want it reviewed</span>
+        </button>
+        <button type="button" class="choice" data-set="intent" data-value="retiring">
+          <span class="choice__label">I'm retiring</span>
+          <span class="choice__hint">Leaving employer coverage</span>
+        </button>
+        <button type="button" class="choice" data-set="intent" data-value="ltc">
+          <span class="choice__label">Long-term care</span>
+          <span class="choice__hint">Planning ahead</span>
+        </button>
+      </div>
+    </fieldset>
+
+    <!-- Step 2 — ZIP -->
+    <fieldset class="funnel__step" data-step="2">
+      <legend class="funnel__q">What's your ZIP code?</legend>
+      <p class="funnel__sub">Plan availability is set county by county — this is the one detail that changes everything.</p>
+      <div class="funnel__zip">
+        <label class="sr-only" for="funnel-zip">ZIP code</label>
+        <input
+          id="funnel-zip"
+          name="zip"
+          type="text"
+          inputmode="numeric"
+          autocomplete="postal-code"
+          maxlength="5"
+          pattern="[0-9]{5}"
+          placeholder="85086"
+          data-funnel-zip
+        />
+        <button type="button" class="btn" data-funnel-next>Continue</button>
+      </div>
+      <p class="funnel__error" data-funnel-zip-error hidden>Please enter a 5-digit ZIP code.</p>
+    </fieldset>
+
+    <!-- Step 3 — priority -->
+    <fieldset class="funnel__step" data-step="3">
+      <legend class="funnel__q">What matters most to you?</legend>
+      <div class="funnel__choices">
+        <button type="button" class="choice" data-set="priority" data-value="doctors">
+          <span class="choice__label">Keeping my doctors</span>
+        </button>
+        <button type="button" class="choice" data-set="priority" data-value="cost">
+          <span class="choice__label">Lowest monthly cost</span>
+        </button>
+        <button type="button" class="choice" data-set="priority" data-value="rx">
+          <span class="choice__label">My prescription costs</span>
+        </button>
+        <button type="button" class="choice" data-set="priority" data-value="travel">
+          <span class="choice__label">Coverage when I travel</span>
+        </button>
+      </div>
+    </fieldset>
+
+    <!-- Result -->
+    <fieldset class="funnel__step funnel__step--result" data-step="4">
+      <legend class="sr-only">Your result</legend>
+      <p class="funnel__result-eyebrow">Based on what you told us</p>
+      <p class="funnel__result-head" data-funnel-headline></p>
+      <p class="funnel__result-body" data-funnel-body></p>
+      <a href="/contact/" class="btn btn--lg btn--block" data-funnel-cta data-magnetic="0.2">
+        Get my free plan review
+      </a>
+      <p class="funnel__result-alt">
+        Or call <a href={site.phone.href} class="link">{site.phone.display}</a> — you'll get {site.agent.firstName}, not a queue.
+      </p>
+      <p class="funnel__disclaimer">
+        This is a starting point, not a recommendation. Nothing is submitted until you choose to
+        contact us, and no plan is ever selected without going through your own doctors and
+        prescriptions first.
+      </p>
+    </fieldset>
+
+    <div class="funnel__foot">
+      <button type="button" class="funnel__back" data-funnel-back hidden>
+        <svg viewBox="0 0 12 10" aria-hidden="true"><path d="M5 1 1 5l4 4M1 5h10" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        Back
+      </button>
+      <p class="funnel__count"><span data-funnel-current>1</span> of 3</p>
+    </div>
+  </form>
+</div>
+
+<style>
+  .funnel {
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
+    backdrop-filter: blur(6px);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+  }
+
+  .funnel__head {
+    padding: var(--s-4) var(--s-5) 0;
+    background: var(--porcelain-warm);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .funnel__kicker {
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: var(--s-3);
+  }
+  .funnel__progress {
+    height: 2px;
+    background: var(--rule);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .funnel__progress-bar {
+    display: block;
+    height: 100%;
+    width: 33.33%;
+    background: var(--navy);
+    transition: width 520ms var(--ease);
+  }
+
+  .funnel__body { padding: var(--s-5); }
+
+  .funnel__step { border: 0; padding: 0; margin: 0; display: none; }
+  .funnel__step[data-active] { display: block; animation: funnel-in 420ms var(--ease); }
+
+  @keyframes funnel-in {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: none; }
+  }
+
+  .funnel__q {
+    font-family: var(--font-display);
+    font-size: var(--t-xl);
+    color: var(--ink);
+    line-height: 1.25;
+    padding: 0;
+    margin-bottom: var(--s-4);
+  }
+  .funnel__sub {
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+    margin-top: -0.6rem;
+    margin-bottom: var(--s-4);
+  }
+
+  .funnel__choices { display: grid; gap: var(--s-2); }
+
+  .choice {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: 0.85rem 1rem;
+    background: var(--porcelain);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    transition: border-color 220ms var(--ease), background-color 220ms var(--ease),
+                transform 220ms var(--ease);
+  }
+  .choice:hover {
+    border-color: color-mix(in srgb, var(--navy) 45%, transparent);
+    background: var(--navy-wash);
+    transform: translateX(2px);
+  }
+  .choice__label { display: block; font-weight: 600; font-size: var(--t-sm); color: var(--ink); }
+  .choice__hint { display: block; font-size: var(--t-xs); color: var(--ink-muted); margin-top: 0.1rem; }
+
+  .funnel__zip { display: flex; gap: var(--s-2); }
+  .funnel__zip input {
+    flex: 1;
+    min-width: 0;
+    padding: 0.85rem 1rem;
+    min-height: 48px;
+    font-size: 1rem;
+    letter-spacing: 0.08em;
+    background: var(--porcelain);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    color: var(--ink);
+  }
+  .funnel__zip input:focus-visible { border-color: var(--navy); outline-offset: 1px; }
+  .funnel__error { color: #A42C1E; font-size: var(--t-sm); margin-top: var(--s-2); }
+
+  /* --- result --- */
+  .funnel__result-eyebrow {
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: var(--s-2);
+  }
+  .funnel__result-head {
+    font-family: var(--font-display);
+    font-size: var(--t-xl);
+    color: var(--ink);
+    line-height: 1.25;
+    margin-bottom: var(--s-3);
+  }
+  .funnel__result-body {
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+    margin-bottom: var(--s-5);
+    line-height: 1.6;
+  }
+  .funnel__result-alt {
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+    text-align: center;
+    margin-top: var(--s-3);
+  }
+  .funnel__disclaimer {
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    line-height: 1.5;
+    margin-top: var(--s-4);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--rule-soft);
+  }
+
+  /* --- foot --- */
+  .funnel__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin-top: var(--s-5);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--rule-soft);
+    min-height: 2rem;
+  }
+  .funnel__back {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: var(--t-xs);
+    font-weight: 600;
+    color: var(--ink-muted);
+    padding: 0.35rem 0;
+  }
+  .funnel__back svg { width: 12px; height: 10px; }
+  .funnel__back:hover { color: var(--navy); }
+  .funnel__back[hidden] { visibility: hidden; display: inline-flex; }
+  .funnel__count { font-size: var(--t-xs); color: var(--ink-faint); margin-left: auto; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .funnel__step[data-active] { animation: none; }
+    .choice:hover { transform: none; }
+  }
+</style>
+
+<script>
+  /**
+   * Funnel controller. Deliberately small and dependency-free — it drives the
+   * markup above and nothing else on the page.
+   */
+  type Answers = { intent?: string; zip?: string; priority?: string };
+
+  const RESULTS: Record<string, { head: string; body: string }> = {
+    doctors: {
+      head: 'A Medicare Supplement is worth pricing first.',
+      body: "Keeping every doctor you have points away from networks. A Supplement plus a Part D plan lets you see anyone who accepts Medicare — but it costs more monthly than an Advantage plan, so the honest comparison is both, side by side.",
+    },
+    cost: {
+      head: 'Start with the Medicare Advantage plans in your ZIP.',
+      body: "Lowest monthly outlay usually means an Advantage plan — many in this area run a $0 plan premium. The catch is the network and the copays, so we check your doctors before anything gets signed.",
+    },
+    rx: {
+      head: "Your medication list should pick the plan, not the other way round.",
+      body: 'Drug costs swing by hundreds of dollars a year between plans with nearly identical premiums. Bring your list with dosages and your pharmacy, and we price your actual year across every plan available to you.',
+    },
+    travel: {
+      head: 'A Medicare Supplement travels better than a network plan.',
+      body: 'If you split the year between states or spend real time on the road, Supplements go anywhere Medicare is accepted. Some PPO Advantage plans travel well too — worth comparing both before you decide.',
+    },
+  };
+
+  const INTENT_NOTE: Record<string, string> = {
+    'turning-65': 'Because you are turning 65, your enrollment window and your one-time Medigap open enrollment period both matter — timing here has lifetime consequences.',
+    review: 'Since you already have coverage, the first job is checking what changed on your plan this year before comparing anything else.',
+    retiring: 'Leaving employer coverage opens a Special Enrollment Period. There are deadlines attached, and missing them carries a permanent penalty.',
+    ltc: 'Long-term care sits outside what Medicare covers at all, so this is a separate conversation from plan selection — and it is easier to solve the earlier you look at it.',
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-funnel]').forEach((root) => {
+    const form = root.querySelector<HTMLFormElement>('[data-funnel-form]')!;
+    const steps = Array.from(root.querySelectorAll<HTMLElement>('.funnel__step'));
+    const bar = root.querySelector<HTMLElement>('[data-funnel-bar]')!;
+    const backBtn = root.querySelector<HTMLButtonElement>('[data-funnel-back]')!;
+    const counter = root.querySelector<HTMLElement>('[data-funnel-current]')!;
+    const zipInput = root.querySelector<HTMLInputElement>('[data-funnel-zip]')!;
+    const zipError = root.querySelector<HTMLElement>('[data-funnel-zip-error]')!;
+    const headline = root.querySelector<HTMLElement>('[data-funnel-headline]')!;
+    const bodyEl = root.querySelector<HTMLElement>('[data-funnel-body]')!;
+    const cta = root.querySelector<HTMLAnchorElement>('[data-funnel-cta]')!;
+
+    const answers: Answers = {};
+    let index = 0;
+
+    function show(next: number, moveFocus = true) {
+      index = Math.max(0, Math.min(steps.length - 1, next));
+      steps.forEach((s, i) => s.toggleAttribute('data-active', i === index));
+
+      const isResult = index === steps.length - 1;
+      bar.style.width = `${((index + 1) / steps.length) * 100}%`;
+      backBtn.hidden = index === 0;
+      counter.textContent = String(Math.min(index + 1, steps.length - 1));
+      (counter.parentElement as HTMLElement).hidden = isResult;
+
+      // Move focus to the new question so keyboard and screen-reader users
+      // follow the flow instead of being left behind on the old step. Skipped
+      // on the initial render — nobody has interacted yet, and focusing on load
+      // would paint a focus ring on a question the visitor never clicked.
+      if (moveFocus) {
+        const target =
+          steps[index].querySelector<HTMLElement>('.funnel__result-head') ??
+          steps[index].querySelector<HTMLElement>('legend');
+        target?.setAttribute('tabindex', '-1');
+        target?.focus({ preventScroll: true });
+      }
+
+      if (isResult) finish();
+    }
+
+    function finish() {
+      const r = RESULTS[answers.priority || 'cost'] || RESULTS.cost;
+      headline.textContent = r.head;
+      const note = answers.intent ? ` ${INTENT_NOTE[answers.intent] || ''}` : '';
+      bodyEl.textContent = `${r.body}${note}`;
+
+      const params = new URLSearchParams({ intent: 'quote' });
+      if (answers.zip) params.set('zip', answers.zip);
+      if (answers.intent) params.set('situation', answers.intent);
+      if (answers.priority) params.set('priority', answers.priority);
+      cta.href = `/contact/?${params.toString()}`;
+
+      // Hand the answers to the contact page so nothing is typed twice.
+      try {
+        sessionStorage.setItem('ia_funnel', JSON.stringify(answers));
+      } catch { /* private mode — the query string still carries it */ }
+
+      // If a lead endpoint is ever wired up, this is the single place to post.
+      const endpoint = root.dataset.endpoint;
+      if (endpoint) {
+        fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ ...answers, tool: 'hero-funnel', site: 'insuranceanthem.com' }),
+        }).catch(() => { /* never block the UI on a lead post */ });
+      }
+    }
+
+    root.querySelectorAll<HTMLButtonElement>('[data-set]').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const key = btn.dataset.set as keyof Answers;
+        answers[key] = btn.dataset.value;
+        show(index + 1); // auto-advance
+      });
+    });
+
+    function submitZip() {
+      const value = zipInput.value.trim();
+      if (!/^\d{5}$/.test(value)) {
+        zipError.hidden = false;
+        zipInput.focus();
+        return;
+      }
+      zipError.hidden = true;
+      answers.zip = value;
+      show(index + 1);
+    }
+
+    root.querySelector<HTMLButtonElement>('[data-funnel-next]')?.addEventListener('click', submitZip);
+    zipInput.addEventListener('input', () => { zipError.hidden = true; });
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      if (index === 1) submitZip();
+    });
+    backBtn.addEventListener('click', () => show(index - 1));
+
+    show(0, false);
+  });
+</script>

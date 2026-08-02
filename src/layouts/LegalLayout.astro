@@ -1,0 +1,54 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+
+interface Props {
+  title: string;
+  description: string;
+  path: string;
+  h1: string;
+  lede?: string;
+  updated: string;
+}
+
+const { title, description, path, h1, lede, updated } = Astro.props;
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: h1, path },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path={path}
+  breadcrumbs={breadcrumbs}
+  density="light"
+>
+  <PageHero eyebrow="Legal" title={h1} lede={lede} breadcrumbs={breadcrumbs} caustics="0.28" />
+
+  <section class="section section--tight" data-caustics="0.14">
+    <div class="wrap wrap--narrow">
+      <p class="legal__updated">Last updated: {updated}</p>
+      <div class="prose legal__body">
+        <slot />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .legal__updated {
+    font-size: var(--t-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding-bottom: var(--s-4);
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: var(--s-6);
+  }
+  .legal__body { font-size: var(--t-base); }
+  .legal__body h2 { font-size: var(--t-xl); }
+  .legal__body h3 { font-size: var(--t-lg); }
+</style>

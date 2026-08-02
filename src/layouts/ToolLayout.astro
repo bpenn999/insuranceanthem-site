@@ -1,0 +1,279 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import CtaBand from '../components/CtaBand.astro';
+import ToolsPreview from '../components/ToolsPreview.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { toolBySlug } from '../data/tools';
+import { abs } from '../config/site';
+
+interface Props {
+  slug: string;
+  title: string;
+  description: string;
+  h1: string;
+  lede: string;
+}
+
+const { slug, title, description, h1, lede } = Astro.props;
+const tool = toolBySlug(slug);
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Free Tools', path: '/tools/' },
+  { name: tool?.name ?? h1, path: `/tools/${slug}/` },
+];
+
+const schemaNodes = [
+  {
+    '@type': 'WebApplication',
+    name: tool?.name ?? h1,
+    description,
+    url: abs(`/tools/${slug}/`),
+    applicationCategory: 'FinanceApplication',
+    operatingSystem: 'Any',
+    browserRequirements: 'Requires JavaScript',
+    offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+    isAccessibleForFree: true,
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path={`/tools/${slug}/`}
+  breadcrumbs={breadcrumbs}
+  schemaNodes={schemaNodes}
+>
+  <PageHero
+    eyebrow="Free tool"
+    title={h1}
+    lede={lede}
+    breadcrumbs={breadcrumbs}
+    caustics="0.5"
+  />
+
+  <section class="section section--tight" data-caustics="0.2">
+    <div class="wrap wrap--narrow">
+      <div class="tool-shell">
+        <noscript>
+          <p class="tool-noscript">
+            This tool needs JavaScript to run. If you would rather not enable it, that is entirely
+            reasonable — <a href="/contact/">call or email instead</a> and I will walk you through
+            the same answer.
+          </p>
+        </noscript>
+        <slot />
+      </div>
+
+      <div class="tool-disclaimer">
+        <slot name="disclaimer">
+          <p>
+            This tool runs in your browser. Nothing you enter is sent anywhere or stored. It is an
+            estimate to help you ask better questions — not a quote, and not a recommendation of
+            any specific plan.
+          </p>
+        </slot>
+      </div>
+    </div>
+  </section>
+
+  <section class="section band--warm" data-caustics="0.2">
+    <div class="wrap wrap--narrow">
+      <slot name="explainer" />
+    </div>
+  </section>
+
+  <section class="section" data-caustics="0.3">
+    <div class="wrap">
+      <SectionHead eyebrow="Other tools" title="While you're here." />
+      <ToolsPreview exclude={slug} />
+    </div>
+  </section>
+
+  <CtaBand />
+</BaseLayout>
+
+<style is:global>
+  /* Shared chrome for every tool. Kept here so the four tool pages only ever
+     contain their own logic and copy. */
+  .tool-shell {
+    background: color-mix(in srgb, var(--surface) 96%, transparent);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+    padding: clamp(1.25rem, 4vw, 2.25rem);
+  }
+
+  .tool-noscript {
+    background: #FFF4D6;
+    border: 1px solid #E5C158;
+    border-radius: var(--radius);
+    padding: var(--s-4);
+    font-size: var(--t-sm);
+    color: #6B4E00;
+    margin-bottom: var(--s-5);
+  }
+
+  .tool-disclaimer {
+    margin-top: var(--s-5);
+    font-size: 0.75rem;
+    color: var(--ink-faint);
+    line-height: 1.6;
+  }
+  .tool-disclaimer p + p { margin-top: 0.6rem; }
+
+  /* --- form primitives shared by all four tools --- */
+  .t-field { display: grid; gap: 0.4rem; margin-bottom: var(--s-5); }
+  .t-field > label,
+  .t-fieldset > legend {
+    font-size: var(--t-sm);
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .t-hint { font-size: var(--t-xs); color: var(--ink-muted); line-height: 1.5; }
+
+  .t-field input[type='text'],
+  .t-field input[type='number'],
+  .t-field input[type='date'],
+  .t-field select {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    min-height: 48px;
+    background: var(--porcelain);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    color: var(--ink);
+    font-size: 1rem;
+  }
+  .t-field input:focus-visible,
+  .t-field select:focus-visible {
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px var(--navy-tint);
+    outline: none;
+  }
+
+  .t-fieldset { border: 0; padding: 0; margin: 0 0 var(--s-5); }
+  .t-fieldset > legend { padding: 0; margin-bottom: 0.6rem; }
+
+  .t-options { display: grid; gap: var(--s-2); }
+  .t-option {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.7rem;
+    padding: 0.75rem 0.9rem;
+    background: var(--porcelain);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: border-color 200ms var(--ease), background-color 200ms var(--ease);
+  }
+  .t-option:hover { border-color: color-mix(in srgb, var(--navy) 40%, transparent); }
+  .t-option:has(input:checked) {
+    border-color: var(--navy);
+    background: var(--navy-wash);
+  }
+  .t-option input { margin-top: 0.2rem; accent-color: var(--navy); flex: none; }
+  .t-option span { font-size: var(--t-sm); line-height: 1.5; }
+  .t-option strong { display: block; color: var(--ink); }
+  .t-option em { display: block; font-style: normal; font-size: var(--t-xs); color: var(--ink-muted); }
+
+  .t-row {
+    display: grid;
+    gap: var(--s-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  }
+
+  .t-actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-6); }
+
+  .t-error {
+    color: #A42C1E;
+    font-size: var(--t-sm);
+    margin-top: var(--s-3);
+  }
+  .t-error:empty { display: none; }
+
+  /* --- result panel --- */
+  .t-result {
+    margin-top: var(--s-6);
+    padding-top: var(--s-6);
+    border-top: 1px solid var(--rule);
+  }
+  .t-result[hidden] { display: none; }
+  .t-result__eyebrow {
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: var(--s-3);
+  }
+  .t-result__head {
+    font-family: var(--font-display);
+    font-size: var(--t-2xl);
+    color: var(--ink);
+    line-height: 1.15;
+    margin-bottom: var(--s-4);
+    letter-spacing: -0.015em;
+  }
+  .t-result__body { color: var(--ink-body); line-height: 1.65; }
+  .t-result__body p + p { margin-top: 0.9rem; }
+
+  .t-stats {
+    display: grid;
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    margin: var(--s-5) 0;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
+  }
+  .t-stat { background: var(--porcelain); padding: var(--s-4); display: grid; gap: 0.2rem; }
+  .t-stat__value {
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 3vw, 1.75rem);
+    color: var(--navy);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+  }
+  .t-stat__label {
+    font-size: var(--t-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    line-height: 1.35;
+  }
+
+  .t-timeline { list-style: none; padding: 0; display: grid; gap: 0; margin: var(--s-5) 0; }
+  .t-timeline li {
+    position: relative;
+    padding: 0 0 var(--s-5) var(--s-6);
+    border-left: 1px solid var(--rule);
+  }
+  .t-timeline li:last-child { padding-bottom: 0; border-left-color: transparent; }
+  .t-timeline li::before {
+    content: '';
+    position: absolute;
+    left: -4.5px;
+    top: 0.45em;
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--navy);
+  }
+  .t-timeline li[data-past]::before { background: var(--rule); }
+  .t-timeline__when {
+    display: block;
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: 0.2rem;
+  }
+  .t-timeline li[data-past] .t-timeline__when { color: var(--ink-faint); }
+  .t-timeline__what { font-weight: 600; color: var(--ink); display: block; margin-bottom: 0.15rem; }
+  .t-timeline__note { font-size: var(--t-sm); color: var(--ink-muted); line-height: 1.55; }
+</style>

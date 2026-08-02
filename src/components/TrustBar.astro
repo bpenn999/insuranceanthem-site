@@ -1,0 +1,118 @@
+---
+import site from '../config/site';
+
+/**
+ * "22+ Years · Licensed in 18 States · NPN 8206556"
+ * The first two count up; the NPN is an identifier and must never animate
+ * through wrong numbers, so it renders whole.
+ */
+const items = [
+  { value: site.agent.experienceYears, suffix: '+', label: 'Years', countable: true },
+  { value: site.agent.statesLicensed, suffix: '', label: 'States Licensed', countable: true },
+  { value: site.agent.npn, suffix: '', label: 'National Producer Number', countable: false },
+];
+---
+
+<section class="trust" aria-label="Credentials" data-caustics="0.3">
+  <div class="wrap">
+    <ul class="trust__list">
+      {
+        items.map((item, i) => (
+          <li class="trust__item" data-rise data-armed style={`--rise-delay:${i * 90}ms`}>
+            {item.countable ? (
+              <span
+                class="trust__value tabular"
+                data-countup={item.value}
+                data-suffix={item.suffix}
+                data-duration={1200 + i * 200}
+              >
+                {item.value}
+                {item.suffix}
+              </span>
+            ) : (
+              <span class="trust__value tabular">{item.value}</span>
+            )}
+            <span class="trust__label">{item.label}</span>
+          </li>
+        ))
+      }
+    </ul>
+    <p class="trust__line">
+      <span>{site.agent.experience}</span>
+      <span aria-hidden="true">·</span>
+      <span>Licensed in {site.agent.statesLicensed} States</span>
+      <span aria-hidden="true">·</span>
+      <span>NPN {site.agent.npn}</span>
+    </p>
+  </div>
+</section>
+
+<style>
+  .trust {
+    padding-block: clamp(2rem, 4vw, 3rem);
+    border-block: 1px solid var(--rule-soft);
+    background: color-mix(in srgb, var(--porcelain-warm) 86%, transparent);
+  }
+
+  .trust__list {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--s-4);
+    text-align: center;
+  }
+  .trust__item {
+    display: grid;
+    gap: 0.15rem;
+    position: relative;
+  }
+  .trust__item + .trust__item::before {
+    content: '';
+    position: absolute;
+    left: calc(var(--s-4) / -2);
+    top: 12%;
+    bottom: 12%;
+    width: 1px;
+    background: var(--rule);
+  }
+  .trust__value {
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
+    font-weight: 500;
+    color: var(--navy);
+    line-height: 1;
+    letter-spacing: -0.02em;
+  }
+  .trust__label {
+    font-size: var(--t-xs);
+    font-weight: 500;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    line-height: 1.35;
+  }
+
+  /* The plain-text version of the same claim — kept for search engines and
+     assistive tech that would otherwise read three orphaned numbers. */
+  .trust__line {
+    display: flex;
+    justify-content: center;
+    gap: 0.6rem;
+    margin-top: var(--s-5);
+    font-size: var(--t-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 560px) {
+    .trust__list { grid-template-columns: 1fr; gap: var(--s-5); }
+    .trust__item + .trust__item::before {
+      left: 25%; right: 25%; top: calc(var(--s-5) / -2);
+      width: auto; height: 1px; bottom: auto;
+    }
+    .trust__line { display: none; }
+  }
+</style>

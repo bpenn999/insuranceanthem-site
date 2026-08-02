@@ -1,0 +1,41 @@
+---
+import Kinetic from './Kinetic.astro';
+
+interface Props {
+  eyebrow?: string;
+  title: string;
+  lede?: string;
+  align?: 'left' | 'center';
+  /** heading level — keeps the document outline honest */
+  as?: 'h2' | 'h3';
+  rule?: boolean;
+}
+
+const {
+  eyebrow,
+  title,
+  lede,
+  align = 'left',
+  as: Tag = 'h2',
+  rule = true,
+}: Props = Astro.props;
+---
+
+<header class:list={['sec-head', `sec-head--${align}`]}>
+  {eyebrow && <p class="eyebrow" data-rise data-armed>{eyebrow}</p>}
+  <Tag><Kinetic text={title} stagger={34} /></Tag>
+  {lede && <p class="lede sec-head__lede" data-rise data-armed style="--rise-delay:180ms">{lede}</p>}
+  {rule && <span class="draw-rule sec-head__rule" data-armed aria-hidden="true"></span>}
+</header>
+
+<style>
+  .sec-head { margin-bottom: clamp(2rem, 4vw, 3.25rem); }
+  .sec-head__lede { margin-top: var(--s-4); }
+  .sec-head__rule { max-width: 6rem; }
+
+  .sec-head--center { text-align: center; }
+  .sec-head--center .eyebrow { justify-content: center; }
+  .sec-head--center .eyebrow::before { display: none; }
+  .sec-head--center .lede { margin-inline: auto; }
+  .sec-head--center .draw-rule { margin-inline: auto; transform-origin: center; }
+</style>

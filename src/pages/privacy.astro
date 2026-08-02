@@ -1,0 +1,146 @@
+---
+import LegalLayout from '../layouts/LegalLayout.astro';
+import site from '../config/site';
+---
+
+<LegalLayout
+  title="Privacy Policy"
+  description={`How ${site.name} collects, uses and protects your information. We do not sell or share your personal information with lead brokers or third-party marketers.`}
+  path="/privacy/"
+  h1="Privacy Policy"
+  lede="Short version: we collect what you send us, we use it to help you with Medicare, and we do not sell it to anybody."
+  updated="August 2, 2026"
+>
+  <h2>Who we are</h2>
+  <p>
+    {site.name} is an independent insurance agency operated by {site.agent.name}, National
+    Producer Number {site.agent.npn}, based in {site.address.display}. You can reach us at
+    <a href={`mailto:${site.email}`}>{site.email}</a> or
+    <a href={site.phone.href}>{site.phone.display}</a>.
+  </p>
+
+  <h2>What we collect</h2>
+  <p>We only collect information you choose to give us. In practice that means:</p>
+  <ul>
+    <li>
+      <strong>Contact details you submit.</strong> Your name, phone number, email address and ZIP
+      code when you fill in a form or call us.
+    </li>
+    <li>
+      <strong>What you tell us about your situation.</strong> Your Medicare status, the doctors you
+      want to keep, your prescriptions, and anything else you share so we can do useful work.
+    </li>
+    <li>
+      <strong>Basic technical information.</strong> Standard web server logs — IP address, browser
+      type, pages requested — generated automatically when any browser loads any website.
+    </li>
+  </ul>
+
+  <h3>What our tools do not collect</h3>
+  <p>
+    The free tools on this site — the plan type finder, enrollment window checker, cost estimator
+    and IRMAA estimator — run entirely in your browser. Nothing you type into them is transmitted
+    to us or to anybody else, and nothing is stored on a server. Your date of birth, your income
+    and your medication figures never leave your device.
+  </p>
+  <p>
+    Where a tool remembers your answers between pages, it uses your browser's own session storage,
+    which your browser clears when you close the tab.
+  </p>
+
+  <h2>How we use it</h2>
+  <p>We use what you give us to:</p>
+  <ul>
+    <li>Respond to your enquiry and answer your questions</li>
+    <li>Compare Medicare plans against your doctors, prescriptions and ZIP code</li>
+    <li>Complete an enrollment application if you decide to enroll</li>
+    <li>Service your coverage afterwards — billing questions, network changes, annual reviews</li>
+    <li>Meet the record-keeping obligations that apply to licensed insurance agents</li>
+  </ul>
+
+  <h2>What we do not do</h2>
+  <p>This is the part that matters most, so it is stated plainly:</p>
+  <ul>
+    <li>
+      <strong>We do not sell your information.</strong> Not to lead brokers, not to marketing
+      companies, not to anybody.
+    </li>
+    <li>
+      <strong>We do not share it with other agents or agencies</strong> for their own marketing.
+    </li>
+    <li>
+      <strong>We do not add you to unrelated mailing lists</strong> because you asked one Medicare
+      question.
+    </li>
+    <li>
+      <strong>We do not use advertising or cross-site tracking pixels</strong> on this website.
+    </li>
+  </ul>
+
+  <h2>Who we do share it with</h2>
+  <p>Only where it is necessary to do the thing you asked for:</p>
+  <ul>
+    <li>
+      <strong>Insurance carriers</strong>, when you apply for a plan. An application cannot be
+      submitted without it.
+    </li>
+    <li>
+      <strong>Service providers</strong> who operate our email and customer records systems on our
+      behalf, under confidentiality obligations.
+    </li>
+    <li>
+      <strong>Regulators or law enforcement</strong>, where we are legally required to.
+    </li>
+  </ul>
+
+  <h2>Health information</h2>
+  <p>
+    Some of what you tell us — your medications, your conditions, your providers — is health
+    information, and we treat it accordingly. It is used solely to compare plans and complete
+    applications, shared only with the carriers required to process what you asked for, and never
+    used for marketing.
+  </p>
+
+  <h2>Contact and consent</h2>
+  <p>
+    If you submit a form asking us to contact you, you are consenting to us reaching you at the
+    number and email you provided, including by phone, text and email, about Medicare plan options.
+  </p>
+  <p>
+    <strong>Consent is not a condition of purchasing anything.</strong> Message and data rates may
+    apply. You can opt out at any time — reply STOP to a text, click unsubscribe in an email, or
+    just tell us, and we will stop.
+  </p>
+
+  <h2>Cookies</h2>
+  <p>
+    This site sets no advertising or analytics cookies. Your browser may store small amounts of
+    data locally so a tool can remember your answers as you move between pages; that data stays on
+    your device and is cleared when you close the tab.
+  </p>
+
+  <h2>Your choices</h2>
+  <p>You can, at any time:</p>
+  <ul>
+    <li>Ask us what information we hold about you</li>
+    <li>Ask us to correct anything that is wrong</li>
+    <li>Ask us to delete your information, subject to the records we are legally required to keep</li>
+    <li>Tell us to stop contacting you</li>
+  </ul>
+  <p>
+    Email <a href={`mailto:${site.email}`}>{site.email}</a> or call
+    <a href={site.phone.href}>{site.phone.display}</a>. No form required.
+  </p>
+
+  <h2>Children</h2>
+  <p>
+    This site is intended for adults considering Medicare coverage. We do not knowingly collect
+    information from children.
+  </p>
+
+  <h2>Changes</h2>
+  <p>
+    If this policy changes we will update the date at the top of the page. Material changes will be
+    noted clearly rather than slipped in.
+  </p>
+</LegalLayout>

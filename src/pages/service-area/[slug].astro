@@ -1,0 +1,247 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import ServicesGrid from '../../components/ServicesGrid.astro';
+import ToolsPreview from '../../components/ToolsPreview.astro';
+import Faq from '../../components/Faq.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import site, { abs } from '../../config/site';
+import { locations } from '../../data/locations';
+
+export const getStaticPaths = (() =>
+  locations.map((location) => ({
+    params: { slug: location.slug },
+    props: { location },
+  }))) satisfies GetStaticPaths;
+
+const { location } = Astro.props;
+const others = locations.filter((l) => l.slug !== location.slug);
+
+const title = `Medicare Help in ${location.label}`;
+const description = `${location.summary} ${site.agent.name}, ${site.agent.experience}, NPN ${site.agent.npn}. Call ${site.phone.display}.`;
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Service Area', path: '/service-area/' },
+  { name: location.city, path: `/service-area/${location.slug}/` },
+];
+
+const localFaqs = [
+  {
+    q: `Do you meet clients in ${location.city}?`,
+    a: `Yes. ${location.proximity} Appointments happen wherever suits you — kitchen table, library, coffee shop — and plenty of people prefer to do the whole thing by phone or video instead. Either way the comparison work is identical.`,
+  },
+  {
+    q: `Which Medicare plans are available in ${location.zips[0]}?`,
+    a: `Plan availability in Medicare is set by county, and ${location.county} has a substantial number of Advantage and Part D plans to choose between. I deliberately do not publish plan counts, names or premiums on this site — they change every plan year and a stale number is worse than no number. What I will do is pull the current list for your ZIP while we are talking.`,
+  },
+  {
+    q: `What does it cost to work with you in ${location.city}?`,
+    a: `Nothing, at any point. Carriers pay a set commission to licensed agents and it is identical whether you enroll through me, through a call centre or directly. Your premium is the same either way — the only difference is whether somebody local checks your doctors and prescriptions first.`,
+  },
+  {
+    q: `I already have a plan. Is it worth a review?`,
+    a: `Usually. Networks, formularies and premiums all reset every January, and the most expensive mistake I see in ${location.county} is a plan that fit perfectly three years ago and quietly stopped fitting. A review takes about twenty minutes and costs nothing.`,
+  },
+];
+
+const schemaNodes = [
+  {
+    '@type': 'FAQPage',
+    mainEntity: localFaqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+  {
+    '@type': 'Service',
+    name: `Medicare insurance guidance in ${location.label}`,
+    description: location.summary,
+    url: abs(`/service-area/${location.slug}/`),
+    provider: { '@id': `${site.origin}/#organization` },
+    areaServed: {
+      '@type': 'City',
+      name: location.city,
+      containedInPlace: { '@type': 'AdministrativeArea', name: location.county },
+    },
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path={`/service-area/${location.slug}/`}
+  breadcrumbs={breadcrumbs}
+  schemaNodes={schemaNodes}
+>
+  <PageHero
+    eyebrow={`${location.county} · ${location.zips.join(' · ')}`}
+    title={`Medicare help in ${location.city}.`}
+    lede={location.summary}
+    breadcrumbs={breadcrumbs}
+  >
+    <div class="btn-row">
+      <a href="/contact/" class="btn btn--lg" data-magnetic="0.3">Book a free review</a>
+      <a href={site.phone.href} class="btn btn--ghost btn--lg" data-magnetic="0.22">
+        Call {site.phone.display}
+      </a>
+    </div>
+  </PageHero>
+
+  <!-- ── Local context ────────────────────────────────────────────────── -->
+  <section class="section section--tight" data-caustics="0.3">
+    <div class="wrap loc">
+      <div class="loc__main">
+        <h2 class="loc__h2">What Medicare looks like in {location.city}</h2>
+        <div class="loc__body">
+          {location.local.map((para, i) => (
+            <p data-rise data-armed style={`--rise-delay:${i * 70}ms`}>{para}</p>
+          ))}
+        </div>
+      </div>
+
+      <aside class="card loc__card" data-rise data-armed>
+        <h2 class="loc__card-title">Getting to you</h2>
+        <p class="loc__card-note">{location.proximity}</p>
+        <dl class="loc__meta">
+          <div>
+            <dt>Based in</dt>
+            <dd>{site.address.display}</dd>
+          </div>
+          <div>
+            <dt>Covering</dt>
+            <dd>{location.label} · {location.zips.join(', ')}</dd>
+          </div>
+          <div>
+            <dt>County</dt>
+            <dd>{location.county}</dd>
+          </div>
+          <div>
+            <dt>Hours</dt>
+            <dd>{site.hours.display}</dd>
+          </div>
+          <div>
+            <dt>Advisor</dt>
+            <dd>{site.agent.name} · NPN {site.agent.npn}</dd>
+          </div>
+        </dl>
+        <a href={site.phone.href} class="btn btn--block loc__card-cta" data-magnetic="0.2">
+          Call {site.phone.display}
+        </a>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ── Services ─────────────────────────────────────────────────────── -->
+  <section class="section band--warm" data-caustics="0.24">
+    <div class="wrap">
+      <SectionHead
+        eyebrow={`Serving ${location.city}`}
+        title="What I can help with."
+        lede="Medicare only — which is why the answers are specific rather than general."
+      />
+      <ServicesGrid />
+    </div>
+  </section>
+
+  <!-- ── Tools ────────────────────────────────────────────────────────── -->
+  <section class="section" data-caustics="0.32">
+    <div class="wrap">
+      <SectionHead
+        eyebrow="Before you call"
+        title="Free tools, no email required."
+      />
+      <ToolsPreview limit={3} />
+    </div>
+  </section>
+
+  <!-- ── FAQ ──────────────────────────────────────────────────────────── -->
+  <section class="section band--deep" data-caustics="0.22">
+    <div class="wrap wrap--narrow">
+      <SectionHead eyebrow="Questions" title={`Medicare in ${location.city}, answered.`} />
+      <Faq items={localFaqs} openFirst />
+    </div>
+  </section>
+
+  <!-- ── Nearby ───────────────────────────────────────────────────────── -->
+  <section class="section" data-caustics="0.3">
+    <div class="wrap">
+      <SectionHead eyebrow="Nearby" title="Also serving." rule={false} />
+      <ul class="nearby">
+        {
+          others.map((o, i) => (
+            <li data-rise data-armed style={`--rise-delay:${i * 70}ms`}>
+              <a href={`/service-area/${o.slug}/`} class="nearby__link">
+                <span class="nearby__city">{o.label}</span>
+                <span class="nearby__zip">{o.zips.join(' · ')}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <CtaBand
+    title={`Let's talk about your options in ${location.city}.`}
+    body={`No cost, no obligation, no call centre. ${site.agent.name} directly — ${site.agent.experience} doing exactly this.`}
+  />
+</BaseLayout>
+
+<style>
+  .loc { display: grid; gap: var(--s-7); align-items: start; }
+  .loc__h2 { font-size: var(--t-2xl); margin-bottom: var(--s-5); }
+  .loc__body { color: var(--ink-body); font-size: var(--t-lg); line-height: 1.65; max-width: 62ch; }
+  .loc__body p + p { margin-top: 1.1em; }
+
+  .loc__card { background: color-mix(in srgb, var(--surface) 96%, transparent); }
+  .loc__card-title { font-size: var(--t-lg); margin-bottom: var(--s-2); }
+  .loc__card-note { font-size: var(--t-sm); color: var(--ink-muted); margin-bottom: var(--s-5); line-height: 1.55; }
+
+  .loc__meta { display: grid; gap: var(--s-3); margin-bottom: var(--s-5); }
+  .loc__meta div { display: grid; gap: 0.1rem; padding-bottom: var(--s-3); border-bottom: 1px solid var(--rule-soft); }
+  .loc__meta div:last-child { border-bottom: 0; padding-bottom: 0; }
+  .loc__meta dt {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .loc__meta dd { margin: 0; font-size: var(--t-sm); color: var(--ink-body); }
+
+  @media (min-width: 900px) {
+    .loc { grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr); gap: var(--s-9); }
+    .loc__card { position: sticky; top: 6rem; }
+  }
+
+  .nearby {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 1px;
+    background: var(--rule);
+    border-block: 1px solid var(--rule);
+  }
+  .nearby__link {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--s-4);
+    padding: var(--s-4) var(--s-2);
+    background: var(--porcelain);
+    transition: background-color 260ms var(--ease), padding-left 300ms var(--ease);
+  }
+  .nearby__link:hover { background: var(--surface); padding-left: var(--s-4); }
+  .nearby__city { font-family: var(--font-display); font-size: var(--t-lg); color: var(--ink); }
+  .nearby__link:hover .nearby__city { color: var(--navy); }
+  .nearby__zip { font-size: var(--t-xs); color: var(--ink-faint); letter-spacing: 0.05em; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .nearby__link:hover { padding-left: var(--s-2); }
+  }
+</style>

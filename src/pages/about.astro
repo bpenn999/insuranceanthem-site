@@ -1,0 +1,251 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Faq from '../components/Faq.astro';
+import site, { abs } from '../config/site';
+import { locations } from '../data/locations';
+
+const title = `About Brian Penner — ${site.agent.experience} in Medicare`;
+const description = `${site.agent.name}, licensed independent Medicare advisor in Anthem, AZ. ${site.agent.experience} in Medicare, licensed in ${site.agent.statesLicensed} states, NPN ${site.agent.npn}. Medicare Advantage, Supplement, Part D and long-term care — one lane, no other product lines.`;
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'About', path: '/about/' },
+];
+
+const aboutFaqs = [
+  {
+    q: 'Are you an independent agent or captive to one carrier?',
+    a: 'Independent. I contract with multiple carriers rather than working for one, which means no company sets my product shelf and no company pays me more to recommend theirs. That said, no agent represents every plan in a market — nobody does. That is why the disclaimer at the bottom of every page exists, and why I will point you to Medicare.gov or 1-800-MEDICARE if you want the complete universe.',
+  },
+  {
+    q: 'How are you paid?',
+    a: 'By the insurance carrier, at a commission rate set by CMS, and only if you enroll. The rate is the same across carriers for a given product type — that is federal rule, not a company policy — which is precisely what removes the incentive to steer you. You pay nothing, and your premium is identical whether you use me, a call centre, or nobody at all.',
+  },
+  {
+    q: 'Why Medicare only? Why not health insurance generally?',
+    a: 'Because doing one thing for twenty-two years produces a different quality of answer than doing eight things for the same twenty-two years. Medicare is deep enough on its own — four product lines, annual formulary and network changes, enrollment windows with lifetime consequences. I would rather know that properly than know six markets partially.',
+  },
+  {
+    q: 'What happens after I enroll? Do you disappear?',
+    a: 'No, and this is the part that actually matters. I stay your agent of record. That means the billing question in March, the network change in July and the plan review every fall come to me — not to a 1-800 number. Most of the value in having an agent shows up in years two through ten, not on enrollment day.',
+  },
+  {
+    q: 'Will you tell me if my current plan is already the right one?',
+    a: 'Yes, and it happens regularly. There is no commission in telling somebody to stay put, which is exactly why it is worth hearing. If your plan still fits, the honest answer is that we are done — see you next fall.',
+  },
+];
+
+const schemaNodes = [
+  {
+    '@type': 'AboutPage',
+    url: abs('/about/'),
+    mainEntity: { '@id': `${site.origin}/#brian-penner` },
+  },
+  {
+    '@type': 'FAQPage',
+    mainEntity: aboutFaqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path="/about/"
+  breadcrumbs={breadcrumbs}
+  schemaNodes={schemaNodes}
+>
+  <PageHero
+    eyebrow="About"
+    title="Brian Penner"
+    lede={`Licensed independent Medicare advisor. ${site.agent.experience} in Medicare, licensed in ${site.agent.statesLicensed} states, based in ${site.address.display}.`}
+    breadcrumbs={breadcrumbs}
+  />
+
+  <!-- ── Story ────────────────────────────────────────────────────────── -->
+  <section class="section section--tight" data-caustics="0.28">
+    <div class="wrap about">
+      <div class="prose about__prose">
+        <p class="about__opener">
+          Most people arrive at Medicare the same way: a stack of mail two inches thick, three
+          phone calls a day from numbers they do not recognise, and a deadline nobody explained
+          properly. That is not a knowledge problem. It is a noise problem.
+        </p>
+        <p>
+          My job is to cut the noise down to the two or three plans that could actually work for
+          you, explain honestly where each one falls short, and then get out of the way while you
+          decide. That is it. Twenty-two years, one lane.
+        </p>
+
+        <h2>What independent actually means</h2>
+        <p>
+          It means I contract with multiple carriers rather than working for one. No company sets
+          my product shelf, and no company pays me more to recommend theirs — commission rates are
+          set by CMS and are the same across carriers for a given product type.
+        </p>
+        <p>
+          It does not mean I represent every plan available. Nobody does, and any agent who
+          implies otherwise is telling you something untrue. That is why the disclaimer sits at the
+          bottom of every page on this site, and why I will happily point you to Medicare.gov or
+          1-800-MEDICARE if you want to see the complete universe for yourself.
+        </p>
+
+        <h2>How I work</h2>
+        <p>
+          The first conversation is mostly me asking questions and writing things down. Which
+          doctors do you want to keep, and are any of them the reason you would refuse a plan? What
+          are you taking, at what dosage, from which pharmacy? Do you travel, or split the year?
+          What can you comfortably pay each month, and what would a bad year need to not cost you?
+        </p>
+        <p>
+          Then I do the unglamorous part: your providers against each network, your medication list
+          against each formulary, the full-year cost rather than the premium. What survives is
+          usually two or three plans, and I will tell you where each one is weak as well as where
+          it is strong.
+        </p>
+        <p>
+          Then you choose. Not me — you. I handle the paperwork, and then I stay your agent for
+          the billing question in March, the network change in July and the review every fall.
+        </p>
+
+        <h2>What I will not do</h2>
+        <ul>
+          <li>
+            Tell you a plan is right for you before I have checked your own doctors against its
+            network. That check is the job, and it cannot be skipped for speed.
+          </li>
+          <li>
+            Recommend a change when your current plan already fits. There is no commission in
+            "stay put", which is exactly why it is worth hearing from me.
+          </li>
+          <li>
+            Sell you anything outside Medicare. If you need something else, I will point you at
+            somebody who does it well rather than dabble.
+          </li>
+          <li>
+            Pressure you toward a deadline. Deadlines in Medicare are real and I will tell you
+            plainly when one is close — but "real deadline" and "sales pressure" are different
+            things, and you will be able to tell which one you are hearing.
+          </li>
+        </ul>
+
+        <h2>Why Anthem</h2>
+        <p>
+          Because local is not a marketing word in this business — it is the difference between an
+          answer and a brochure. Plan availability is set county by county. Provider networks are
+          drawn around specific hospital systems. Whether the nearest in-network cardiologist is
+          ten minutes away or forty changes which plan is actually right for you, and that is not
+          something a call centre in another state can weigh.
+        </p>
+        <p>
+          I work {locations.map((l) => l.label).join(', ').replace(/, ([^,]*)$/, ' and $1')}, and I
+          know which networks reach which providers here. That is the whole value proposition.
+        </p>
+      </div>
+
+      <aside class="about__aside">
+        <div class="card about__creds" data-rise data-armed>
+          <h2 class="about__creds-title">Credentials</h2>
+          <dl class="about__dl">
+            <div>
+              <dt>National Producer Number</dt>
+              <dd class="tabular">{site.agent.npn}</dd>
+            </div>
+            <div>
+              <dt>Experience</dt>
+              <dd>{site.agent.experience} in Medicare</dd>
+            </div>
+            <div>
+              <dt>States licensed</dt>
+              <dd>{site.agent.statesLicensed}</dd>
+            </div>
+            <div>
+              <dt>Products</dt>
+              <dd>Medicare Advantage · Medicare Supplement · Part D · Long-Term Care</dd>
+            </div>
+            <div>
+              <dt>Based in</dt>
+              <dd>{site.address.display}</dd>
+            </div>
+            <div>
+              <dt>Cost to you</dt>
+              <dd>None, ever</dd>
+            </div>
+          </dl>
+          <a href="/contact/" class="btn btn--block" data-magnetic="0.2">Book a free review</a>
+          <p class="about__creds-note">
+            Or call <a href={site.phone.href} class="link">{site.phone.display}</a> —
+            {site.hours.display}.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ── FAQ ──────────────────────────────────────────────────────────── -->
+  <section class="section band--warm" data-caustics="0.24">
+    <div class="wrap wrap--narrow">
+      <SectionHead
+        eyebrow="Fair questions"
+        title="The things worth asking any agent."
+        lede="Including the ones about how I get paid. If an agent will not answer these plainly, that is your answer."
+      />
+      <Faq items={aboutFaqs} openFirst />
+    </div>
+  </section>
+
+  <CtaBand
+    title="Twenty minutes is usually enough."
+    body="Bring your prescription list and the doctors you want to keep. That is all it takes to turn a stack of mail into a decision."
+  />
+</BaseLayout>
+
+<style>
+  .about { display: grid; gap: var(--s-8); align-items: start; }
+  .about__opener {
+    font-family: var(--font-display);
+    font-size: var(--t-xl);
+    line-height: 1.4;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+  }
+  .about__prose h2 { font-size: var(--t-2xl); }
+
+  .about__creds { background: color-mix(in srgb, var(--surface) 96%, transparent); }
+  .about__creds-title { font-size: var(--t-lg); margin-bottom: var(--s-5); }
+  .about__dl { display: grid; gap: var(--s-3); margin-bottom: var(--s-5); }
+  .about__dl div {
+    display: grid;
+    gap: 0.1rem;
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .about__dl div:last-child { border-bottom: 0; padding-bottom: 0; }
+  .about__dl dt {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .about__dl dd { margin: 0; font-size: var(--t-sm); color: var(--ink-body); line-height: 1.5; }
+  .about__creds-note {
+    margin-top: var(--s-4);
+    font-size: var(--t-xs);
+    color: var(--ink-muted);
+    text-align: center;
+    line-height: 1.5;
+  }
+
+  @media (min-width: 940px) {
+    .about { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: var(--s-9); }
+    .about__aside { position: sticky; top: 6rem; }
+  }
+</style>

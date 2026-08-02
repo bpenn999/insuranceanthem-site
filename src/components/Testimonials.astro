@@ -1,0 +1,93 @@
+---
+import { testimonials, placeholder } from '../data/testimonials';
+---
+
+{
+  placeholder && import.meta.env.DEV && (
+    <div class="ph-warning">
+      <strong>Placeholder testimonials.</strong> Replace the entries in
+      <code>src/data/testimonials.ts</code> with real client reviews and set
+      <code>placeholder = false</code> before launch. This banner is dev-only.
+    </div>
+  )
+}
+
+<ul class="quotes" data-placeholder={placeholder ? '' : undefined}>
+  {
+    testimonials.map((t, i) => (
+      <li data-rise data-armed style={`--rise-delay:${i * 110}ms`}>
+        <figure class="card quote">
+          <svg class="quote__mark" viewBox="0 0 32 24" aria-hidden="true">
+            <path d="M13 24V13.4C13 6.3 16.9 1.6 24 0l1.6 3.6c-3.9 1.4-5.9 4-6.2 7.4H24V24H13Zm-13 0V13.4C0 6.3 3.9 1.6 11 0l1.6 3.6C8.7 5 6.7 7.6 6.4 11H11V24H0Z"
+                  fill="currentColor" />
+          </svg>
+          <blockquote class="quote__text">
+            <p>{t.quote}</p>
+          </blockquote>
+          <figcaption class="quote__by">
+            <span class="quote__name">{t.name}</span>
+            <span class="quote__meta">{t.location} · {t.context}</span>
+          </figcaption>
+        </figure>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .ph-warning {
+    background: #FFF4D6;
+    border: 1px solid #E5C158;
+    border-radius: var(--radius);
+    padding: var(--s-4);
+    margin-bottom: var(--s-5);
+    font-size: var(--t-sm);
+    color: #6B4E00;
+  }
+  .ph-warning code {
+    background: rgba(0, 0, 0, 0.06);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+
+  .quotes {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 17rem), 1fr));
+  }
+  .quotes > li { display: flex; }
+
+  .quote {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: var(--s-6) var(--s-5);
+  }
+  .quote__mark {
+    width: 26px;
+    height: 20px;
+    color: var(--navy);
+    opacity: 0.2;
+    margin-bottom: var(--s-4);
+  }
+  .quote__text {
+    flex: 1;
+    margin: 0 0 var(--s-5);
+    font-family: var(--font-display);
+    font-size: var(--t-lg);
+    line-height: 1.45;
+    color: var(--ink);
+    letter-spacing: -0.005em;
+  }
+  .quote__by {
+    display: grid;
+    gap: 0.1rem;
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--rule-soft);
+  }
+  .quote__name { font-size: var(--t-sm); font-weight: 600; color: var(--ink); }
+  .quote__meta { font-size: var(--t-xs); color: var(--ink-muted); }
+</style>

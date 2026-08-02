@@ -1,0 +1,244 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import LeadForm from '../components/LeadForm.astro';
+import SectionHead from '../components/SectionHead.astro';
+import site, { abs } from '../config/site';
+import { locations } from '../data/locations';
+
+const title = 'Contact Brian Penner — Free Medicare Review';
+const description = `Talk to a licensed local Medicare advisor in Anthem, AZ. No cost, no obligation, no call centre. Call ${site.phone.display} or send a message — ${site.agent.name}, NPN ${site.agent.npn}.`;
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Contact', path: '/contact/' },
+];
+
+const schemaNodes = [
+  {
+    '@type': 'ContactPage',
+    url: abs('/contact/'),
+    mainEntity: { '@id': `${site.origin}/#organization` },
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path="/contact/"
+  breadcrumbs={breadcrumbs}
+  schemaNodes={schemaNodes}
+>
+  <PageHero
+    eyebrow="Contact"
+    title="Let's have a proper conversation."
+    lede="No cost, no obligation, and no call centre — you get me. Twenty minutes is usually enough to turn a stack of mail into a decision."
+    breadcrumbs={breadcrumbs}
+    caustics="0.5"
+  />
+
+  <section class="section section--tight" data-caustics="0.22">
+    <div class="wrap contact">
+      <!-- ── Form ─────────────────────────────────────────────────────── -->
+      <div class="contact__form">
+        <div class="card contact__card">
+          <h2 class="contact__h2">Send me the details</h2>
+          <p class="contact__sub">
+            Fields marked <span aria-hidden="true">*</span><span class="sr-only">with an asterisk</span>
+            are required. Everything else helps me come prepared.
+          </p>
+          <LeadForm />
+        </div>
+      </div>
+
+      <!-- ── Direct ───────────────────────────────────────────────────── -->
+      <aside class="contact__aside">
+        <div class="card contact__direct">
+          <h2 class="contact__h3">Or just call</h2>
+          <a href={site.phone.href} class="contact__phone">{site.phone.display}</a>
+          <p class="contact__hours">
+            {site.hours.display}<br />
+            <span class="contact__hours-note">{site.hours.note}</span>
+          </p>
+
+          <dl class="contact__dl">
+            <div>
+              <dt>Email</dt>
+              <dd><a href={`mailto:${site.email}`} class="link">{site.email}</a></dd>
+            </div>
+            <div>
+              <dt>Based in</dt>
+              <dd>{site.address.display}</dd>
+            </div>
+            <div>
+              <dt>Serving</dt>
+              <dd>{locations.map((l) => l.city).join(' · ')}</dd>
+            </div>
+            <div>
+              <dt>Advisor</dt>
+              <dd>{site.agent.name} · NPN {site.agent.npn}</dd>
+            </div>
+          </dl>
+        </div>
+
+        <div class="card contact__prep">
+          <h2 class="contact__h3">What to have ready</h2>
+          <p class="contact__prep-note">
+            None of this is required — but with it, one conversation does the work of three.
+          </p>
+          <ul class="ticks">
+            <li>Your red, white and blue Medicare card, if you have one</li>
+            <li>Your prescriptions, with dosages</li>
+            <li>Your preferred pharmacy</li>
+            <li>The doctors and specialists you want to keep</li>
+            <li>Anything scheduled in the next twelve months</li>
+          </ul>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ── Expectations ─────────────────────────────────────────────────── -->
+  <section class="section band--warm" data-caustics="0.2">
+    <div class="wrap wrap--narrow">
+      <SectionHead
+        eyebrow="What happens next"
+        title="No surprises, in either direction."
+      />
+      <ol class="expect">
+        <li data-rise data-armed>
+          <span class="expect__num" aria-hidden="true">01</span>
+          <div>
+            <h3>I get back to you within one business day</h3>
+            <p>
+              Usually much sooner. If you called and got voicemail, leave a number — I return
+              every one.
+            </p>
+          </div>
+        </li>
+        <li data-rise data-armed style="--rise-delay:100ms">
+          <span class="expect__num" aria-hidden="true">02</span>
+          <div>
+            <h3>We talk for about twenty minutes</h3>
+            <p>
+              Mostly me asking questions. Phone, video or in person across the North Valley —
+              whichever you prefer.
+            </p>
+          </div>
+        </li>
+        <li data-rise data-armed style="--rise-delay:200ms">
+          <span class="expect__num" aria-hidden="true">03</span>
+          <div>
+            <h3>You get options, not a pitch</h3>
+            <p>
+              Two or three plans that survived the checks, with the weaknesses of each said out
+              loud. Then you decide, in your own time.
+            </p>
+          </div>
+        </li>
+      </ol>
+
+      <p class="expect__promise">
+        <strong>What I will not do:</strong> pass your details to a lead broker, add you to a
+        marketing list you did not ask for, or call you repeatedly if you say you are not
+        interested. One conversation, and the ball stays in your court.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .contact { display: grid; gap: var(--s-6); align-items: start; }
+  .contact__card { background: color-mix(in srgb, var(--surface) 97%, transparent); }
+  .contact__h2 { font-size: var(--t-2xl); margin-bottom: var(--s-2); }
+  .contact__h3 { font-size: var(--t-lg); margin-bottom: var(--s-4); }
+  .contact__sub {
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+    margin-bottom: var(--s-6);
+  }
+  .contact__sub span[aria-hidden] { color: var(--navy); }
+
+  .contact__aside { display: grid; gap: var(--s-4); }
+  .contact__direct { background: var(--navy); color: #C3D5E2; }
+  .contact__direct h2 { color: #fff; }
+  .contact__phone {
+    display: block;
+    font-family: var(--font-display);
+    font-size: clamp(1.75rem, 5vw, 2.25rem);
+    color: #fff;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+    margin-bottom: var(--s-3);
+  }
+  .contact__phone:hover { color: #9CC0DC; }
+  .contact__hours { font-size: var(--t-sm); line-height: 1.6; color: #A6BCCC; }
+  .contact__hours-note { color: #8BAFCA; font-size: var(--t-xs); }
+
+  .contact__dl {
+    display: grid;
+    gap: var(--s-3);
+    margin-top: var(--s-5);
+    padding-top: var(--s-5);
+    border-top: 1px solid rgba(255, 255, 255, 0.14);
+  }
+  .contact__dl div { display: grid; gap: 0.1rem; }
+  .contact__dl dt {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: #8BAFCA;
+  }
+  .contact__dl dd { margin: 0; font-size: var(--t-sm); color: #DCE8F1; line-height: 1.5; }
+  .contact__dl a { color: #DCE8F1; }
+  .contact__dl a:hover { color: #fff; }
+
+  .contact__prep { background: color-mix(in srgb, var(--surface) 94%, transparent); }
+  .contact__prep-note {
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+    margin-bottom: var(--s-4);
+    line-height: 1.55;
+  }
+  .contact__prep .ticks li { font-size: var(--t-sm); }
+
+  @media (min-width: 960px) {
+    .contact { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: var(--s-6); }
+    .contact__aside { position: sticky; top: 6rem; }
+  }
+
+  /* --- expectations --- */
+  .expect { list-style: none; padding: 0; display: grid; gap: var(--s-5); }
+  .expect li {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: var(--s-4);
+    align-items: start;
+    padding-bottom: var(--s-5);
+    border-bottom: 1px solid var(--rule);
+  }
+  .expect li:last-of-type { border-bottom: 0; padding-bottom: 0; }
+  .expect__num {
+    font-family: var(--font-display);
+    font-size: var(--t-xl);
+    color: var(--navy);
+    opacity: 0.35;
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  .expect h3 { font-size: var(--t-lg); margin-bottom: var(--s-2); }
+  .expect p { font-size: var(--t-sm); color: var(--ink-muted); line-height: 1.6; }
+
+  .expect__promise {
+    margin-top: var(--s-6);
+    padding: var(--s-5);
+    background: color-mix(in srgb, var(--surface) 90%, transparent);
+    border-left: 2px solid var(--navy);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: var(--t-sm);
+    color: var(--ink-body);
+    line-height: 1.65;
+  }
+</style>

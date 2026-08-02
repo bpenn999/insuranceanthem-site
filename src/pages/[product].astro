@@ -1,0 +1,326 @@
+---
+import type { GetStaticPaths } from 'astro';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Faq from '../components/Faq.astro';
+import CtaBand from '../components/CtaBand.astro';
+import ToolsPreview from '../components/ToolsPreview.astro';
+import ProductIcon from '../components/ProductIcon.astro';
+import site, { abs } from '../config/site';
+import { products } from '../data/products';
+
+export const getStaticPaths = (() =>
+  products.map((product) => ({
+    params: { product: product.slug },
+    props: { product },
+  }))) satisfies GetStaticPaths;
+
+const { product } = Astro.props;
+
+const others = products.filter((p) => p.slug !== product.slug);
+
+const title = `${product.fullName} in Anthem, AZ`;
+const description = `${product.blurb} Independent guidance from ${site.agent.name}, ${site.agent.experience} in Medicare, serving Anthem, Carefree, New River and north Phoenix 85086.`;
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Medicare Plans', path: '/medicare-plans/' },
+  { name: product.name, path: `/${product.slug}/` },
+];
+
+const schemaNodes = [
+  {
+    '@type': 'Service',
+    '@id': `${abs(`/${product.slug}/`)}#service`,
+    name: product.fullName,
+    description: product.intro,
+    serviceType: product.fullName,
+    url: abs(`/${product.slug}/`),
+    provider: { '@id': `${site.origin}/#organization` },
+    areaServed: site.serviceArea.map((a) => ({ '@type': 'Place', name: `${a}, AZ` })),
+    audience: { '@type': 'Audience', audienceType: 'Medicare beneficiaries' },
+  },
+  {
+    '@type': 'FAQPage',
+    mainEntity: product.faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path={`/${product.slug}/`}
+  breadcrumbs={breadcrumbs}
+  schemaNodes={schemaNodes}
+>
+  <PageHero
+    eyebrow="Medicare plans"
+    title={product.fullName}
+    lede={product.intro}
+    breadcrumbs={breadcrumbs}
+    caustics="0.6"
+  >
+    <div class="btn-row">
+      <a href="/contact/" class="btn btn--lg" data-magnetic="0.3">Talk it through</a>
+      <a href="/tools/plan-type-finder/" class="btn btn--ghost btn--lg" data-magnetic="0.22">
+        Is this right for me?
+      </a>
+    </div>
+  </PageHero>
+
+  <!-- ── What it is ───────────────────────────────────────────────────── -->
+  <section class="section section--tight" data-caustics="0.36">
+    <div class="wrap prod">
+      <div class="prod__main">
+        <h2 class="prod__h2">The short version</h2>
+        <ul class="ticks prod__points">
+          {product.points.map((p, i) => (
+            <li data-rise data-armed style={`--rise-delay:${i * 60}ms`}>{p}</li>
+          ))}
+        </ul>
+      </div>
+
+      <aside class="prod__aside" data-rise data-armed>
+        <div class="card prod__fit">
+          <span class="prod__fit-icon" aria-hidden="true">
+            <ProductIcon name={product.icon} />
+          </span>
+          <h2 class="prod__fit-title">This tends to fit if…</h2>
+          <ul class="ticks">
+            {product.fit.map((f) => <li>{f}</li>)}
+          </ul>
+          <p class="prod__fit-note">
+            Tendencies, not rules. The only way to know is to run your own doctors and
+            prescriptions through it.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ── How we approach it ───────────────────────────────────────────── -->
+  <section class="section band--warm" data-caustics="0.26">
+    <div class="wrap wrap--narrow">
+      <SectionHead
+        eyebrow="How we handle it"
+        title={`Choosing ${product.name.toLowerCase()} without guessing.`}
+      />
+      <div class="prose">
+        {product.slug === 'medicare-advantage' && (
+          <>
+            <p>
+              Advantage plans live and die on two things: whether your doctors are in the network,
+              and how the plan prices the care you actually use. Everything else — the dental
+              allowance, the gym membership, the flex card — is a tiebreaker.
+            </p>
+            <p>
+              So that is the order we work in. Your provider list goes in first and knocks out
+              every plan that would cost you a doctor. Your medication list goes in second and
+              knocks out the plans that would cost you money. Whatever is still standing gets
+              compared on the extras, and usually there are two or three left.
+            </p>
+            <h3>What to have ready</h3>
+            <ul>
+              <li>Every doctor and specialist you want to keep, by name</li>
+              <li>Your prescriptions with dosages, and your pharmacy</li>
+              <li>Any planned procedures in the next twelve months</li>
+              <li>Whether you spend part of the year out of state</li>
+            </ul>
+          </>
+        )}
+        {product.slug === 'medicare-supplement' && (
+          <>
+            <p>
+              Medigap is the one part of Medicare where the product is genuinely identical across
+              carriers. Plan G from one company covers exactly what Plan G from another covers —
+              that is federal law, not marketing. What differs is the premium, the rate history
+              and how the company behaves at renewal time.
+            </p>
+            <p>
+              Which means the work is not "which plan", it is "which carrier, at what price, with
+              what track record on rate increases". A carrier with a low first-year rate and a
+              history of steep increases is a worse deal than one that starts a little higher and
+              holds. That history is public, and it is what I look at.
+            </p>
+            <h3>Timing matters more here than anywhere else</h3>
+            <p>
+              Your Medigap open enrollment period runs six months from the month you turn 65 and
+              are enrolled in Part B. During it you cannot be turned down or surcharged for health
+              reasons. Outside it, Arizona carriers can underwrite — so a health event between now
+              and then can close doors that are open today. If you are inside that window, we
+              should be talking now rather than later.
+            </p>
+          </>
+        )}
+        {product.slug === 'part-d' && (
+          <>
+            <p>
+              There is one honest way to pick a drug plan, and it is arithmetic. Take your exact
+              medication list with dosages, take your pharmacy, and calculate the full year on
+              every plan available in your ZIP: premium, plus deductible, plus what each drug
+              costs on that plan's tier structure.
+            </p>
+            <p>
+              The plan with the lowest premium is very often not the winner. I have seen a $600
+              annual difference between two plans whose premiums were four dollars apart, purely
+              because one put a common generic on tier 3 and the other put it on tier 1.
+            </p>
+            <h3>Two things people get caught by</h3>
+            <ul>
+              <li>
+                <strong>The late enrollment penalty.</strong> Going without creditable drug
+                coverage for more than 63 days after your Initial Enrollment Period adds a
+                surcharge to your premium permanently. Not for a year — permanently.
+              </li>
+              <li>
+                <strong>The January reset.</strong> Formularies, tiers and preferred pharmacy
+                agreements all change on 1 January. The plan that was right last year is a
+                question, not a given.
+              </li>
+            </ul>
+          </>
+        )}
+        {product.slug === 'long-term-care' && (
+          <>
+            <p>
+              Start with the gap itself, because most people have not been told where it sits.
+              Medicare covers up to 100 days in a skilled nursing facility after a qualifying
+              hospital stay, with cost sharing from day 21, and only while you are actively
+              improving. The moment care becomes custodial — help with bathing, dressing, eating,
+              getting around — Medicare stops paying entirely.
+            </p>
+            <p>
+              That is the care most people actually end up needing, and in the Phoenix metro it
+              runs into serious money. The question is not whether that risk exists; it is whether
+              you self-fund it, insure it, or leave it to your family to absorb.
+            </p>
+            <h3>The three honest answers</h3>
+            <ul>
+              <li>
+                <strong>Self-fund.</strong> If you have enough set aside that a few years of care
+                would not derail the surviving spouse, this can genuinely be the right call. I
+                will tell you when it is.
+              </li>
+              <li>
+                <strong>Traditional long-term care insurance.</strong> Lowest cost per dollar of
+                benefit, but you pay in and get nothing back if care is never needed.
+              </li>
+              <li>
+                <strong>Hybrid life/LTC.</strong> Pays for care if you need it, pays a death
+                benefit if you do not. Costs more; solves the "what if I never use it" objection.
+              </li>
+            </ul>
+            <p>
+              Age and health drive both eligibility and price, and both move in the wrong direction
+              over time. Late fifties to early seventies is the window where this is most solvable.
+            </p>
+          </>
+        )}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── FAQ ──────────────────────────────────────────────────────────── -->
+  <section class="section" data-caustics="0.3">
+    <div class="wrap wrap--narrow">
+      <SectionHead eyebrow="Questions" title={`${product.name}, answered.`} />
+      <Faq items={product.faqs} openFirst />
+    </div>
+  </section>
+
+  <!-- ── Related ──────────────────────────────────────────────────────── -->
+  <section class="section band--deep" data-caustics="0.24">
+    <div class="wrap">
+      <SectionHead
+        eyebrow="Also worth reading"
+        title="The other three."
+        lede="These decisions interlock. A supplement without a drug plan leaves a hole; an Advantage plan changes what long-term care planning has to cover."
+      />
+      <ul class="related">
+        {
+          others.map((o, i) => (
+            <li data-rise data-armed style={`--rise-delay:${i * 80}ms`}>
+              <a href={`/${o.slug}/`} class="card-link">
+                <article class="card card--hover related__card">
+                  <span class="related__icon" aria-hidden="true"><ProductIcon name={o.icon} /></span>
+                  <h3 class="related__title">{o.name}</h3>
+                  <p class="related__blurb">{o.blurb}</p>
+                </article>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
+  <!-- ── Tools ────────────────────────────────────────────────────────── -->
+  <section class="section" data-caustics="0.34">
+    <div class="wrap">
+      <SectionHead
+        eyebrow="Free tools"
+        title="Run the numbers yourself."
+        lede="No email required, nothing stored, nothing sold."
+      />
+      <ToolsPreview limit={3} />
+    </div>
+  </section>
+
+  <CtaBand
+    title={`Let's see whether ${product.name.toLowerCase()} is actually your answer.`}
+    cta="Book a free review"
+  />
+</BaseLayout>
+
+<style>
+  .prod { display: grid; gap: var(--s-7); align-items: start; }
+  .prod__h2 { font-size: var(--t-2xl); margin-bottom: var(--s-5); }
+  .prod__points { font-size: var(--t-lg); }
+  .prod__points li { line-height: 1.5; }
+
+  .prod__fit { background: color-mix(in srgb, var(--surface) 96%, transparent); }
+  .prod__fit-icon {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--navy-wash);
+    color: var(--navy);
+    margin-bottom: var(--s-4);
+  }
+  .prod__fit-title { font-size: var(--t-lg); margin-bottom: var(--s-4); }
+  .prod__fit-note {
+    margin-top: var(--s-5);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--rule-soft);
+    font-size: var(--t-xs);
+    color: var(--ink-faint);
+    line-height: 1.55;
+  }
+
+  @media (min-width: 900px) {
+    .prod { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--s-9); }
+    .prod__aside { position: sticky; top: 6rem; }
+  }
+
+  .related {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-4);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 15rem), 1fr));
+  }
+  .related > li { display: flex; }
+  .related .card-link { display: flex; width: 100%; }
+  .related__card { width: 100%; }
+  .related__icon { color: var(--navy); display: block; margin-bottom: var(--s-4); }
+  .related__title { font-size: var(--t-lg); margin-bottom: var(--s-2); }
+  .related__blurb { font-size: var(--t-sm); color: var(--ink-muted); line-height: 1.6; }
+</style>

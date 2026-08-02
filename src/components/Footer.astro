@@ -1,0 +1,201 @@
+---
+import site from '../config/site';
+import { products } from '../data/products';
+import { tools } from '../data/tools';
+import { locations } from '../data/locations';
+import { tpmoText, nonAffiliation, npnLine, notAdvice } from '../data/compliance';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer" data-caustics="0.18">
+  <div class="wrap--wide">
+    <div class="footer__top">
+      <div class="footer__brand">
+        <a href="/" class="footer__logo" aria-label={`${site.name} — home`}>
+          <svg viewBox="0 0 32 32" aria-hidden="true">
+            <path d="M16 2.5 3.5 8v9.2c0 7.1 5.1 11.6 12.5 14.3 7.4-2.7 12.5-7.2 12.5-14.3V8L16 2.5Z"
+                  fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+            <path d="M10 16.6h3.4l1.5-4 2.2 7 1.6-3h3.3"
+                  fill="none" stroke="currentColor" stroke-width="1.6"
+                  stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+          <span>Insurance Anthem</span>
+        </a>
+        <p class="footer__pitch">
+          Independent Medicare guidance for {site.address.locality} and the North Valley.
+          {site.agent.experience} in one lane — no call centre, no script, no pressure.
+        </p>
+        <ul class="footer__contact">
+          <li>
+            <a href={site.phone.href} class="footer__phone">{site.phone.display}</a>
+          </li>
+          <li><a href={`mailto:${site.email}`} class="link">{site.email}</a></li>
+          <li>{site.address.display}</li>
+          <li class="footer__hours">{site.hours.display}</li>
+        </ul>
+      </div>
+
+      <nav class="footer__cols" aria-label="Footer">
+        <div class="footer__col">
+          <h2 class="footer__heading">Medicare Plans</h2>
+          <ul>
+            {products.map((p) => <li><a href={`/${p.slug}/`}>{p.name}</a></li>)}
+            <li><a href="/medicare-plans/">Compare all four</a></li>
+          </ul>
+        </div>
+
+        <div class="footer__col">
+          <h2 class="footer__heading">Free Tools</h2>
+          <ul>
+            {tools.map((t) => <li><a href={`/tools/${t.slug}/`}>{t.name}</a></li>)}
+          </ul>
+        </div>
+
+        <div class="footer__col">
+          <h2 class="footer__heading">Service Area</h2>
+          <ul>
+            {locations.map((l) => <li><a href={`/service-area/${l.slug}/`}>{l.label}</a></li>)}
+          </ul>
+        </div>
+
+        <div class="footer__col">
+          <h2 class="footer__heading">Agency</h2>
+          <ul>
+            <li><a href="/about/">About Brian</a></li>
+            <li><a href="/articles/">Articles</a></li>
+            <li><a href="/contact/">Contact</a></li>
+            <li><a href="/privacy/">Privacy Policy</a></li>
+            <li><a href="/terms/">Terms of Use</a></li>
+            <li><a href="/accessibility/">Accessibility</a></li>
+          </ul>
+        </div>
+      </nav>
+    </div>
+
+    <!-- Compliance block. Text lives in src/data/compliance.ts — edit it there. -->
+    <div class="footer__legal">
+      <p class="footer__npn">{npnLine}</p>
+      <p>{tpmoText()}</p>
+      <p>{nonAffiliation}</p>
+      <p>{notAdvice}</p>
+      <p class="footer__hint">
+        We comply with applicable federal civil rights laws and do not discriminate on the basis
+        of race, color, national origin, age, disability or sex.
+      </p>
+    </div>
+
+    <div class="footer__base">
+      <p>&copy; {year} {site.legalName}. All rights reserved.</p>
+      <p class="footer__base-right">
+        Your local advisor · {site.address.locality}, {site.address.region}
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    z-index: 1;
+    background: var(--navy-deep);
+    color: #B9CBD9;
+    padding-block: clamp(3rem, 6vw, 4.5rem) var(--s-6);
+    font-size: var(--t-sm);
+    line-height: 1.65;
+  }
+
+  .footer__top {
+    display: grid;
+    gap: var(--s-8);
+    padding-bottom: var(--s-8);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  /* --- brand column --- */
+  .footer__logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    color: #fff;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
+    letter-spacing: -0.02em;
+    margin-bottom: var(--s-4);
+  }
+  .footer__logo svg { width: 28px; height: 28px; flex: none; }
+
+  .footer__pitch { color: #A6BCCC; max-width: 36ch; margin-bottom: var(--s-5); }
+
+  .footer__contact { list-style: none; padding: 0; display: grid; gap: 0.35rem; }
+  .footer__contact a { color: #DCE8F1; }
+  .footer__contact a:hover { color: #fff; }
+  .footer__phone {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    color: #fff !important;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.01em;
+  }
+  .footer__hours { color: #8FA8BA; }
+
+  /* --- link columns --- */
+  .footer__cols {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--s-6) var(--s-5);
+  }
+  .footer__heading {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: #7FA3BE;
+    margin-bottom: var(--s-3);
+  }
+  .footer__col ul { list-style: none; padding: 0; display: grid; gap: 0.45rem; }
+  .footer__col a {
+    color: #C3D5E2;
+    position: relative;
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    transition: background-size 380ms var(--ease), color 200ms ease;
+    padding-bottom: 1px;
+  }
+  .footer__col a:hover { color: #fff; background-size: 100% 1px; }
+
+  /* --- legal --- */
+  .footer__legal {
+    padding-block: var(--s-6);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    display: grid;
+    gap: 0.7rem;
+    font-size: 0.78125rem;
+    line-height: 1.6;
+    color: #8FA8BA;
+    max-width: 92ch;
+  }
+  .footer__npn { color: #C3D5E2; font-weight: 500; }
+  .footer__hint { color: #7A93A6; }
+
+  /* --- base --- */
+  .footer__base {
+    padding-top: var(--s-5);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--s-3);
+    font-size: 0.78125rem;
+    color: #7A93A6;
+  }
+
+  @media (min-width: 700px) {
+    .footer__cols { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  }
+  @media (min-width: 1000px) {
+    .footer__top { grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: var(--s-9); }
+  }
+</style>

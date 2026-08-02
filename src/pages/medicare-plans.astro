@@ -1,0 +1,279 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import ServicesGrid from '../components/ServicesGrid.astro';
+import CtaBand from '../components/CtaBand.astro';
+import ToolsPreview from '../components/ToolsPreview.astro';
+import site from '../config/site';
+
+const title = 'Medicare Plans We Help With';
+const description = `Medicare Advantage, Medicare Supplement, Part D and long-term care — how the four fit together, and which one your situation actually calls for. Independent guidance in Anthem, AZ.`;
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Medicare Plans', path: '/medicare-plans/' },
+];
+---
+
+<BaseLayout title={title} description={description} path="/medicare-plans/" breadcrumbs={breadcrumbs}>
+  <PageHero
+    eyebrow="Medicare plans"
+    title="Four products. One decision, really."
+    lede="Almost every Medicare question comes down to one fork in the road — and then a handful of follow-ups. Here is the map."
+    breadcrumbs={breadcrumbs}
+  />
+
+  <!-- ── The fork ─────────────────────────────────────────────────────── -->
+  <section class="section section--tight" data-caustics="0.34">
+    <div class="wrap">
+      <div class="fork">
+        <div class="fork__intro" data-rise data-armed>
+          <h2 class="fork__h2">The fork</h2>
+          <p>
+            Once you have Original Medicare — Part A and Part B — you choose one of two structures.
+            You cannot have both, and switching later is possible but not always easy. Everything
+            else is detail hanging off this choice.
+          </p>
+        </div>
+
+        <div class="fork__paths">
+          <article class="card fork__path" data-rise data-armed>
+            <p class="fork__label">Path A</p>
+            <h3 class="fork__title">Medicare Advantage</h3>
+            <p class="fork__body">
+              One plan that delivers your Part A and Part B benefits, usually with drug coverage
+              built in. Lower monthly cost, a network to work within, copays as you go, and a cap
+              on your annual out-of-pocket.
+            </p>
+            <ul class="ticks fork__list">
+              <li>Usually includes Part D — nothing extra to buy</li>
+              <li>Extras like dental, vision and hearing are common</li>
+              <li>Network and plan rules apply</li>
+            </ul>
+            <a href="/medicare-advantage/" class="link fork__more">Read about Medicare Advantage</a>
+          </article>
+
+          <div class="fork__or" aria-hidden="true"><span>or</span></div>
+
+          <article class="card fork__path" data-rise data-armed style="--rise-delay:120ms">
+            <p class="fork__label">Path B</p>
+            <h3 class="fork__title">Supplement + Part D</h3>
+            <p class="fork__body">
+              Keep Original Medicare, add a Medigap policy to cover what it leaves behind, and add
+              a standalone drug plan. Higher monthly premium, far fewer surprises, and no network
+              at all.
+            </p>
+            <ul class="ticks fork__list">
+              <li>Any provider who accepts Medicare</li>
+              <li>Predictable costs — you pay premiums, not copays</li>
+              <li>Requires a separate Part D plan</li>
+            </ul>
+            <a href="/medicare-supplement/" class="link fork__more">Read about Medicare Supplement</a>
+          </article>
+        </div>
+
+        <p class="fork__foot" data-rise data-armed>
+          Long-term care sits outside both. Neither path covers extended custodial care, which is
+          why it is a separate conversation rather than a plan feature —
+          <a href="/long-term-care/" class="link">here is why that matters</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── All four ─────────────────────────────────────────────────────── -->
+  <section class="section band--warm" data-caustics="0.28">
+    <div class="wrap">
+      <SectionHead
+        eyebrow="In detail"
+        title="All four, in plain English."
+        lede="Each page covers what it is, who it tends to fit, and the questions people ask before they commit."
+      />
+      <ServicesGrid />
+    </div>
+  </section>
+
+  <!-- ── Comparison ───────────────────────────────────────────────────── -->
+  <section class="section" data-caustics="0.3">
+    <div class="wrap">
+      <SectionHead
+        eyebrow="Side by side"
+        title="Advantage versus Supplement."
+        lede="The comparison people ask for most. Both are legitimate choices — the right one depends entirely on your doctors, your travel and your tolerance for variable costs."
+      />
+
+      <div class="table-scroll" data-rise data-armed>
+        <table class="compare">
+          <caption class="sr-only">
+            Comparison of Medicare Advantage and Medicare Supplement across seven factors
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">Factor</th>
+              <th scope="col">Medicare Advantage</th>
+              <th scope="col">Supplement + Part D</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th scope="row">Monthly premium</th>
+              <td>Often $0 plan premium (Part B still applies)</td>
+              <td>Supplement premium plus a Part D premium</td>
+            </tr>
+            <tr>
+              <th scope="row">Choice of doctor</th>
+              <td>Plan network; referrals on many HMOs</td>
+              <td>Anyone who accepts Medicare, nationwide</td>
+            </tr>
+            <tr>
+              <th scope="row">Cost when you use care</th>
+              <td>Copays and coinsurance per visit</td>
+              <td>Little to nothing beyond the Part B deductible</td>
+            </tr>
+            <tr>
+              <th scope="row">Annual out-of-pocket cap</th>
+              <td>Yes — set by the plan each year</td>
+              <td>No cap needed; the supplement absorbs it</td>
+            </tr>
+            <tr>
+              <th scope="row">Prescription coverage</th>
+              <td>Usually built in</td>
+              <td>Bought separately as a Part D plan</td>
+            </tr>
+            <tr>
+              <th scope="row">Extra benefits</th>
+              <td>Dental, vision, hearing, fitness are common</td>
+              <td>Not included; bought separately if wanted</td>
+            </tr>
+            <tr>
+              <th scope="row">Health questions to enroll</th>
+              <td>No — you cannot be turned down</td>
+              <td>Not during your open enrollment window; often yes after</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <p class="compare__note" data-rise data-armed>
+        Figures and benefits vary by plan and change every plan year. This table is a structural
+        comparison, not a quote —
+        <a href="/tools/medicare-cost-estimator/" class="link">estimate your own year here</a>.
+      </p>
+    </div>
+  </section>
+
+  <!-- ── Tools ────────────────────────────────────────────────────────── -->
+  <section class="section band--deep" data-caustics="0.24">
+    <div class="wrap">
+      <SectionHead
+        eyebrow="Free tools"
+        title="Narrow it down before you call."
+        lede="Nothing here asks for your email."
+      />
+      <ToolsPreview />
+    </div>
+  </section>
+
+  <CtaBand
+    title="Bring me your doctors and your prescriptions."
+    body={`That is genuinely all it takes to turn this from a brochure into an answer. ${site.agent.experience} of doing exactly this, at no cost to you.`}
+  />
+</BaseLayout>
+
+<style>
+  .fork { display: grid; gap: var(--s-7); }
+  .fork__h2 { font-size: var(--t-2xl); margin-bottom: var(--s-4); }
+  .fork__intro p { color: var(--ink-muted); max-width: 60ch; font-size: var(--t-lg); line-height: 1.6; }
+
+  .fork__paths {
+    display: grid;
+    gap: var(--s-4);
+    align-items: stretch;
+  }
+  .fork__path { display: flex; flex-direction: column; }
+  .fork__label {
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--navy);
+    margin-bottom: var(--s-2);
+  }
+  .fork__title { font-size: var(--t-xl); margin-bottom: var(--s-3); }
+  .fork__body { font-size: var(--t-sm); color: var(--ink-muted); line-height: 1.65; margin-bottom: var(--s-5); }
+  .fork__list { margin-bottom: var(--s-5); font-size: var(--t-sm); }
+  .fork__list li { font-size: var(--t-sm); }
+  .fork__more { margin-top: auto; font-size: var(--t-sm); }
+
+  .fork__or {
+    display: grid;
+    place-items: center;
+    position: relative;
+  }
+  .fork__or span {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    border: 1px solid var(--rule);
+    background: var(--porcelain);
+    font-size: var(--t-xs);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  .fork__foot {
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+    max-width: 70ch;
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--rule);
+  }
+
+  @media (min-width: 880px) {
+    .fork__paths { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: var(--s-5); }
+  }
+
+  /* --- comparison table --- */
+  .table-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .compare {
+    width: 100%;
+    min-width: 42rem;
+    border-collapse: collapse;
+    font-size: var(--t-sm);
+    background: color-mix(in srgb, var(--surface) 92%, transparent);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .compare th, .compare td {
+    padding: 0.85rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--rule-soft);
+    vertical-align: top;
+    line-height: 1.5;
+  }
+  .compare thead th {
+    background: var(--navy);
+    color: #fff;
+    font-weight: 600;
+    font-size: var(--t-xs);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-bottom: 0;
+  }
+  .compare tbody th { font-weight: 600; color: var(--ink); width: 28%; }
+  .compare tbody td { color: var(--ink-muted); }
+  .compare tbody tr:last-child th, .compare tbody tr:last-child td { border-bottom: 0; }
+  .compare tbody tr:nth-child(even) { background: color-mix(in srgb, var(--porcelain-warm) 55%, transparent); }
+
+  .compare__note {
+    margin-top: var(--s-4);
+    font-size: var(--t-xs);
+    color: var(--ink-faint);
+    line-height: 1.6;
+  }
+</style>

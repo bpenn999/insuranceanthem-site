@@ -1,0 +1,234 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+---
+
+<ToolLayout
+  slug="plan-type-finder"
+  title="Advantage or Supplement? Free Medicare Plan Type Finder"
+  description="Six questions on your doctors, travel, budget and health. Get a plain-English read on whether Medicare Advantage or a Medicare Supplement fits your situation better — and why."
+  h1="Advantage or Supplement?"
+  lede="Six questions. It won't name a plan — no honest tool can — but it will tell you which side of the fork your situation points to, and what would change the answer."
+>
+  <form id="ptf" novalidate>
+    <fieldset class="t-fieldset">
+      <legend>1. How important is keeping your current doctors?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="doctors" value="3" /><span><strong>Non-negotiable</strong><em>I have specialists I will not change</em></span></label>
+        <label class="t-option"><input type="radio" name="doctors" value="1" /><span><strong>Preferred</strong><em>I'd rather keep them, but I'd move for a good reason</em></span></label>
+        <label class="t-option"><input type="radio" name="doctors" value="0" /><span><strong>Not a factor</strong><em>I don't have an established doctor here yet</em></span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="t-fieldset">
+      <legend>2. How do you feel about a monthly premium?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="premium" value="3" /><span><strong>Happy to pay for predictability</strong><em>I'd rather know my costs up front</em></span></label>
+        <label class="t-option"><input type="radio" name="premium" value="1" /><span><strong>Somewhere in between</strong><em>Depends what it buys me</em></span></label>
+        <label class="t-option"><input type="radio" name="premium" value="0" /><span><strong>Keep it as low as possible</strong><em>Monthly cost is the binding constraint</em></span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="t-fieldset">
+      <legend>3. How much do you travel or live out of state?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="travel" value="3" /><span><strong>A lot</strong><em>Snowbird, or several months elsewhere</em></span></label>
+        <label class="t-option"><input type="radio" name="travel" value="1" /><span><strong>Some</strong><em>Regular trips, but Arizona is home</em></span></label>
+        <label class="t-option"><input type="radio" name="travel" value="0" /><span><strong>Rarely</strong><em>I get my care here</em></span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="t-fieldset">
+      <legend>4. How often do you see a doctor in a typical year?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="usage" value="3" /><span><strong>Often</strong><em>Ongoing conditions, regular specialists</em></span></label>
+        <label class="t-option"><input type="radio" name="usage" value="1" /><span><strong>Moderately</strong><em>A few visits a year</em></span></label>
+        <label class="t-option"><input type="radio" name="usage" value="0" /><span><strong>Rarely</strong><em>Annual physical and not much else</em></span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="t-fieldset">
+      <legend>5. Do dental, vision and hearing benefits matter to you?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="extras" value="2" /><span><strong>Yes, a lot</strong><em>I'd use them</em></span></label>
+        <label class="t-option"><input type="radio" name="extras" value="1" /><span><strong>Nice to have</strong><em>Not a deciding factor</em></span></label>
+        <label class="t-option"><input type="radio" name="extras" value="0" /><span><strong>No</strong><em>I have those covered elsewhere</em></span></label>
+      </div>
+    </fieldset>
+
+    <fieldset class="t-fieldset">
+      <legend>6. Where are you in the Medicare timeline?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="timing" value="new" /><span><strong>New to Medicare</strong><em>Turning 65, or just enrolled in Part B</em></span></label>
+        <label class="t-option"><input type="radio" name="timing" value="established" /><span><strong>Already on a plan</strong><em>Been on Medicare a while</em></span></label>
+      </div>
+    </fieldset>
+
+    <div class="t-actions">
+      <button type="submit" class="btn btn--lg" data-magnetic="0.24">See my result</button>
+      <button type="reset" class="btn btn--ghost">Start over</button>
+    </div>
+    <p class="t-error" id="ptf-error" role="alert"></p>
+  </form>
+
+  <div class="t-result" id="ptf-result" hidden role="region" aria-live="polite" aria-label="Your result">
+    <p class="t-result__eyebrow">Where this points</p>
+    <h2 class="t-result__head" id="ptf-head"></h2>
+    <div class="t-stats" id="ptf-stats"></div>
+    <div class="t-result__body" id="ptf-body"></div>
+    <div class="t-actions">
+      <a href="/contact/" class="btn btn--lg" data-magnetic="0.24">Talk it through with Brian</a>
+    </div>
+  </div>
+
+  <div slot="disclaimer">
+    <p>
+      This runs entirely in your browser. Nothing you select is sent anywhere or stored.
+    </p>
+    <p>
+      It is a directional read on plan <em>structure</em>, not a recommendation of any specific
+      plan, carrier or product. A real recommendation requires checking your named doctors against
+      each network and pricing your named medications against each formulary — which is what a
+      conversation is for.
+    </p>
+  </div>
+
+  <div slot="explainer">
+    <h2>How the scoring works</h2>
+    <div class="prose">
+      <p>
+        There is no black box here, so here is the whole logic. Four of the six answers push toward
+        one structure or the other:
+      </p>
+      <ul>
+        <li>
+          <strong>Doctors and travel</strong> push toward a <em>Supplement</em>, because a
+          supplement has no network — any provider who accepts Medicare accepts it, anywhere in
+          the country.
+        </li>
+        <li>
+          <strong>Premium sensitivity and low usage</strong> push toward <em>Advantage</em>,
+          because you pay little or nothing monthly and only pay when you use care.
+        </li>
+        <li>
+          <strong>Frequent care</strong> pushes toward a <em>Supplement</em> — copays add up
+          faster than premiums when you are in a clinic often.
+        </li>
+        <li>
+          <strong>Dental, vision and hearing</strong> push toward <em>Advantage</em>, where they
+          are commonly bundled rather than bought separately.
+        </li>
+      </ul>
+      <h3>Why timing changes the answer</h3>
+      <p>
+        If you are new to Medicare, your Medigap open enrollment period means a Supplement is
+        available to you without health questions. That window runs six months from the month you
+        turn 65 and are enrolled in Part B, and it does not come back. If the result leans toward a
+        Supplement and you are in that window, the timing matters as much as the reasoning.
+      </p>
+      <p>
+        If you have been on Medicare a while, moving <em>to</em> a Supplement generally means
+        answering health questions in Arizona. That does not make it impossible — it makes it
+        something to check before you plan around it.
+      </p>
+    </div>
+  </div>
+</ToolLayout>
+
+<script>
+  const form = document.getElementById('ptf') as HTMLFormElement | null;
+  if (form) {
+    const err = document.getElementById('ptf-error')!;
+    const result = document.getElementById('ptf-result')!;
+    const head = document.getElementById('ptf-head')!;
+    const body = document.getElementById('ptf-body')!;
+    const stats = document.getElementById('ptf-stats')!;
+
+    const QUESTIONS = ['doctors', 'premium', 'travel', 'usage', 'extras', 'timing'];
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const data = new FormData(form);
+
+      const missing = QUESTIONS.filter((q) => !data.get(q));
+      if (missing.length) {
+        err.textContent = `Please answer ${missing.length === 1 ? 'question' : 'all'} ${missing
+          .map((q) => QUESTIONS.indexOf(q) + 1)
+          .join(', ')} before continuing.`;
+        return;
+      }
+      err.textContent = '';
+
+      const n = (k: string) => Number(data.get(k) || 0);
+
+      // Positive score → Supplement. Negative → Advantage.
+      const supScore = n('doctors') + n('travel') + n('usage');
+      const advScore = n('premium') + n('extras');
+      const net = supScore - advScore;
+      const isNew = data.get('timing') === 'new';
+
+      // Confidence is how far from the middle we landed, capped sensibly.
+      const spread = Math.min(100, Math.round((Math.abs(net) / 9) * 100) + 45);
+
+      let lean: 'supplement' | 'advantage' | 'toss-up';
+      if (net >= 2) lean = 'supplement';
+      else if (net <= -2) lean = 'advantage';
+      else lean = 'toss-up';
+
+      const COPY = {
+        supplement: {
+          head: 'Your answers point toward a Medicare Supplement.',
+          body: [
+            'You told me that keeping your providers, travelling, or using care regularly matters more to you than holding the monthly premium down. That combination is the classic case for a Medigap policy paired with a standalone Part D drug plan: no network, no referrals, and costs that barely move whether you see a doctor twice a year or twenty times.',
+            'The trade-off is real and worth saying plainly. You will pay a monthly premium for the supplement <em>and</em> a separate one for Part D, and you will not get the dental, vision or hearing extras that come bundled with most Advantage plans. If that changes the picture for you, say so — it is a legitimate reason to look at the other path.',
+          ],
+        },
+        advantage: {
+          head: 'Your answers point toward a Medicare Advantage plan.',
+          body: [
+            'Keeping the monthly outlay low matters to you, you do not use care heavily, and the bundled extras are worth something. That is the situation Advantage plans are built for — many in Maricopa County carry a $0 plan premium, drug coverage is usually folded in, and the annual out-of-pocket maximum caps your downside if a bad year happens.',
+            'The thing to verify before committing: your doctors have to actually be in the plan network, and networks change every January. That check is not optional and it is not something a quiz can do — it needs your provider list against this year\'s actual network files.',
+          ],
+        },
+        'toss-up': {
+          head: 'Genuinely close — this one needs a conversation.',
+          body: [
+            'Your answers pull in both directions, which is more common than the internet suggests. Some of what you told me favours the no-network freedom of a Supplement; some favours the low monthly cost and bundled extras of an Advantage plan.',
+            'When it lands here, the deciding factor is almost always something specific rather than something general: whether one particular specialist is in one particular network, or what one particular medication costs on each plan\'s formulary. Those are answerable questions — they just need your real details rather than six multiple-choice answers.',
+          ],
+        },
+      } as const;
+
+      const chosen = COPY[lean];
+      head.textContent = chosen.head;
+
+      stats.innerHTML = `
+        <div class="t-stat">
+          <span class="t-stat__value">${lean === 'toss-up' ? 'Even' : lean === 'supplement' ? 'Medigap' : 'Advantage'}</span>
+          <span class="t-stat__label">Direction</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${lean === 'toss-up' ? '—' : spread + '%'}</span>
+          <span class="t-stat__label">Strength of lean</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${isNew ? 'Open' : 'Check'}</span>
+          <span class="t-stat__label">Medigap window</span>
+        </div>
+      `;
+
+      const timingNote = isNew
+        ? '<p><strong>One time-sensitive point.</strong> Because you are new to Medicare, your Medigap open enrollment period is running — six months from the month you turned 65 and enrolled in Part B. During it no carrier can turn you down or charge you more for health reasons. It does not come back, so if a Supplement is anywhere in your thinking, it is worth settling that before the window closes.</p>'
+        : '<p><strong>One thing to check.</strong> Since you have been on Medicare a while, moving to a Supplement in Arizona generally means answering health questions. That is not a wall — but it is worth confirming where you stand before building a plan around it.</p>';
+
+      body.innerHTML = chosen.body.map((p) => `<p>${p}</p>`).join('') + timingNote;
+
+      result.hidden = false;
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    form.addEventListener('reset', () => {
+      result.hidden = true;
+      err.textContent = '';
+    });
+  }
+</script>

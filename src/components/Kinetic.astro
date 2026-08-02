@@ -1,0 +1,41 @@
+---
+/**
+ * Per-word kinetic reveal, split at BUILD time.
+ *
+ * Splitting here rather than in JS means the markup is complete and readable
+ * with JS off, screen readers get the plain sentence, and there is zero layout
+ * shift when motion kicks in. Words carry a staggered `--k-delay`.
+ *
+ * Usage:
+ *   <h1><Kinetic text="Local Medicare help, done properly." /></h1>
+ *   <h2><Kinetic text="Some heading" as="span" stagger={28} /></h2>
+ */
+interface Props {
+  text: string;
+  /** ms between each word */
+  stagger?: number;
+  /** ms before the first word */
+  delay?: number;
+  /** cap total stagger so long headings don't crawl (spec: ≤700ms) */
+  max?: number;
+  class?: string;
+}
+
+const { text, stagger = 42, delay = 0, max = 700, class: cls = '' } = Astro.props;
+
+const words = text.split(/(\s+)/).filter((w) => w.length > 0);
+let wordIndex = -1;
+---
+
+<span class:list={['kinetic', cls]} data-armed>
+  {
+    /* No whitespace inside the <span> — `.k-word` is `white-space: pre`, so any
+       newline the template introduced would render as a real extra space. */
+    words.map((chunk) => {
+      if (/^\s+$/.test(chunk)) return chunk;
+      wordIndex++;
+      const d = Math.min(delay + wordIndex * stagger, delay + max);
+      return <span class="k-word" style={`--k-delay:${d}ms`}>{chunk}</span>;
+    })
+  }
+</span>

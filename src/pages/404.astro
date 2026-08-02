@@ -1,0 +1,98 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Kinetic from '../components/Kinetic.astro';
+import site from '../config/site';
+import { products } from '../data/products';
+import { tools } from '../data/tools';
+---
+
+<BaseLayout
+  title="Page not found"
+  description="That page doesn't exist. Here's where everything else lives."
+  path="/404/"
+  noindex
+>
+  <section class="nf" data-caustics="0.6">
+    <div class="wrap wrap--narrow">
+      <p class="nf__code" data-rise data-armed>404</p>
+      <h1><Kinetic text="That page isn't here." stagger={46} /></h1>
+      <p class="nf__lede" data-rise data-armed style="--rise-delay:200ms">
+        Either the link was wrong or the page moved. Nothing to worry about — here is everything
+        this site actually has.
+      </p>
+
+      <div class="nf__actions" data-rise data-armed style="--rise-delay:280ms">
+        <a href="/" class="btn btn--lg" data-magnetic="0.28">Back to the home page</a>
+        <a href={site.phone.href} class="btn btn--ghost btn--lg" data-magnetic="0.22">
+          Call {site.phone.display}
+        </a>
+      </div>
+
+      <div class="nf__map" data-rise data-armed style="--rise-delay:360ms">
+        <div class="nf__col">
+          <h2>Medicare plans</h2>
+          <ul>
+            {products.map((p) => <li><a href={`/${p.slug}/`} class="link">{p.name}</a></li>)}
+            <li><a href="/medicare-plans/" class="link">Compare all four</a></li>
+          </ul>
+        </div>
+        <div class="nf__col">
+          <h2>Free tools</h2>
+          <ul>
+            {tools.map((t) => <li><a href={`/tools/${t.slug}/`} class="link">{t.name}</a></li>)}
+          </ul>
+        </div>
+        <div class="nf__col">
+          <h2>Everything else</h2>
+          <ul>
+            <li><a href="/about/" class="link">About Brian</a></li>
+            <li><a href="/service-area/" class="link">Service area</a></li>
+            <li><a href="/articles/" class="link">Articles</a></li>
+            <li><a href="/contact/" class="link">Contact</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .nf { padding-block: clamp(3.5rem, 10vw, 7rem); }
+  .nf__code {
+    font-family: var(--font-display);
+    font-size: clamp(3.5rem, 12vw, 6rem);
+    line-height: 1;
+    color: var(--navy);
+    opacity: 0.16;
+    letter-spacing: -0.04em;
+    margin-bottom: var(--s-4);
+  }
+  .nf h1 { max-width: 14ch; }
+  .nf__lede {
+    margin-top: var(--s-5);
+    font-size: var(--t-lg);
+    color: var(--ink-muted);
+    max-width: 48ch;
+    line-height: 1.6;
+  }
+  .nf__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-7); }
+
+  .nf__map {
+    display: grid;
+    gap: var(--s-6);
+    margin-top: var(--s-9);
+    padding-top: var(--s-6);
+    border-top: 1px solid var(--rule);
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 11rem), 1fr));
+  }
+  .nf__col h2 {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: var(--s-3);
+  }
+  .nf__col ul { list-style: none; padding: 0; display: grid; gap: 0.45rem; font-size: var(--t-sm); }
+</style>
