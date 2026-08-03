@@ -52,16 +52,11 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
 
     <!-- ── Advisor row ────────────────────────────────────────────────── -->
     <div class="foot__advisor">
-      <a href="/" class="foot__logo" aria-label={`${site.name} — home`}>
-        <svg viewBox="0 0 32 32" aria-hidden="true">
-          <path d="M16 2.5 3.5 8v9.2c0 7.1 5.1 11.6 12.5 14.3 7.4-2.7 12.5-7.2 12.5-14.3V8L16 2.5Z"
-                fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
-          <path d="M10 16.6h3.4l1.5-4 2.2 7 1.6-3h3.3"
-                fill="none" stroke="currentColor" stroke-width="1.6"
-                stroke-linecap="round" stroke-linejoin="round" />
-        </svg>
-      </a>
-
+      {/* No mark on this row. The bare emblem cannot carry a navy ground — the
+          mountains' ridge lines are negative space, so on navy the silhouette
+          drops out and only the gold daisy survives. The badge over the NAP
+          below brings its own white field, so it is the footer's only mark and
+          the one that links home. */}
       <div class="foot__advisor-txt">
         <span class="foot__advisor-kicker">Your local advisor</span>
         <strong>{site.agent.name}</strong>
@@ -125,6 +120,20 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
       <!-- NAP — one office, structured for both humans and parsers -->
       <div class="foot__col foot__col--contact">
         <h2 class="foot__heading">Contact</h2>
+        {/* The full badge sits over the NAP as the mark of record. It keeps its
+            own white field, so it reads on the navy ground without a plate.
+            Below the fold on every page, hence lazy. */}
+        <a href="/" class="foot__badge-link" aria-label={`${site.name} — home`}>
+          <img
+            class="foot__badge"
+            src="/brand/badge-256.png"
+            alt={`${site.legalName} badge`}
+            width="261"
+            height="256"
+            loading="lazy"
+            decoding="async"
+          />
+        </a>
         <address class="foot__nap">
           <p class="foot__nap-name">{site.legalName}</p>
           <p class="foot__nap-line">{site.address.display}</p>
@@ -180,14 +189,13 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   }
 
-  .foot__logo {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: #fff;
-    flex: none;
+  .foot__badge-link { display: inline-block; }
+  .foot__badge {
+    display: block;
+    width: 90px;
+    height: auto;
+    margin: 0 0 var(--s-4);
   }
-  .foot__logo svg { width: 46px; height: 46px; }
 
   .foot__advisor-txt { display: flex; flex-direction: column; line-height: 1.35; }
   .foot__advisor-kicker {

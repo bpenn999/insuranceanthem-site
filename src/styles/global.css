@@ -28,6 +28,21 @@
   --navy-wash:  #EAF0F5;
   --navy-tint:  rgba(15, 58, 92, 0.08);
 
+  /* --- Logo gold ---------------------------------------------------------- */
+  /* The badge's daisy is gold, so the palette needs it — but as TWO tokens,
+     because the artwork colour is not a text colour.
+
+     --gold is the daisy's exact gold, sampled from the logo. It measures only
+     2.4:1 on porcelain, so it is for GRAPHIC use (rules, marks, fills on navy)
+     and must never carry body or label text on a light ground. It does clear
+     AA on --navy-deep, at 6.0:1.
+
+     --gold-ink is that gold darkened until it clears WCAG AA on porcelain
+     (4.8:1). Use it for any gold TEXT on a light ground — the "Medicare" half
+     of the wordmark is set in it. */
+  --gold:       #D5971F;
+  --gold-ink:   #96650F;
+
   /* --- Type -------------------------------------------------------------- */
   --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
@@ -132,7 +147,11 @@ strong { font-weight: 600; color: var(--ink); }
   margin-inline: auto;
 }
 .wrap--narrow { width: min(var(--narrow), 100% - var(--gutter) * 2); }
-.wrap--wide   { width: min(1360px, 100% - var(--gutter) * 2); }
+/* `margin-inline` is repeated rather than inherited from `.wrap` because the
+   header and the footer both use this class ON ITS OWN, without `.wrap`. Without
+   the centring here those two rows sat flush against the left edge of the
+   viewport, with the whole gutter pooled on the right. */
+.wrap--wide   { width: min(1360px, 100% - var(--gutter) * 2); margin-inline: auto; }
 
 .section { padding-block: var(--section-y); position: relative; }
 .section--tight { padding-block: clamp(2.5rem, 5vw, 4rem); }

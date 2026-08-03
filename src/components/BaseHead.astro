@@ -68,8 +68,20 @@ const fullTitle = title.includes(site.name) ? title : `${title} | ${site.name}`;
 <meta name="theme-color" content="#FBF9F6" media="(prefers-color-scheme: light)" />
 <meta name="theme-color" content="#0F3A5C" media="(prefers-color-scheme: dark)" />
 
-<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+<!--
+  Icons. All generated from the badge by scripts/build-brand-kit.py — see that
+  file before changing a path here.
+
+  favicon.ico carries 16/32/48/64 for the browser tab and is the only one older
+  browsers look for; the two PNG links let modern browsers skip the .ico. The
+  apple-touch-icon and the manifest icons are deliberately the opaque 192/512
+  variants, because iOS composites a transparent touch icon onto black.
+-->
+<link rel="icon" href="/favicon.ico" sizes="any" />
+<link rel="icon" type="image/png" sizes="32x32" href="/brand/icon-32.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/brand/icon-16.png" />
+<link rel="apple-touch-icon" sizes="192x192" href="/brand/icon-192.png" />
+<link rel="manifest" href="/site.webmanifest" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 
 <!-- Fonts: Fraunces (display) + Inter (body), both variable, latin subset -->

@@ -31,6 +31,8 @@ npm run verify     # typecheck + unit tests + build + built-output audit
 | `npm run audit` | Audits `/dist`: broken links, compliance text, sitemap coverage, template residue |
 | `npm run e2e` | Headless-Chrome checks of every tool, the Learn hub and every article. Needs `npm run preview` on **:4331** first |
 | `npm run verify` | check → test → build → audit |
+| `python3 scripts/build-brand-kit.py` | Regenerates every file in `public/brand/` + `public/favicon.ico` from the master badge. Needs `pillow`, `numpy`, `scipy` |
+| `node scripts/build-og.mjs` | Re-renders `public/og.png` from `scripts/og-card.html` |
 
 `npm run e2e` drives Chrome over the DevTools Protocol with zero dependencies.
 Override the browser with `CHROME=/path/to/chrome npm run e2e`.
@@ -87,6 +89,58 @@ rather than pretending to submit, the form composes a prefilled email to
 
 Both the form and the funnel then POST JSON automatically. The form falls back
 to the email hand-off if the endpoint errors, so an enquiry is never silently lost.
+
+---
+
+## The brand kit
+
+`src/brand/badge-master.png` is the logo of record — a circular badge, "DAISY
+MOUNTAIN" arced above a daisy-sun over navy mountains, "MEDICARE" arced below.
+**Everything in `public/brand/` is generated from it.** Never hand-edit those
+files; edit `scripts/build-brand-kit.py` and re-run it.
+
+```bash
+python3 -m pip install pillow numpy scipy
+python3 scripts/build-brand-kit.py
+node scripts/build-og.mjs        # og.png embeds the badge, so re-render after
+```
+
+| File | Used by |
+| --- | --- |
+| `logo-badge-transparent.png` / `-white.png` | Full badge, trimmed. General use |
+| `badge-1024-white.png` | Print |
+| `gbp-avatar-512-white.png` | Google Business Profile avatar |
+| `icon-transparent.png` | The emblem alone — daisy + mountains, no ring, no text |
+| `icon-512/192.png` | Manifest, apple-touch-icon, JSON-LD logo. **Opaque** |
+| `icon-64/32/16.png`, `favicon.ico` | Browser tab. Transparent |
+| `emblem-96.png`, `badge-256.png` | The header mark and the footer badge |
+
+Three things about that table are load-bearing:
+
+- **`emblem-96.png` and `badge-256.png` exist for weight.** The masters are
+  ~300KB and ~750KB; the header draws the emblem at 40px and the footer the
+  badge at 90px on *every* page. Point the components at the masters and each
+  page ships a megabyte of PNG to paint a thumbnail.
+- **192 and 512 are opaque on purpose.** iOS composites a transparent
+  apple-touch-icon onto black, and the mountains' ridge lines are negative
+  space — on a dark ground the silhouette collapses into an unreadable mass.
+  The small tab icons stay transparent so they sit on any browser chrome.
+- **The emblem cannot carry a dark background,** for that same reason. On navy
+  only the gold daisy survives. Use the badge, which brings its own white field
+  — that is why the footer's mark is the badge and not the emblem.
+
+### The gold
+
+The palette has **two** golds, and they are not interchangeable:
+
+| Token | Value | For |
+| --- | --- | --- |
+| `--gold` | `#D5971F` | The logo's exact gold. **Graphics only** — 2.4:1 on porcelain |
+| `--gold-ink` | `#96650F` | Gold **text** on a light ground — 4.8:1, clears AA |
+
+The "Medicare" half of the wordmark is set in `--gold-ink`. Setting it in
+`--gold` would drop it below the 4.5:1 floor that `/accessibility/` claims for
+every text pair on the site.
 
 ---
 
