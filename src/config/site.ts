@@ -1,5 +1,5 @@
 /**
- * Daisy Mountain Insurance — single source of truth.
+ * Daisy Mountain Medicare — single source of truth.
  *
  * ⚠️  PHONE IS A PLACEHOLDER. Change `phone.raw` below and every phone number,
  *     tel: link, schema entry and footer across the whole site updates with it.
@@ -18,19 +18,24 @@ export const site = {
    * Agency identity. Named for Daisy Mountain — the landmark Anthem sits under,
    * and the name locals already use for this stretch of the north valley.
    */
-  name: 'Daisy Mountain Insurance',
-  legalName: 'Daisy Mountain Insurance',
+  name: 'Daisy Mountain Medicare',
+  legalName: 'Daisy Mountain Medicare',
+  /**
+   * The positioning line. "Senior insurance solutions" is doing real work here:
+   * long-term care is not a Medicare product, and the brand name no longer
+   * covers it on its own. Keep the phrase whenever this line is reworded.
+   */
   tagline:
-    'An independent Medicare agency serving Anthem, New River, Desert Hills, Carefree and North Phoenix — named for Daisy Mountain, the landmark Anthem sits under.',
+    'Medicare & senior insurance solutions — serving Anthem, New River, Desert Hills & North Phoenix.',
   description:
-    'Independent Medicare agency serving Anthem, New River, Desert Hills, Carefree and North Phoenix. Medicare Advantage, Medicare Supplement, Part D and Long-Term Care — explained plainly by a licensed local advisor with 22+ years of experience.',
+    'Medicare and senior insurance solutions for Anthem, New River, Desert Hills and North Phoenix. Medicare Advantage, Medicare Supplement and Part D, plus long-term care planning — explained plainly by a licensed local advisor with 22+ years of experience.',
 
   /** Canonical origin — every absolute URL, og:url and schema @id derives from this. */
-  origin: 'https://daisymountaininsurance.com',
-  domain: 'daisymountaininsurance.com',
+  origin: 'https://daisymountainmedicare.com',
+  domain: 'daisymountainmedicare.com',
 
   /** Contact */
-  email: 'brian@daisymountaininsurance.com',
+  email: 'brian@daisymountainmedicare.com',
   phone: {
     raw: PHONE_RAW,
     /** (623) 555-0100 — what humans see */
@@ -72,11 +77,13 @@ export const site = {
     serviceRadius: 30,
   },
 
-  /** Service area — every city page and schema areaServed derives from this list. */
   /**
-   * Desert Hills has no location page of its own yet — it is here because the
-   * brand line names it, and schema areaServed must not claim less than the
-   * copy does. Add the page and it slots in beside the other four.
+   * Service area — every city page and schema areaServed derives from this list.
+   *
+   * It is deliberately WIDER than the tagline: Carefree has a real location page
+   * and is genuinely served, it just doesn't make the four-name brand line.
+   * Desert Hills is the reverse — named in the line, no page of its own yet.
+   * Claiming more here than the copy does is fine; claiming less is not.
    */
   serviceArea: ['Anthem', 'Carefree', 'New River', 'Desert Hills', 'Phoenix 85086'],
 

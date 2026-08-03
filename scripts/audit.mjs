@@ -79,7 +79,7 @@ for (const f of htmls) {
   const r = routeOf(f);
   if (!/<title>[^<]{10,}<\/title>/.test(html)) note(`NO TITLE on ${r}`);
   if (!/<meta name="description" content="[^"]{50,}"/.test(html)) note(`WEAK DESCRIPTION on ${r}`);
-  if (!/<link rel="canonical" href="https:\/\/daisymountaininsurance\.com/.test(html)) note(`NO CANONICAL on ${r}`);
+  if (!/<link rel="canonical" href="https:\/\/daisymountainmedicare\.com/.test(html)) note(`NO CANONICAL on ${r}`);
   const h1s = (html.match(/<h1[\s>]/g) || []).length;
   if (h1s !== 1) note(`${h1s} <h1> on ${r}`);
   if (!/application\/ld\+json/.test(html)) note(`NO JSON-LD on ${r}`);
@@ -91,7 +91,7 @@ const smFiles = [...smIndex.matchAll(/<loc>[^<]*\/(sitemap-\d+\.xml)<\/loc>/g)].
 const smUrls = new Set();
 for (const sf of smFiles) {
   for (const m of readFileSync(join(DIST, sf), 'utf8')
-    .matchAll(/<loc>https:\/\/daisymountaininsurance\.com([^<]*)<\/loc>/g)) {
+    .matchAll(/<loc>https:\/\/daisymountainmedicare\.com([^<]*)<\/loc>/g)) {
     smUrls.add(m[1] || '/');
   }
 }
@@ -141,7 +141,7 @@ for (const sf of smFiles) {
 
     // 5. SEO field limits — Google truncates beyond these
     const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? '';
-    const bare = title.replace(/\s*\|\s*Daisy Mountain Insurance\s*$/, '');
+    const bare = title.replace(/\s*\|\s*Daisy Mountain Medicare\s*$/, '');
     if (bare.length > 60) note(`SEO TITLE ${bare.length} chars (>60) on ${route}`);
     const desc = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? '';
     if (desc.length > 155) note(`META DESCRIPTION ${desc.length} chars (>155) on ${route}`);
@@ -203,7 +203,7 @@ for (const sf of smFiles) {
     if (!footer.startsWith('<footer')) { note(`NO FOOTER on ${r}`); continue; }
 
     // Brand block
-    if (!footer.includes('Daisy Mountain Insurance')) note(`FOOTER: no wordmark on ${r}`);
+    if (!footer.includes('Daisy Mountain Medicare')) note(`FOOTER: no wordmark on ${r}`);
     if (!footer.includes('Brian Penner')) note(`FOOTER: no agent name on ${r}`);
     if (!footer.includes('22+ Years')) note(`FOOTER: no experience line on ${r}`);
     if (!footer.includes('NPN 8206556')) note(`FOOTER: no NPN on ${r}`);
@@ -211,7 +211,7 @@ for (const sf of smFiles) {
     // NAP block — one office
     if (!footer.includes('Anthem, AZ 85086')) note(`FOOTER: no address on ${r}`);
     if (!footer.includes('(623) 555-0100')) note(`FOOTER: no phone on ${r}`);
-    if (!footer.includes('brian@daisymountaininsurance.com')) note(`FOOTER: no email on ${r}`);
+    if (!footer.includes('brian@daisymountainmedicare.com')) note(`FOOTER: no email on ${r}`);
 
     // The other brand's offices must never appear here.
     for (const city of ['Moab', 'Monticello', 'Grand Junction']) {
@@ -303,7 +303,7 @@ for (const sf of smFiles) {
 
     // A calculator must not name a carrier or product.
     const CARRIERS = /\b(Humana|Aetna|UnitedHealthcare|UnitedHealth|Cigna|Wellcare|Anthem Blue|Blue Cross|Devoted Health|Alignment Health)\b/;
-    if (CARRIERS.test(html.replace(/Daisy Mountain Insurance/g, ''))) {
+    if (CARRIERS.test(html.replace(/Daisy Mountain Medicare/g, ''))) {
       note(`CARRIER NAMED on ${route}`);
     }
   }

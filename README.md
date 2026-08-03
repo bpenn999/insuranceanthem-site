@@ -1,4 +1,4 @@
-# Daisy Mountain Insurance
+# Daisy Mountain Medicare
 
 Medicare agency website for Brian Penner — Anthem, New River, Desert Hills,
 Carefree and North Phoenix. Named for Daisy Mountain, the landmark Anthem sits
@@ -48,9 +48,9 @@ Override the browser with `CHROME=/path/to/chrome npm run e2e`.
 | Build output directory | `dist` |
 | Node version | 20 or newer (`NODE_VERSION` env var) |
 
-**Custom domain.** Add `daisymountaininsurance.com` and `www.daisymountaininsurance.com` in
+**Custom domain.** Add `daisymountainmedicare.com` and `www.daisymountainmedicare.com` in
 Pages → Custom domains, then add a redirect rule so `www` and `http` both 301 to
-the apex. `astro.config.mjs` sets `site: 'https://daisymountaininsurance.com'` and every
+the apex. `astro.config.mjs` sets `site: 'https://daisymountainmedicare.com'` and every
 canonical URL, `og:url` and schema `@id` derives from it, so the apex must be the
 one that serves.
 

@@ -6,7 +6,7 @@ import remarkMedicareFigures from './plugins/remark-medicare-figures.mjs';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://daisymountaininsurance.com',
+  site: 'https://daisymountainmedicare.com',
   output: 'static',
   trailingSlash: 'always',
   build: {
@@ -15,7 +15,9 @@ export default defineConfig({
   },
   integrations: [
     sitemap({
-      filter: (page) => !page.includes('/thank-you'),
+      // /llms.txt is a machine-readable index, not a page — the audit asserts
+      // every sitemap URL has an HTML route behind it, and it has none.
+      filter: (page) => !page.includes('/thank-you') && !page.endsWith('/llms.txt'),
       changefreq: 'weekly',
       lastmod: new Date(),
     }),

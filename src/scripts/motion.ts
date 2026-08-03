@@ -1,5 +1,5 @@
 /**
- * Daisy Mountain Insurance — motion engine.
+ * Daisy Mountain Medicare — motion engine.
  *
  * Contract:
  *   • Exactly ONE requestAnimationFrame loop per page. Caustics, scroll

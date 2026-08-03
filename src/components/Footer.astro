@@ -136,7 +136,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     </nav>
 
     <!-- ── Wordmark ───────────────────────────────────────────────────── -->
-    <div class="foot__wordmark"><span>Daisy Mountain <em>Insurance</em></span></div>
+    <div class="foot__wordmark"><span>Daisy Mountain <em>Medicare</em></span></div>
 
     <!-- ── Compliance — the ONLY place the TPMO disclaimer appears ─────── -->
     <div class="foot__legal">
@@ -280,9 +280,9 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     font-family: var(--font-display);
     font-weight: 600;
     /* Sized to span the band edge-to-edge. Two things drive these numbers: the
-       name is 24 characters (~9.7em wide on Fraunces), and Fraunces is optically
+       name is 23 characters (~9.4em wide on Fraunces), and Fraunces is optically
        sized, so width-per-em grows as the type shrinks — hence the lower vw
-       below 860px. Retune both values if the brand name ever changes length;
+       below 860px. Retune all three tiers if the brand name ever changes length;
        nowrap + overflow:hidden is only the backstop, not the plan. */
     font-size: clamp(20px, 7vw, 44px);
     line-height: 1.02;
