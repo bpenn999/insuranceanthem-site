@@ -288,6 +288,7 @@ import site from '../config/site';
    * Funnel controller. Deliberately small and dependency-free — it drives the
    * markup above and nothing else on the page.
    */
+  import site from '../config/site';
   type Answers = { intent?: string; zip?: string; priority?: string };
 
   const RESULTS: Record<string, { head: string; body: string }> = {
@@ -379,7 +380,7 @@ import site from '../config/site';
         fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...answers, tool: 'hero-funnel', site: 'insuranceanthem.com' }),
+          body: JSON.stringify({ ...answers, tool: 'hero-funnel', site: site.domain }),
         }).catch(() => { /* never block the UI on a lead post */ });
       }
     }

@@ -1,6 +1,11 @@
-# insuranceanthem-site
+# Daisy Mountain Insurance
 
-Insurance Anthem — Medicare agency website for Brian Penner, Anthem AZ 85086.
+Medicare agency website for Brian Penner — Anthem, New River, Desert Hills,
+Carefree and North Phoenix. Named for Daisy Mountain, the landmark Anthem sits
+under.
+
+> The GitHub repo is still `insuranceanthem-site` from the pre-rebrand name.
+> Renaming it is safe whenever you want — nothing in the build reads it.
 
 Astro 7, static output, deploy-ready for Cloudflare Pages. No `wrangler.toml` — Pages
 builds from the repo.
@@ -43,9 +48,9 @@ Override the browser with `CHROME=/path/to/chrome npm run e2e`.
 | Build output directory | `dist` |
 | Node version | 20 or newer (`NODE_VERSION` env var) |
 
-**Custom domain.** Add `insuranceanthem.com` and `www.insuranceanthem.com` in
+**Custom domain.** Add `daisymountaininsurance.com` and `www.daisymountaininsurance.com` in
 Pages → Custom domains, then add a redirect rule so `www` and `http` both 301 to
-the apex. `astro.config.mjs` sets `site: 'https://insuranceanthem.com'` and every
+the apex. `astro.config.mjs` sets `site: 'https://daisymountaininsurance.com'` and every
 canonical URL, `og:url` and schema `@id` derives from it, so the apex must be the
 one that serves.
 

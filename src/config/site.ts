@@ -1,5 +1,5 @@
 /**
- * Insurance Anthem — single source of truth.
+ * Daisy Mountain Insurance — single source of truth.
  *
  * ⚠️  PHONE IS A PLACEHOLDER. Change `phone.raw` below and every phone number,
  *     tel: link, schema entry and footer across the whole site updates with it.
@@ -14,19 +14,23 @@ function formatPhone(raw: string): string {
 }
 
 export const site = {
-  /** Agency identity */
-  name: 'Insurance Anthem',
-  legalName: 'Insurance Anthem',
-  tagline: 'Local Medicare guidance for Anthem, Arizona.',
+  /**
+   * Agency identity. Named for Daisy Mountain — the landmark Anthem sits under,
+   * and the name locals already use for this stretch of the north valley.
+   */
+  name: 'Daisy Mountain Insurance',
+  legalName: 'Daisy Mountain Insurance',
+  tagline:
+    'An independent Medicare agency serving Anthem, New River, Desert Hills, Carefree and North Phoenix — named for Daisy Mountain, the landmark Anthem sits under.',
   description:
-    'Independent Medicare help in Anthem, AZ. Medicare Advantage, Medicare Supplement, Part D and Long-Term Care — explained plainly by a licensed local advisor with 22+ years of experience.',
+    'Independent Medicare agency serving Anthem, New River, Desert Hills, Carefree and North Phoenix. Medicare Advantage, Medicare Supplement, Part D and Long-Term Care — explained plainly by a licensed local advisor with 22+ years of experience.',
 
   /** Canonical origin — every absolute URL, og:url and schema @id derives from this. */
-  origin: 'https://insuranceanthem.com',
-  domain: 'insuranceanthem.com',
+  origin: 'https://daisymountaininsurance.com',
+  domain: 'daisymountaininsurance.com',
 
   /** Contact */
-  email: 'brian@insuranceanthem.com',
+  email: 'brian@daisymountaininsurance.com',
   phone: {
     raw: PHONE_RAW,
     /** (623) 555-0100 — what humans see */
@@ -69,7 +73,12 @@ export const site = {
   },
 
   /** Service area — every city page and schema areaServed derives from this list. */
-  serviceArea: ['Anthem', 'Carefree', 'New River', 'Phoenix 85086'],
+  /**
+   * Desert Hills has no location page of its own yet — it is here because the
+   * brand line names it, and schema areaServed must not claim less than the
+   * copy does. Add the page and it slots in beside the other four.
+   */
+  serviceArea: ['Anthem', 'Carefree', 'New River', 'Desert Hills', 'Phoenix 85086'],
 
   hours: {
     display: 'Monday – Friday, 8:00 AM – 5:00 PM MST',

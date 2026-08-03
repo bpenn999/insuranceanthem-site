@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    position: relative;
+    background: linear-gradient(135deg, #FBF9F6 0%, #F5F1EA 55%, #EDE7DE 100%);
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+  }
+  /* The faint contour lines that run across the porcelain ground. */
+  .waves { position: absolute; inset: 0; }
+  .pad { position: absolute; inset: 0; padding: 92px 74px 0; }
+
+  .brand { display: flex; align-items: center; gap: 18px; }
+  .brand svg { width: 52px; height: 52px; color: #0A2740; flex: none; }
+  .brand span {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 40px; font-weight: 600; color: #171A1D; letter-spacing: -0.015em;
+  }
+
+  h1 {
+    margin-top: 56px;
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    /* The line break is explicit below — the card is a fixed canvas, so the
+       two-line shape is part of the design, not something to leave to wrapping. */
+    font-size: 78px;
+    line-height: 1.1;
+    letter-spacing: -0.025em;
+    color: #171A1D;
+  }
+
+  .rule { margin-top: 44px; width: 108px; height: 3px; background: #0F3A5C; opacity: 0.55; }
+
+  .sub {
+    margin-top: 28px;
+    font-size: 26px;
+    color: #5E656E;
+    letter-spacing: -0.005em;
+  }
+
+  .kicker {
+    position: absolute;
+    left: 74px;
+    bottom: 78px;
+    font-size: 21px;
+    font-weight: 700;
+    letter-spacing: 0.11em;
+    color: #0F3A5C;
+  }
+
+  .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 22px; background: #0A2740; }
+</style>
+</head>
+<body>
+  <svg class="waves" viewBox="0 0 1200 630" fill="none" preserveAspectRatio="none">
+    <g stroke="#0A2740" stroke-opacity="0.07" stroke-width="1.4" fill="none">
+      <path d="M-40 78 C 240 40, 460 96, 700 62 S 1120 22, 1260 58" />
+      <path d="M-40 150 C 300 118, 520 172, 780 138 S 1140 96, 1260 132" />
+      <path d="M-40 470 C 260 430, 500 500, 760 462 S 1130 420, 1260 452" />
+      <path d="M-40 536 C 300 500, 540 560, 800 524 S 1150 486, 1260 516" />
+      <path d="M-40 596 C 260 566, 520 616, 780 584 S 1140 552, 1260 578" />
+    </g>
+  </svg>
+
+  <div class="pad">
+    <div class="brand">
+      <svg viewBox="0 0 32 32" aria-hidden="true">
+        <path d="M16 2.5 3.5 8v9.2c0 7.1 5.1 11.6 12.5 14.3 7.4-2.7 12.5-7.2 12.5-14.3V8L16 2.5Z"
+              fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round" />
+        <path d="M10 16.6h3.4l1.5-4 2.2 7 1.6-3h3.3"
+              fill="none" stroke="currentColor" stroke-width="1.6"
+              stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+      <span>Daisy Mountain Insurance</span>
+    </div>
+
+    <h1>Medicare, explained by<br />someone who lives here.</h1>
+    <div class="rule"></div>
+    <p class="sub">Independent Medicare guidance · Anthem, Arizona 85086</p>
+  </div>
+
+  <div class="kicker">22+ YEARS · LICENSED IN 18 STATES · NPN 8206556</div>
+  <div class="bar"></div>
+</body>
+</html>

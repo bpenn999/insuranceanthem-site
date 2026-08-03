@@ -1,5 +1,5 @@
 /**
- * Insurance Anthem — motion engine.
+ * Daisy Mountain Insurance — motion engine.
  *
  * Contract:
  *   • Exactly ONE requestAnimationFrame loop per page. Caustics, scroll

@@ -3,7 +3,7 @@
   "type": "module",
   "version": "1.0.0",
   "private": true,
-  "description": "Insurance Anthem — Medicare agency website (Anthem, AZ)",
+  "description": "Daisy Mountain Insurance — Medicare agency website (Anthem, AZ)",
   "scripts": {
     "dev": "astro dev",
     "start": "astro dev",

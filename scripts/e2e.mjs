@@ -597,13 +597,13 @@ for (const slug of LEARN_SLUGS) {
     };
   `);
 
-  const bare = a.title.replace(/\s*\|\s*Insurance Anthem\s*$/, '');
+  const bare = a.title.replace(/\s*\|\s*Daisy Mountain Insurance\s*$/, '');
   const ok = (label, cond, detail) => check(`${slug} — ${label}`, cond, detail);
 
   ok('single h1', a.h1s === 1, String(a.h1s));
   ok(`SEO title ≤60 (${bare.length})`, bare.length <= 60 && bare.length > 10, bare);
   ok(`meta description ≤155 (${a.desc.length})`, a.desc.length <= 155 && a.desc.length > 40, a.desc);
-  ok('canonical points at insuranceanthem.com', a.canonical === `https://insuranceanthem.com/learn/${slug}/`, a.canonical);
+  ok('canonical points at daisymountaininsurance.com', a.canonical === `https://daisymountaininsurance.com/learn/${slug}/`, a.canonical);
   ok('Article + FAQPage + BreadcrumbList schema',
     a.types.includes('Article') && a.types.includes('FAQPage') && a.types.includes('BreadcrumbList'),
     a.types.join(','));
@@ -663,9 +663,9 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
     const NONAFF = 'not connected with or endorsed by the United States government';
     const count = (hay, needle) => hay.split(needle).length - 1;
     return {
-      wordmark: t.includes('Insurance Anthem'),
+      wordmark: t.includes('Daisy Mountain Insurance'),
       agent: t.includes('Brian Penner') && t.includes('22+ Years') && t.includes('NPN 8206556'),
-      nap: t.includes('Anthem, AZ 85086') && t.includes('(623) 555-0100') && t.includes('brian@insuranceanthem.com'),
+      nap: t.includes('Anthem, AZ 85086') && t.includes('(623) 555-0100') && t.includes('brian@daisymountaininsurance.com'),
       wrongBrand: ['Moab','Monticello','Grand Junction'].filter(c => t.includes(c)),
       services: ['/medicare-advantage/','/medicare-supplement/','/part-d/','/long-term-care/'].every(href),
       learnHub: href('/learn/'),
@@ -676,7 +676,7 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
       ctaHref: el.querySelector('a.btn')?.getAttribute('href') || '',
       ctaLabel: el.querySelector('a.btn')?.textContent.trim() || '',
       licence: t.includes('Licensed in 18 states'),
-      copyright: /© 2026 Insurance Anthem/i.test(raw),
+      copyright: /© 2026 Daisy Mountain Insurance/i.test(raw),
       tpmoInFooter: count(raw, TPMO),
       tpmoInPage: count(body, TPMO),
       nonAffInPage: count(body, NONAFF),

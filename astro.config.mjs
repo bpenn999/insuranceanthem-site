@@ -6,7 +6,7 @@ import remarkMedicareFigures from './plugins/remark-medicare-figures.mjs';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://insuranceanthem.com',
+  site: 'https://daisymountaininsurance.com',
   output: 'static',
   trailingSlash: 'always',
   build: {

@@ -24,8 +24,7 @@ export function tpmoText(planCount?: number | string): string {
   return tpmoDisclaimer.replace('{PLAN_COUNT}', String(planCount));
 }
 
-export const nonAffiliation =
-  'Insurance Anthem is not connected with or endorsed by the United States government or the federal Medicare program.';
+export const nonAffiliation = `${site.name} is not connected with or endorsed by the United States government or the federal Medicare program.`;
 
 export const npnLine = `${site.agent.name} · National Producer Number ${site.agent.npn} · Licensed in ${site.agent.statesLicensed} states`;
 

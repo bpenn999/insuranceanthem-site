@@ -136,7 +136,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     </nav>
 
     <!-- ── Wordmark ───────────────────────────────────────────────────── -->
-    <div class="foot__wordmark"><span>Insurance <em>Anthem</em></span></div>
+    <div class="foot__wordmark"><span>Daisy Mountain <em>Insurance</em></span></div>
 
     <!-- ── Compliance — the ONLY place the TPMO disclaimer appears ─────── -->
     <div class="foot__legal">
@@ -279,10 +279,12 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     display: block;
     font-family: var(--font-display);
     font-weight: 600;
-    /* Sized to span the band edge-to-edge. Fraunces is optically sized, so the
-       width-per-em grows as the type shrinks — hence the lower vw below 860px.
-       nowrap + overflow:hidden is the backstop if a face ever measures wider. */
-    font-size: clamp(26px, 10vw, 60px);
+    /* Sized to span the band edge-to-edge. Two things drive these numbers: the
+       name is 24 characters (~9.7em wide on Fraunces), and Fraunces is optically
+       sized, so width-per-em grows as the type shrinks — hence the lower vw
+       below 860px. Retune both values if the brand name ever changes length;
+       nowrap + overflow:hidden is only the backstop, not the plan. */
+    font-size: clamp(20px, 7vw, 44px);
     line-height: 1.02;
     letter-spacing: -0.03em;
     color: #fff;
@@ -290,8 +292,13 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     overflow: hidden;
     max-width: 100%;
   }
+  /* Three tiers, not two: between 860 and 1024 the optical size is still wide
+     enough (~10.4em) that the desktop 9vw would run past the gutter. */
   @media (min-width: 860px) {
-    .foot__wordmark span { font-size: min(12vw, 175px); }
+    .foot__wordmark span { font-size: 8vw; }
+  }
+  @media (min-width: 1024px) {
+    .foot__wordmark span { font-size: min(9vw, 135px); }
   }
   .foot__wordmark em { font-style: normal; color: #7FA3BE; }
 
