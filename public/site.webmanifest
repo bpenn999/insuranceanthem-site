@@ -1,7 +1,7 @@
 {
-  "name": "Daisy Mountain Medicare",
-  "short_name": "Daisy Mtn Medicare",
-  "description": "Medicare and senior insurance solutions for Anthem, New River, Desert Hills and North Phoenix.",
+  "name": "602Medicare",
+  "short_name": "602Medicare",
+  "description": "Phoenix-metro Medicare guidance from an office in Anthem, serving Glendale, Peoria, North Phoenix and across the Valley.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
@@ -9,13 +9,13 @@
   "theme_color": "#0F3A5C",
   "icons": [
     {
-      "src": "/brand/icon-192.png",
+      "src": "/brand/mark-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/brand/icon-512.png",
+      "src": "/brand/mark-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"

@@ -27,7 +27,7 @@ export const homeFaqs: Faq[] = [
   },
   {
     q: 'Do we have to meet in person?',
-    a: 'Your choice. I am based in Anthem and happy to meet face to face here, in Carefree, in New River or anywhere in the 85086 area. Plenty of clients would rather do the whole thing by phone or video, and that works just as well.',
+    a: 'Your choice. The office is in Anthem, and I meet face to face there, in Glendale, in Peoria, in north Phoenix and across the rest of the Valley. Plenty of clients would rather do the whole thing by phone or video, and that works just as well.',
   },
   {
     q: 'What should I have ready before we talk?',

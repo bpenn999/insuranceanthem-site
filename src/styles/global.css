@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Daisy Mountain Medicare — porcelain design system
+   602Medicare — porcelain design system
    Warm white ground, soft neutral grays, one deep navy accent.
    ========================================================================== */
 
@@ -28,18 +28,18 @@
   --navy-wash:  #EAF0F5;
   --navy-tint:  rgba(15, 58, 92, 0.08);
 
-  /* --- Logo gold ---------------------------------------------------------- */
-  /* The badge's daisy is gold, so the palette needs it — but as TWO tokens,
-     because the artwork colour is not a text colour.
+  /* --- Brand gold --------------------------------------------------------- */
+  /* The "602" half of the wordmark is gold, so the palette needs it — but as
+     TWO tokens, because the brand colour is not a text colour.
 
-     --gold is the daisy's exact gold, sampled from the logo. It measures only
-     2.4:1 on porcelain, so it is for GRAPHIC use (rules, marks, fills on navy)
-     and must never carry body or label text on a light ground. It does clear
-     AA on --navy-deep, at 6.0:1.
+     --gold is the brand's exact gold. It measures only 2.4:1 on porcelain, so
+     it is for GRAPHIC use (rules, marks, fills on navy) and must never carry
+     body or label text on a light ground. It does clear AA on --navy-deep, at
+     6.0:1 — which is why the footer's giant "602" is set in it.
 
      --gold-ink is that gold darkened until it clears WCAG AA on porcelain
-     (4.8:1). Use it for any gold TEXT on a light ground — the "Medicare" half
-     of the wordmark is set in it. */
+     (4.8:1). Use it for any gold TEXT on a light ground — the header's "602"
+     and the OG card's are both set in it. */
   --gold:       #D5971F;
   --gold-ink:   #96650F;
 

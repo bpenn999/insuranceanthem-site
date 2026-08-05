@@ -6,8 +6,8 @@ import CtaBand from '../../components/CtaBand.astro';
 import site from '../../config/site';
 import { locations } from '../../data/locations';
 
-const title = 'Service Area — Anthem, Carefree, New River & North Phoenix';
-const description = `${site.name} serves Anthem AZ 85086, Carefree, New River and the 85086 corner of north Phoenix. Local Medicare guidance from an advisor based in Anthem.`;
+const title = 'Service Area — Anthem, Glendale, Peoria & the Phoenix Metro';
+const description = `${site.name} serves Anthem AZ 85086, Glendale, Peoria, north Phoenix, New River and Carefree. Phoenix-metro Medicare guidance from an advisor with an office in Anthem.`;
 
 const breadcrumbs = [
   { name: 'Home', path: '/' },
@@ -18,8 +18,8 @@ const breadcrumbs = [
 <BaseLayout title={title} description={description} path="/service-area/" breadcrumbs={breadcrumbs}>
   <PageHero
     eyebrow="Service area"
-    title="Anthem, and the communities around it."
-    lede="Medicare plan availability is set county by county, and within a county the differences between neighbouring ZIPs are real. That is the entire argument for working with somebody who covers this specific patch rather than a call centre three states away."
+    title="An office in Anthem, and a patch that runs across the Valley."
+    lede="Medicare plan availability is set county by county, and within a county the differences between neighbouring ZIPs are real — Glendale and Peoria alone span several. That is the entire argument for working with somebody who covers this specific patch rather than a call centre three states away."
     breadcrumbs={breadcrumbs}
   />
 
@@ -72,8 +72,8 @@ const breadcrumbs = [
         </p>
         <h3>Meeting in person</h3>
         <p>
-          Based in {site.address.display}. In-person appointments happen at kitchen tables,
-          libraries, coffee shops and wherever else suits you across the North Valley. Plenty of
+          The office is in {site.address.display}. In-person appointments happen at kitchen tables,
+          libraries, coffee shops and wherever else suits you across the Phoenix metro. Plenty of
           people would rather do the whole thing by phone or video, and that works equally well —
           the comparison is the same either way.
         </p>
@@ -82,7 +82,7 @@ const breadcrumbs = [
   </section>
 
   <CtaBand
-    title="Wherever you are in the North Valley."
+    title="Wherever you are in the Valley."
     body={`${site.agent.name}, based in ${site.address.locality}. ${site.hours.display}. ${site.hours.note}`}
   />
 </BaseLayout>

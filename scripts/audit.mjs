@@ -79,7 +79,7 @@ for (const f of htmls) {
   const r = routeOf(f);
   if (!/<title>[^<]{10,}<\/title>/.test(html)) note(`NO TITLE on ${r}`);
   if (!/<meta name="description" content="[^"]{50,}"/.test(html)) note(`WEAK DESCRIPTION on ${r}`);
-  if (!/<link rel="canonical" href="https:\/\/daisymountainmedicare\.com/.test(html)) note(`NO CANONICAL on ${r}`);
+  if (!/<link rel="canonical" href="https:\/\/602medicare\.com/.test(html)) note(`NO CANONICAL on ${r}`);
   const h1s = (html.match(/<h1[\s>]/g) || []).length;
   if (h1s !== 1) note(`${h1s} <h1> on ${r}`);
   if (!/application\/ld\+json/.test(html)) note(`NO JSON-LD on ${r}`);
@@ -91,7 +91,7 @@ const smFiles = [...smIndex.matchAll(/<loc>[^<]*\/(sitemap-\d+\.xml)<\/loc>/g)].
 const smUrls = new Set();
 for (const sf of smFiles) {
   for (const m of readFileSync(join(DIST, sf), 'utf8')
-    .matchAll(/<loc>https:\/\/daisymountainmedicare\.com([^<]*)<\/loc>/g)) {
+    .matchAll(/<loc>https:\/\/602medicare\.com([^<]*)<\/loc>/g)) {
     smUrls.add(m[1] || '/');
   }
 }
@@ -141,7 +141,7 @@ for (const sf of smFiles) {
 
     // 5. SEO field limits — Google truncates beyond these
     const title = html.match(/<title>([^<]*)<\/title>/)?.[1] ?? '';
-    const bare = title.replace(/\s*\|\s*Daisy Mountain Medicare\s*$/, '');
+    const bare = title.replace(/\s*\|\s*602Medicare\s*$/, '');
     if (bare.length > 60) note(`SEO TITLE ${bare.length} chars (>60) on ${route}`);
     const desc = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? '';
     if (desc.length > 155) note(`META DESCRIPTION ${desc.length} chars (>155) on ${route}`);
@@ -203,15 +203,15 @@ for (const sf of smFiles) {
     if (!footer.startsWith('<footer')) { note(`NO FOOTER on ${r}`); continue; }
 
     // Brand block
-    if (!footer.includes('Daisy Mountain Medicare')) note(`FOOTER: no wordmark on ${r}`);
+    if (!footer.includes('602Medicare')) note(`FOOTER: no wordmark on ${r}`);
     if (!footer.includes('Brian Penner')) note(`FOOTER: no agent name on ${r}`);
     if (!footer.includes('22+ Years')) note(`FOOTER: no experience line on ${r}`);
     if (!footer.includes('NPN 8206556')) note(`FOOTER: no NPN on ${r}`);
 
     // NAP block — one office
     if (!footer.includes('Anthem, AZ 85086')) note(`FOOTER: no address on ${r}`);
-    if (!footer.includes('(623) 555-0100')) note(`FOOTER: no phone on ${r}`);
-    if (!footer.includes('brian@daisymountainmedicare.com')) note(`FOOTER: no email on ${r}`);
+    if (!footer.includes('(602) 555-0100')) note(`FOOTER: no phone on ${r}`);
+    if (!footer.includes('brian@602medicare.com')) note(`FOOTER: no email on ${r}`);
 
     // The other brand's offices must never appear here.
     for (const city of ['Moab', 'Monticello', 'Grand Junction']) {
@@ -303,7 +303,7 @@ for (const sf of smFiles) {
 
     // A calculator must not name a carrier or product.
     const CARRIERS = /\b(Humana|Aetna|UnitedHealthcare|UnitedHealth|Cigna|Wellcare|Anthem Blue|Blue Cross|Devoted Health|Alignment Health)\b/;
-    if (CARRIERS.test(html.replace(/Daisy Mountain Medicare/g, ''))) {
+    if (CARRIERS.test(html.replace(/602Medicare/g, ''))) {
       note(`CARRIER NAMED on ${route}`);
     }
   }
@@ -313,6 +313,82 @@ for (const sf of smFiles) {
     if (!r.startsWith('/tools/') || r === '/tools/') continue;
     const slug = r.slice('/tools/'.length).replace(/\/$/, '');
     if (!TOOLS.includes(slug)) note(`ORPHAN TOOL ROUTE  ${r}`);
+  }
+}
+
+// ── 6e. every service-area city builds and is wired in ───────────────────────
+// Same shape as the tools check above: the pages are generated from
+// src/data/locations.ts, so this asserts the derived output rather than a
+// hand-kept list. Glendale and Peoria are named explicitly because they carry
+// the Phoenix-metro positioning — losing either would quietly shrink the brand
+// back to a four-community north-valley agency.
+{
+  const CITIES = [
+    ['anthem-az', 'Anthem'],
+    ['glendale-az', 'Glendale'],
+    ['peoria-az', 'Peoria'],
+    ['phoenix-85086', 'North Phoenix'],
+    ['carefree-az', 'Carefree'],
+    ['new-river-az', 'New River'],
+  ];
+  console.log(`Service-area cities expected: ${CITIES.length}`);
+
+  const hub = readFileSync(join(DIST, 'service-area', 'index.html'), 'utf8');
+
+  for (const [slug, city] of CITIES) {
+    const route = `/service-area/${slug}/`;
+    if (!routes.has(route)) { note(`SERVICE AREA PAGE NOT BUILT  ${route}`); continue; }
+    if (!hub.includes(`href="${route}"`)) note(`CITY NOT ON THE SERVICE-AREA HUB  ${route}`);
+    if (!smUrls.has(route)) note(`CITY NOT IN SITEMAP  ${route}`);
+
+    const html = readFileSync(join(DIST, 'service-area', slug, 'index.html'), 'utf8');
+
+    if (!html.includes('"@type":"Service"')) note(`NO Service SCHEMA on ${route}`);
+    if (!html.includes('"@type":"FAQPage"')) note(`NO FAQPage SCHEMA on ${route}`);
+    if (!html.includes('"@type":"BreadcrumbList"')) note(`NO BreadcrumbList SCHEMA on ${route}`);
+    if (!/class="crumbs"/.test(html)) note(`NO RENDERED BREADCRUMBS on ${route}`);
+    // The h1 is rendered per-glyph by <Kinetic>, so match on the page text
+    // rather than trying to read the heading's markup.
+    if (!html.includes(city)) note(`CITY NAME MISSING on ${route}`);
+
+    // areaServed must list every city on every page — it is the LocalBusiness
+    // node, not a per-page one, so a city missing here is a data-file bug.
+    for (const [, other] of CITIES) {
+      if (!html.includes(`"name":"${other}"`)) note(`areaServed MISSING "${other}" on ${route}`);
+    }
+
+    // Cross-links to the other cities, so the cluster is navigable.
+    const nearby = [...html.matchAll(/href="\/service-area\/[a-z0-9-]+\//g)].length;
+    if (nearby < CITIES.length) note(`WEAK CITY CROSS-LINKING (${nearby}) on ${route}`);
+
+    const text = html
+      .replace(/<script[\s\S]*?<\/script>/g, ' ')
+      .replace(/<style[\s\S]*?<\/style>/g, ' ')
+      .replace(/<[^>]+>/g, ' ');
+    const words = text.split(/\s+/).filter(Boolean).length;
+    if (words < 500) note(`THIN CITY PAGE ${words} words on ${route}`);
+  }
+
+  // Nothing under /service-area/ that is not a registered city.
+  for (const r of routes) {
+    if (!r.startsWith('/service-area/') || r === '/service-area/') continue;
+    const slug = r.slice('/service-area/'.length).replace(/\/$/, '');
+    if (!CITIES.some(([s]) => s === slug)) note(`ORPHAN SERVICE-AREA ROUTE  ${r}`);
+  }
+}
+
+// ── 6f. the rebrand left nothing behind ──────────────────────────────────────
+// A rebrand is the one change that fails silently: a stale name in a single
+// meta tag or JSON-LD node reads fine on screen and poisons every downstream
+// consumer of it. Assert the absence directly.
+{
+  const DEAD = [/Daisy Mountain/i, /daisymountain/i, /Insurance Anthem/i, /insuranceanthem/i,
+    /\(623\)/, /623-555/];
+  for (const f of files.filter((x) => /\.(html|xml|txt|json|webmanifest)$/.test(x))) {
+    const body = readFileSync(f, 'utf8');
+    for (const re of DEAD) {
+      if (re.test(body)) note(`RETIRED BRAND STRING ${re} in ${'/' + relative(DIST, f)}`);
+    }
   }
 }
 

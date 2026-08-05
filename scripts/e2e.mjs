@@ -597,13 +597,13 @@ for (const slug of LEARN_SLUGS) {
     };
   `);
 
-  const bare = a.title.replace(/\s*\|\s*Daisy Mountain Medicare\s*$/, '');
+  const bare = a.title.replace(/\s*\|\s*602Medicare\s*$/, '');
   const ok = (label, cond, detail) => check(`${slug} — ${label}`, cond, detail);
 
   ok('single h1', a.h1s === 1, String(a.h1s));
   ok(`SEO title ≤60 (${bare.length})`, bare.length <= 60 && bare.length > 10, bare);
   ok(`meta description ≤155 (${a.desc.length})`, a.desc.length <= 155 && a.desc.length > 40, a.desc);
-  ok('canonical points at daisymountainmedicare.com', a.canonical === `https://daisymountainmedicare.com/learn/${slug}/`, a.canonical);
+  ok('canonical points at 602medicare.com', a.canonical === `https://602medicare.com/learn/${slug}/`, a.canonical);
   ok('Article + FAQPage + BreadcrumbList schema',
     a.types.includes('Article') && a.types.includes('FAQPage') && a.types.includes('BreadcrumbList'),
     a.types.join(','));
@@ -647,7 +647,8 @@ console.log('\nLearn — consolidation & motion density');
 // ── 7e. the footer, sampled across every page type ───────────────────────────
 console.log('\nFooter — every page type');
 for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
-                    '/learn/irmaa-explained/', '/service-area/anthem-az/', '/terms/']) {
+                    '/learn/irmaa-explained/', '/service-area/anthem-az/',
+                    '/service-area/glendale-az/', '/service-area/peoria-az/', '/terms/']) {
   const p = await openPage(path);
   const f = await evaluate(p, `
     const el = document.querySelector('footer.site-footer');
@@ -663,9 +664,9 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
     const NONAFF = 'not connected with or endorsed by the United States government';
     const count = (hay, needle) => hay.split(needle).length - 1;
     return {
-      wordmark: t.includes('Daisy Mountain Medicare'),
+      wordmark: t.includes('602Medicare'),
       agent: t.includes('Brian Penner') && t.includes('22+ Years') && t.includes('NPN 8206556'),
-      nap: t.includes('Anthem, AZ 85086') && t.includes('(623) 555-0100') && t.includes('brian@daisymountainmedicare.com'),
+      nap: t.includes('Anthem, AZ 85086') && t.includes('(602) 555-0100') && t.includes('brian@602medicare.com'),
       wrongBrand: ['Moab','Monticello','Grand Junction'].filter(c => t.includes(c)),
       services: ['/medicare-advantage/','/medicare-supplement/','/part-d/','/long-term-care/'].every(href),
       learnHub: href('/learn/'),
@@ -676,7 +677,7 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
       ctaHref: el.querySelector('a.btn')?.getAttribute('href') || '',
       ctaLabel: el.querySelector('a.btn')?.textContent.trim() || '',
       licence: t.includes('Licensed in 18 states'),
-      copyright: /© 2026 Daisy Mountain Medicare/i.test(raw),
+      copyright: /© 2026 602Medicare/i.test(raw),
       tpmoInFooter: count(raw, TPMO),
       tpmoInPage: count(body, TPMO),
       nonAffInPage: count(body, NONAFF),
@@ -701,6 +702,102 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
   ok('non-affiliation exactly once', f.nonAffInPage === 1, String(f.nonAffInPage));
   ok('no horizontal overflow', f.overflow);
   await closePage(p);
+}
+
+// ── 7e2. the service-area pages ──────────────────────────────────────────────
+// Every city page is generated from one entry in src/data/locations.ts, so this
+// is really a check on that data file: a city listed there must produce a real
+// page, appear on the hub, cross-link from its neighbours and land in the
+// LocalBusiness areaServed. Glendale and Peoria are the two the 602Medicare
+// positioning line names, so they get asserted by name rather than by loop —
+// silently losing either one would gut the metro claim without failing a count.
+console.log('\nService area — city pages');
+{
+  const CITIES = [
+    { slug: 'anthem-az', city: 'Anthem', zip: '85086', primary: true },
+    { slug: 'glendale-az', city: 'Glendale', zip: '85308' },
+    { slug: 'peoria-az', city: 'Peoria', zip: '85383' },
+    { slug: 'phoenix-85086', city: 'North Phoenix', zip: '85086' },
+    { slug: 'carefree-az', city: 'Carefree', zip: '85377' },
+    { slug: 'new-river-az', city: 'New River', zip: '85087' },
+  ];
+
+  // The hub first — every city has to be reachable from it.
+  const hub = await openPage('/service-area/');
+  const hubState = await evaluate(hub, `
+    return {
+      cards: document.querySelectorAll('.places > li').length,
+      hrefs: [...document.querySelectorAll('.places a[href^="/service-area/"]')]
+        .map(a => new URL(a.href).pathname),
+      text: document.body.innerText,
+    };
+  `);
+  check(`hub lists all ${CITIES.length} cities`, hubState.cards === CITIES.length,
+    `${hubState.cards} cards`);
+  for (const c of CITIES) {
+    check(`hub links ${c.city}`, hubState.hrefs.includes(`/service-area/${c.slug}/`));
+  }
+  check('hub names Glendale and Peoria in its copy',
+    /Glendale/.test(hubState.text) && /Peoria/.test(hubState.text));
+  await closePage(hub);
+
+  for (const c of CITIES) {
+    const p = await openPage(`/service-area/${c.slug}/`);
+    const a = await evaluate(p, `
+      const ld = [...document.querySelectorAll('script[type="application/ld+json"]')]
+        .flatMap(s => { try { return JSON.parse(s.textContent)['@graph'] || []; } catch { return []; } });
+      const org = ld.find(n => (n['@type'] || []).includes && n['@type'].includes('LocalBusiness'));
+      const svc = ld.find(n => n['@type'] === 'Service');
+      const faq = ld.find(n => n['@type'] === 'FAQPage');
+      const text = document.body.innerText;
+      return {
+        h1s: document.querySelectorAll('h1').length,
+        h1: document.querySelector('h1')?.innerText.trim() || '',
+        title: document.title,
+        desc: document.querySelector('meta[name=description]')?.content || '',
+        canonical: document.querySelector('link[rel=canonical]')?.href || '',
+        crumbs: document.querySelectorAll('.crumbs li').length,
+        types: ld.map(n => Array.isArray(n['@type']) ? n['@type'].join('+') : n['@type']),
+        areaServed: (org?.areaServed || []).map(x => x.name),
+        svcArea: svc?.areaServed?.name || '',
+        faqCount: faq?.mainEntity?.length ?? 0,
+        faqRendered: document.querySelectorAll('details').length,
+        nearby: document.querySelectorAll('.nearby a[href^="/service-area/"]').length,
+        localParas: document.querySelectorAll('.loc__body p').length,
+        words: text.split(/\\s+/).filter(Boolean).length,
+        text,
+        overflow: document.documentElement.scrollWidth <= window.innerWidth + 1,
+      };
+    `);
+    const ok = (label, cond, detail) => check(`${c.slug} — ${label}`, cond, detail);
+
+    ok('single h1', a.h1s === 1, String(a.h1s));
+    ok('h1 names the city', a.h1.includes(c.city), a.h1);
+    ok('title carries the brand', a.title.includes('602Medicare'), a.title);
+    ok(`meta description ≤155 (${a.desc.length})`, a.desc.length <= 155 && a.desc.length > 40, a.desc);
+    ok('canonical points at 602medicare.com',
+      a.canonical === `https://602medicare.com/service-area/${c.slug}/`, a.canonical);
+    ok('breadcrumbs rendered', a.crumbs === 3, String(a.crumbs));
+    ok('Service + FAQPage + BreadcrumbList schema',
+      a.types.includes('Service') && a.types.includes('FAQPage') && a.types.includes('BreadcrumbList'),
+      a.types.join(','));
+    ok('Service areaServed is this city', a.svcArea === c.city, a.svcArea);
+    // The whole point of the data-driven list: the org node's areaServed has to
+    // carry EVERY city, on every page, not just the one being viewed.
+    ok('LocalBusiness areaServed covers all cities',
+      CITIES.every((x) => a.areaServed.includes(x.city)), a.areaServed.join(', '));
+    ok('FAQ schema matches the rendered FAQ',
+      a.faqCount >= 3 && a.faqCount === a.faqRendered,
+      `schema ${a.faqCount} vs rendered ${a.faqRendered}`);
+    ok('cross-links every other city', a.nearby === CITIES.length - 1, String(a.nearby));
+    ok('has genuine local copy', a.localParas >= 3, `${a.localParas} paragraphs`);
+    ok('substantive length', a.words > 500, `${a.words} rendered words`);
+    ok('quotes the local ZIP', a.text.includes(c.zip));
+    ok('602 phone, not the old 623', a.text.includes('(602) 555-0100') && !a.text.includes('(623)'));
+    ok('no horizontal overflow', a.overflow);
+    ok('no console errors', p.consoleErrors.length === 0, p.consoleErrors.join(' | '));
+    await closePage(p);
+  }
 }
 
 // ── 7f. footer at mobile width ───────────────────────────────────────────────

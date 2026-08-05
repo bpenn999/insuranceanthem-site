@@ -20,7 +20,13 @@ const { location } = Astro.props;
 const others = locations.filter((l) => l.slug !== location.slug);
 
 const title = `Medicare Help in ${location.label}`;
-const description = `${location.summary} ${site.agent.name}, ${site.agent.experience}, NPN ${site.agent.npn}. Call ${site.phone.display}.`;
+/**
+ * `seoDescription`, not `summary` + a name/NPN/phone tail. That composition read
+ * well and ran 40–70 characters past the 155 Google will show, so every city
+ * page shipped a description truncated mid-sentence. The credentials still
+ * appear on the page itself and in the Person/LocalBusiness schema.
+ */
+const description = location.seoDescription;
 
 const breadcrumbs = [
   { name: 'Home', path: '/' },

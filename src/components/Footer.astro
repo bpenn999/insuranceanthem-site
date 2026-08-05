@@ -52,11 +52,10 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
 
     <!-- ── Advisor row ────────────────────────────────────────────────── -->
     <div class="foot__advisor">
-      {/* No mark on this row. The bare emblem cannot carry a navy ground — the
-          mountains' ridge lines are negative space, so on navy the silhouette
-          drops out and only the gold daisy survives. The badge over the NAP
-          below brings its own white field, so it is the footer's only mark and
-          the one that links home. */}
+      {/* No mark on this row — there is no 602Medicare logo yet, so the footer
+          carries the name as type only. When a mark does land, note that a navy
+          ground needs a variant that brings its own light field; do not just
+          drop the light-ground version in here. */}
       <div class="foot__advisor-txt">
         <span class="foot__advisor-kicker">Your local advisor</span>
         <strong>{site.agent.name}</strong>
@@ -120,20 +119,9 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
       <!-- NAP — one office, structured for both humans and parsers -->
       <div class="foot__col foot__col--contact">
         <h2 class="foot__heading">Contact</h2>
-        {/* The full badge sits over the NAP as the mark of record. It keeps its
-            own white field, so it reads on the navy ground without a plate.
-            Below the fold on every page, hence lazy. */}
-        <a href="/" class="foot__badge-link" aria-label={`${site.name} — home`}>
-          <img
-            class="foot__badge"
-            src="/brand/badge-256.png"
-            alt={`${site.legalName} badge`}
-            width="261"
-            height="256"
-            loading="lazy"
-            decoding="async"
-          />
-        </a>
+        {/* No mark over the NAP — there is no 602Medicare logo yet. The
+            full-bleed wordmark band below is the footer's mark of record until
+            one lands. */}
         <address class="foot__nap">
           <p class="foot__nap-name">{site.legalName}</p>
           <p class="foot__nap-line">{site.address.display}</p>
@@ -145,7 +133,9 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     </nav>
 
     <!-- ── Wordmark ───────────────────────────────────────────────────── -->
-    <div class="foot__wordmark"><span>Daisy Mountain <em>Medicare</em></span></div>
+    <div class="foot__wordmark">
+      <span><em>{site.wordmark.mark}</em>{site.wordmark.product}</span>
+    </div>
 
     <!-- ── Compliance — the ONLY place the TPMO disclaimer appears ─────── -->
     <div class="foot__legal">
@@ -187,14 +177,6 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     gap: var(--s-4);
     padding-bottom: var(--s-7);
     border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-  }
-
-  .foot__badge-link { display: inline-block; }
-  .foot__badge {
-    display: block;
-    width: 90px;
-    height: auto;
-    margin: 0 0 var(--s-4);
   }
 
   .foot__advisor-txt { display: flex; flex-direction: column; line-height: 1.35; }
@@ -282,17 +264,29 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
   .foot__col--contact .foot__nap p { margin: 0; }
 
   /* ── wordmark ────────────────────────────────────────────────────── */
-  .foot__wordmark { padding-block: var(--s-6) var(--s-5); }
+  /* Sized against the BAND, not the viewport — `cqw` is a share of this element's
+     own width, which is what the type actually has to fill. The band is
+     `min(1360px, 100% - 2×gutter)`, so a vw-based size drifts off target as the
+     gutter's share of the viewport changes; the old vw tiers left the name
+     filling anywhere from 68% to 87% of the band. */
+  .foot__wordmark { padding-block: var(--s-6) var(--s-5); container-type: inline-size; }
   .foot__wordmark span {
     display: block;
     font-family: var(--font-display);
     font-weight: 600;
-    /* Sized to span the band edge-to-edge. Two things drive these numbers: the
-       name is 23 characters (~9.4em wide on Fraunces), and Fraunces is optically
-       sized, so width-per-em grows as the type shrinks — hence the lower vw
-       below 860px. Retune all three tiers if the brand name ever changes length;
-       nowrap + overflow:hidden is only the backstop, not the plan. */
-    font-size: clamp(20px, 7vw, 44px);
+    /* vw first as the fallback for anything without container queries — an
+       invalid `cqw` declaration is dropped and this one survives the cascade. */
+    font-size: clamp(34px, 12vw, 76px);
+    /* Sized to span the band edge-to-edge, ~97% of it at every width. Two things
+       drive these numbers: the name is 11 characters (~5.1em wide on Fraunces),
+       and Fraunces is optically sized, so width-per-em GROWS as the type shrinks
+       — 5.9em at 45px against 5.1em at 220px. That is the whole reason there are
+       three tiers rather than one value.
+
+       RETUNE ALL THREE IF THE BRAND NAME CHANGES LENGTH. They were measured for
+       "602Medicare" and were roughly half these sizes when the name was 23
+       characters long. nowrap + overflow:hidden is the backstop, not the plan. */
+    font-size: clamp(38px, 16.5cqw, 112px);
     line-height: 1.02;
     letter-spacing: -0.03em;
     color: #fff;
@@ -300,15 +294,24 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     overflow: hidden;
     max-width: 100%;
   }
-  /* Three tiers, not two: between 860 and 1024 the optical size is still wide
-     enough (~10.4em) that the desktop 9vw would run past the gutter. */
+  /* The tablet-portrait window. Without it the base tier's cqw, tuned for a
+     ~335px band where Fraunces is at its widest per em, leaves the name filling
+     only ~85% of a 615px band. */
+  @media (min-width: 560px) {
+    .foot__wordmark span { font-size: 12vw; font-size: 18.7cqw; }
+  }
   @media (min-width: 860px) {
-    .foot__wordmark span { font-size: 8vw; }
+    .foot__wordmark span { font-size: 13.5vw; font-size: 18.8cqw; }
   }
   @media (min-width: 1024px) {
-    .foot__wordmark span { font-size: min(9vw, 135px); }
+    /* The px ceiling matters: past ~1455px the band stops growing at 1360px, so
+       without it the type would keep scaling off the end of a wide monitor. */
+    .foot__wordmark span { font-size: min(15.4vw, 230px); font-size: min(19.2cqw, 262px); }
   }
-  .foot__wordmark em { font-style: normal; color: #7FA3BE; }
+  /* The "602" half. --gold (#D5971F) is 6.0:1 on this navy ground, so the raw
+     logo gold is safe as text HERE — it is only 2.4:1 on porcelain, which is
+     why the header's half is set in --gold-ink instead. */
+  .foot__wordmark em { font-style: normal; color: var(--gold); }
 
   /* ── compliance ──────────────────────────────────────────────────── */
   .foot__legal {

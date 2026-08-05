@@ -18,17 +18,19 @@
   .waves { position: absolute; inset: 0; }
   .pad { position: absolute; inset: 0; padding: 92px 74px 0; }
 
-  .brand { display: flex; align-items: center; gap: 22px; }
-  /* The badge, not the emblem — at this size the arc text is still legible, and
-     an OG card is the one place the full mark of record belongs. */
-  .brand img { width: 92px; height: 92px; flex: none; }
-  .brand span {
+  /* Text wordmark, no mark — there is no 602Medicare logo yet. Sized well up
+     from the old name-beside-a-badge lockup so the brand still holds the top of
+     the card on its own. */
+  .brand {
     font-family: 'Fraunces', Georgia, serif;
-    font-size: 40px; font-weight: 600; letter-spacing: -0.015em;
+    font-size: 62px; font-weight: 600; letter-spacing: -0.025em;
+    line-height: 1;
   }
-  .brand .place { color: #0F3A5C; }
   /* Darkened logo gold — the raw #D5971F is 2.4:1 on this porcelain ground. */
-  .brand .product { color: #96650F; margin-left: 0.28em; }
+  .brand .mark { color: #96650F; }
+  /* Tight lockup: the two halves are two colours of one word, so no margin and
+     no space between the spans. */
+  .brand .product { color: #0F3A5C; }
 
   h1 {
     margin-top: 38px;
@@ -76,15 +78,11 @@
   </svg>
 
   <div class="pad">
-    <div class="brand">
-      <!-- scripts/build-og.mjs inlines the badge here as a data URI. -->
-      <img src="__BADGE_DATA_URI__" alt="" />
-      <span><span class="place">Daisy Mountain</span><span class="product">Medicare</span></span>
-    </div>
+    <div class="brand"><span class="mark">602</span><span class="product">Medicare</span></div>
 
     <h1>Medicare, explained by<br />someone who lives here.</h1>
     <div class="rule"></div>
-    <p class="sub">Independent Medicare guidance · Anthem, Arizona 85086</p>
+    <p class="sub">Phoenix-metro Medicare guidance · Office in Anthem, Arizona</p>
   </div>
 
   <div class="kicker">22+ YEARS · LICENSED IN 18 STATES · NPN 8206556</div>

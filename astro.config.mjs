@@ -6,7 +6,7 @@ import remarkMedicareFigures from './plugins/remark-medicare-figures.mjs';
 
 // https://astro.build/config
 export default defineConfig({
-  site: 'https://daisymountainmedicare.com',
+  site: 'https://602medicare.com',
   output: 'static',
   trailingSlash: 'always',
   build: {

@@ -15,13 +15,12 @@ const nav = [
 ];
 
 /**
- * The wordmark is two-tone: the place in navy, the product in gold. Split off
- * the last word rather than hard-coding the halves, so this still tracks
- * `site.name` if the agency is ever renamed.
+ * The wordmark is two-tone: "602" in gold, "Medicare" in navy. The halves come
+ * from `site.wordmark` rather than from splitting `site.name` — the name is one
+ * word with no space to split on, and the lockup sets the two halves flush
+ * against each other on purpose.
  */
-const nameWords = site.name.split(' ');
-const namePlace = nameWords.slice(0, -1).join(' ');
-const nameProduct = nameWords[nameWords.length - 1];
+const { mark, product } = site.wordmark;
 ---
 
 <div class="header-sentinel" aria-hidden="true"></div>
@@ -29,22 +28,13 @@ const nameProduct = nameWords[nameWords.length - 1];
 <header class="site-header">
   <div class="wrap--wide header__inner">
     <a href="/" class="brand" aria-label={`${site.name} — home`}>
-      {/* The emblem only — the full badge's arc text would be unreadable at
-          40px and would repeat the wordmark sitting next to it. Eager, with
-          fetchpriority, because it is the topmost image on every page. */}
-      <img
-        class="brand__mark"
-        src="/brand/emblem-96.png"
-        alt=""
-        width="167"
-        height="96"
-        decoding="async"
-        fetchpriority="high"
-      />
+      {/* Text wordmark, no mark. There is no 602Medicare logo yet; a placeholder
+          glyph next to the name would be worse than the name alone, and it is
+          one <img> off the critical path of every page until the real one
+          lands. Drop the mark back in here when it does. */}
       <span class="brand__text">
         <span class="brand__name">
-          <span class="brand__name-place">{namePlace}</span>
-          <span class="brand__name-product">{nameProduct}</span>
+          <span class="brand__name-mark">{mark}</span><span class="brand__name-product">{product}</span>
         </span>
         <span class="brand__sub">Medicare, done locally</span>
       </span>
@@ -157,21 +147,20 @@ const nameProduct = nameWords[nameWords.length - 1];
     color: var(--navy);
     flex: none;
   }
-  /* The emblem is 1.74:1, so height is what bounds it — 40px of width would
-     only be 23px tall and read as small next to the wordmark. `height: auto`
-     with the intrinsic width/height on the tag keeps the aspect ratio and
-     reserves the right box, so the wordmark never shifts as it decodes. */
-  .brand__mark { height: 40px; width: auto; flex: none; }
   .brand__text { display: flex; flex-direction: column; line-height: 1.1; }
+  /* Carrying the whole lockup now that there is no mark beside it, so it runs a
+     step larger and a touch heavier than the old name-next-to-emblem did. */
   .brand__name {
     font-family: var(--font-display);
-    font-size: 1.1rem;
-    font-weight: 500;
-    letter-spacing: -0.02em;
+    font-size: 1.3rem;
+    font-weight: 600;
+    letter-spacing: -0.025em;
   }
-  .brand__name-place { color: var(--navy); }
-  /* --gold-ink, not --gold: the raw logo gold is 2.4:1 on porcelain. */
-  .brand__name-product { color: var(--gold-ink); margin-left: 0.28em; }
+  /* Tight lockup: no margin, no space, no word break between the halves — they
+     are two colours of ONE word. --gold-ink, not --gold: the raw gold is 2.4:1
+     on porcelain and the "602" is text, not a graphic. */
+  .brand__name-mark { color: var(--gold-ink); }
+  .brand__name-product { color: var(--navy); }
   .brand__sub {
     font-size: 0.6875rem;
     letter-spacing: 0.06em;

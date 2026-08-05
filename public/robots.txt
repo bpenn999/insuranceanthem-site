@@ -26,7 +26,7 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://daisymountainmedicare.com/sitemap-index.xml
+Sitemap: https://602medicare.com/sitemap-index.xml
 
 # Plain-text site map for AI crawlers — generated, see src/pages/llms.txt.ts
-# https://daisymountainmedicare.com/llms.txt
+# https://602medicare.com/llms.txt

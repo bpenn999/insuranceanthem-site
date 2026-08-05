@@ -1,12 +1,12 @@
 /**
- * Daisy Mountain Medicare — single source of truth.
+ * 602Medicare — single source of truth.
  *
  * ⚠️  PHONE IS A PLACEHOLDER. Change `phone.raw` below and every phone number,
  *     tel: link, schema entry and footer across the whole site updates with it.
  *     Nothing else needs touching. Same pattern for email, NPN and address.
  */
 
-const PHONE_RAW = '6235550100'; // ← PLACEHOLDER (623) 555-0100. Swap this one string.
+const PHONE_RAW = '6025550100'; // ← PLACEHOLDER (602) 555-0100. Swap this one string.
 
 function formatPhone(raw: string): string {
   const d = raw.replace(/\D/g, '').slice(-10);
@@ -15,34 +15,49 @@ function formatPhone(raw: string): string {
 
 export const site = {
   /**
-   * Agency identity. Named for Daisy Mountain — the landmark Anthem sits under,
-   * and the name locals already use for this stretch of the north valley.
+   * Agency identity. Named for the 602 — the area code the whole Phoenix metro
+   * still calls itself by, whatever the overlay says. ONE WORD, no space: it is
+   * "602Medicare" in running copy, in schema and in the <title> tag.
    */
-  name: 'Daisy Mountain Medicare',
-  legalName: 'Daisy Mountain Medicare',
+  name: '602Medicare',
+  legalName: '602Medicare',
   /**
-   * The positioning line. "Senior insurance solutions" is doing real work here:
-   * long-term care is not a Medicare product, and the brand name no longer
-   * covers it on its own. Keep the phrase whenever this line is reworded.
+   * The wordmark lockup, split for the two-tone rendering in the header, the
+   * footer band and scripts/og-card.html. It is deliberately NOT derived from
+   * `name` by splitting on whitespace — the name has none. Both halves set tight
+   * against each other with no letter-space between them.
+   */
+  wordmark: {
+    /** Gold half — --gold-ink on light grounds, --gold on navy. */
+    mark: '602',
+    /** Navy half — white on navy grounds. */
+    product: 'Medicare',
+  },
+  /**
+   * The positioning line. Two jobs at once: it names the office (Anthem, which
+   * is where appointments and the LocalBusiness address actually are) and the
+   * reach (Phoenix metro). Keep both halves whenever this is reworded — dropping
+   * the office turns a local business into a call centre, and dropping the metro
+   * shrinks the brand back to the market it just outgrew.
    */
   tagline:
-    'Medicare & senior insurance solutions — serving Anthem, New River, Desert Hills & North Phoenix.',
+    'Phoenix-metro Medicare guidance — office in Anthem, serving Glendale, Peoria, North Phoenix & the Valley.',
   description:
-    'Medicare and senior insurance solutions for Anthem, New River, Desert Hills and North Phoenix. Medicare Advantage, Medicare Supplement and Part D, plus long-term care planning — explained plainly by a licensed local advisor with 22+ years of experience.',
+    'Phoenix-metro Medicare guidance from an office in Anthem, serving Glendale, Peoria, North Phoenix and across the Valley. Medicare Advantage, Medicare Supplement and Part D, plus long-term care planning — explained plainly by a licensed local advisor with 22+ years of experience.',
 
   /** Canonical origin — every absolute URL, og:url and schema @id derives from this. */
-  origin: 'https://daisymountainmedicare.com',
-  domain: 'daisymountainmedicare.com',
+  origin: 'https://602medicare.com',
+  domain: '602medicare.com',
 
   /** Contact */
-  email: 'brian@daisymountainmedicare.com',
+  email: 'brian@602medicare.com',
   phone: {
     raw: PHONE_RAW,
-    /** (623) 555-0100 — what humans see */
+    /** (602) 555-0100 — what humans see */
     display: formatPhone(PHONE_RAW),
-    /** tel:+16235550100 — what devices dial */
+    /** tel:+16025550100 — what devices dial */
     href: `tel:+1${PHONE_RAW.replace(/\D/g, '').slice(-10)}`,
-    /** +1-623-555-0100 — schema.org / structured data */
+    /** +1-602-555-0100 — schema.org / structured data */
     schema: `+1-${PHONE_RAW.slice(0, 3)}-${PHONE_RAW.slice(3, 6)}-${PHONE_RAW.slice(6)}`,
   },
 
@@ -78,14 +93,23 @@ export const site = {
   },
 
   /**
-   * Service area — every city page and schema areaServed derives from this list.
-   *
-   * It is deliberately WIDER than the tagline: Carefree has a real location page
-   * and is genuinely served, it just doesn't make the four-name brand line.
-   * Desert Hills is the reverse — named in the line, no page of its own yet.
-   * Claiming more here than the copy does is fine; claiming less is not.
+   * Service area — the plain-text list. The generated city PAGES and the schema
+   * `areaServed` both derive from src/data/locations.ts, not from here; this is
+   * the wider claim, including the communities that are genuinely served without
+   * having earned a page of their own yet (Desert Hills, Cave Creek, Sun City).
+   * Claiming more here than the pages do is fine; claiming less is not.
    */
-  serviceArea: ['Anthem', 'Carefree', 'New River', 'Desert Hills', 'Phoenix 85086'],
+  serviceArea: [
+    'Anthem',
+    'Glendale',
+    'Peoria',
+    'North Phoenix',
+    'New River',
+    'Desert Hills',
+    'Carefree',
+    'Cave Creek',
+    'Sun City',
+  ],
 
   hours: {
     display: 'Monday – Friday, 8:00 AM – 5:00 PM MST',

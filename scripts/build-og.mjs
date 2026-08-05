@@ -1,12 +1,13 @@
 /**
- * Render scripts/og-card.html to public/og.png (1200x630).
+ * Render scripts/og-card.html to public/og-602medicare.png (1200x630).
  *
  *   node scripts/build-og.mjs
  *
- * The card's badge is inlined as a data URI rather than left as a file:// path,
- * so the render has no relative-path dependency and the template stays a single
- * self-contained artifact. Fonts still come from Google Fonts, so this needs
- * network — that is why --virtual-time-budget is generous.
+ * The card is pure type — the 602Medicare wordmark, no mark — so the template is
+ * fully self-contained with no image to inline. Fonts still come from Google
+ * Fonts, so this needs network; that is why --virtual-time-budget is generous.
+ * If the render ever comes back in Georgia rather than Fraunces, that is a
+ * failed font fetch, not a template bug.
  *
  * Override the browser with CHROME=/path/to/chrome, same as scripts/e2e.mjs.
  */
@@ -20,16 +21,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CHROME =
   process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
-const badge = readFileSync(join(ROOT, 'public/brand/logo-badge-transparent.png'));
-const html = readFileSync(join(ROOT, 'scripts/og-card.html'), 'utf8').replace(
-  '__BADGE_DATA_URI__',
-  `data:image/png;base64,${badge.toString('base64')}`,
-);
-
-if (html.includes('__BADGE_DATA_URI__')) {
-  console.error('og-card.html is missing the __BADGE_DATA_URI__ placeholder');
-  process.exit(1);
-}
+const html = readFileSync(join(ROOT, 'scripts/og-card.html'), 'utf8');
 
 const work = mkdtempSync(join(tmpdir(), 'og-'));
 const page = join(work, 'card.html');
@@ -57,7 +49,7 @@ if (res.status !== 0) {
   process.exit(1);
 }
 
-const out = join(ROOT, 'public/og.png');
+const out = join(ROOT, 'public/og-602medicare.png');
 writeFileSync(out, readFileSync(shot));
 rmSync(work, { recursive: true, force: true });
-console.log(`wrote public/og.png (${statSync(out).size} bytes)`);
+console.log(`wrote public/og-602medicare.png (${statSync(out).size} bytes)`);

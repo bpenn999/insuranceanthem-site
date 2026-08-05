@@ -1,5 +1,5 @@
 /**
- * Daisy Mountain Medicare — motion engine.
+ * 602Medicare — motion engine.
  *
  * Contract:
  *   • Exactly ONE requestAnimationFrame loop per page. Caustics, scroll

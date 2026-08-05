@@ -1,11 +1,13 @@
-# Daisy Mountain Medicare
+# 602Medicare
 
-Medicare agency website for Brian Penner — Anthem, New River, Desert Hills,
-Carefree and North Phoenix. Named for Daisy Mountain, the landmark Anthem sits
-under.
+Medicare agency website for Brian Penner. Office in Anthem, AZ; the patch is the
+Phoenix metro — Glendale, Peoria, North Phoenix, New River and Carefree each
+have their own page. Named for the 602, the area code the whole Valley still
+calls itself by.
 
-> The GitHub repo is still `insuranceanthem-site` from the pre-rebrand name.
-> Renaming it is safe whenever you want — nothing in the build reads it.
+> The GitHub repo is still `insuranceanthem-site`, two rebrands behind. Renaming
+> it is safe whenever you want — nothing in the build reads it, and the
+> Cloudflare Pages project is `insuranceanthem` for the same historical reason.
 
 Astro 7, static output, deploy-ready for Cloudflare Pages. No `wrangler.toml` — Pages
 builds from the repo.
@@ -31,8 +33,8 @@ npm run verify     # typecheck + unit tests + build + built-output audit
 | `npm run audit` | Audits `/dist`: broken links, compliance text, sitemap coverage, template residue |
 | `npm run e2e` | Headless-Chrome checks of every tool, the Learn hub and every article. Needs `npm run preview` on **:4331** first |
 | `npm run verify` | check → test → build → audit |
-| `python3 scripts/build-brand-kit.py` | Regenerates every file in `public/brand/` + `public/favicon.ico` from the master badge. Needs `pillow`, `numpy`, `scipy` |
-| `node scripts/build-og.mjs` | Re-renders `public/og.png` from `scripts/og-card.html` |
+| `python3 scripts/build-placeholder-icons.py` | Regenerates the **placeholder** icons in `public/brand/` + `public/favicon.ico`. Needs `pillow` |
+| `node scripts/build-og.mjs` | Re-renders `public/og-602medicare.png` from `scripts/og-card.html` |
 
 `npm run e2e` drives Chrome over the DevTools Protocol with zero dependencies.
 Override the browser with `CHROME=/path/to/chrome npm run e2e`.
@@ -50,11 +52,15 @@ Override the browser with `CHROME=/path/to/chrome npm run e2e`.
 | Build output directory | `dist` |
 | Node version | 20 or newer (`NODE_VERSION` env var) |
 
-**Custom domain.** Add `daisymountainmedicare.com` and `www.daisymountainmedicare.com` in
+**Custom domain.** Add `602medicare.com` and `www.602medicare.com` in
 Pages → Custom domains, then add a redirect rule so `www` and `http` both 301 to
-the apex. `astro.config.mjs` sets `site: 'https://daisymountainmedicare.com'` and every
+the apex. `astro.config.mjs` sets `site: 'https://602medicare.com'` and every
 canonical URL, `og:url` and schema `@id` derives from it, so the apex must be the
 one that serves.
+
+Deploys go to the **`insuranceanthem`** Pages project. That name predates two
+rebrands and is deliberately left alone — renaming the project would orphan the
+custom-domain bindings.
 
 **Headers.** `public/_headers` ships a CSP, HSTS, and immutable caching for
 fingerprinted assets. Pages applies it automatically — no extra config.
@@ -66,7 +72,7 @@ fingerprinted assets. Pages applies it automatically — no extra config.
 Every agency fact lives in **`src/config/site.ts`**. Nothing is hard-coded anywhere else.
 
 ```ts
-const PHONE_RAW = '6235550100';  // ← PLACEHOLDER (623) 555-0100
+const PHONE_RAW = '6025550100';  // ← PLACEHOLDER (602) 555-0100
 ```
 
 Change that one string and the display format, the `tel:` links, the schema
@@ -94,40 +100,32 @@ to the email hand-off if the endpoint errors, so an enquiry is never silently lo
 
 ## The brand kit
 
-`src/brand/badge-master.png` is the logo of record — a circular badge, "DAISY
-MOUNTAIN" arced above a daisy-sun over navy mountains, "MEDICARE" arced below.
-**Everything in `public/brand/` is generated from it.** Never hand-edit those
-files; edit `scripts/build-brand-kit.py` and re-run it.
+**There isn't one yet.** The Daisy Mountain badge was retired with the rebrand —
+`src/brand/`, the generated `public/brand/` kit and `scripts/build-brand-kit.py`
+are all gone. Until a 602Medicare logo lands, the brand is set entirely in type:
 
-```bash
-python3 -m pip install pillow numpy scipy
-python3 scripts/build-brand-kit.py
-node scripts/build-og.mjs        # og.png embeds the badge, so re-render after
-```
-
-| File | Used by |
+| Where | What it is |
 | --- | --- |
-| `logo-badge-transparent.png` / `-white.png` | Full badge, trimmed. General use |
-| `badge-1024-white.png` | Print |
-| `gbp-avatar-512-white.png` | Google Business Profile avatar |
-| `icon-transparent.png` | The emblem alone — daisy + mountains, no ring, no text |
-| `icon-512/192.png` | Manifest, apple-touch-icon, JSON-LD logo. **Opaque** |
-| `icon-64/32/16.png`, `favicon.ico` | Browser tab. Transparent |
-| `emblem-96.png`, `badge-256.png` | The header mark and the footer badge |
+| Header | Text wordmark, no mark — `src/components/Header.astro` |
+| Footer | Full-bleed type band + a NAP with no badge over it |
+| OG card | Type-only, `scripts/og-card.html` → `public/og-602medicare.png` |
+| Icons | Placeholder navy tiles, `scripts/build-placeholder-icons.py` |
 
-Three things about that table are load-bearing:
+The wordmark is **one word, two colours**: `602` in gold set flush against
+`Medicare` in navy, no space and no margin between them. Both halves come from
+`site.wordmark` in `src/config/site.ts` — never from splitting `site.name`,
+which has no space in it to split on.
 
-- **`emblem-96.png` and `badge-256.png` exist for weight.** The masters are
-  ~300KB and ~750KB; the header draws the emblem at 40px and the footer the
-  badge at 90px on *every* page. Point the components at the masters and each
-  page ships a megabyte of PNG to paint a thumbnail.
-- **192 and 512 are opaque on purpose.** iOS composites a transparent
-  apple-touch-icon onto black, and the mountains' ridge lines are negative
-  space — on a dark ground the silhouette collapses into an unreadable mass.
-  The small tab icons stay transparent so they sit on any browser chrome.
-- **The emblem cannot carry a dark background,** for that same reason. On navy
-  only the gold daisy survives. Use the badge, which brings its own white field
-  — that is why the footer's mark is the badge and not the emblem.
+When the real mark arrives:
+
+1. Drop it back into the header (`.brand__mark` styling was removed; re-add it),
+   the footer advisor row and the OG card.
+2. **Use new filenames.** `public/_headers` caches `/*.png` for seven days, so
+   re-using `mark-512.png` means the edge serves the placeholder for up to a
+   week after the real logo ships. Same reason `og.png` became
+   `og-602medicare.png` at the rebrand.
+3. A navy ground needs a variant that brings its own light field. Do not drop
+   the light-ground version onto the footer and hope.
 
 ### The gold
 
@@ -135,10 +133,11 @@ The palette has **two** golds, and they are not interchangeable:
 
 | Token | Value | For |
 | --- | --- | --- |
-| `--gold` | `#D5971F` | The logo's exact gold. **Graphics only** — 2.4:1 on porcelain |
+| `--gold` | `#D5971F` | The brand gold. **Graphics only** on light — 2.4:1 on porcelain, 6.0:1 on navy |
 | `--gold-ink` | `#96650F` | Gold **text** on a light ground — 4.8:1, clears AA |
 
-The "Medicare" half of the wordmark is set in `--gold-ink`. Setting it in
+The header's `602` and the OG card's are set in `--gold-ink`. The footer's giant
+`602` sits on navy, so it uses `--gold` directly. Setting the header's in
 `--gold` would drop it below the 4.5:1 floor that `/accessibility/` claims for
 every text pair on the site.
 
@@ -229,20 +228,20 @@ src/
     enrollment.ts         ← Enrollment-window date maths (unit tested)
     compliance.ts         ← TPMO disclaimer, non-affiliation, NPN line
     products.ts           ← The 4 product lines → 4 generated pages
-    locations.ts          ← Service area → 4 generated pages
+    locations.ts          ← Service area → 6 generated pages
     tools.ts              ← Free-tools registry
     faqs.ts, testimonials.ts
   scripts/motion.ts       ← The whole motion engine. ONE rAF loop per page.
   styles/global.css       ← Porcelain design system + the motion/reduced-motion layer
   components/             ← Kinetic, HeroFunnel, LeadForm, Schema, Header, Footer, …
   layouts/                ← BaseLayout, ToolLayout, LegalLayout
-  pages/                  ← 38 routes
+  pages/                  ← 40 routes
   content/learn/          ← Markdown articles (drop-in; see below)
   pages/learn/            ← Hub + [...slug] route, both fully data-driven
 plugins/                  ← remark plugin: {{figure}} tokens → real numbers
 test/logic.test.mjs       ← 55 unit tests
 scripts/audit.mjs         ← Built-output audit
-scripts/e2e.mjs           ← 323 headless-browser checks
+scripts/e2e.mjs           ← 461 headless-browser checks
 ```
 
 Adding a product, a service-area city or a tool means adding one entry to the
