@@ -72,7 +72,7 @@ fingerprinted assets. Pages applies it automatically — no extra config.
 Every agency fact lives in **`src/config/site.ts`**. Nothing is hard-coded anywhere else.
 
 ```ts
-const PHONE_RAW = '6025550100';  // ← PLACEHOLDER (602) 555-0100
+const PHONE_RAW = '6028446002';  // (602) 844-6002 — the real line
 ```
 
 Change that one string and the display format, the `tel:` links, the schema
@@ -80,7 +80,10 @@ Change that one string and the display format, the `tel:` links, the schema
 all update together. Same for `email`, `agent.npn`, `agent.experience`,
 `address` and `serviceArea`.
 
-> The phone number currently in the repo is a **placeholder**. Swap it before launch.
+> The number went live on 2026-08-05. `scripts/audit.mjs` asserts the footer
+> carries it on every page and that the whole site renders exactly **one**
+> distinct phone string — a second one showing up means something hard-coded a
+> number instead of reading `site.phone`.
 
 ### Wiring up lead capture
 
@@ -279,7 +282,7 @@ layer. `/accessibility/` documents the approach, including where it falls short.
 
 ## Before launch
 
-- [ ] **Replace the placeholder phone number** in `src/config/site.ts`
+- [x] ~~Replace the placeholder phone number~~ — (602) 844-6002, live 2026-08-05
 - [ ] **Replace the placeholder testimonials** in `src/data/testimonials.ts` and set
       `placeholder = false` — they are sample text, not real reviews, and review
       schema stays suppressed until that flag flips

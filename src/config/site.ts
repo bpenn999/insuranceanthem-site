@@ -1,12 +1,13 @@
 /**
  * 602Medicare — single source of truth.
  *
- * ⚠️  PHONE IS A PLACEHOLDER. Change `phone.raw` below and every phone number,
- *     tel: link, schema entry and footer across the whole site updates with it.
- *     Nothing else needs touching. Same pattern for email, NPN and address.
+ * Change `PHONE_RAW` below and every phone number, tel: link, schema entry and
+ * footer across the whole site updates with it. Nothing else needs touching.
+ * Same pattern for email, NPN and address.
  */
 
-const PHONE_RAW = '6025550100'; // ← PLACEHOLDER (602) 555-0100. Swap this one string.
+/** The real line, live since 2026-08-05. Digits only — every format derives. */
+const PHONE_RAW = '6028446002';
 
 function formatPhone(raw: string): string {
   const d = raw.replace(/\D/g, '').slice(-10);
@@ -53,11 +54,11 @@ export const site = {
   email: 'brian@602medicare.com',
   phone: {
     raw: PHONE_RAW,
-    /** (602) 555-0100 — what humans see */
+    /** (602) 844-6002 — what humans see */
     display: formatPhone(PHONE_RAW),
-    /** tel:+16025550100 — what devices dial */
+    /** tel:+16028446002 — what devices dial */
     href: `tel:+1${PHONE_RAW.replace(/\D/g, '').slice(-10)}`,
-    /** +1-602-555-0100 — schema.org / structured data */
+    /** +1-602-844-6002 — schema.org / structured data */
     schema: `+1-${PHONE_RAW.slice(0, 3)}-${PHONE_RAW.slice(3, 6)}-${PHONE_RAW.slice(6)}`,
   },
 

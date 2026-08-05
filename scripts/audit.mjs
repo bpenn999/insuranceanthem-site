@@ -210,7 +210,7 @@ for (const sf of smFiles) {
 
     // NAP block — one office
     if (!footer.includes('Anthem, AZ 85086')) note(`FOOTER: no address on ${r}`);
-    if (!footer.includes('(602) 555-0100')) note(`FOOTER: no phone on ${r}`);
+    if (!footer.includes('(602) 844-6002')) note(`FOOTER: no phone on ${r}`);
     if (!footer.includes('brian@602medicare.com')) note(`FOOTER: no email on ${r}`);
 
     // The other brand's offices must never appear here.

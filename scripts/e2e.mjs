@@ -328,7 +328,7 @@ console.log('\nContact — form');
     return document.querySelector('[data-error-for="phone"]').textContent.includes('10-digit');
   `));
   check('missing consent is rejected', await evaluate(p, `
-    document.getElementById('lead-phone').value = '6235550100';
+    document.getElementById('lead-phone').value = '4805550147';
     document.getElementById('lead-consent').checked = false;
     document.querySelector('[data-lead]').requestSubmit();
     return document.querySelector('[data-error-for="consent"]').textContent.length > 0;
@@ -666,7 +666,7 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
     return {
       wordmark: t.includes('602Medicare'),
       agent: t.includes('Brian Penner') && t.includes('22+ Years') && t.includes('NPN 8206556'),
-      nap: t.includes('Anthem, AZ 85086') && t.includes('(602) 555-0100') && t.includes('brian@602medicare.com'),
+      nap: t.includes('Anthem, AZ 85086') && t.includes('(602) 844-6002') && t.includes('brian@602medicare.com'),
       wrongBrand: ['Moab','Monticello','Grand Junction'].filter(c => t.includes(c)),
       services: ['/medicare-advantage/','/medicare-supplement/','/part-d/','/long-term-care/'].every(href),
       learnHub: href('/learn/'),
@@ -793,7 +793,7 @@ console.log('\nService area — city pages');
     ok('has genuine local copy', a.localParas >= 3, `${a.localParas} paragraphs`);
     ok('substantive length', a.words > 500, `${a.words} rendered words`);
     ok('quotes the local ZIP', a.text.includes(c.zip));
-    ok('602 phone, not the old 623', a.text.includes('(602) 555-0100') && !a.text.includes('(623)'));
+    ok('602 phone, not the old 623', a.text.includes('(602) 844-6002') && !a.text.includes('(623)'));
     ok('no horizontal overflow', a.overflow);
     ok('no console errors', p.consoleErrors.length === 0, p.consoleErrors.join(' | '));
     await closePage(p);
