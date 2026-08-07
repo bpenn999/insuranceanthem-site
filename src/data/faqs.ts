@@ -14,8 +14,14 @@ export const homeFaqs: Faq[] = [
     a: 'Nothing. There is no fee to you at any point. Insurance carriers pay a set commission to licensed agents, and that amount is the same whether you enroll through me, through a call center, or directly with the carrier. Your premium does not go up for having help.',
   },
   {
+    /**
+     * The old answer here was simply wrong — it said "Yes", and listed four
+     * product lines. The practice is wider than that. Keep this list and the
+     * one in src/data/products.ts describing the same business; if a product
+     * line is added or dropped, both change together.
+     */
     q: 'Do you only sell Medicare?',
-    a: 'Yes. Medicare Advantage, Medicare Supplement, Part D and long-term care planning — that is the whole practice. Twenty-two years in one lane means I know these plans well rather than knowing a dozen product lines poorly.',
+    a: "Medicare is the core of the practice — Advantage, Supplement, and Part D. Around it sits the coverage that fills Medicare's real gaps: long-term care (traditional and limited-pay), dental-vision-hearing, cancer–heart attack–stroke plans, hospital indemnity, short-term home health care, and final expense. There is also a retirement income and Social Security planning division for households with $250,000 or more in investable assets. One practice, built around what actually happens after 65.",
   },
   {
     q: 'When can I actually make a change to my Medicare coverage?',
