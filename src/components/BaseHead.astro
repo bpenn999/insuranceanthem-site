@@ -95,14 +95,19 @@ if (description.length > 155) {
   days, so re-using the old /brand/mark-*.png names would have kept the navy-
   and-gold placeholder tiles in browser tabs for a week after this deploy.
 
-  favicon.ico is generated from icon-512.png by scripts/build-favicon-ico.py and
+  favicon.ico is generated from icon-512 by scripts/build-favicon-ico.py and
   carries 16/32/48 for older browsers; favicon-32 lets modern ones skip the .ico
   entirely. apple-touch-icon-180 and the two manifest icons are opaque, because
   iOS composites a transparent touch icon onto black.
+
+  THE `-v2` SUFFIX IS INEXPENSIVE INSURANCE, NOT CLUTTER. These files were
+  re-encoded 62% smaller after launch, and re-encoding them UNDER THE SAME NAMES
+  changed nothing for anyone: the edge kept serving the originals for the rest of
+  the seven days. Any future re-encode needs another new name.
 -->
 <link rel="icon" href="/favicon.ico" sizes="any" />
-<link rel="icon" type="image/png" sizes="32x32" href="/logo/favicon-32.png" />
-<link rel="apple-touch-icon" sizes="180x180" href="/logo/apple-touch-icon-180.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/logo/favicon-32-v2.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/logo/apple-touch-icon-180-v2.png" />
 <link rel="manifest" href="/site.webmanifest" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 
