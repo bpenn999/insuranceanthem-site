@@ -146,7 +146,7 @@ import { PLAN_YEAR, partA, usd } from '../../data/medicare-figures';
       <h3>If you do have to pay</h3>
       <ul>
         <li>
-          <strong>Part B becomes mandatory.</strong> If you buy Part A, you must also enrol in and
+          <strong>Part B becomes mandatory.</strong> If you buy Part A, you must also enroll in and
           pay for Part B.
         </li>
         <li>
@@ -286,12 +286,12 @@ import { PLAN_YEAR, partA, usd } from '../../data/medicare-figures';
 
         if (shortBy <= 8) {
           paras.push(
-            `<p><strong>You are close.</strong> ${shortBy} more ${shortBy === 1 ? 'quarter' : 'quarters'} — roughly ${(shortBy / 4).toFixed(shortBy % 4 === 0 ? 0 : 1)} ${shortBy <= 4 ? 'year' : 'years'} of Medicare-covered work — would make Part A free for life, saving ${usd(premium * 12)} every year from then on. If working a little longer is realistic, the arithmetic strongly favours it.</p>`
+            `<p><strong>You are close.</strong> ${shortBy} more ${shortBy === 1 ? 'quarter' : 'quarters'} — roughly ${(shortBy / 4).toFixed(shortBy % 4 === 0 ? 0 : 1)} ${shortBy <= 4 ? 'year' : 'years'} of Medicare-covered work — would make Part A free for life, saving ${usd(premium * 12)} every year from then on. If working a little longer is realistic, the arithmetic strongly favors it.</p>`
           );
         }
 
         paras.push(
-          `<p><strong>Two more things if you do end up paying.</strong> Buying Part A means you must also enrol in and pay for Part B. And Medicare Savings Programs can cover both premiums for people who qualify — the income limits are higher than most people assume, and plenty who qualify never apply.</p>`
+          `<p><strong>Two more things if you do end up paying.</strong> Buying Part A means you must also enroll in and pay for Part B. And Medicare Savings Programs can cover both premiums for people who qualify — the income limits are higher than most people assume, and plenty who qualify never apply.</p>`
         );
       }
 

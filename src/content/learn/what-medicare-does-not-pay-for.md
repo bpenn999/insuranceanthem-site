@@ -12,7 +12,7 @@ faqs:
   - q: "Does Medicare pay for a nursing home?"
     a: "Only for skilled care, and only up to 100 days per benefit period following a qualifying hospital stay, with a daily coinsurance from day 21. Custodial care — help with bathing, dressing and eating — is not covered at all, and that is the care most people end up needing."
   - q: "Does Medicare cover dental, vision or hearing?"
-    a: "Original Medicare covers essentially none of it. Many Medicare Advantage plans include an allowance for each, which is one of the genuine arguments in their favour — but read what the allowance actually covers before assuming it stretches to a crown or a hearing aid."
+    a: "Original Medicare covers essentially none of it. Many Medicare Advantage plans include an allowance for each, which is one of the genuine arguments in their favor — but read what the allowance actually covers before assuming it stretches to a crown or a hearing aid."
   - q: "When is the right time to look at long-term care coverage?"
     a: "Late fifties to early seventies, in reasonable health, is the window where it is most solvable. Both age and health drive price and eligibility, and both move in one direction."
 ---
@@ -23,7 +23,7 @@ A parent has been in for a fall, or a stroke, or pneumonia. They are medically s
 
 They are. Medicare simply does not cover the thing being discussed.
 
-This is not a loophole or a denial you can appeal. It is how the programme was designed in 1965 and how it works today. The gap is worth understanding long before you are standing in that corridor.
+This is not a loophole or a denial you can appeal. It is how the program was designed in 1965 and how it works today. The gap is worth understanding long before you are standing in that corridor.
 
 ## What Medicare actually covers, and where it stops
 
@@ -41,7 +41,7 @@ That is the care most people actually end up needing, and it is the care that la
 
 Long-term care is the big one, but three smaller ones catch people out:
 
-**Dental.** Original Medicare covers essentially no routine dental care. No cleanings, no fillings, no dentures. Many Medicare Advantage plans include a dental allowance, which is one of the genuine arguments in their favour — but read what the allowance actually covers before assuming it covers a crown.
+**Dental.** Original Medicare covers essentially no routine dental care. No cleanings, no fillings, no dentures. Many Medicare Advantage plans include a dental allowance, which is one of the genuine arguments in their favor — but read what the allowance actually covers before assuming it covers a crown.
 
 **Vision.** Routine eye exams and glasses are not covered. Medical eye conditions — cataract surgery, glaucoma treatment, diabetic retinopathy — are.
 

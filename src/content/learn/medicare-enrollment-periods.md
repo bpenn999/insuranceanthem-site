@@ -16,7 +16,7 @@ faqs:
   - q: "When does my Medigap open enrollment period start?"
     a: "The first day of the month in which you are both 65 and enrolled in Part B. It runs six months. During that window no carrier can refuse you a Medicare Supplement or charge you more for health reasons, and it does not come back."
   - q: "What if I miss my Initial Enrollment Period?"
-    a: "The General Enrollment Period runs 1 January to 31 March each year, with coverage starting the first of the month after you enrol. A late enrollment penalty may apply. Check first whether a Special Enrollment Period applies to you — if you had coverage through active employment, you may still be inside a penalty-free window."
+    a: "The General Enrollment Period runs 1 January to 31 March each year, with coverage starting the first of the month after you enroll. A late enrollment penalty may apply. Check first whether a Special Enrollment Period applies to you — if you had coverage through active employment, you may still be inside a penalty-free window."
 ---
 
 Medicare has six enrollment windows. They overlap, they have different rules about what you are allowed to change, and the marketing you receive rarely distinguishes between them.
@@ -80,7 +80,7 @@ This is the safety valve for a January surprise — a network change, a formular
 
 For people who missed their Initial Enrollment Period and have no Special Enrollment Period available.
 
-You may enrol in Part A and/or Part B, with coverage beginning the **first of the month after** you sign up. A [late enrollment penalty](/learn/late-enrollment-penalties/) usually applies.
+You may enroll in Part A and/or Part B, with coverage beginning the **first of the month after** you sign up. A [late enrollment penalty](/learn/late-enrollment-penalties/) usually applies.
 
 Before assuming you need this, check whether a Special Enrollment Period applies — if you had coverage through active employment that ended within the last eight months, you may still be in a penalty-free window.
 
@@ -94,11 +94,11 @@ Each has its own length and its own start point, and most run from the event or 
 
 | Window | Dates | Who it is for | What you may change |
 | --- | --- | --- | --- |
-| Initial Enrollment | 7 months around your 65th | Everyone turning 65 | Enrol in Part A and B; choose your path |
+| Initial Enrollment | 7 months around your 65th | Everyone turning 65 | Enroll in Part A and B; choose your path |
 | Medigap open enrollment | 6 months from Part B start at 65 | Everyone turning 65 | Buy any Medigap policy, no health questions |
 | Annual Enrollment | 15 Oct – 7 Dec | Everyone | Advantage, Part D, or switch paths |
 | Medicare Advantage OEP | 1 Jan – 31 Mar | Advantage members only | One switch, or back to Original |
-| General Enrollment | 1 Jan – 31 Mar | Those who missed their IEP | Enrol in Part A and/or B |
+| General Enrollment | 1 Jan – 31 Mar | Those who missed their IEP | Enroll in Part A and/or B |
 | Special Enrollment | Varies by event | Those with a qualifying event | Depends on the event |
 
 ## If you qualified before 65
@@ -125,7 +125,7 @@ Five, in rough order of how expensive they are:
 
 ## Still working at 65?
 
-The rules shift, and in your favour — with conditions.
+The rules shift, and in your favor — with conditions.
 
 If you or your spouse are covered by an employer plan **through active employment**, you can generally delay Part B without penalty and get an eight-month Special Enrollment Period when that employment ends.
 
@@ -141,7 +141,7 @@ Confirm with your benefits administrator, in writing, before relying on any of i
 
 **Six months before 65:** work out which structure you want. Not which plan — which structure. Running the [plan type finder](/tools/plan-type-finder/) is a reasonable starting point.
 
-**Three months before:** enrol. Early, not late, so coverage starts on time and you are choosing without deadline pressure.
+**Three months before:** enroll. Early, not late, so coverage starts on time and you are choosing without deadline pressure.
 
 **During your first six months on Part B:** settle the Medigap question, because that window is the only one here that never returns.
 
@@ -151,7 +151,7 @@ Confirm with your benefits administrator, in writing, before relying on any of i
 
 ## The short version
 
-- **IEP** — seven months at 65. Enrol early; coverage timing depends on it.
+- **IEP** — seven months at 65. Enroll early; coverage timing depends on it.
 - **Medigap OEP** — six months, once, never repeats. The consequential one.
 - **AEP** — 15 Oct to 7 Dec, open to all, changes effective 1 January.
 - **MA OEP** — 1 Jan to 31 Mar, Advantage members only, one change.

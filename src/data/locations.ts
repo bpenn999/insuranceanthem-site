@@ -70,7 +70,7 @@ export const locations: Location[] = [
     local: [
       'Glendale is really several markets in one. Arrowhead and the 85308/85310 ZIPs north of Bell Road skew older and more settled; historic downtown around Catlin Court and the 85301 core is younger, denser and far more likely to be helping a parent through enrollment than enrolling personally.',
       'Banner Thunderbird and Abrazo Arrowhead Campus anchor most of the care people here actually receive, and the two are not carried identically by every Advantage plan. That single fact decides more Glendale plan comparisons than premium does.',
-      'Retired Luke Air Force Base families are a real part of this market, and TRICARE For Life changes the maths completely — an Advantage plan is usually the wrong answer for that household, and it is worth ten minutes to establish which situation you are in before anyone looks at a plan.',
+      'Retired Luke Air Force Base families are a real part of this market, and TRICARE For Life changes the math completely — an Advantage plan is usually the wrong answer for that household, and it is worth ten minutes to establish which situation you are in before anyone looks at a plan.',
       'Glendale sits on the Sun City and Peoria borders, so it is common to live in one ZIP, see a specialist in another and use a pharmacy in a third. Networks are drawn around hospital systems, not city limits.',
     ],
     proximity:
@@ -90,7 +90,7 @@ export const locations: Location[] = [
       'Peoria stretches nearly thirty miles north to south, and the Medicare conversation is genuinely different at each end. Vistancia and the north 85383 corridor are newer, with a lot of recent arrivals still on a plan they bought in another state; 85345 and Westbrook Village have households that have been with the same doctor for twenty years.',
       'That north–south split matters because provider access does too. North Peoria residents drive to Arrowhead or into Sun City for most specialist care, which puts the deciding weight on how far a plan network actually reaches rather than on what it advertises.',
       'A large share of the 55-plus communities here — Westbrook Village, Trilogy at Vistancia — hold seasonal residents who spend part of the year out of state. When somebody is gone four months a year, a Medicare Supplement often ends up fitting better than a network-based plan, and that is a conversation worth having before January rather than after.',
-      'ZIPs on the Peoria–Glendale–Sun City seam sit close enough together that neighbours a mile apart can be offered different plan line-ups. It is worth pricing your own ZIP rather than borrowing a friend’s answer.',
+      'ZIPs on the Peoria–Glendale–Sun City seam sit close enough together that neighbors a mile apart can be offered different plan line-ups. It is worth pricing your own ZIP rather than borrowing a friend’s answer.',
     ],
     proximity:
       'Roughly 25 minutes from Anthem — out the Carefree Highway and down Lake Pleasant Parkway into north Peoria.',

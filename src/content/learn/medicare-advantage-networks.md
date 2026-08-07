@@ -1,8 +1,8 @@
 ---
 title: "How Medicare Advantage Networks Work"
 seoTitle: "How Medicare Advantage Networks Work: HMO vs PPO"
-description: "HMO vs PPO, referrals, prior authorisation, and what happens if your doctor leaves mid-year — how Advantage networks work and how to check one."
-summary: "The network is not a detail of a Medicare Advantage plan — it is the mechanism that makes a $0 premium possible. Here is how to check one properly before you enrol."
+description: "HMO vs PPO, referrals, prior authorization, and what happens if your doctor leaves mid-year — how Advantage networks work and how to check one."
+summary: "The network is not a detail of a Medicare Advantage plan — it is the mechanism that makes a $0 premium possible. Here is how to check one properly before you enroll."
 category: "Medicare Advantage"
 publishedAt: 2026-08-02
 readMinutes: 9
@@ -57,21 +57,21 @@ Then verify it more than once:
 
 1. **The plan's own provider directory**, which is the formal record but is not always current.
 2. **The provider's billing office**, which usually knows before the directory does.
-3. **Both, for anyone who matters** — your primary care physician, every specialist you intend to keep, your preferred hospital, and the imaging centre your doctor refers to.
+3. **Both, for anyone who matters** — your primary care physician, every specialist you intend to keep, your preferred hospital, and the imaging center your doctor refers to.
 
 That last one catches people. Your specialist can be in-network while the facility they send you to for imaging is not, and the bill arrives regardless.
 
-## Referrals and prior authorisation
+## Referrals and prior authorization
 
 Two different things that get conflated.
 
 **A referral** is your primary care physician sending you to a specialist. Common on HMOs, uncommon on PPOs. Administrative rather than clinical — but seeing a specialist without a required referral can mean the visit is not covered.
 
-**Prior authorisation** is the plan approving a service before it happens. It applies on both HMOs and PPOs and typically covers higher-cost items: advanced imaging, elective surgery, skilled nursing admissions, certain drugs.
+**Prior authorization** is the plan approving a service before it happens. It applies on both HMOs and PPOs and typically covers higher-cost items: advanced imaging, elective surgery, skilled nursing admissions, certain drugs.
 
-Prior authorisation is where Advantage plans attract most of their criticism, and some of it is fair. Approval takes time, and denials happen. What matters practically is that **denials are appealable and appeals succeed more often than people expect.** If a service is denied, ask your provider to request a peer-to-peer review, and if that fails, use the plan's formal appeal process. Do not treat the first denial as the end of it.
+Prior authorization is where Advantage plans attract most of their criticism, and some of it is fair. Approval takes time, and denials happen. What matters practically is that **denials are appealable and appeals succeed more often than people expect.** If a service is denied, ask your provider to request a peer-to-peer review, and if that fails, use the plan's formal appeal process. Do not treat the first denial as the end of it.
 
-When comparing plans, it is a fair question to ask how much prior authorisation a given plan requires. The answer varies more than the brochures suggest.
+When comparing plans, it is a fair question to ask how much prior authorization a given plan requires. The answer varies more than the brochures suggest.
 
 ## When your doctor leaves the network
 
@@ -93,9 +93,9 @@ Three habits that protect you:
 
 **Check "accepting new patients" separately.** Being in-network and being willing to take you on are different facts, and only one of them is usually displayed accurately.
 
-**Get it verified by a human before you enrol.** The billing office generally knows about a contract ending before the directory reflects it. Two minutes on the phone beats a year of surprises.
+**Get it verified by a human before you enroll.** The billing office generally knows about a contract ending before the directory reflects it. Two minutes on the phone beats a year of surprises.
 
-If you enrol based on a directory that turns out to be wrong, say so — plans have processes for this, and a documented directory error can support a request to be made whole or, in some cases, a Special Enrollment Period.
+If you enroll based on a directory that turns out to be wrong, say so — plans have processes for this, and a documented directory error can support a request to be made whole or, in some cases, a Special Enrollment Period.
 
 ## Star ratings, and what they do not tell you
 
@@ -115,21 +115,21 @@ Communities further out feel this more sharply. A plan with a thin local network
 
 ## Where a supplement sits differently
 
-A Medicare Supplement has no network at all. If a provider accepts Medicare, they accept your supplement — any specialist, any hospital, any state, no referrals, no prior authorisation.
+A Medicare Supplement has no network at all. If a provider accepts Medicare, they accept your supplement — any specialist, any hospital, any state, no referrals, no prior authorization.
 
 That is not automatically better. You pay a monthly premium for it, and you still need a separate Part D plan. For many people, an Advantage plan whose network genuinely covers their doctors is the better deal by a clear margin.
 
 But if your provider list is non-negotiable, or you spend real time out of state, the absence of a network is worth paying for. That comparison is the subject of [Advantage vs Medigap](/learn/medicare-advantage-vs-medigap/), and the [plan type finder](/tools/plan-type-finder/) will tell you which way your own answers point.
 
-## Questions worth asking before you enrol
+## Questions worth asking before you enroll
 
 1. Is every doctor I want to keep in-network **for this specific plan** next year?
-2. Which hospital system does the network centre on, and where do I actually go?
+2. Which hospital system does the network center on, and where do I actually go?
 3. HMO or PPO — and do I need referrals?
-4. Which services require prior authorisation?
+4. Which services require prior authorization?
 5. What happens if I need routine care while out of state?
 6. What is the out-of-pocket maximum, and does it apply to out-of-network care?
-7. Is the imaging centre my doctor uses in-network?
+7. Is the imaging center my doctor uses in-network?
 
 If a plan clears all seven, the extras become a genuine bonus. If it fails the first one, no amount of dental allowance repairs it.
 

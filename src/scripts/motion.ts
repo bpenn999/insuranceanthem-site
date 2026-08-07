@@ -67,7 +67,7 @@ function initCaustics(canvas: HTMLCanvasElement, animate: boolean) {
     render(performance.now());
   }
 
-  // Base colours, sampled straight from the palette so the canvas can never
+  // Base colors, sampled straight from the palette so the canvas can never
   // drift away from the CSS: badge navy in the troughs, plain white on the
   // peaks. No warmth in the peak any more — the ground is #FFFFFF now, and a
   // 253/247 peak over it read as a faint cream cast across every page.
@@ -155,7 +155,7 @@ function initCausticsZones() {
         html.style.setProperty('--caustics-opacity', level);
       }
     },
-    // Fires when a section crosses the horizontal centre line of the viewport.
+    // Fires when a section crosses the horizontal center line of the viewport.
     { rootMargin: '-49% 0px -49% 0px', threshold: 0 }
   );
   zones.forEach((z) => io.observe(z));

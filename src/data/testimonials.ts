@@ -8,7 +8,7 @@
  *     the spelling — "I would not got to", "reccomend" and "chose from" are all
  *     in the originals and all stay. A testimonial that has been tidied up is
  *     no longer the review the client left, and "we only fixed the typos" is
- *     not a distinction the FTC's endorsement guides recognise.
+ *     not a distinction the FTC's endorsement guides recognize.
  *
  *  2. NO Review OR AggregateRating STRUCTURED DATA. These are display-only.
  *     They are Google reviews of Brian at Medicare On Main — a different legal

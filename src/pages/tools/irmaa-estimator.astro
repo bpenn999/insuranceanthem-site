@@ -177,7 +177,7 @@ const standard = irmaaBrackets[0];
       const filing = (form.elements.namedItem('filing') as RadioNodeList).value as FilingStatus;
 
       // All the bracket logic lives in src/data/medicare-figures.ts so the
-      // boundary behaviour is testable rather than buried in a page script.
+      // boundary behavior is testable rather than buried in a page script.
       const { tier, partBTotal, partDSurcharge, monthlyExtra, upperEdge, surcharged } =
         lookupIrmaa(magi, filing);
 

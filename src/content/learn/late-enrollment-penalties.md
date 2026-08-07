@@ -29,7 +29,7 @@ On the {{year}} standard premium of {{partB.premium}}, one full year of delay ad
 
 Two details that make it worse than it first sounds.
 
-**It is calculated on the standard premium each year, so it grows.** The percentage is fixed at the point you enrol, but the dollar amount is recalculated annually against the current standard premium. As that premium rises, so does your penalty.
+**It is calculated on the standard premium each year, so it grows.** The percentage is fixed at the point you enroll, but the dollar amount is recalculated annually against the current standard premium. As that premium rises, so does your penalty.
 
 **Part B is not premium-free like Part A.** Most people get Part A at no cost through their work history, which leads to a reasonable assumption that "signing up for Medicare" is handled. Part B is a separate decision with a separate premium, and it is the one with the penalty attached.
 
@@ -39,7 +39,7 @@ If you go **more than 63 consecutive days** after your Initial Enrollment Period
 
 Go three years without and you have added 36% of the base premium to your monthly cost, permanently. And like the Part B penalty, the dollar figure is recalculated each year against the current national base premium, so it rises over time even though the percentage does not.
 
-The trap here has a very specific shape, and I see it constantly: someone takes no medication at 65, reasonably concludes a drug plan is money for nothing, skips it, and enrols at 72 when something changes. They now pay the penalty for the rest of their life, on top of the premium they are finally paying anyway. A minimal plan at 65 would have cost less than the penalty does.
+The trap here has a very specific shape, and I see it constantly: someone takes no medication at 65, reasonably concludes a drug plan is money for nothing, skips it, and enrolls at 72 when something changes. They now pay the penalty for the rest of their life, on top of the premium they are finally paying anyway. A minimal plan at 65 would have cost less than the penalty does.
 
 There is more on how Part D itself works in [Part D explained](/learn/medicare-part-d-explained/).
 
@@ -47,7 +47,7 @@ There is more on how Part D itself works in [Part D explained](/learn/medicare-p
 
 The exception that matters is **coverage through active employment** — yours or your spouse's.
 
-If you or your spouse are still working and you are covered by that employer's group health plan, you can generally delay Part B without penalty. When that employment or coverage ends, you get an **eight-month Special Enrollment Period** to enrol in Part B without penalty. For Part D, the equivalent window is two months.
+If you or your spouse are still working and you are covered by that employer's group health plan, you can generally delay Part B without penalty. When that employment or coverage ends, you get an **eight-month Special Enrollment Period** to enroll in Part B without penalty. For Part D, the equivalent window is two months.
 
 For drug coverage specifically, the test is whether your plan is **creditable** — meaning at least as good as standard Part D. Your plan administrator must tell you, and they are required to send a notice each year. Keep those notices. If you ever need to contest a penalty, that paperwork is the evidence.
 
@@ -55,7 +55,7 @@ For drug coverage specifically, the test is whether your plan is **creditable** 
 
 These are where the money actually gets lost, and both feel like they should count.
 
-**COBRA is not active employment.** When you leave a job and continue coverage through COBRA, that coverage is not tied to anyone actively working. It does not protect you from the Part B penalty, and when it runs out it does not trigger the eight-month Special Enrollment Period. People spend eighteen months on COBRA believing they are covered, and discover the position only when they try to enrol.
+**COBRA is not active employment.** When you leave a job and continue coverage through COBRA, that coverage is not tied to anyone actively working. It does not protect you from the Part B penalty, and when it runs out it does not trigger the eight-month Special Enrollment Period. People spend eighteen months on COBRA believing they are covered, and discover the position only when they try to enroll.
 
 **Retiree coverage is not active employment either.** Same reasoning, same outcome. Employer-sponsored retiree coverage may be excellent health insurance and may well be creditable for Part D purposes — but for Part B timing it does not stop the clock.
 
@@ -95,7 +95,7 @@ The [enrollment window checker](/tools/enrollment-timeline/) will give you your 
 
 Late is not the same as too late, and the position is usually more recoverable than people fear.
 
-**The General Enrollment Period** runs **1 January to 31 March** every year. You can enrol in Part B then, with coverage beginning the first of the month after you sign up. A penalty may apply, but coverage starts.
+**The General Enrollment Period** runs **1 January to 31 March** every year. You can enroll in Part B then, with coverage beginning the first of the month after you sign up. A penalty may apply, but coverage starts.
 
 **Check whether a Special Enrollment Period applies first.** If you had employer coverage through active employment and it ended within the last eight months, you may still be inside the penalty-free window. That is worth confirming before assuming a penalty. The qualifying events are covered in [special enrollment periods](/learn/special-enrollment-periods/).
 
@@ -105,7 +105,7 @@ Late is not the same as too late, and the position is usually more recoverable t
 
 ## What to do
 
-**Approaching 65 and not working:** enrol in Part A and Part B during your Initial Enrollment Period, and take a Part D plan even if you take nothing. Enrol in the first three months rather than the last three.
+**Approaching 65 and not working:** enroll in Part A and Part B during your Initial Enrollment Period, and take a Part D plan even if you take nothing. Enroll in the first three months rather than the last three.
 
 **Approaching 65 and still working:** confirm the employer has 20 or more employees, confirm the plan pays primary, and confirm in writing that the drug coverage is creditable. Then you can safely delay Part B — and note the eight-month clock that starts when the employment ends.
 

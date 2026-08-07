@@ -29,7 +29,7 @@ const year = new Date().getFullYear();
  * one contiguous run of text. JSX interpolation inserts newlines mid-sentence,
  * which is invisible on screen but breaks any exact-match check over the HTML.
  */
-const licenceLine = [
+const licenseLine = [
   `${site.agent.name}, NPN ${site.agent.npn}`,
   `Licensed in ${site.agent.statesLicensed} states`,
   `Licensed insurance agency in ${site.address.regionName}`,
@@ -154,7 +154,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
 
     <!-- ── Compliance — the ONLY place the TPMO disclaimer appears ─────── -->
     <div class="foot__legal">
-      <p class="foot__licence">{licenceLine}</p>
+      <p class="foot__license">{licenseLine}</p>
       <p>{tpmoText()}</p>
       <p>{nonAffiliation}</p>
       <p>{notAdvice}</p>
@@ -356,7 +356,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     color: #A9B4DB;
     max-width: 92ch;
   }
-  .foot__licence { color: #DCE2F5; font-weight: 500; }
+  .foot__license { color: #DCE2F5; font-weight: 500; }
   .foot__legal-fine { color: #A9B4DB; }
 
   .foot__base {

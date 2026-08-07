@@ -1,8 +1,8 @@
 /* ==========================================================================
    602Medicare — badge design system
-   White ground, one deep navy, one accent red. Both colours are read straight
+   White ground, one deep navy, one accent red. Both colors are read straight
    off the badge: the navy circle and mountains, the red sun and "MEDICARE".
-   There is no third brand colour, and there is no gold — the gold-and-cream
+   There is no third brand color, and there is no gold — the gold-and-cream
    palette that preceded the badge is gone, not deprecated.
    ========================================================================== */
 
@@ -35,7 +35,7 @@
 
   /* --- Accent: badge red -------------------------------------------------- */
   /* #D10A0F is the sun, the saguaro and "MEDICARE" on the mark. Unlike the old
-     gold it is a real text colour: 5.6:1 on white, and white on it is the same
+     gold it is a real text color: 5.6:1 on white, and white on it is the same
      5.6:1, so it carries primary buttons AND link hovers with no second token.
 
      It does NOT survive on navy — 3.0:1 — so anything red on a navy ground uses
@@ -182,7 +182,7 @@ strong { font-weight: 600; color: var(--ink); }
   text-transform: uppercase;
   /* The eyebrow is where the accent earns its keep: a small red label above a
      navy heading, on every section, is most of what makes the palette read as
-     two colours rather than one. 5.6:1 on white, so it is legal as text. */
+     two colors rather than one. 5.6:1 on white, so it is legal as text. */
   color: var(--red);
   margin-bottom: var(--s-3);
   display: flex;
@@ -198,7 +198,7 @@ strong { font-weight: 600; color: var(--ink); }
   flex: none;
 }
 /* --red is only 3.0:1 on navy, so the accent switches to its lifted twin here
-   rather than dropping back to a blue-grey. */
+   rather than dropping back to a blue-gray. */
 .band--navy .eyebrow { color: var(--red-lift); }
 
 .lede {
@@ -231,7 +231,7 @@ a { color: var(--navy); text-decoration: none; }
 .link:hover, .link:focus-visible { background-size: 100% 1px; color: var(--red); }
 
 /* Prose links draw in on hover the same way, but start visible at 30% so they
-   are still recognisable as links without hovering. */
+   are still recognizable as links without hovering. */
 .prose a:not(.btn) {
   color: var(--navy);
   font-weight: 500;
@@ -248,8 +248,8 @@ a { color: var(--navy); text-decoration: none; }
 /* --------------------------------------------------------------------------
    Buttons
    -------------------------------------------------------------------------- */
-/* Primary is RED, and hovers to navy — the two brand colours trading places
-   rather than one colour getting lighter. White on red is 5.6:1 and white on
+/* Primary is RED, and hovers to navy — the two brand colors trading places
+   rather than one color getting lighter. White on red is 5.6:1 and white on
    navy is 16.9:1, so both states clear AA at any size. */
 .btn {
   --btn-bg: var(--red);
@@ -570,7 +570,7 @@ html.motion .draw-rule[data-armed] { transition: transform 900ms var(--ease-io) 
   .draw-rule { transform: scaleX(1) !important; }
   .card--hover:hover { transform: none !important; }
 
-  /* Static single frame of the caustics, dialled well back. */
+  /* Static single frame of the caustics, dialed well back. */
   .caustics { opacity: 0.3 !important; transition: none !important; }
   .scroll-progress { display: none; }
   .btn { transform: none !important; }

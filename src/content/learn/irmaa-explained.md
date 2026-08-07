@@ -62,7 +62,7 @@ That is roughly a $1,150 annual difference triggered by a single dollar of incom
 If you are anywhere near a threshold, the December decisions that set your MAGI deserve genuine care:
 
 - **Roth conversions.** Excellent planning tool, and each converted dollar counts toward MAGI two years out.
-- **Capital gains.** Realising a large gain in one year can push you up a bracket or two for a year.
+- **Capital gains.** Realizing a large gain in one year can push you up a bracket or two for a year.
 - **Required minimum distributions.** Predictable, and they count.
 - **Selling a property.** A one-off event that can put you in the top bracket for a single year.
 - **Tax-exempt interest.** Counted despite being tax-exempt.
@@ -73,7 +73,7 @@ None of that is a reason to avoid a sensible financial decision. It is a reason 
 
 If your income has **dropped since {{irmaaTaxYear}}** because of a qualifying life-changing event, you can ask Social Security to use your current income instead. The form is **SSA-44**.
 
-Social Security recognises exactly eight events:
+Social Security recognizes exactly eight events:
 
 1. Marriage
 2. Divorce or annulment

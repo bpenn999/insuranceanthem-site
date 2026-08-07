@@ -17,7 +17,7 @@ faqs:
     a: "Only if you have creditable coverage through active employment — yours or your spouse’s. Retiree coverage and COBRA do not count, and if the employer has fewer than 20 employees Medicare usually becomes the primary payer at 65 whether you enrolled or not."
 ---
 
-The mail starts about four months before your birthday, and it does not stop. Glossy envelopes with a return address you half recognise. Phone calls from numbers in area codes you have never visited. Somewhere in that pile are two or three things that genuinely matter, and the rest is noise designed to look exactly like them.
+The mail starts about four months before your birthday, and it does not stop. Glossy envelopes with a return address you half recognize. Phone calls from numbers in area codes you have never visited. Somewhere in that pile are two or three things that genuinely matter, and the rest is noise designed to look exactly like them.
 
 So let us get the two things that matter out of the way first.
 

@@ -123,7 +123,7 @@ Worth naming, because they surprise people:
 
 ## Help paying for it
 
-If money is tight, three programmes are worth checking, and eligibility limits are higher than most people assume:
+If money is tight, three programs are worth checking, and eligibility limits are higher than most people assume:
 
 - **Medicare Savings Programs** can pay your Part B premium and sometimes your deductibles and coinsurance.
 - **Extra Help** (the Part D low-income subsidy) substantially reduces drug premiums, deductibles and copays — and eliminates the Part D late enrollment penalty entirely.

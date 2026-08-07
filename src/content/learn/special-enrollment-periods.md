@@ -27,7 +27,7 @@ They are also where the most avoidable mistakes happen, for one reason: **the cl
 
 The most common one, and the one with the widest window.
 
-If you delayed Part B because you or your spouse were covered by an employer plan **through active employment**, you get **eight months** to enrol in Part B, starting the month after the employment ends or the group coverage ends, whichever comes first.
+If you delayed Part B because you or your spouse were covered by an employer plan **through active employment**, you get **eight months** to enroll in Part B, starting the month after the employment ends or the group coverage ends, whichever comes first.
 
 Two traps inside that.
 
@@ -55,7 +55,7 @@ Plans are required to notify you. Read the letter; it is one of the few pieces o
 
 ## Qualifying for help paying costs
 
-Several assistance programmes come with their own enrollment flexibility:
+Several assistance programs come with their own enrollment flexibility:
 
 - **Extra Help** (the Part D low-income subsidy) — you can change drug plans once per quarter for the first three quarters of each year, plus a window when your status changes.
 - **Medicaid** — gaining, losing or changing status opens a window.
@@ -67,11 +67,11 @@ Income limits for all three are higher than most people assume, and plenty who q
 
 Less common but real:
 
-- **Leaving incarceration** — a window to enrol or re-enrol.
+- **Leaving incarceration** — a window to enroll or re-enroll.
 - **Regaining lawful presence** in the United States.
 - **A federal error** — if a government employee gave you incorrect information that caused you to miss a window, that is grounds for a corrective window.
 - **Losing creditable drug coverage** through no fault of your own — two months.
-- **A qualifying chronic condition**, which may allow enrolment in a Special Needs Plan outside the usual windows.
+- **A qualifying chronic condition**, which may allow enrollment in a Special Needs Plan outside the usual windows.
 - **A declared disaster or emergency** that prevented you from acting during another window.
 - **Contract violations or misleading marketing** by a plan.
 
@@ -104,7 +104,7 @@ Knowing you qualify is half of it. Using it is the other half, and the process d
 
 **For Part B**, you file form **CMS-40B** (the application) together with form **CMS-L564**, which your employer completes to confirm the dates of your group coverage. Getting that second form signed is the step that takes longest — start it before you need it, and chase it, because a former employer's HR department has no urgency about your deadline.
 
-**For Medicare Advantage or Part D**, you generally enrol directly with the plan or through Medicare, and you state the reason for the Special Enrollment Period on the application. The plan may ask for proof.
+**For Medicare Advantage or Part D**, you generally enroll directly with the plan or through Medicare, and you state the reason for the Special Enrollment Period on the application. The plan may ask for proof.
 
 **Keep the documentation.** A termination letter with dates on it. The annual creditable-coverage notice your employer plan was required to send. The dated letter from a plan leaving your area. If a window is ever questioned, the paperwork is what settles it — and reconstructing it a year later is far harder than filing it now.
 
@@ -116,7 +116,7 @@ Most SEP windows run from the **event**, not from when you learned a window exis
 
 Three habits that prevent almost all of it:
 
-1. **Act on the event, not on the realisation.** Retiring, moving, losing coverage — each is a prompt to check your Medicare position that week.
+1. **Act on the event, not on the realization.** Retiring, moving, losing coverage — each is a prompt to check your Medicare position that week.
 2. **Keep the paperwork.** Termination letters, creditable-coverage notices, the dated letter from a plan leaving your area. If you ever need to prove a window, that is the evidence.
 3. **Handle Part D at the same time as Part B.** The shorter window is the one that gets missed.
 

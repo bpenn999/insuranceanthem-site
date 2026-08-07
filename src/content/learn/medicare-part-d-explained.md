@@ -2,7 +2,7 @@
 title: "Understanding Medicare Part D Prescription Drug Coverage"
 seoTitle: "Medicare Part D Explained: 2026 Costs & Coverage"
 description: "How Part D works — formulary tiers, the 2026 $2,100 out-of-pocket cap, pharmacy networks, the late penalty, and why the cheapest premium rarely wins."
-summary: "The cheapest premium is almost never the cheapest plan. Here is how formularies, tiers and pharmacy networks decide what you really pay — and how the 2026 out-of-pocket cap changes the maths."
+summary: "The cheapest premium is almost never the cheapest plan. Here is how formularies, tiers and pharmacy networks decide what you really pay — and how the 2026 out-of-pocket cap changes the math."
 category: "Part D"
 publishedAt: 2026-08-02
 readMinutes: 10
@@ -14,7 +14,7 @@ faqs:
     a: "It is $2,100. Once your out-of-pocket spending on covered drugs reaches that amount, your plan pays 100% of covered drugs for the rest of the calendar year. Premiums do not count toward the cap, and the amount resets every 1 January."
   - q: "Do I need Part D if I take no medication?"
     a: "Usually yes. If you go more than 63 days after your Initial Enrollment Period without creditable drug coverage, Medicare adds a permanent penalty to your premium — for life, not for a year. A low-cost plan now is almost always cheaper than the penalty later, and it covers you if something changes."
-  - q: "Why is my drug more expensive than my neighbour's on the same medication?"
+  - q: "Why is my drug more expensive than my neighbor's on the same medication?"
     a: "Because you are almost certainly on different plans. Every Part D plan sets its own formulary and tier structure, so the same drug at the same dose can sit on tier 1 for one plan and tier 3 for another. Preferred pharmacy status adds a second layer of difference on top."
   - q: "Can I change my Part D plan mid-year?"
     a: "Generally no. The Annual Enrollment Period runs 15 October to 7 December for changes effective 1 January. Mid-year changes require a Special Enrollment Period, Extra Help eligibility, or — if you are on a Medicare Advantage plan with drug coverage — the Medicare Advantage Open Enrollment Period between 1 January and 31 March."
@@ -80,7 +80,7 @@ If you go **more than 63 consecutive days** after your Initial Enrollment Period
 
 "Creditable coverage" means drug coverage at least as good as Part D — typically employer or union coverage. Your plan administrator can confirm in writing whether yours qualifies, and it is worth getting that in writing rather than assuming.
 
-The trap is the person who takes no medication at 65, reasonably concludes a drug plan is a waste of money, and enrols at 72 when something changes. They now pay the penalty for the rest of their life on top of the premium. A minimal plan at 65 would have cost less.
+The trap is the person who takes no medication at 65, reasonably concludes a drug plan is a waste of money, and enrolls at 72 when something changes. They now pay the penalty for the rest of their life on top of the premium. A minimal plan at 65 would have cost less.
 
 More detail, including how the arithmetic works, is in [late enrollment penalties](/learn/late-enrollment-penalties/).
 
@@ -98,7 +98,7 @@ The [annual cost estimator](/tools/medicare-cost-estimator/) will show you how d
 
 ## Things worth knowing before you need them
 
-**Prior authorisation and step therapy.** Some drugs require your prescriber to justify the prescription first, or to try a cheaper alternative before the plan covers the one you were prescribed. Both are appealable, and both are worth checking before you enrol if you take a drug likely to trigger them.
+**Prior authorization and step therapy.** Some drugs require your prescriber to justify the prescription first, or to try a cheaper alternative before the plan covers the one you were prescribed. Both are appealable, and both are worth checking before you enroll if you take a drug likely to trigger them.
 
 **Formulary exceptions.** If a plan does not cover a drug you need, or places it on a tier that makes it unaffordable, your prescriber can request an exception with clinical justification. Plans must have a process, and it works more often than people expect.
 

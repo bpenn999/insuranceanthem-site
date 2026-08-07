@@ -483,7 +483,7 @@ console.log('\nTool — cost estimator');
              cols: document.getElementById('cost-cols').textContent };
   `);
   check('renders a comparison', !light.hidden && light.cols.includes('Medicare Advantage') && light.cols.includes('Supplement'));
-  check('light usage favours Advantage', /Advantage comes out/.test(light.head), light.head);
+  check('light usage favors Advantage', /Advantage comes out/.test(light.head), light.head);
   check('both columns include the Part B premium', (light.cols.match(/Part B premium/g) || []).length === 2, light.cols);
   const heavy = await evaluate(p, `
     const v = (id,val) => document.getElementById(id).value = val;
@@ -676,7 +676,7 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
       company: ['/about/','/contact/','/accessibility/','/privacy/','/terms/'].every(href),
       ctaHref: el.querySelector('a.btn')?.getAttribute('href') || '',
       ctaLabel: el.querySelector('a.btn')?.textContent.trim() || '',
-      licence: t.includes('Licensed in 18 states'),
+      license: t.includes('Licensed in 18 states'),
       copyright: /© 2026 602Medicare/i.test(raw),
       tpmoInFooter: count(raw, TPMO),
       tpmoInPage: count(body, TPMO),
@@ -695,7 +695,7 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
   ok('Tools column with all 8', f.toolsHub && f.toolLinks === 8, `${f.toolLinks} tools`);
   ok('Company column complete', f.company);
   ok('15-minute CTA', f.ctaHref.includes('15-minute') && /15-minute/.test(f.ctaLabel), `${f.ctaLabel} → ${f.ctaHref}`);
-  ok('licensing line', f.licence);
+  ok('licensing line', f.license);
   ok('2026 copyright', f.copyright);
   ok('TPMO exactly once, in the footer', f.tpmoInPage === 1 && f.tpmoInFooter === 1,
      `page ${f.tpmoInPage}, footer ${f.tpmoInFooter}`);
@@ -707,7 +707,7 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
 // ── 7e2. the service-area pages ──────────────────────────────────────────────
 // Every city page is generated from one entry in src/data/locations.ts, so this
 // is really a check on that data file: a city listed there must produce a real
-// page, appear on the hub, cross-link from its neighbours and land in the
+// page, appear on the hub, cross-link from its neighbors and land in the
 // LocalBusiness areaServed. Glendale and Peoria are the two the 602Medicare
 // positioning line names, so they get asserted by name rather than by loop —
 // silently losing either one would gut the metro claim without failing a count.
@@ -845,7 +845,7 @@ console.log('\nTool — Plan G vs Plan N');
     const container = document.querySelector('.cost-cols').getBoundingClientRect();
     return Math.abs(a.y - b.y) < 2 && a.width < container.width * 0.6;
   `));
-  check('few visits favour Plan N', /Plan N comes out/.test(light.head), light.head);
+  check('few visits favor Plan N', /Plan N comes out/.test(light.head), light.head);
   check('states a breakeven visit count', /breakeven is about \d+ office/.test(light.body), light.body.slice(0, 120));
   const heavy = await evaluate(p, `
     document.getElementById('gn-office').value = 40;
@@ -860,7 +860,7 @@ console.log('\nTool — Plan G vs Plan N');
     r.checked = true; r.dispatchEvent(new Event('change'));
     return before === true && wrap.hidden === false;
   `));
-  check('excess charges are modelled at 15%', await evaluate(p, `
+  check('excess charges are modeled at 15%', await evaluate(p, `
     document.getElementById('gn-excess-amt').value = 2000;
     document.getElementById('gn-office').value = 3;
     document.getElementById('gn').requestSubmit();

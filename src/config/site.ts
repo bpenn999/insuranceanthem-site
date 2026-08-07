@@ -46,7 +46,7 @@ export const site = {
    * The positioning line. Two jobs at once: it names the office (Anthem, which
    * is where appointments and the LocalBusiness address actually are) and the
    * reach (Phoenix metro). Keep both halves whenever this is reworded — dropping
-   * the office turns a local business into a call centre, and dropping the metro
+   * the office turns a local business into a call center, and dropping the metro
    * shrinks the brand back to the market it just outgrew.
    */
   tagline:
@@ -109,19 +109,22 @@ export const site = {
   },
 
   /**
-   * Service area — the plain-text list. The generated city PAGES and the schema
-   * `areaServed` both derive from src/data/locations.ts, not from here; this is
-   * the wider claim, including the communities that are genuinely served without
-   * having earned a page of their own yet (Desert Hills, Cave Creek, Sun City).
-   * Claiming more here than the pages do is fine; claiming less is not.
-   */
-  /**
    * The footer's one-line reach claim. Deliberately shorter than `serviceArea`
-   * below — it names the four markets that carry the positioning and then says
-   * "the Valley" rather than listing nine communities in a footer.
+   * below — it names the markets that carry the positioning and then says "the
+   * Valley" rather than listing ten communities in a footer.
+   *
+   * scripts/audit.mjs asserts this string is in the footer of every page, so
+   * rewording it means updating that check too.
    */
   servingLine: 'Serving Anthem, Cave Creek, Scottsdale, Glendale, Peoria, North Phoenix & the Valley',
 
+  /**
+   * Service area — the plain-text list. The generated city PAGES and the schema
+   * `areaServed` both derive from src/data/locations.ts, not from here; this is
+   * the wider claim, including the communities that are genuinely served without
+   * having earned a page of their own yet (Desert Hills, Cave Creek, Scottsdale,
+   * Sun City). Claiming more here than the pages do is fine; claiming less is not.
+   */
   serviceArea: [
     'Anthem',
     'Glendale',
