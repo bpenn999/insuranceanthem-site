@@ -1,6 +1,6 @@
 ---
 import site, { abs } from '../config/site';
-import { locations } from '../data/locations';
+import { allServedAreas } from '../data/locations';
 import { products } from '../data/products';
 
 interface Props {
@@ -50,12 +50,16 @@ const graph: Record<string, unknown>[] = [
       latitude: site.geo.latitude,
       longitude: site.geo.longitude,
     },
-    areaServed: locations.map((l) => ({
+    // Every community the site names, including the three that are served and
+    // listed but do not have a page of their own — Desert Hills, Cave Creek and
+    // Scottsdale. areaServed is a claim about where we work, not an index of
+    // what we have written, so it tracks the wider list.
+    areaServed: allServedAreas.map((a) => ({
       '@type': 'City',
-      name: l.city,
+      name: a.city,
       containedInPlace: {
         '@type': 'AdministrativeArea',
-        name: `${l.county}, ${site.address.regionName}`,
+        name: `${a.county}, ${site.address.regionName}`,
       },
     })),
     // Note: no `openingHours` string form — the structured spec below is the

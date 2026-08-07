@@ -120,7 +120,7 @@ export const site = {
    * below — it names the four markets that carry the positioning and then says
    * "the Valley" rather than listing nine communities in a footer.
    */
-  servingLine: 'Serving Anthem, Glendale, Peoria, North Phoenix & the Valley',
+  servingLine: 'Serving Anthem, Cave Creek, Scottsdale, Glendale, Peoria, North Phoenix & the Valley',
 
   serviceArea: [
     'Anthem',
@@ -131,6 +131,7 @@ export const site = {
     'Desert Hills',
     'Carefree',
     'Cave Creek',
+    'Scottsdale',
     'Sun City',
   ],
 

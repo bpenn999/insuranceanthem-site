@@ -164,4 +164,106 @@ for (const l of locations) {
 }
 
 export const locationBySlug = (slug: string) => locations.find((l) => l.slug === slug);
+
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ *  Tier two: communities we serve and name, but that do NOT have a page.
+ * ─────────────────────────────────────────────────────────────────────────────
+ *
+ * Two of them are already covered in prose by an existing page — Desert Hills
+ * shares the New River page and Cave Creek shares the Carefree page — and
+ * `servedBy` points a reader at it. Scottsdale has no page yet and gets no
+ * link rather than a link to nothing.
+ *
+ * They are deliberately NOT entries in `locations` above. Adding them there
+ * would generate three more routes, and the honest version of a city page on
+ * this site runs 500+ words of genuinely local detail (the audit enforces it).
+ * Three thin pages spun up to fill a table would cost more in crawl quality
+ * than the rows are worth. Promote one to `locations` when there is real
+ * content to put on it — and add it to CITIES in scripts/audit.mjs when you do.
+ */
+export interface AdditionalArea {
+  city: string;
+  label: string;
+  zips: string[];
+  county: string;
+  /** Slug of the page that already covers this community in its copy, if any. */
+  servedBy?: string;
+}
+
+export const additionalAreas: AdditionalArea[] = [
+  {
+    city: 'Desert Hills',
+    label: 'Desert Hills, AZ',
+    zips: ['85086'],
+    county: 'Maricopa County',
+    servedBy: 'new-river-az',
+  },
+  {
+    city: 'Cave Creek',
+    label: 'Cave Creek, AZ',
+    zips: ['85331'],
+    county: 'Maricopa County',
+    servedBy: 'carefree-az',
+  },
+  {
+    city: 'Scottsdale',
+    label: 'Scottsdale, AZ',
+    zips: ['85254', '85255', '85258', '85259', '85260', '85262', '85266'],
+    county: 'Maricopa County',
+  },
+];
+
+/**
+ * The service-area list as it is READ — ordered geographically outward from the
+ * Anthem office rather than by brand priority.
+ *
+ * This is intentionally a different order from `locations` above, which stays in
+ * brand order because it drives the footer links, the hub cards and the schema,
+ * where "home base, then the markets the positioning line names" is the right
+ * sequence. Here the reader is scanning for their own town, and "how far is this
+ * from Anthem" is the only ordering that helps them do it.
+ */
+const ROW_ORDER = [
+  'Anthem',
+  'Desert Hills',
+  'New River',
+  'Cave Creek',
+  'Carefree',
+  'Scottsdale',
+  'North Phoenix',
+  'Glendale',
+  'Peoria',
+];
+
+export interface ServiceAreaRow {
+  city: string;
+  zips: string[];
+  /** Path to the page covering this community, or undefined for a plain row. */
+  href?: string;
+}
+
+export const serviceAreaRows: ServiceAreaRow[] = ROW_ORDER.map((city) => {
+  const page = locations.find((l) => l.city === city);
+  if (page) return { city, zips: page.zips, href: `/service-area/${page.slug}/` };
+
+  const extra = additionalAreas.find((a) => a.city === city);
+  if (!extra) {
+    // A name in ROW_ORDER that matches neither list is a typo, and it would
+    // otherwise drop a whole community out of the table silently.
+    throw new Error(`locations.ts: ROW_ORDER names "${city}", which is in neither list`);
+  }
+  return {
+    city,
+    zips: extra.zips,
+    href: extra.servedBy ? `/service-area/${extra.servedBy}/` : undefined,
+  };
+});
+
+/** Every community named on the site, for `areaServed` in structured data. */
+export const allServedAreas = [
+  ...locations.map((l) => ({ city: l.city, county: l.county })),
+  ...additionalAreas.map((a) => ({ city: a.city, county: a.county })),
+];
+
 export default locations;

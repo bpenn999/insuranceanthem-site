@@ -300,7 +300,7 @@ for (const f of htmls) {
     // it still reaches structured data through the LocalBusiness node.
     if (!footer.includes('Anthem, AZ')) note(`FOOTER: no address on ${r}`);
     if (footer.includes('Anthem, AZ 85086')) note(`FOOTER: ZIP is back in the on-page NAP on ${r}`);
-    if (!footer.includes('Serving Anthem, Glendale, Peoria, North Phoenix')) {
+    if (!footer.includes('Serving Anthem, Cave Creek, Scottsdale, Glendale, Peoria, North Phoenix')) {
       note(`FOOTER: no serving line on ${r}`);
     }
     if (!footer.includes('(602) 844-6002')) note(`FOOTER: no phone on ${r}`);
