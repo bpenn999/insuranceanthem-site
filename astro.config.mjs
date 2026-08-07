@@ -35,7 +35,19 @@ export default defineConfig({
   },
   prefetch: {
     prefetchAll: true,
-    defaultStrategy: 'viewport',
+    /**
+     * 'hover', not 'viewport'. The home page has 89 internal links and the
+     * footer alone carries about thirty — under the viewport strategy, every
+     * one of them fired a speculative full-page fetch the moment it scrolled
+     * into sight. On a throttled connection that is dozens of ~24 KB documents
+     * competing with the page the visitor is actually looking at, which shows
+     * up as a worse Speed Index and a later Largest Contentful Paint.
+     *
+     * 'hover' prefetches on intent instead — pointer over the link, or
+     * touchstart on a phone — which still lands the next page instantly for
+     * anyone who is actually going there.
+     */
+    defaultStrategy: 'hover',
   },
   compressHTML: true,
 });
