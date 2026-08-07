@@ -12,6 +12,18 @@ const nav = [
   { label: 'Service Area', href: '/service-area/' },
   { label: 'Learn', href: '/learn/' },
   { label: 'About', href: '/about/' },
+  /**
+   * Contact is in the nav on purpose, not just the footer.
+   *
+   * Two reasons, and the second is the one that bites. For AEO/SEO it is a
+   * standard trust signal — a reachable contact route is what the checklist
+   * looks for alongside the ContactPoint schema, and on a YMYL site (insurance
+   * is YMYL) "how do I reach a human" being hard to find is an E-E-A-T
+   * problem. And practically: the header's second button now says "Schedule
+   * Appointment" and goes to the calendar, so without this link the contact
+   * page has NO entry point above the fold at all.
+   */
+  { label: 'Contact', href: '/contact/' },
 ];
 
 /**
@@ -109,8 +121,9 @@ const { mark, product } = site.wordmark;
         </svg>
         <span class="sr-only">Call {site.name} at </span>Call {site.phone.display}
       </a>
-      <a href="/contact/" class="btn btn--sm btn--ghost header__cta" data-magnetic="0.22">
-        Get my review
+      <a href={site.consult.url} class="btn btn--sm btn--navy header__cta" data-magnetic="0.22"
+         data-cta="header-schedule">
+        Schedule Appointment
       </a>
 
       <button class="nav-toggle" data-nav-toggle aria-expanded="false"
@@ -146,9 +159,12 @@ const { mark, product } = site.wordmark;
     position: sticky;
     top: 0;
     z-index: 80;
-    background: color-mix(in srgb, var(--page) 82%, transparent);
-    backdrop-filter: saturate(180%) blur(14px);
-    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    /* Opaque by default. The frosted-glass treatment is a DESKTOP-ONLY
+       enhancement below: a backdrop-filter on a sticky element forces the
+       compositor to re-blur whatever is behind it on every scroll frame, which
+       is cheap on a laptop GPU and genuinely expensive on a mid-range phone —
+       the device this site is mostly read on. */
+    background: var(--page);
     border-bottom: 1px solid transparent;
     transition: border-color 300ms var(--ease), background-color 300ms var(--ease),
                 box-shadow 300ms var(--ease);
@@ -157,8 +173,19 @@ const { mark, product } = site.wordmark;
      ghost through it — at 92% the NPN line under the hero read as a smear. */
   .site-header.is-stuck {
     border-bottom-color: var(--rule);
-    background: color-mix(in srgb, var(--page) 97%, transparent);
-    box-shadow: 0 1px 20px rgba(23, 26, 29, 0.05);
+    box-shadow: 0 1px 20px rgba(1, 20, 89, 0.06);
+  }
+
+  /* The frosted header, desktop only. */
+  @media (min-width: 1000px) {
+    .site-header {
+      background: color-mix(in srgb, var(--page) 82%, transparent);
+      backdrop-filter: saturate(180%) blur(14px);
+      -webkit-backdrop-filter: saturate(180%) blur(14px);
+    }
+    .site-header.is-stuck {
+      background: color-mix(in srgb, var(--page) 97%, transparent);
+    }
   }
 
   .header__inner {
@@ -286,6 +313,9 @@ const { mark, product } = site.wordmark;
   .header__call-icon { width: 15px; height: 15px; flex: none; }
 
   .header__cta { display: none; }
+  /* Solid navy beside the solid red call button — the two brand colors, both
+     filled. It was a navy OUTLINE, which read as a cancel button next to a
+     filled primary. White on #011459 is 16.9:1. */
   :global(.btn--sm) { padding: 0.6rem 1.1rem; min-height: 40px; font-size: 0.8125rem; }
 
   /* --- mobile toggle --- */
@@ -330,7 +360,7 @@ const { mark, product } = site.wordmark;
   .nav-mobile__foot { display: grid; gap: var(--s-3); }
   .nav-mobile__note { font-size: var(--t-sm); color: var(--ink-muted); text-align: center; }
 
-  @media (min-width: 900px) {
+  @media (min-width: 1000px) {
     .nav-desktop { display: block; }
     .nav-toggle { display: none; }
     .nav-mobile { display: none; }

@@ -88,7 +88,10 @@ import site from '../config/site';
   }
   .callbar__alt:active { background: var(--navy-wash); }
 
-  @media (min-width: 900px) {
+  /* 1000px, matching the header — that is where .header__call appears. If these
+     two ever drift apart there is a viewport window with no visible phone
+     number at all: the bar already hidden, the header button not yet shown. */
+  @media (min-width: 1000px) {
     .callbar { display: none; }
   }
   @media print {

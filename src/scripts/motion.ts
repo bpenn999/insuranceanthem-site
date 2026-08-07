@@ -420,13 +420,46 @@ function debounce<T extends (...a: never[]) => void>(fn: T, ms: number) {
 
 /* ── boot ─────────────────────────────────────────────────────────────────── */
 
+/**
+ * Should this device paint the caustics at all?
+ *
+ * The canvas is ~31,000 pixels of trigonometry per frame in JavaScript, and the
+ * compositor then scales it to the viewport through a 7px blur. On a desktop
+ * that is a couple of milliseconds and a nice piece of texture. On the phone
+ * this site is actually read on — a mid-range Android, which is what PageSpeed
+ * emulates — it is real main-thread time and real GPU time, spent on a layer
+ * sitting at 0.55 opacity behind everything, at a size where the pattern is
+ * barely perceptible.
+ *
+ * So: skip it below the layout's own desktop breakpoint, and skip it on any
+ * device reporting four cores or fewer. The page is designed to work without it
+ * — the caustics have always been decoration over a plain white ground, and
+ * `.page-shell` sits above them regardless.
+ */
+function shouldPaintCaustics(): boolean {
+  try {
+    if (window.matchMedia('(max-width: 999px)').matches) return false;
+    const cores = (navigator as Navigator & { hardwareConcurrency?: number }).hardwareConcurrency;
+    if (typeof cores === 'number' && cores > 0 && cores <= 4) return false;
+    // Save-Data is an explicit "stop spending my resources" from the visitor.
+    const conn = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection;
+    if (conn?.saveData) return false;
+  } catch {
+    /* no matchMedia / no navigator extras → fall through and paint */
+  }
+  return true;
+}
+
 function boot() {
   const animate = !reduced.matches;
   const canvas = document.querySelector<HTMLCanvasElement>('.caustics');
 
   initHeader();
 
-  if (canvas) initCaustics(canvas, animate);
+  if (canvas) {
+    if (shouldPaintCaustics()) initCaustics(canvas, animate);
+    else canvas.remove(); // not just hidden — a 0-opacity canvas still composites
+  }
 
   if (!animate) {
     // Static fallback: everything visible, final numbers, no loop.
