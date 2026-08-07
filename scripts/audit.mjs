@@ -68,8 +68,18 @@ for (const f of htmls) {
 const RESIDUE = [/Western Slope/i, /Grand Junction/i, /\bMoab\b/i, /Palisade/i, /Montrose/i,
   /Albuquerque/i, /New Mexico/i, /medicareonmain/i, /Bemis/i, /\bUtah\b/i,
   /Colorado/i, /lorem ipsum/i, /TODO|FIXME|XXX/];
+
+/**
+ * The one sanctioned "medicareonmain" string in the markup: the GoGuruX booking
+ * embed. The scheduler tenant is registered under the sister agency's account,
+ * so its slug is in the iframe URL — a real integration detail, not a stale
+ * copy-paste. Blanked before the residue scan so the check still catches a
+ * genuine leak anywhere else on the same page.
+ */
+const BOOKING_EMBED = 'https://my.gogurux.com/book/medicareonmain-com/602-medicare?embed=1';
+
 for (const f of htmls) {
-  const html = readFileSync(f, 'utf8');
+  const html = readFileSync(f, 'utf8').split(BOOKING_EMBED).join('[booking-embed]');
   for (const re of RESIDUE) if (re.test(html)) note(`TEMPLATE RESIDUE ${re} on ${routeOf(f)}`);
 }
 

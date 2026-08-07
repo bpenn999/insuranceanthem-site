@@ -168,15 +168,17 @@ export const site = {
   /**
    * The short intro call every article closes with.
    *
-   * `url` is currently an on-site contact link because no calendar is wired up
-   * yet. Swap it for a real scheduler (a GHL calendar, Calendly, …) and every
-   * article CTA, plus the Learn hub, points at the booking page instead — no
-   * other edits. If you point it off-site, widen `connect-src`/`form-action`
-   * in public/_headers to match.
+   * `url` is the GoGuruX calendar at /book/ as of 2026-08-07. Because every CTA
+   * on the site derives from this one value, pointing it here is what put a real
+   * scheduler behind the footer, every Learn article, every blog post, every
+   * tool page and both hubs — in one edit, exactly as this note promised.
+   *
+   * The embed itself needed `frame-src https://my.gogurux.com` in
+   * public/_headers; the CSP is otherwise still `default-src 'self'`.
    */
   consult: {
     minutes: 15,
-    url: '/contact/?intent=15-minute-call',
+    url: '/book/',
     label: 'Book a free 15-minute call',
     /** Used in body copy, e.g. "a free 15-minute call" */
     phrase: 'free 15-minute call',

@@ -88,6 +88,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
       <div class="foot__col">
         <h2 class="foot__heading">Company</h2>
         <ul>
+          <li><a href="/book/">Book a call</a></li>
           <li><a href="/about/">About Brian</a></li>
           <li><a href="/service-area/">Service Area</a></li>
           {locations.map((l) => <li><a href={`/service-area/${l.slug}/`}>Medicare in {l.city}</a></li>)}

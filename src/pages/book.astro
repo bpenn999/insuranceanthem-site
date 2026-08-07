@@ -1,0 +1,172 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import site, { abs } from '../config/site';
+
+/**
+ * The booking page — the GoGuruX scheduler, embedded.
+ *
+ * This is the page src/config/site.ts always anticipated: `consult.url` used to
+ * point at /contact/?intent=15-minute-call because no calendar existed. It now
+ * points here, so every "Book a free 15-minute call" CTA on the site — the
+ * footer, every Learn article, every blog post, every tool page, the hubs —
+ * lands on a real calendar with no other edit.
+ *
+ * TWO THINGS THIS PAGE NEEDED THAT NOTHING ELSE ON THE SITE DOES:
+ *
+ * 1. A CSP hole, and exactly one. public/_headers is `default-src 'self'`, which
+ *    blocks a cross-origin iframe outright — the embed rendered as a blank box
+ *    until `frame-src https://my.gogurux.com` was added. That is the ONLY origin
+ *    allowed, and it is allowed only for framing; the site still loads zero
+ *    third-party scripts, styles, fonts or images.
+ *
+ * 2. A responsive width. The embed ships at `width: 60%`, which is right on a
+ *    desktop and unusable on a phone — 60% of a 390px viewport is a 234px-wide
+ *    calendar. It is 100% up to the point where 60% is wider than a comfortable
+ *    reading measure, then 60%.
+ *
+ * The page is deliberately light: no caustics, no reveal animations, nothing
+ * competing with the iframe for bandwidth. Someone who reached this page has
+ * already decided.
+ */
+
+const title = 'Book a Free 15-Minute Medicare Call';
+const description = `Pick a time that works — no cost, no obligation. Talk to ${site.agent.name} directly about your Medicare options, or call ${site.phone.display}.`;
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Book a call', path: '/book/' },
+];
+
+const schemaNodes = [
+  {
+    '@type': 'WebPage',
+    '@id': `${abs('/book/')}#webpage`,
+    url: abs('/book/'),
+    name: title,
+    description,
+    isPartOf: { '@id': `${site.origin}/#website` },
+    about: { '@id': `${site.origin}/#organization` },
+    potentialAction: {
+      '@type': 'ReserveAction',
+      name: site.consult.label,
+      target: abs('/book/'),
+      result: {
+        '@type': 'Reservation',
+        name: `${site.consult.minutes}-minute Medicare consultation`,
+        provider: { '@id': `${site.origin}/#organization` },
+      },
+    },
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path="/book/"
+  breadcrumbs={breadcrumbs}
+  schemaNodes={schemaNodes}
+  density="light"
+>
+  <PageHero
+    eyebrow="Book a call"
+    title="Pick a time that suits you."
+    lede={`${site.consult.minutes} minutes, no cost, no obligation, and no call center — you get ${site.agent.name} directly. Bring your prescription list and the doctors you want to keep if you have them handy; if not, we will start anyway.`}
+    breadcrumbs={breadcrumbs}
+  />
+
+  <section class="section section--tight">
+    <div class="wrap">
+      <div class="booking">
+        <iframe
+          src="https://my.gogurux.com/book/medicareonmain-com/602-medicare?embed=1"
+          title="602Medicare — booking calendar"
+          class="booking__frame"
+          loading="eager"
+        ></iframe>
+        {/* `scrolling="auto"` and `frameborder="0"` were in the supplied embed
+            and are dropped here: both are deprecated, and both are already the
+            default — scrolling is auto unless told otherwise, and the border
+            comes from the stylesheet below. */}
+      </div>
+
+      <p class="booking__fallback">
+        Calendar not loading? That is usually an ad blocker or a locked-down
+        browser. Call <a href={site.phone.href} class="link" data-cta="book-fallback-call">
+          {site.phone.display}</a> and we will put it in the diary the old-fashioned
+        way, or <a href="/contact/" class="link">send the details instead</a>.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<!--
+  Booking-confirmation redirect. The embed posts a message when a booking
+  completes and this hands the visitor onward to whatever URL it names.
+
+  `is:inline` because it must NOT be bundled — it has to run on this page and
+  only this page. The origin allowlist is the security boundary: a `message`
+  listener with no origin check will accept a postMessage from ANY frame,
+  including a hostile one, and this one ends in `window.location.assign`. The
+  two localhost entries are for GoGuruX's own development and are harmless in
+  production — nothing can post from a localhost origin in a visitor's browser
+  unless they are running the app themselves.
+
+  The URL is re-parsed and its protocol checked before navigating, so a
+  `javascript:` payload from a compromised allowed origin still cannot execute.
+-->
+<script is:inline>
+  (function () {
+    var MSG = 'ggx-booking-confirmation-redirect';
+    var ALLOWED = ['https://my.gogurux.com', 'http://localhost:5173', 'http://localhost:3000'];
+    window.addEventListener('message', function (event) {
+      if (!event.data || event.data.type !== MSG) return;
+      if (ALLOWED.indexOf(event.origin) === -1) return;
+      var raw = String(event.data.url || '').trim();
+      if (!raw) return;
+      try {
+        var u = new URL(raw);
+        if (u.protocol !== 'http:' && u.protocol !== 'https:') return;
+        window.location.assign(u.toString());
+      } catch (e) {}
+    });
+  })();
+</script>
+
+<style>
+  .booking {
+    display: flex;
+    justify-content: center;
+  }
+  /* The embed ships at width:60%. That is right on a desktop and unusable on a
+     phone, so it is a max-width here instead: full width until 60% of the
+     container is wide enough to be comfortable. */
+  .booking__frame {
+    width: 100%;
+    max-width: 640px;
+    height: 680px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    display: block;
+  }
+  @media (min-width: 1100px) {
+    .booking__frame { width: 60%; max-width: none; }
+  }
+  /* A booking calendar is a form: it needs room on a short laptop screen, but
+     capping it at the viewport stops it scrolling inside a scrolling page. */
+  @media (max-height: 800px) and (min-width: 900px) {
+    .booking__frame { height: 620px; }
+  }
+
+  .booking__fallback {
+    margin-top: var(--s-5);
+    text-align: center;
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+    max-width: 60ch;
+    margin-inline: auto;
+    line-height: 1.6;
+  }
+</style>
