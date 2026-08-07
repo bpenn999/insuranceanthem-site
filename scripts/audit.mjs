@@ -507,6 +507,34 @@ for (const r of routes) {
 }
 for (const u of smUrls) if (!routes.has(u)) note(`SITEMAP URL WITH NO PAGE  ${u}`);
 
+// ── 8a. no _redirects rule may shadow a real route ───────────────────────────
+// On Cloudflare Pages a _redirects rule wins over a static asset at the same
+// path. That is how /blog/ shipped 301-ing to /learn/ from a rule written back
+// when /blog/ was only a guess at a URL: the page built, the sitemap listed it,
+// every local check passed, and production served a redirect. Nothing in a
+// build-output audit catches that, so it is checked here against the source.
+{
+  let rules = '';
+  try { rules = readFileSync('public/_redirects', 'utf8'); } catch { /* optional file */ }
+
+  for (const line of rules.split('\n')) {
+    const trimmed = line.trim();
+    if (!trimmed || trimmed.startsWith('#')) continue;
+    const from = trimmed.split(/\s+/)[0];
+
+    // Exact shadow: a rule whose source is a route we actually built.
+    if (routes.has(from) || routes.has(`${from}/`)) {
+      note(`_redirects SHADOWS A REAL ROUTE  ${from}  — Pages serves the redirect, not the page`);
+    }
+
+    // Splat/placeholder shadow: /blog/:slug swallows every child of /blog/.
+    const base = from.replace(/\/(:\w+|\*)$/, '/');
+    if (base !== from && [...routes].some((r) => r !== base && r.startsWith(base))) {
+      note(`_redirects RULE ${from} SHADOWS PAGES UNDER ${base}`);
+    }
+  }
+}
+
 // ── 9. orphan static HTML under public/ ──────────────────────────────────────
 try {
   const pub = walk('public').filter(f => f.endsWith('.html'));

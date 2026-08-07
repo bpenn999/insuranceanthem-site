@@ -8,9 +8,12 @@
 /articles/:slug/               /learn/:slug/      301
 
 # Common guesses for the content hub.
-/blog                          /learn/            301
-/blog/                         /learn/            301
-/blog/:slug                    /learn/:slug/      301
+#
+# /blog USED to redirect here, back when /learn/ was the only place to read.
+# It is a real section now, and on Cloudflare Pages a _redirects rule wins over
+# a static asset at the same path — so those three lines made the entire blog
+# unreachable in production while every local check passed. Do not put them
+# back. scripts/audit.mjs now fails if any rule shadows a built route.
 /guides                        /learn/            301
 /guides/                       /learn/            301
 
