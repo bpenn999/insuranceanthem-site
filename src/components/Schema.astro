@@ -37,6 +37,24 @@ const graph: Record<string, unknown>[] = [
       width: 512,
       height: 512,
     },
+    // An explicit contactPoint alongside the flat `telephone` above. The flat
+    // property is what most consumers read; the contactPoint is what carries
+    // the intent (sales), the language and the coverage area, and it is the
+    // node a voice assistant or a knowledge panel reaches for when it needs to
+    // decide WHICH number to offer.
+    contactPoint: {
+      '@type': 'ContactPoint',
+      telephone: site.phone.schema,
+      contactType: 'sales',
+      areaServed: site.address.region,
+      availableLanguage: ['en'],
+      hoursAvailable: site.hours.schema.map((h) => ({
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: h.days.map((d) => `https://schema.org/${d}`),
+        opens: h.opens,
+        closes: h.closes,
+      })),
+    },
     priceRange: 'Free consultation',
     address: {
       '@type': 'PostalAddress',

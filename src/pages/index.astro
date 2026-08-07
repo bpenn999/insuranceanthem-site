@@ -46,10 +46,15 @@ const faqSchema = {
           no script, no charge.
         </p>
 
+        {/* Call first and filled; the form CTA is the outline. Same reasoning as
+            the header — the number is the primary path, so it gets the primary
+            treatment and the first position. */}
         <div class="hero__actions" data-rise data-armed style="--rise-delay:360ms">
-          <a href="/contact/" class="btn btn--lg" data-magnetic="0.3">Get a free plan review</a>
-          <a href={site.phone.href} class="btn btn--ghost btn--lg" data-magnetic="0.22">
+          <a href={site.phone.href} class="btn btn--lg" data-magnetic="0.3" data-cta="hero-call">
             Call {site.phone.display}
+          </a>
+          <a href="/contact/" class="btn btn--ghost btn--lg" data-magnetic="0.22">
+            Get a free plan review
           </a>
         </div>
 

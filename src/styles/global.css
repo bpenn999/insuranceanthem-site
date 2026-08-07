@@ -112,6 +112,14 @@ body {
   min-height: 100svh;
 }
 
+/* Clearance for the sticky call bar (src/components/MobileCallBar.astro). It is
+   fixed, so it would otherwise sit on top of the last ~70px of the footer — the
+   compliance block, which is the one thing on the page that cannot be covered.
+   Breakpoint and height both match the bar. */
+@media (max-width: 899px) {
+  body { padding-bottom: calc(4.375rem + env(safe-area-inset-bottom, 0px)); }
+}
+
 img, svg, video, canvas { display: block; max-width: 100%; }
 img { height: auto; }
 input, button, textarea, select { font: inherit; color: inherit; }

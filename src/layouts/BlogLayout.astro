@@ -244,8 +244,12 @@ if (d.faqs?.length) {
             Call {site.phone.display}
           </a>
         </div>
+        {/* Same as the Learn articles: the number ends the block, live. */}
         <p class="post__cta-meta">
           {site.agent.name} · {site.agent.title} · NPN {site.agent.npn} · {site.hours.display}
+        </p>
+        <p class="post__cta-phone">
+          Or call <a href={site.phone.href} data-cta="article-call">{site.phone.display}</a>
         </p>
       </aside>
 
@@ -430,6 +434,15 @@ if (d.faqs?.length) {
   .post__cta-body { font-size: var(--t-sm); line-height: 1.65; max-width: 52ch; margin-bottom: var(--s-5); }
   .post__cta .btn-row { margin-bottom: var(--s-4); }
   .post__cta-meta { font-size: var(--t-xs); color: #A9B4DB; line-height: 1.5; }
+  .post__cta-phone {
+    margin-top: var(--s-3);
+    font-size: var(--t-lg);
+    font-family: var(--font-display);
+    color: #fff;
+    font-variant-numeric: tabular-nums;
+  }
+  .post__cta-phone a { color: #fff; border-bottom: 2px solid var(--red-lift); }
+  .post__cta-phone a:hover { color: var(--red-lift); }
 
   .post__back { font-size: var(--t-sm); }
 </style>

@@ -490,6 +490,49 @@ for (const f of htmls) {
   }
 }
 
+// ── 6g. the phone is the primary conversion path ─────────────────────────────
+// The number carries more of this business than any form does, so the things
+// that make it reachable are asserted rather than assumed.
+{
+  const E164 = '+16028446002';
+  for (const f of htmls) {
+    const html = readFileSync(f, 'utf8');
+    const r = routeOf(f);
+
+    // E.164 in structured data, on the LocalBusiness node and the contactPoint.
+    if (!html.includes(`"telephone":"${E164}"`)) note(`NO E.164 telephone IN JSON-LD on ${r}`);
+    if (!html.includes('"contactType":"sales"')) note(`NO sales contactPoint on ${r}`);
+    if (!/"@type":"ContactPoint"[^}]*"areaServed":"AZ"/.test(html)) {
+      note(`contactPoint MISSING areaServed AZ on ${r}`);
+    }
+
+    // The sticky mobile call bar, on every page.
+    if (!html.includes('data-cta="sticky-call"')) note(`NO STICKY CALL BAR on ${r}`);
+
+    // A tel: link is what makes any of it one tap.
+    if (!html.includes('href="tel:+16028446002"')) note(`NO tel: LINK on ${r}`);
+  }
+
+  // The header's call button must be the filled primary, not the ghost.
+  const home = readFileSync(join(DIST, 'index.html'), 'utf8');
+  const headerCall = home.match(/<a[^>]+data-cta="header-call"[^>]*>/)?.[0] ?? '';
+  if (!headerCall) note('NO HEADER CALL BUTTON');
+  else if (/btn--ghost/.test(headerCall)) note('HEADER CALL BUTTON IS THE GHOST — it must be the primary');
+  const heroCall = home.match(/<a[^>]+data-cta="hero-call"[^>]*>/)?.[0] ?? '';
+  if (!heroCall) note('NO HERO CALL BUTTON');
+  else if (/btn--ghost/.test(heroCall)) note('HERO CALL BUTTON IS THE GHOST — it must be the primary');
+
+  // Every Learn article and blog post ends its CTA block with the number.
+  for (const f of htmls) {
+    const r = routeOf(f);
+    if (!r.startsWith('/learn/') && !r.startsWith('/blog/')) continue;
+    if (r === '/learn/' || r === '/blog/') continue;
+    if (!readFileSync(f, 'utf8').includes('data-cta="article-call"')) {
+      note(`ARTICLE CTA BLOCK DOES NOT END WITH THE NUMBER on ${r}`);
+    }
+  }
+}
+
 // ── 7. phone number consistency (one source of truth) ────────────────────────
 const phones = new Set();
 for (const f of htmls) {

@@ -66,8 +66,13 @@ export const site = {
     display: formatPhone(PHONE_RAW),
     /** tel:+16028446002 — what devices dial */
     href: `tel:+1${PHONE_RAW.replace(/\D/g, '').slice(-10)}`,
-    /** +1-602-844-6002 — schema.org / structured data */
-    schema: `+1-${PHONE_RAW.slice(0, 3)}-${PHONE_RAW.slice(3, 6)}-${PHONE_RAW.slice(6)}`,
+    /**
+     * +16028446002 — schema.org / structured data. E.164, no separators: it is
+     * the form Google's own structured-data examples use and the one that round
+     * trips through a parser unambiguously. Do not "prettify" it back to
+     * +1-602-844-6002; the display string above is what humans read.
+     */
+    schema: `+1${PHONE_RAW}`,
   },
 
   /** The advisor */

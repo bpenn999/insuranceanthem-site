@@ -1,0 +1,97 @@
+---
+import site from '../config/site';
+
+/**
+ * Sticky call bar — mobile only.
+ *
+ * The phone is the primary conversion path for this audience, and on a phone it
+ * should never be more than one thumb-tap away. This pins it to the bottom of
+ * the viewport under 900px, which is the same breakpoint at which the header
+ * collapses its own phone link and CTA into the hamburger.
+ *
+ * Three things it has to get right:
+ *
+ *  • The call target is the WHOLE left cell, not the text inside it — a 56px
+ *    row is the thumb target, not the label.
+ *  • `padding-bottom: env(safe-area-inset-bottom)` keeps it clear of the iOS
+ *    home indicator. Without it the bar sits under the gesture bar and the tap
+ *    goes to the OS.
+ *  • It sits BELOW the mobile nav panel in the stack (z-index 78 against the
+ *    panel's 79), so opening the menu covers it rather than doubling up on the
+ *    Call button the panel already has at its foot.
+ *
+ * The body padding that stops this covering the end of the footer lives in
+ * global.css, not here — it has to apply to the page, not to the bar.
+ */
+---
+
+<div class="callbar" role="region" aria-label="Call or book">
+  <a href={site.phone.href} class="callbar__call" data-cta="sticky-call">
+    <svg viewBox="0 0 16 16" aria-hidden="true" class="callbar__icon">
+      <path d="M3 1.5h2.2l1.1 2.8-1.4 1a8.5 8.5 0 0 0 3.8 3.8l1-1.4 2.8 1.1V11c0 1.9-1.6 3.4-3.5 3.1A11.4 11.4 0 0 1 1.4 5C1.1 3.1 2.6 1.5 4.5 1.5Z"
+            fill="none" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round" />
+    </svg>
+    <span><span class="sr-only">Call {site.name} at </span>Call {site.phone.display}</span>
+  </a>
+  <a href={site.consult.url} class="callbar__alt">Book</a>
+</div>
+
+<style>
+  .callbar {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 78;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.5rem;
+    padding: 0.5rem var(--s-4);
+    padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
+    background: color-mix(in srgb, var(--page) 96%, transparent);
+    backdrop-filter: saturate(180%) blur(12px);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    border-top: 1px solid var(--rule);
+    box-shadow: 0 -2px 20px rgba(1, 20, 89, 0.07);
+  }
+
+  /* The primary. Red fill, white label — 5.6:1, same as every other primary on
+     the site, and the entire row is the tap target. */
+  .callbar__call {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-height: 54px;
+    padding: 0 1rem;
+    background: var(--red);
+    color: #fff;
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: 0.01em;
+    font-variant-numeric: tabular-nums;
+    border-radius: var(--radius);
+  }
+  .callbar__call:active { background: var(--red-deep); }
+  .callbar__icon { width: 17px; height: 17px; flex: none; }
+
+  .callbar__alt {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 54px;
+    padding: 0 1.1rem;
+    color: var(--navy);
+    font-size: var(--t-sm);
+    font-weight: 600;
+    border: 1px solid color-mix(in srgb, var(--navy) 30%, transparent);
+    border-radius: var(--radius);
+  }
+  .callbar__alt:active { background: var(--navy-wash); }
+
+  @media (min-width: 900px) {
+    .callbar { display: none; }
+  }
+  @media print {
+    .callbar { display: none; }
+  }
+</style>
