@@ -78,17 +78,37 @@ const schemaNodes = [
 
   <section class="section section--tight">
     <div class="wrap">
+      {/* THE IFRAME HAS NO `src`. It is set by the script below, after this
+          page has painted.
+
+          Loading it inline cost this page 4.9s of First Contentful Paint and
+          5.5s of Largest Contentful Paint, and dropped it to 67 — because the
+          browser will not call the page painted while a same-priority
+          cross-origin document is still arriving. Every CTA on this site now
+          lands here, so that was the slowest page on the site being the one
+          every conversion goes through.
+
+          Deferring costs the visitor nothing: the calendar renders its own
+          skeleton while it boots, so the wait was always there — it was just
+          happening behind a blank page instead of behind the heading that tells
+          you what you are about to do.
+
+          `scrolling` and `frameborder` from the supplied embed are dropped:
+          both are deprecated and both are already the default. */}
       <div class="booking">
         <iframe
-          src="https://my.gogurux.com/book/medicareonmain-com/602-medicare?embed=1"
+          data-src="https://my.gogurux.com/book/medicareonmain-com/602-medicare?embed=1"
           title="602Medicare — booking calendar"
           class="booking__frame"
-          loading="eager"
+          data-booking-frame
         ></iframe>
-        {/* `scrolling="auto"` and `frameborder="0"` were in the supplied embed
-            and are dropped here: both are deprecated, and both are already the
-            default — scrolling is auto unless told otherwise, and the border
-            comes from the stylesheet below. */}
+        <noscript>
+          <iframe
+            src="https://my.gogurux.com/book/medicareonmain-com/602-medicare?embed=1"
+            title="602Medicare — booking calendar"
+            class="booking__frame"
+          ></iframe>
+        </noscript>
       </div>
 
       <p class="booking__fallback">
@@ -117,6 +137,34 @@ const schemaNodes = [
   `javascript:` payload from a compromised allowed origin still cannot execute.
 -->
 <script is:inline>
+  /**
+   * Attach the calendar once the page itself has painted. See the note on the
+   * iframe: loading it inline made it the Largest Contentful Paint element and
+   * cost this page ~30 points.
+   *
+   * `load` rather than `DOMContentLoaded` — DOMContentLoaded fires before the
+   * page's own fonts and images have settled, which just moves the contention
+   * rather than removing it. The 1500ms timeout is a backstop for browsers
+   * without requestIdleCallback, and for the case where the idle callback never
+   * comes because something else is busy.
+   */
+  (function () {
+    var frame = document.querySelector('[data-booking-frame]');
+    if (!frame) return;
+    var attached = false;
+    var attach = function () {
+      if (attached) return;
+      attached = true;
+      frame.src = frame.getAttribute('data-src');
+    };
+    var schedule = function () {
+      if ('requestIdleCallback' in window) window.requestIdleCallback(attach, { timeout: 1500 });
+      else setTimeout(attach, 200);
+    };
+    if (document.readyState === 'complete') schedule();
+    else window.addEventListener('load', schedule, { once: true });
+  })();
+
   (function () {
     var MSG = 'ggx-booking-confirmation-redirect';
     var ALLOWED = ['https://my.gogurux.com', 'http://localhost:5173', 'http://localhost:3000'];
