@@ -125,15 +125,23 @@ if (description.length > 155) {
   can never cause invisible text. The fallback stacks in global.css are metric-
   adjacent on purpose, which is why CLS stays at 0 across the swap.
 -->
-<link rel="preload" as="font" type="font/woff2" href="/fonts/fraunces-latin.woff2" crossorigin />
-<link rel="preload" as="font" type="font/woff2" href="/fonts/inter-latin.woff2" crossorigin />
+<!--
+  BOTH are preloaded. Measured, not assumed: preloading Inter alone (on the
+  theory that only the LCP paragraph's font matters) cost 0.4s of First
+  Contentful Paint and seven points, because Fraunces is then not discovered
+  until the renderer parses the CSS and finds the H1 — one round trip too late
+  for the largest text on the screen. Preload both, and keep them small; that is
+  what scripts/build-fonts.py is for.
+-->
+<link rel="preload" as="font" type="font/woff2" href="/fonts/fraunces-subset.woff2" crossorigin />
+<link rel="preload" as="font" type="font/woff2" href="/fonts/inter-subset.woff2" crossorigin />
 <style is:inline>
   @font-face {
     font-family: 'Fraunces';
     font-style: normal;
     font-weight: 300 600;
     font-display: swap;
-    src: url('/fonts/fraunces-latin.woff2') format('woff2');
+    src: url('/fonts/fraunces-subset.woff2') format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
       U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
       U+2212, U+2215, U+FEFF, U+FFFD;
@@ -143,7 +151,7 @@ if (description.length > 155) {
     font-style: normal;
     font-weight: 400 600;
     font-display: swap;
-    src: url('/fonts/inter-latin.woff2') format('woff2');
+    src: url('/fonts/inter-subset.woff2') format('woff2');
     unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
       U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
       U+2212, U+2215, U+FEFF, U+FFFD;
