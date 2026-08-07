@@ -7,7 +7,7 @@ summary: 'Your enrollment window is set by your own birthday, not by the dates i
 category: Enrollment
 publishedAt: 2026-08-07
 readMinutes: 8
-image: /blog/turning-65-in-anthem-2026.png
+image: /blog/turning-65-anthem-az-2026-timeline.png
 imageAlt: '602Medicare article card reading "Turning 65 in Anthem: your 2026 Medicare timeline", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
 faqs:
   - q: When exactly does my Medicare enrollment window open if I turn 65 in Anthem, AZ?
