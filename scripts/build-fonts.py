@@ -28,6 +28,10 @@ re-tuned for the pinned metrics instead — see Footer.astro.
 `wght` stays variable on both: the site uses 400/500/600 of Inter and 500/600 of
 Fraunces, and a single variable file is smaller than two static instances.
 
+The unsubsetted source faces live in assets/fonts-src/ rather than public/ —
+they are build inputs, and under public/ they were 115 KB of unreferenced font
+deployed to production on every build.
+
 Re-run this after adding copy in a new language or with unusual symbols. The
 build does NOT run it automatically — a missing glyph should be a deliberate
 discovery, not a silent tofu box on a page nobody screenshotted.
@@ -43,7 +47,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 DIST = ROOT / "dist"
-FONTS = ROOT / "public" / "fonts"
+FONTS = ROOT / "public" / "fonts"          # published, hashed, immutable
+SRC_FONTS = ROOT / "assets" / "fonts-src"  # build inputs — NOT published
 
 # Everything printable in ASCII, so any future copy edit stays safe.
 BASE = "".join(chr(c) for c in range(0x20, 0x7F))
@@ -109,6 +114,13 @@ def pin_optical_size(path: Path, opsz: float = 40) -> None:
     before = path.stat().st_size
     font = TTFont(path)
     inst = instancer.instantiateVariableFont(font, {"opsz": opsz}, inplace=False)
+    # Zero the head timestamps. fontTools stamps `modified` with the current
+    # time, which makes the output bytes differ on every run — and since the
+    # published filename is a hash OF those bytes, a no-op rebuild would
+    # re-issue the font and throw away every visitor's cached copy. Pinning the
+    # timestamps makes the build reproducible: same input, same hash, no churn.
+    head = inst["head"]
+    head.created = head.modified = 0
     inst.flavor = "woff2"
     inst.save(path)
     after = path.stat().st_size
@@ -135,7 +147,7 @@ def fingerprint(tmp: Path, stem: str) -> str:
     else:
         tmp.rename(final)
     for old in FONTS.glob(f"{stem}-*.woff2"):
-        if old != final and not old.name.endswith("-latin.woff2"):
+        if old != final:
             old.unlink()
             print(f"  removed stale {old.name}")
     return final.name
@@ -176,7 +188,7 @@ def main() -> None:
     built: dict[str, str] = {}
 
     for stem in ("fraunces", "inter"):
-        src = FONTS / f"{stem}-latin.woff2"
+        src = SRC_FONTS / f"{stem}-latin.woff2"
         if not src.exists():
             sys.exit(f"missing {src} — see BaseHead.astro for where these come from")
         tmp = FONTS / f"{stem}-subset.woff2"

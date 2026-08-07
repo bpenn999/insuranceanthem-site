@@ -7,7 +7,7 @@
  * subset, the axes, or the source faces.
  */
 export const fonts = {
-  fraunces: '/fonts/fraunces-e13e4a9f.woff2',
+  fraunces: '/fonts/fraunces-37b801f0.woff2',
   inter: '/fonts/inter-2a0604d4.woff2',
 } as const;
 
