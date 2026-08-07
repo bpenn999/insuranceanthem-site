@@ -266,4 +266,24 @@ export const allServedAreas = [
   ...additionalAreas.map((a) => ({ city: a.city, county: a.county })),
 ];
 
+/**
+ * ─────────────────────────────────────────────────────────────────────────────
+ *  THE serving list. One string, used everywhere a list of served cities is
+ *  displayed — the hero eyebrow, the contact card, the About page, the ZIP
+ *  table's own ordering.
+ * ─────────────────────────────────────────────────────────────────────────────
+ *
+ *  Derived from `serviceAreaRows`, so it is the same nine communities in the
+ *  same outward-from-Anthem order as the table, and it cannot fall out of step
+ *  with it. It replaced four different hand-written lists that had drifted
+ *  apart: a six-city one on the contact card, a four-city one in the hero
+ *  eyebrow, another four-city one in the article author bio, and a fifth built
+ *  by regex from `locations` on the About page — which produced the genuinely
+ *  broken "Anthem, AZ, Glendale, AZ, … New River and AZ".
+ *
+ *  DO NOT hand-write a serving list anywhere. Import this, or — for prose and
+ *  the footer, where a sentence rather than a list is wanted — `site.servingLine`.
+ */
+export const serviceAreaListText = serviceAreaRows.map((r) => r.city).join(' · ');
+
 export default locations;

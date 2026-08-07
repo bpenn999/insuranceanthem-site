@@ -11,10 +11,10 @@ import Faq from '../components/Faq.astro';
 import CtaBand from '../components/CtaBand.astro';
 import site from '../config/site';
 import { homeFaqs } from '../data/faqs';
-import { serviceAreaRows } from '../data/locations';
+import { serviceAreaRows, serviceAreaListText } from '../data/locations';
 
 const title = `Phoenix-Metro Medicare Help | ${site.name}`;
-const description = `Phoenix-metro Medicare guidance from an office in Anthem, AZ. ${site.agent.experience} helping people in Glendale, Peoria, North Phoenix and across the Valley compare Advantage, Supplement and Part D. Call ${site.phone.display}.`;
+const description = `Phoenix-metro Medicare guidance from an office in Anthem, AZ. ${site.servingLine} ${site.agent.experience} comparing Advantage, Supplement and Part D. Call ${site.phone.display}.`;
 
 const faqSchema = {
   '@type': 'FAQPage',
@@ -33,7 +33,7 @@ const faqSchema = {
       <div class="hero__copy">
         <p class="hero__eyebrow" data-rise data-armed>
           <span class="hero__pin" aria-hidden="true"></span>
-          Anthem · Glendale · Peoria · North Phoenix
+          {serviceAreaListText}
         </p>
 
         <h1 class="hero__title">
@@ -273,18 +273,24 @@ const faqSchema = {
     align-items: center;
   }
 
+  /* Nine communities now, so this wraps on narrow screens. Align the pin to the
+     first line rather than centring it against a multi-line block, and ease the
+     tracking back so the list holds two lines at 390px instead of four. */
   .hero__eyebrow {
-    display: inline-flex;
-    align-items: center;
+    display: flex;
+    align-items: flex-start;
     gap: 0.55rem;
+    max-width: 48ch;
     font-size: var(--t-xs);
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.055em;
+    line-height: 1.55;
     text-transform: uppercase;
-    color: var(--navy);
+    color: var(--red);
     margin-bottom: var(--s-5);
   }
   .hero__pin {
+    margin-top: 0.45em;
     width: 6px; height: 6px;
     border-radius: 50%;
     background: currentColor;

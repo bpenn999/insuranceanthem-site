@@ -4,7 +4,7 @@ import PageHero from '../components/PageHero.astro';
 import LeadForm from '../components/LeadForm.astro';
 import SectionHead from '../components/SectionHead.astro';
 import site, { abs } from '../config/site';
-import { locations } from '../data/locations';
+import { serviceAreaListText } from '../data/locations';
 
 const title = 'Contact Brian Penner — Free Medicare Review';
 const description = `Talk to a licensed local Medicare advisor across the Phoenix metro, from an office in Anthem, AZ. No cost, no obligation, no call center. Call ${site.phone.display} — ${site.agent.name}, NPN ${site.agent.npn}.`;
@@ -73,7 +73,11 @@ const schemaNodes = [
             </div>
             <div>
               <dt>Serving</dt>
-              <dd>{locations.map((l) => l.city).join(' · ')}</dd>
+              {/* The canonical nine, from src/data/locations.ts. This used to
+                  map over `locations`, which is only the six that have pages —
+                  so the contact card silently claimed a smaller patch than the
+                  home page's own ZIP table did. */}
+              <dd>{serviceAreaListText}</dd>
             </div>
             <div>
               <dt>Advisor</dt>

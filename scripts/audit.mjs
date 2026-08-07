@@ -300,7 +300,11 @@ for (const f of htmls) {
     // it still reaches structured data through the LocalBusiness node.
     if (!footer.includes('Anthem, AZ')) note(`FOOTER: no address on ${r}`);
     if (footer.includes('Anthem, AZ 85086')) note(`FOOTER: ZIP is back in the on-page NAP on ${r}`);
-    if (!footer.includes('Serving Anthem, Cave Creek, Scottsdale, Glendale, Peoria, North Phoenix')) {
+    // The exact prose form. Checked in full rather than by prefix — a prefix
+    // check is what let the line drift when Carefree was inserted mid-list.
+    if (!footer.includes(
+      'Serving Anthem, Cave Creek, Carefree, Scottsdale, Glendale, Peoria, North Phoenix &amp; the Valley.'
+    )) {
       note(`FOOTER: no serving line on ${r}`);
     }
     if (!footer.includes('(602) 844-6002')) note(`FOOTER: no phone on ${r}`);
@@ -529,6 +533,80 @@ for (const f of htmls) {
     if (r === '/learn/' || r === '/blog/') continue;
     if (!readFileSync(f, 'utf8').includes('data-cta="article-call"')) {
       note(`ARTICLE CTA BLOCK DOES NOT END WITH THE NUMBER on ${r}`);
+    }
+  }
+}
+
+// ── 6h. one serving list, nine communities ───────────────────────────────────
+// There were five hand-written serving lists on this site and no two agreed:
+// six cities on the contact card, four in the hero eyebrow, four more in the
+// article author bio, three in a FAQ, and a regex-built one on About that
+// emitted "New River and AZ". They now all derive from serviceAreaListText or
+// site.servingLine. These checks are what stop a sixth from being written.
+{
+  const NINE = 'Anthem · Desert Hills · New River · Cave Creek · Carefree · Scottsdale · North Phoenix · Glendale · Peoria';
+  const PROSE = 'Serving Anthem, Cave Creek, Carefree, Scottsdale, Glendale, Peoria, North Phoenix &amp; the Valley.';
+  const ALL_NINE = ['Anthem', 'Desert Hills', 'New River', 'Cave Creek', 'Carefree',
+    'Scottsdale', 'North Phoenix', 'Glendale', 'Peoria'];
+
+  // Pages that display the canonical dot list, and must show all nine.
+  for (const [route, file] of [['/', 'index.html'], ['/contact/', 'contact/index.html'],
+    ['/about/', 'about/index.html']]) {
+    const html = readFileSync(join(DIST, file), 'utf8');
+    if (!html.includes(NINE)) note(`SERVING LIST IS NOT THE CANONICAL NINE on ${route}`);
+  }
+
+  // The footer's prose form, on every page.
+  for (const f of htmls) {
+    if (!readFileSync(f, 'utf8').includes(PROSE)) {
+      note(`FOOTER SERVING LINE IS NOT THE CANONICAL PROSE FORM on ${routeOf(f)}`);
+    }
+  }
+
+  // areaServed must carry all nine, everywhere.
+  for (const f of htmls) {
+    const html = readFileSync(f, 'utf8');
+    for (const city of ALL_NINE) {
+      if (!html.includes(`"@type":"City","name":"${city}"`)) {
+        note(`areaServed MISSING "${city}" on ${routeOf(f)}`);
+      }
+    }
+  }
+
+  // The ZIP table's three added rows.
+  {
+    const home = readFileSync(join(DIST, 'index.html'), 'utf8');
+    for (const [city, zips] of [
+      ['Scottsdale', '85254 · 85255 · 85258 · 85259 · 85260 · 85262 · 85266'],
+      ['Cave Creek', '85331'],
+      ['Desert Hills', '85086'],
+    ]) {
+      if (!home.includes(`>${city}</span> <span class="area__zip"`)) {
+        note(`ZIP TABLE MISSING ROW  ${city}`);
+      }
+      if (!home.includes(zips)) note(`ZIP TABLE WRONG ZIPS FOR ${city} — expected ${zips}`);
+    }
+  }
+
+  // And the old six-city lists, by their exact shapes, must be gone.
+  const DEAD_LISTS = [
+    'Anthem · Glendale · Peoria · North Phoenix',
+    'Anthem · Glendale · Peoria · North Phoenix · Carefree · New River',
+    'serving Glendale, Peoria, North Phoenix',
+    'Glendale, Peoria, north Phoenix, New River and Carefree',
+    'in Glendale, in Peoria, in north Phoenix',
+  ];
+  // Every text output, not just the HTML — public/site.webmanifest is a static
+  // file with its own hand-written description, so it does not inherit from
+  // src/config/site.ts and it kept the old six-city list through a sweep that
+  // fixed all 42 pages. Anything shipping copy gets checked.
+  const textOut = files.filter((f) => /\.(html|xml|txt|json|webmanifest)$/.test(f));
+  for (const f of textOut) {
+    const body = readFileSync(f, 'utf8');
+    for (const dead of DEAD_LISTS) {
+      if (body.includes(dead)) {
+        note(`OLD SERVING LIST "${dead}" in ${'/' + relative(DIST, f)}`);
+      }
     }
   }
 }

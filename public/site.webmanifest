@@ -1,7 +1,7 @@
 {
   "name": "602Medicare",
   "short_name": "602Medicare",
-  "description": "Phoenix-metro Medicare guidance from an office in Anthem, serving Glendale, Peoria, North Phoenix and across the Valley.",
+  "description": "Phoenix-metro Medicare guidance from an office in Anthem. Serving Anthem, Cave Creek, Carefree, Scottsdale, Glendale, Peoria, North Phoenix & the Valley.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",

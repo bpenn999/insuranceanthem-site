@@ -33,7 +33,7 @@ export const homeFaqs: Faq[] = [
   },
   {
     q: 'Do we have to meet in person?',
-    a: 'Your choice. The office is in Anthem, and I meet face to face there, in Glendale, in Peoria, in north Phoenix and across the rest of the Valley. Plenty of clients would rather do the whole thing by phone or video, and that works just as well.',
+    a: 'Your choice. The office is in Anthem, and I meet face to face there and across the rest of the Valley — Desert Hills, New River, Cave Creek, Carefree, Scottsdale, north Phoenix, Glendale and Peoria. Plenty of clients would rather do the whole thing by phone or video, and that works just as well.',
   },
   {
     q: 'What should I have ready before we talk?',

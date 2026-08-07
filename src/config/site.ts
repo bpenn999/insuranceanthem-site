@@ -50,9 +50,9 @@ export const site = {
    * shrinks the brand back to the market it just outgrew.
    */
   tagline:
-    'Phoenix-metro Medicare guidance — office in Anthem, serving Glendale, Peoria, North Phoenix & the Valley.',
+    'Phoenix-metro Medicare guidance — office in Anthem. Serving Anthem, Cave Creek, Carefree, Scottsdale, Glendale, Peoria, North Phoenix & the Valley.',
   description:
-    'Phoenix-metro Medicare guidance from an office in Anthem, serving Glendale, Peoria, North Phoenix and across the Valley. Medicare Advantage, Medicare Supplement and Part D, plus long-term care planning — explained plainly by a licensed local advisor with 22+ years of experience.',
+    'Phoenix-metro Medicare guidance from an office in Anthem. Serving Anthem, Cave Creek, Carefree, Scottsdale, Glendale, Peoria, North Phoenix & the Valley. Medicare Advantage, Medicare Supplement and Part D, plus the coverage that fills the gaps around them — explained plainly by a licensed local advisor with 22+ years of experience.',
 
   /** Canonical origin — every absolute URL, og:url and schema @id derives from this. */
   origin: 'https://602medicare.com',
@@ -121,7 +121,8 @@ export const site = {
    * scripts/audit.mjs asserts this string is in the footer of every page, so
    * rewording it means updating that check too.
    */
-  servingLine: 'Serving Anthem, Cave Creek, Scottsdale, Glendale, Peoria, North Phoenix & the Valley',
+  servingLine:
+    'Serving Anthem, Cave Creek, Carefree, Scottsdale, Glendale, Peoria, North Phoenix & the Valley.',
 
   /**
    * Service area — the plain-text list. The generated city PAGES and the schema
