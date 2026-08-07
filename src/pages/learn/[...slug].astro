@@ -207,9 +207,14 @@ if (d.faqs.length) {
           code. That check takes about {site.consult.minutes} minutes on the phone, costs nothing,
           and there is no product at the end of it unless one belongs there.
         </p>
+        {/* --light and --onNavy, not the default red primary and the navy
+            outline: this panel's ground is navy, where the red button's edge is
+            3.0:1 and the ghost button's border disappears entirely. */}
         <div class="btn-row">
-          <a href={site.consult.url} class="btn btn--lg" data-magnetic="0.28">{site.consult.label}</a>
-          <a href={site.phone.href} class="btn btn--ghost btn--lg" data-magnetic="0.2">
+          <a href={site.consult.url} class="btn btn--light btn--lg" data-magnetic="0.28">
+            {site.consult.label}
+          </a>
+          <a href={site.phone.href} class="btn btn--onNavy btn--lg" data-magnetic="0.2">
             Call {site.phone.display}
           </a>
         </div>
@@ -247,7 +252,7 @@ if (d.faqs.length) {
 
   {
     related.length > 0 && (
-      <section class="section band--warm" data-caustics="0.16">
+      <section class="section band--tint" data-caustics="0.16">
         <div class="wrap wrap--narrow">
           <h2 class="more__head">Keep reading</h2>
           <ul class="more">
@@ -342,7 +347,7 @@ if (d.faqs.length) {
   /* --- compliance note --- */
   .art__note {
     padding: var(--s-5);
-    background: color-mix(in srgb, var(--porcelain-warm) 90%, transparent);
+    background: color-mix(in srgb, var(--tint) 90%, transparent);
     border-left: 2px solid var(--navy);
     border-radius: 0 var(--radius) var(--radius) 0;
     font-size: var(--t-sm);

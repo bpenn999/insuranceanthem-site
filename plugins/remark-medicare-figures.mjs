@@ -91,9 +91,12 @@ export default function remarkMedicareFigures() {
   return (tree, file) => {
     const where = file?.history?.[0] ?? 'unknown file';
 
-    // `inlineCode` is included so a token inside backticks still resolves;
-    // fenced `code` blocks are deliberately left alone.
-    visit(tree, ['text', 'inlineCode'], (node) => {
+    // `inlineCode` is included so a token inside backticks still resolves, and
+    // `html` so that tokens inside raw HTML blocks do too — blog posts build
+    // their stat callouts and scrollable tables as literal markup, and without
+    // this those were the one place on the site where a dollar figure had to be
+    // typed by hand. Fenced `code` blocks are deliberately left alone.
+    visit(tree, ['text', 'inlineCode', 'html'], (node) => {
       if (!node.value || !node.value.includes('{{')) return;
 
       node.value = node.value.replace(TOKEN_RE, (match, token) => {

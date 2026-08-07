@@ -68,9 +68,11 @@ function initCaustics(canvas: HTMLCanvasElement, animate: boolean) {
   }
 
   // Base colours, sampled straight from the palette so the canvas can never
-  // drift away from the CSS: deep navy in the troughs, warm white on the peaks.
-  const TROUGH = [15, 58, 92];
-  const PEAK = [255, 253, 247];
+  // drift away from the CSS: badge navy in the troughs, plain white on the
+  // peaks. No warmth in the peak any more — the ground is #FFFFFF now, and a
+  // 253/247 peak over it read as a faint cream cast across every page.
+  const TROUGH = [1, 20, 89]; // --navy #011459
+  const PEAK = [255, 255, 255];
 
   function render(now: number) {
     const t = animate ? now * 0.00021 : 0.7; // frozen frame when motion is off
@@ -139,7 +141,7 @@ function initCaustics(canvas: HTMLCanvasElement, animate: boolean) {
  * Per-section caustics opacity. Each section declares how much light it can
  * tolerate behind it; the value that wins is whichever section is crossing the
  * middle of the viewport. Article bodies dial it right down so long-form text
- * always sits on effectively flat porcelain.
+ * always sits on effectively flat white.
  */
 function initCausticsZones() {
   const zones = document.querySelectorAll<HTMLElement>('[data-caustics]');

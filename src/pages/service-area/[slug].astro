@@ -143,7 +143,7 @@ const schemaNodes = [
   </section>
 
   <!-- ── Services ─────────────────────────────────────────────────────── -->
-  <section class="section band--warm" data-caustics="0.24">
+  <section class="section band--tint" data-caustics="0.24">
     <div class="wrap">
       <SectionHead
         eyebrow={`Serving ${location.city}`}
@@ -166,7 +166,7 @@ const schemaNodes = [
   </section>
 
   <!-- ── FAQ ──────────────────────────────────────────────────────────── -->
-  <section class="section band--deep" data-caustics="0.22">
+  <section class="section band--tint-deep" data-caustics="0.22">
     <div class="wrap wrap--narrow">
       <SectionHead eyebrow="Questions" title={`Medicare in ${location.city}, answered.`} />
       <Faq items={localFaqs} openFirst />
@@ -239,7 +239,7 @@ const schemaNodes = [
     justify-content: space-between;
     gap: var(--s-4);
     padding: var(--s-4) var(--s-2);
-    background: var(--porcelain);
+    background: var(--page);
     transition: background-color 260ms var(--ease), padding-left 300ms var(--ease);
   }
   .nearby__link:hover { background: var(--surface); padding-left: var(--s-4); }

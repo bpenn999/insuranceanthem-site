@@ -30,11 +30,17 @@ const year = new Date().getFullYear();
  * which is invisible on screen but breaks any exact-match check over the HTML.
  */
 const licenceLine = [
-  site.agent.name,
-  `National Producer Number ${site.agent.npn}`,
+  `${site.agent.name}, NPN ${site.agent.npn}`,
   `Licensed in ${site.agent.statesLicensed} states`,
   `Licensed insurance agency in ${site.address.regionName}`,
 ].join(' · ');
+
+/**
+ * The copyright line. 602Medicare is a DBA rather than a corporation, so the
+ * entity that actually holds it has to be named here. Reads as
+ * "© 2026 602Medicare, a DBA of Kenztara INC".
+ */
+const copyrightLine = `${site.legalName}, a DBA of ${site.parentCompany}`;
 
 /**
  * EVERY published guide is listed — no slice. The footer is the site's sitemap
@@ -52,10 +58,10 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
 
     <!-- ── Advisor row ────────────────────────────────────────────────── -->
     <div class="foot__advisor">
-      {/* No mark on this row — there is no 602Medicare logo yet, so the footer
-          carries the name as type only. When a mark does land, note that a navy
-          ground needs a variant that brings its own light field; do not just
-          drop the light-ground version in here. */}
+      {/* No mark on this row on purpose — the badge already appears twice in
+          this footer (over the NAP, and as the wordmark band below), and a
+          third copy in the same 900px of page reads as a template that lost
+          count rather than as branding. */}
       <div class="foot__advisor-txt">
         <span class="foot__advisor-kicker">Your local advisor</span>
         <strong>{site.agent.name}</strong>
@@ -95,6 +101,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
       <div class="foot__col">
         <h2 class="foot__heading">Guides &amp; Articles</h2>
         <ul>
+          <li><a href="/blog/">Blog</a></li>
           <li><a href="/learn/">All guides</a></li>
           {learnAll.map((a) => <li><a href={`/learn/${a.id}/`}>{a.data.title}</a></li>)}
         </ul>
@@ -119,12 +126,20 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
       <!-- NAP — one office, structured for both humans and parsers -->
       <div class="foot__col foot__col--contact">
         <h2 class="foot__heading">Contact</h2>
-        {/* No mark over the NAP — there is no 602Medicare logo yet. The
-            full-bleed wordmark band below is the footer's mark of record until
-            one lands. */}
+        {/* The badge over the NAP, on its own white disc. The shipped PNG is
+            transparent inside its ring, so dropped straight onto this navy the
+            mountains and the "602" — both navy — disappear and only the red sun
+            and red "MEDICARE" survive. The disc IS the navy-ground variant. */}
+        <span class="foot__disc" aria-hidden="true">
+          <img src="/logo/602medicare-logo-transparent.png" alt="" width="464" height="464"
+               loading="lazy" decoding="async" />
+        </span>
         <address class="foot__nap">
           <p class="foot__nap-name">{site.legalName}</p>
+          {/* City and state only — there is no published street address, and
+              inventing one for a footer is how a NAP audit starts failing. */}
           <p class="foot__nap-line">{site.address.display}</p>
+          <p class="foot__nap-serving">{site.servingLine}</p>
           <p><a href={site.phone.href} class="foot__phone">{site.phone.display}</a></p>
           <p><a href={`mailto:${site.email}`} class="foot__email">{site.email}</a></p>
           <p class="foot__hours">{site.hours.display}</p>
@@ -150,20 +165,23 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     </div>
 
     <div class="foot__base">
-      <p>&copy; {year} {site.legalName}. All rights reserved.</p>
+      <p>&copy; {year} {copyrightLine}. All rights reserved.</p>
       <p class="foot__base-right">
-        Your local advisor · {site.address.locality}, {site.address.region}
+        Your local advisor · {site.address.display}
       </p>
     </div>
   </div>
 </footer>
 
 <style>
+  /* Badge navy ground, white text, red hovers. Every literal below is measured
+     against #011459: #DCE2F5 is 13.6:1, #A9B4DB is 7.4:1, and the red used for
+     hovers is --red-lift (5.5:1), never the raw --red, which is 3.0:1 here. */
   .site-footer {
     position: relative;
     z-index: 1;
-    background: var(--navy-deep);
-    color: #B9CBD9;
+    background: var(--navy);
+    color: #DCE2F5;
     padding-block: clamp(3rem, 6vw, 4.5rem) var(--s-6);
     font-size: var(--t-sm);
     line-height: 1.65;
@@ -184,7 +202,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     font-size: var(--t-xs);
     letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: #7FA3BE;
+    color: #A9B4DB;
     font-weight: 600;
   }
   .foot__advisor-txt strong {
@@ -193,7 +211,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     color: #fff;
     letter-spacing: -0.015em;
   }
-  .foot__advisor-line { font-size: var(--t-sm); color: #A6BCCC; }
+  .foot__advisor-line { font-size: var(--t-sm); color: #B7C0E0; }
 
   .foot__advisor-actions {
     margin-left: auto;
@@ -206,16 +224,31 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
   }
 
   /* ── NAP ─────────────────────────────────────────────────────────── */
+  /* The white disc behind the badge. See the note on the markup: the PNG is
+     transparent inside its ring, so this is not decoration — without it half
+     the mark is navy-on-navy and simply not there. */
+  .foot__disc {
+    display: grid;
+    place-items: center;
+    width: 68px;
+    height: 68px;
+    border-radius: 50%;
+    background: #fff;
+    margin-bottom: var(--s-4);
+  }
+  .foot__disc img { width: 62px; height: 62px; }
+
   .foot__nap { font-style: normal; display: grid; gap: 0.3rem; align-content: start; }
+  .foot__nap-serving { color: #B7C0E0; font-size: var(--t-xs); line-height: 1.5; }
   .foot__nap-name {
     font-size: var(--t-xs);
     font-weight: 600;
     letter-spacing: 0.11em;
     text-transform: uppercase;
-    color: #7FA3BE;
+    color: #A9B4DB;
     margin-bottom: 0.2rem;
   }
-  .foot__nap-line { color: #C3D5E2; }
+  .foot__nap-line { color: #DCE2F5; }
   .foot__phone {
     font-family: var(--font-display);
     font-size: 1.45rem;
@@ -225,10 +258,10 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     display: inline-block;
     margin-block: 0.15rem;
   }
-  .foot__phone:hover { color: #9CC0DC; }
-  .foot__email { color: #DCE8F1; }
-  .foot__email:hover { color: #fff; }
-  .foot__hours { color: #8FA8BA; font-size: var(--t-xs); margin-top: 0.2rem; }
+  .foot__phone:hover { color: var(--red-lift); }
+  .foot__email { color: #DCE2F5; }
+  .foot__email:hover { color: var(--red-lift); }
+  .foot__hours { color: #A9B4DB; font-size: var(--t-xs); margin-top: 0.2rem; }
 
   /* ── sitemap ─────────────────────────────────────────────────────── */
   .foot__map {
@@ -244,12 +277,12 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     font-weight: 600;
     letter-spacing: 0.13em;
     text-transform: uppercase;
-    color: #7FA3BE;
+    color: #A9B4DB;
     margin-bottom: var(--s-3);
   }
   .foot__col ul { list-style: none; padding: 0; display: grid; gap: 0.45rem; }
   .foot__col a {
-    color: #C3D5E2;
+    color: #DCE2F5;
     display: inline-block;
     background-image: linear-gradient(currentColor, currentColor);
     background-repeat: no-repeat;
@@ -259,7 +292,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     padding-bottom: 1px;
     line-height: 1.45;
   }
-  .foot__col a:hover { color: #fff; background-size: 100% 1px; }
+  .foot__col a:hover { color: var(--red-lift); background-size: 100% 1px; }
 
   .foot__col--contact .foot__nap p { margin: 0; }
 
@@ -308,10 +341,9 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
        without it the type would keep scaling off the end of a wide monitor. */
     .foot__wordmark span { font-size: min(15.4vw, 230px); font-size: min(19.2cqw, 262px); }
   }
-  /* The "602" half. --gold (#D5971F) is 6.0:1 on this navy ground, so the raw
-     logo gold is safe as text HERE — it is only 2.4:1 on porcelain, which is
-     why the header's half is set in --gold-ink instead. */
-  .foot__wordmark em { font-style: normal; color: var(--gold); }
+  /* The "602" half. --red-lift, not --red: the raw badge red is 3.0:1 on this
+     navy and would read as a bruise at 200px. The lifted twin is 5.5:1. */
+  .foot__wordmark em { font-style: normal; color: var(--red-lift); }
 
   /* ── compliance ──────────────────────────────────────────────────── */
   .foot__legal {
@@ -321,11 +353,11 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     gap: 0.7rem;
     font-size: 0.78125rem;
     line-height: 1.6;
-    color: #8FA8BA;
+    color: #A9B4DB;
     max-width: 92ch;
   }
-  .foot__licence { color: #C3D5E2; font-weight: 500; }
-  .foot__legal-fine { color: #7A93A6; }
+  .foot__licence { color: #DCE2F5; font-weight: 500; }
+  .foot__legal-fine { color: #A9B4DB; }
 
   .foot__base {
     padding-top: var(--s-5);
@@ -334,7 +366,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     justify-content: space-between;
     gap: var(--s-3);
     font-size: 0.78125rem;
-    color: #7A93A6;
+    color: #A9B4DB;
   }
 
   /* ── responsive ──────────────────────────────────────────────────── */

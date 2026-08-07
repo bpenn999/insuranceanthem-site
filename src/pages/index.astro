@@ -85,7 +85,7 @@ const faqSchema = {
   </section>
 
   <!-- ── How it works ─────────────────────────────────────────────────── -->
-  <section class="section band--warm" data-caustics="0.3">
+  <section class="section band--tint" data-caustics="0.3">
     <div class="wrap">
       <SectionHead
         eyebrow="How it works"
@@ -140,7 +140,7 @@ const faqSchema = {
   </section>
 
   <!-- ── Advisor ──────────────────────────────────────────────────────── -->
-  <section class="section band--deep" data-caustics="0.26">
+  <section class="section band--tint-deep" data-caustics="0.26">
     <div class="wrap advisor">
       <div class="advisor__copy">
         <p class="eyebrow" data-rise data-armed>Your advisor</p>
@@ -191,11 +191,14 @@ const faqSchema = {
   </section>
 
   <!-- ── Testimonials ─────────────────────────────────────────────────── -->
+  {/* Display only. There is no Review or AggregateRating JSON-LD behind these
+      and there must not be — see src/data/testimonials.ts. The red rule under
+      the heading is the standard <SectionHead> draw-rule. */}
   <section class="section" data-caustics="0.4">
     <div class="wrap">
       <SectionHead
         eyebrow="In their words"
-        title="What people actually say afterwards."
+        title="What Brian's Clients Say"
         align="center"
       />
       <Testimonials />
@@ -203,7 +206,7 @@ const faqSchema = {
   </section>
 
   <!-- ── Service area ─────────────────────────────────────────────────── -->
-  <section class="section band--warm" data-caustics="0.28">
+  <section class="section band--tint" data-caustics="0.28">
     <div class="wrap area">
       <div class="area__copy">
         <p class="eyebrow" data-rise data-armed>Service area</p>
@@ -402,7 +405,7 @@ const faqSchema = {
     justify-content: space-between;
     gap: var(--s-4);
     padding: var(--s-4) var(--s-2);
-    background: color-mix(in srgb, var(--porcelain-warm) 96%, transparent);
+    background: color-mix(in srgb, var(--tint) 96%, transparent);
     transition: background-color 260ms var(--ease), padding-left 300ms var(--ease);
   }
   .area__link:hover {

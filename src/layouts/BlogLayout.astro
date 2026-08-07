@@ -1,0 +1,435 @@
+---
+import type { MarkdownHeading } from 'astro';
+import BaseLayout from './BaseLayout.astro';
+import Kinetic from '../components/Kinetic.astro';
+import Breadcrumbs from '../components/Breadcrumbs.astro';
+import Faq from '../components/Faq.astro';
+import site, { abs } from '../config/site';
+
+/**
+ * Layout for /blog/ posts.
+ *
+ * The blog is deliberately NOT the Learn collection. Learn is the evergreen
+ * reference shelf — long explainers that get revised in place when CMS moves a
+ * number. The blog is dated, local and seasonal: "here is what to do between
+ * now and December", tied to a market and a plan year. Two different jobs, so
+ * two different shelves rather than one hub with a `type` field.
+ *
+ * Posts are plain .md files in src/pages/blog/ with `layout:` pointing here, so
+ * publishing is one file and nothing else — no collection entry, no route file,
+ * no data edit. src/pages/blog/index.astro finds them by glob, the sitemap
+ * integration picks the route up automatically, and the footer links the hub.
+ *
+ * Dollar figures still belong in the body as {{partB.premium}}-style tokens
+ * rather than typed out — the remark plugin runs over these pages too, and an
+ * unknown token fails the build.
+ *
+ * COMPLIANCE: the TPMO disclaimer is NOT rendered here. It appears exactly once
+ * per page, in the footer, and the audit script fails the build's audit step if
+ * a second copy shows up anywhere on the page.
+ */
+
+interface FrontmatterFaq {
+  q: string;
+  a: string;
+}
+
+interface FrontmatterSource {
+  label: string;
+  url: string;
+}
+
+export interface BlogFrontmatter {
+  title: string;
+  /** ≤60 chars — Google truncates past that. */
+  seoTitle: string;
+  /** ≤155 chars, same reason. */
+  description: string;
+  /** The lede under the H1, and the card excerpt on the hub. */
+  summary: string;
+  category: string;
+  publishedAt: string;
+  updatedAt?: string;
+  readMinutes: number;
+  /** Featured image, site-absolute (e.g. /blog/turning-65-in-anthem-2026.png). */
+  image: string;
+  /** Required alongside `image`. Never ship one without the other. */
+  imageAlt: string;
+  faqs?: FrontmatterFaq[];
+  sources?: FrontmatterSource[];
+  draft?: boolean;
+}
+
+interface Props {
+  frontmatter: BlogFrontmatter;
+  headings?: MarkdownHeading[];
+  url?: string;
+}
+
+const { frontmatter: d, headings = [], url } = Astro.props;
+
+const path = url?.endsWith('/') ? url : `${url ?? Astro.url.pathname}/`;
+
+const published = new Date(d.publishedAt);
+const updated = d.updatedAt ? new Date(d.updatedAt) : undefined;
+const fmt = (date: Date) =>
+  date.toLocaleDateString('en-US', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    timeZone: 'UTC',
+  });
+
+// Only h2s — an article's h3s would make the contents list noise rather than a map.
+const toc = headings.filter((h) => h.depth === 2);
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Blog', path: '/blog/' },
+  { name: d.title, path },
+];
+
+const schemaNodes: Record<string, unknown>[] = [
+  {
+    '@type': 'BlogPosting',
+    '@id': `${abs(path)}#post`,
+    headline: d.title,
+    name: d.title,
+    description: d.description,
+    abstract: d.summary,
+    articleSection: d.category,
+    datePublished: published.toISOString(),
+    dateModified: (updated ?? published).toISOString(),
+    timeRequired: `PT${d.readMinutes}M`,
+    image: abs(d.image),
+    author: { '@id': `${site.origin}/#brian-penner` },
+    publisher: { '@id': `${site.origin}/#organization` },
+    mainEntityOfPage: abs(path),
+    isPartOf: { '@id': `${abs('/blog/')}#blog` },
+    inLanguage: 'en-US',
+    isAccessibleForFree: true,
+  },
+];
+
+if (d.faqs?.length) {
+  schemaNodes.push({
+    '@type': 'FAQPage',
+    '@id': `${abs(path)}#faq`,
+    mainEntity: d.faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  });
+}
+---
+
+<BaseLayout
+  title={d.seoTitle}
+  description={d.description}
+  path={path}
+  image={d.image}
+  type="article"
+  publishedAt={published.toISOString()}
+  modifiedAt={(updated ?? published).toISOString()}
+  breadcrumbs={breadcrumbs}
+  schemaNodes={schemaNodes}
+  density="light"
+>
+  <article class="post" data-caustics="0.15">
+    <header class="post__head">
+      <div class="wrap wrap--narrow">
+        <Breadcrumbs items={breadcrumbs} />
+        <p class="post__meta">
+          <span class="post__cat">{d.category}</span>
+          <span aria-hidden="true">·</span>
+          <time datetime={published.toISOString()}>{fmt(published)}</time>
+          <span aria-hidden="true">·</span>
+          <span>{d.readMinutes} min read</span>
+        </p>
+        <h1 class="post__title"><Kinetic text={d.title} stagger={24} max={400} /></h1>
+        <p class="post__summary" data-rise data-armed style="--rise-delay:160ms">{d.summary}</p>
+
+        <!-- Byline. Named author on every post — an unsigned Medicare article is
+             worth less to a reader and to a search engine alike. -->
+        <p class="post__byline">
+          By <a href="/about/" class="link">{site.agent.name}</a>, {site.agent.title} ·
+          NPN {site.agent.npn}
+          {updated && <span class="post__updated"> · Updated {fmt(updated)}</span>}
+        </p>
+      </div>
+
+      <div class="wrap wrap--narrow">
+        <img
+          class="post__image"
+          src={d.image}
+          alt={d.imageAlt}
+          width="1200"
+          height="630"
+          fetchpriority="high"
+          decoding="async"
+        />
+      </div>
+    </header>
+
+    <div class="wrap wrap--narrow">
+      {
+        toc.length > 2 && (
+          <nav class="toc" aria-label="On this page" data-rise data-armed>
+            <p class="toc__label">On this page</p>
+            <ol>
+              {toc.map((h) => (
+                <li><a href={`#${h.slug}`}>{h.text}</a></li>
+              ))}
+            </ol>
+          </nav>
+        )
+      }
+
+      <div class="prose post__body">
+        <slot />
+      </div>
+
+      {
+        d.faqs && d.faqs.length > 0 && (
+          <section class="post__faq" aria-labelledby="post-faq-h">
+            <h2 id="post-faq-h" class="post__faq-h">Common questions</h2>
+            <Faq items={d.faqs} openFirst />
+          </section>
+        )
+      }
+
+      {
+        d.sources && d.sources.length > 0 && (
+          <aside class="post__sources" aria-labelledby="post-sources-h">
+            <h2 id="post-sources-h" class="post__sources-h">Sources</h2>
+            <ul>
+              {d.sources.map((s) => (
+                <li>
+                  <a href={s.url} rel="nofollow noopener" target="_blank">{s.label}</a>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )
+      }
+
+      <!-- Compliance note. NOT the TPMO disclaimer — that lives in the footer,
+           exactly once per page, and a second copy here would fail the audit. -->
+      <aside class="post__note">
+        <p>
+          <strong>A note on the numbers.</strong> Every dollar figure on this page is for plan year
+          {new Date().getFullYear()} and comes from one file, so it updates site-wide when CMS
+          publishes the next year's amounts. Plan benefits, networks and formularies change every
+          plan year regardless. Before acting on anything here,
+          <a href={site.consult.url}>confirm the current details</a>.
+        </p>
+      </aside>
+
+      <aside class="post__cta" data-rise data-armed>
+        <p class="post__cta-eyebrow">Turning 65 in the Valley?</p>
+        <h2 class="post__cta-h">Let's put your dates on a calendar.</h2>
+        <p class="post__cta-body">
+          Your window is set by your own birthday, not by the general enrollment dates in the news.
+          Working out which one you are in takes about {site.consult.minutes} minutes on the phone,
+          costs nothing, and there is no product at the end of it unless one belongs there.
+        </p>
+        {/* --light, not the default red primary: on this navy panel the red
+            button's own edge is only 3.0:1 against the ground behind it. */}
+        <div class="btn-row">
+          <a href={site.consult.url} class="btn btn--light btn--lg" data-magnetic="0.28">
+            {site.consult.label}
+          </a>
+          <a href={site.phone.href} class="btn btn--onNavy btn--lg" data-magnetic="0.2">
+            Call {site.phone.display}
+          </a>
+        </div>
+        <p class="post__cta-meta">
+          {site.agent.name} · {site.agent.title} · NPN {site.agent.npn} · {site.hours.display}
+        </p>
+      </aside>
+
+      <p class="post__back"><a href="/blog/" class="link">All blog posts</a></p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .post { padding-block: clamp(2rem, 5vw, 3.5rem) clamp(2.5rem, 6vw, 4rem); }
+
+  .post__head { margin-bottom: var(--s-6); }
+  .post__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.45rem;
+    font-size: var(--t-xs);
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+    margin-bottom: var(--s-4);
+  }
+  .post__cat {
+    color: var(--red);
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .post__title { font-size: var(--t-4xl); max-width: 21ch; }
+  .post__summary {
+    margin-top: var(--s-5);
+    font-size: var(--t-lg);
+    color: var(--ink-muted);
+    line-height: 1.6;
+    max-width: 58ch;
+  }
+  .post__byline {
+    margin-top: var(--s-4);
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+  }
+  .post__updated { color: var(--ink-faint); }
+
+  .post__image {
+    width: 100%;
+    height: auto;
+    margin-top: var(--s-6);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+  }
+
+  /* --- table of contents --- */
+  .toc {
+    background: color-mix(in srgb, var(--surface) 88%, transparent);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    padding: var(--s-5);
+    margin-bottom: var(--s-7);
+  }
+  .toc__label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: var(--s-3);
+  }
+  .toc ol {
+    margin: 0;
+    padding-left: 1.15rem;
+    display: grid;
+    gap: 0.4rem;
+    font-size: var(--t-sm);
+  }
+  .toc li::marker { color: var(--red); font-variant-numeric: tabular-nums; }
+  .toc a {
+    color: var(--ink-body);
+    background-image: linear-gradient(currentColor, currentColor);
+    background-repeat: no-repeat;
+    background-position: 0 100%;
+    background-size: 0% 1px;
+    transition: background-size 380ms var(--ease), color 200ms ease;
+    padding-bottom: 1px;
+  }
+  .toc a:hover { color: var(--red); background-size: 100% 1px; }
+
+  .post__body { margin-bottom: var(--s-8); }
+
+  /* The cited-stat callout, used by the article body. Global because it is
+     authored in markdown, where scoped class hashing does not reach. */
+  .post__body :global(.stat-callout) {
+    display: grid;
+    gap: var(--s-2);
+    padding: var(--s-5);
+    margin-block: var(--s-6);
+    background: var(--tint);
+    border-left: 3px solid var(--red);
+    border-radius: 0 var(--radius) var(--radius) 0;
+  }
+  .post__body :global(.stat-callout__figure) {
+    font-family: var(--font-display);
+    font-size: var(--t-2xl);
+    line-height: 1.15;
+    color: var(--navy);
+    letter-spacing: -0.02em;
+  }
+  .post__body :global(.stat-callout__body) {
+    font-size: var(--t-sm);
+    color: var(--ink-body);
+    line-height: 1.6;
+  }
+  .post__body :global(.stat-callout__cite) {
+    font-size: var(--t-xs);
+    color: var(--ink-faint);
+    line-height: 1.5;
+  }
+  /* Source line under a table, same treatment. */
+  .post__body :global(.table-source) {
+    font-size: var(--t-xs);
+    color: var(--ink-faint);
+    margin-top: calc(var(--s-3) * -1);
+    line-height: 1.5;
+  }
+
+  /* --- faq --- */
+  .post__faq { margin-bottom: var(--s-7); }
+  .post__faq-h { font-size: var(--t-2xl); margin-bottom: var(--s-5); }
+
+  /* --- sources --- */
+  .post__sources {
+    padding: var(--s-5) 0;
+    border-block: 1px solid var(--rule);
+    margin-bottom: var(--s-6);
+  }
+  .post__sources-h {
+    font-family: var(--font-body);
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: var(--s-3);
+  }
+  .post__sources ul { list-style: none; padding: 0; display: grid; gap: 0.5rem; }
+  .post__sources a {
+    font-size: var(--t-sm);
+    color: var(--navy);
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+  }
+  .post__sources a:hover { color: var(--red); }
+
+  /* --- compliance note --- */
+  .post__note {
+    padding: var(--s-5);
+    background: var(--tint);
+    border-left: 2px solid var(--navy);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    font-size: var(--t-sm);
+    color: var(--ink-body);
+    line-height: 1.65;
+    margin-bottom: var(--s-6);
+  }
+
+  /* --- bottom CTA --- */
+  .post__cta {
+    background: var(--navy);
+    color: #C6CEE8;
+    border-radius: var(--radius-lg);
+    padding: clamp(1.5rem, 4vw, 2.5rem);
+    margin-bottom: var(--s-6);
+  }
+  .post__cta-eyebrow {
+    font-size: var(--t-xs);
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--red-lift);
+    margin-bottom: var(--s-2);
+  }
+  .post__cta-h { color: #fff; font-size: var(--t-2xl); margin-bottom: var(--s-3); max-width: 18ch; }
+  .post__cta-body { font-size: var(--t-sm); line-height: 1.65; max-width: 52ch; margin-bottom: var(--s-5); }
+  .post__cta .btn-row { margin-bottom: var(--s-4); }
+  .post__cta-meta { font-size: var(--t-xs); color: #A9B4DB; line-height: 1.5; }
+
+  .post__back { font-size: var(--t-sm); }
+</style>

@@ -10,65 +10,79 @@
   html, body { width: 1200px; height: 630px; }
   body {
     position: relative;
-    background: linear-gradient(135deg, #FBF9F6 0%, #F5F1EA 55%, #EDE7DE 100%);
+    background: #011459;
     font-family: 'Inter', sans-serif;
     overflow: hidden;
   }
-  /* The faint contour lines that run across the porcelain ground. */
+  /* The faint contour lines, drawn in white over the navy ground. */
   .waves { position: absolute; inset: 0; }
-  .pad { position: absolute; inset: 0; padding: 92px 74px 0; }
+  .pad { position: absolute; inset: 0; padding: 82px 74px 0; }
 
-  /* Text wordmark, no mark — there is no 602Medicare logo yet. Sized well up
-     from the old name-beside-a-badge lockup so the brand still holds the top of
-     the card on its own. */
+  /* Badge + wordmark lockup. */
+  .lockup { display: flex; align-items: center; gap: 30px; }
+
+  /* The badge sits on a WHITE DISC, not straight on the navy. The shipped PNG
+     is transparent inside its ring, so on a navy ground the mountains and the
+     "602" — both navy — vanish into the background and all that survives is the
+     red sun and the red "MEDICARE". The disc is the navy-ground variant. */
+  .disc {
+    width: 152px; height: 152px;
+    border-radius: 50%;
+    background: #FFFFFF;
+    display: flex; align-items: center; justify-content: center;
+    flex: none;
+  }
+  .disc img { width: 140px; height: 140px; display: block; }
+
+  /* White wordmark — one colour, because the two-tone red/navy lockup needs a
+     light ground to work and this card does not have one. */
   .brand {
     font-family: 'Fraunces', Georgia, serif;
-    font-size: 62px; font-weight: 600; letter-spacing: -0.025em;
+    font-size: 60px; font-weight: 600; letter-spacing: -0.025em;
     line-height: 1;
+    color: #FFFFFF;
   }
-  /* Darkened logo gold — the raw #D5971F is 2.4:1 on this porcelain ground. */
-  .brand .mark { color: #96650F; }
-  /* Tight lockup: the two halves are two colours of one word, so no margin and
-     no space between the spans. */
-  .brand .product { color: #0F3A5C; }
 
   h1 {
-    margin-top: 38px;
+    margin-top: 46px;
     font-family: 'Fraunces', Georgia, serif;
     font-weight: 500;
     /* The line break is explicit below — the card is a fixed canvas, so the
        two-line shape is part of the design, not something to leave to wrapping. */
-    font-size: 78px;
+    font-size: 74px;
     line-height: 1.1;
     letter-spacing: -0.025em;
-    color: #171A1D;
+    color: #FFFFFF;
   }
 
-  .rule { margin-top: 38px; width: 108px; height: 3px; background: #0F3A5C; opacity: 0.55; }
+  /* The accent, and the only red above the bar. */
+  .rule { margin-top: 34px; width: 118px; height: 4px; background: #D10A0F; }
 
   .sub {
-    margin-top: 28px;
-    font-size: 26px;
-    color: #5E656E;
+    margin-top: 26px;
+    font-size: 25px;
+    color: #C6CEE8;
     letter-spacing: -0.005em;
   }
 
   .kicker {
     position: absolute;
     left: 74px;
-    bottom: 78px;
+    /* Clears the 22px bar with room to spare. Any higher and it collides with
+       the .sub line, which sits at ~520px on a 630px canvas. */
+    bottom: 46px;
     font-size: 21px;
     font-weight: 700;
     letter-spacing: 0.11em;
-    color: #0F3A5C;
+    color: #FF5A5F;
   }
 
-  .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 22px; background: #0A2740; }
+  .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 22px; background: #D10A0F; }
 </style>
 </head>
 <body>
   <svg class="waves" viewBox="0 0 1200 630" fill="none" preserveAspectRatio="none">
-    <g stroke="#0A2740" stroke-opacity="0.07" stroke-width="1.4" fill="none">
+    <g stroke="#FFFFFF" stroke-opacity="0.09" stroke-width="1.4" fill="none">
       <path d="M-40 78 C 240 40, 460 96, 700 62 S 1120 22, 1260 58" />
       <path d="M-40 150 C 300 118, 520 172, 780 138 S 1140 96, 1260 132" />
       <path d="M-40 470 C 260 430, 500 500, 760 462 S 1130 420, 1260 452" />
@@ -78,7 +92,12 @@
   </svg>
 
   <div class="pad">
-    <div class="brand"><span class="mark">602</span><span class="product">Medicare</span></div>
+    <div class="lockup">
+      <!-- Inlined as a data: URI by scripts/build-og.mjs — Chrome renders this
+           from a temp directory, so a relative path would resolve to nothing. -->
+      <span class="disc"><img src="{{BADGE}}" alt="" /></span>
+      <div class="brand">602Medicare</div>
+    </div>
 
     <h1>Medicare, explained by<br />someone who lives here.</h1>
     <div class="rule"></div>

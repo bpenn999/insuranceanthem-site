@@ -66,11 +66,36 @@ for (const f of htmls) {
 
 // ── 5. no template residue from other markets ────────────────────────────────
 const RESIDUE = [/Western Slope/i, /Grand Junction/i, /\bMoab\b/i, /Palisade/i, /Montrose/i,
-  /Albuquerque/i, /New Mexico/i, /Medicare On Main/i, /medicareonmain/i, /Bemis/i, /\bUtah\b/i,
+  /Albuquerque/i, /New Mexico/i, /medicareonmain/i, /Bemis/i, /\bUtah\b/i,
   /Colorado/i, /lorem ipsum/i, /TODO|FIXME|XXX/];
 for (const f of htmls) {
   const html = readFileSync(f, 'utf8');
   for (const re of RESIDUE) if (re.test(html)) note(`TEMPLATE RESIDUE ${re} on ${routeOf(f)}`);
+}
+
+// ── 5a. "Medicare On Main" — allowed in ONE sentence, nowhere else ───────────
+// The testimonials are real Google reviews of Brian at Medicare On Main, a
+// different legal entity, so the sister-agency disclosure under them has to name
+// it. That is the single sanctioned mention on this site. Every other
+// occurrence is template residue and is still a failure — so this counts rather
+// than pattern-matches, and any mention beyond the disclosure gets flagged.
+{
+  const SISTER = 'Medicare On Main';
+  const DISCLOSURE =
+    "Verified Google reviews from Brian Penner&#39;s clients at Medicare On Main, our sister agency";
+  for (const f of htmls) {
+    const html = readFileSync(f, 'utf8');
+    const mentions = html.split(SISTER).length - 1;
+    if (!mentions) continue;
+    // The apostrophe may or may not be entity-encoded depending on the
+    // minifier, so accept either spelling of the disclosure.
+    const sanctioned =
+      html.split(DISCLOSURE).length - 1 +
+      (html.split(DISCLOSURE.replace('&#39;', "'")).length - 1);
+    if (mentions > sanctioned) {
+      note(`SISTER-AGENCY MENTION outside the review disclosure on ${routeOf(f)}`);
+    }
+  }
 }
 
 // ── 6. every page has title, description, canonical, one h1 ──────────────────
@@ -184,6 +209,68 @@ for (const sf of smFiles) {
   if (routes.has('/articles/')) note('BOTH /articles/ AND /learn/ ARE LIVE — two competing hubs');
 }
 
+// ── 6b-ii. the blog hub and every post in it ─────────────────────────────────
+// Same derived-output shape as the Learn checks. Posts are .md files in
+// src/pages/blog/, so the source of truth is that directory listing.
+{
+  const blogDir = 'src/pages/blog';
+  let slugs = [];
+  try {
+    slugs = readdirSync(blogDir).filter((f) => f.endsWith('.md')).map((f) => f.replace(/\.md$/, ''));
+  } catch {
+    note('MISSING src/pages/blog — the blog has no source files');
+  }
+  console.log(`Blog posts in source: ${slugs.length}`);
+
+  if (!routes.has('/blog/')) note('NO /blog/ HUB PAGE BUILT');
+
+  let hub = '';
+  try { hub = readFileSync(join(DIST, 'blog', 'index.html'), 'utf8'); } catch { /* above */ }
+
+  for (const slug of slugs) {
+    const route = `/blog/${slug}/`;
+    if (!routes.has(route)) { note(`BLOG POST NOT BUILT  ${route}`); continue; }
+    if (hub && !hub.includes(`href="${route}"`)) note(`BLOG POST NOT LINKED FROM THE HUB  ${route}`);
+    if (!smUrls.has(route)) note(`BLOG POST NOT IN SITEMAP  ${route}`);
+
+    const html = readFileSync(join(DIST, 'blog', slug, 'index.html'), 'utf8');
+
+    if (!html.includes('"@type":"BlogPosting"')) note(`NO BlogPosting SCHEMA on ${route}`);
+    if (!html.includes('"@type":"BreadcrumbList"')) note(`NO BreadcrumbList SCHEMA on ${route}`);
+
+    // Featured image AND its alt text — one without the other is the bug this
+    // check exists for.
+    const img = html.match(/<img[^>]+class="[^"]*post__image[^"]*"[^>]*>/)?.[0] ?? '';
+    if (!img) note(`NO FEATURED IMAGE on ${route}`);
+    else if (!/alt="[^"]{10,}"/.test(img)) note(`FEATURED IMAGE HAS NO REAL ALT on ${route}`);
+
+    // Byline, sources, and no unresolved figure tokens.
+    if (!html.includes('Brian Penner')) note(`NO BYLINE on ${route}`);
+    if (!/id="post-sources-h"/.test(html)) note(`NO SOURCES LIST on ${route}`);
+    if (/\{\{[a-zA-Z]/.test(html)) note(`UNRESOLVED FIGURE TOKEN on ${route}`);
+    if (!html.includes('15-minute')) note(`NO 15-MINUTE CALL CTA on ${route}`);
+    if (!/\b2026\b/.test(html)) note(`NOT YEAR-STAMPED on ${route}`);
+  }
+
+  // Nothing published under /blog/ without a source file.
+  for (const r of routes) {
+    if (!r.startsWith('/blog/') || r === '/blog/') continue;
+    const slug = r.slice('/blog/'.length).replace(/\/$/, '');
+    if (!slugs.includes(slug)) note(`ORPHAN BLOG ROUTE with no source file  ${r}`);
+  }
+}
+
+// ── 6b-iii. testimonials are DISPLAY ONLY ────────────────────────────────────
+// The reviews on this site belong to Brian at another agency. Emitting them as
+// 602Medicare's own Review or AggregateRating structured data would be asserting
+// something untrue to a search engine. This must stay at zero, site-wide.
+for (const f of htmls) {
+  const html = readFileSync(f, 'utf8');
+  for (const t of ['"@type":"Review"', '"@type":"AggregateRating"', '"aggregateRating"', '"reviewRating"']) {
+    if (html.includes(t)) note(`REVIEW STRUCTURED DATA ${t} on ${routeOf(f)} — must be display-only`);
+  }
+}
+
 // ── 6c. the footer, on every single page ─────────────────────────────────────
 // The footer is where the compliance obligations live, so "present on most
 // pages" is not good enough — it has to be identical and complete everywhere.
@@ -208,10 +295,20 @@ for (const sf of smFiles) {
     if (!footer.includes('22+ Years')) note(`FOOTER: no experience line on ${r}`);
     if (!footer.includes('NPN 8206556')) note(`FOOTER: no NPN on ${r}`);
 
-    // NAP block — one office
-    if (!footer.includes('Anthem, AZ 85086')) note(`FOOTER: no address on ${r}`);
+    // NAP block — one office, CITY AND STATE ONLY. No street address is
+    // published, and the ZIP came out of the on-page NAP at the badge rebrand;
+    // it still reaches structured data through the LocalBusiness node.
+    if (!footer.includes('Anthem, AZ')) note(`FOOTER: no address on ${r}`);
+    if (footer.includes('Anthem, AZ 85086')) note(`FOOTER: ZIP is back in the on-page NAP on ${r}`);
+    if (!footer.includes('Serving Anthem, Glendale, Peoria, North Phoenix')) {
+      note(`FOOTER: no serving line on ${r}`);
+    }
     if (!footer.includes('(602) 844-6002')) note(`FOOTER: no phone on ${r}`);
     if (!footer.includes('brian@602medicare.com')) note(`FOOTER: no email on ${r}`);
+
+    // The DBA. 602Medicare is not a corporation; the copyright has to name the
+    // entity that actually holds the trade name.
+    if (!footer.includes('a DBA of Kenztara INC')) note(`FOOTER: no DBA line on ${r}`);
 
     // The other brand's offices must never appear here.
     for (const city of ['Moab', 'Monticello', 'Grand Junction']) {
@@ -223,6 +320,7 @@ for (const sf of smFiles) {
       if (!footer.includes(`href="/${s}/"`)) note(`FOOTER: missing service link /${s}/ on ${r}`);
     }
     if (!footer.includes('href="/learn/"')) note(`FOOTER: missing Learn hub link on ${r}`);
+    if (!footer.includes('href="/blog/"')) note(`FOOTER: missing Blog hub link on ${r}`);
     if (!footer.includes('href="/tools/"')) note(`FOOTER: missing Tools hub link on ${r}`);
     for (const s of TOOL_SLUGS) {
       if (!footer.includes(`href="/tools/${s}/"`)) note(`FOOTER: missing tool link ${s} on ${r}`);

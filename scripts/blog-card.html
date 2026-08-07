@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { width: 1200px; height: 630px; }
+  body {
+    position: relative;
+    background: #FFFFFF;
+    font-family: 'Inter', sans-serif;
+    overflow: hidden;
+  }
+
+  /* Light ground, unlike the site-wide OG card — a featured image sits at the
+     top of the article body, where a full navy block would fight the white
+     page it is embedded in. The navy is carried by the type and the bar. */
+  .waves { position: absolute; inset: 0; }
+
+  .pad { position: absolute; inset: 0; padding: 74px 72px 0; }
+
+  .top { display: flex; align-items: center; gap: 22px; }
+  .top img { width: 76px; height: 76px; display: block; flex: none; }
+  .wordmark {
+    font-family: 'Fraunces', Georgia, serif;
+    font-size: 34px; font-weight: 600; letter-spacing: -0.02em; line-height: 1;
+  }
+  .wordmark .mark { color: #D10A0F; }
+  .wordmark .product { color: #011459; }
+
+  .kicker {
+    margin-top: 52px;
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: #D10A0F;
+  }
+
+  h1 {
+    margin-top: 22px;
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 500;
+    font-size: 68px;
+    line-height: 1.08;
+    letter-spacing: -0.025em;
+    color: #011459;
+    max-width: 17ch;
+  }
+
+  .rule { margin-top: 34px; width: 118px; height: 4px; background: #D10A0F; }
+
+  .byline {
+    position: absolute;
+    left: 72px;
+    bottom: 62px;
+    font-size: 21px;
+    color: #4A5265;
+  }
+  .byline strong { color: #011459; font-weight: 600; }
+
+  .bar { position: absolute; left: 0; right: 0; bottom: 0; height: 18px; background: #011459; }
+</style>
+</head>
+<body>
+  <svg class="waves" viewBox="0 0 1200 630" fill="none" preserveAspectRatio="none">
+    <g stroke="#011459" stroke-opacity="0.07" stroke-width="1.4" fill="none">
+      <path d="M-40 470 C 260 430, 500 500, 760 462 S 1130 420, 1260 452" />
+      <path d="M-40 536 C 300 500, 540 560, 800 524 S 1150 486, 1260 516" />
+      <path d="M-40 596 C 260 566, 520 616, 780 584 S 1140 552, 1260 578" />
+    </g>
+  </svg>
+
+  <div class="pad">
+    <div class="top">
+      <!-- Inlined as a data: URI by scripts/build-blog-card.mjs. -->
+      <img src="{{BADGE}}" alt="" />
+      <span class="wordmark"><span class="mark">602</span><span class="product">Medicare</span></span>
+    </div>
+
+    <p class="kicker">{{KICKER}}</p>
+    <h1>{{TITLE}}</h1>
+    <div class="rule"></div>
+  </div>
+
+  <p class="byline"><strong>Brian Penner</strong> · Licensed Independent Medicare Advisor · Anthem, AZ</p>
+  <div class="bar"></div>
+</body>
+</html>

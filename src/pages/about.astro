@@ -4,6 +4,7 @@ import PageHero from '../components/PageHero.astro';
 import SectionHead from '../components/SectionHead.astro';
 import CtaBand from '../components/CtaBand.astro';
 import Faq from '../components/Faq.astro';
+import Testimonials from '../components/Testimonials.astro';
 import site, { abs } from '../config/site';
 import { locations } from '../data/locations';
 
@@ -189,8 +190,22 @@ const schemaNodes = [
     </div>
   </section>
 
+  <!-- ── Testimonials ─────────────────────────────────────────────────── -->
+  {/* The three-card cut, directly under the bio. Display only — no Review or
+      AggregateRating JSON-LD, here or anywhere. */}
+  <section class="section section--tight" data-caustics="0.3">
+    <div class="wrap">
+      <SectionHead
+        eyebrow="In their words"
+        title="What Brian's Clients Say"
+        align="center"
+      />
+      <Testimonials variant="slim" />
+    </div>
+  </section>
+
   <!-- ── FAQ ──────────────────────────────────────────────────────────── -->
-  <section class="section band--warm" data-caustics="0.24">
+  <section class="section band--tint" data-caustics="0.24">
     <div class="wrap wrap--narrow">
       <SectionHead
         eyebrow="Fair questions"

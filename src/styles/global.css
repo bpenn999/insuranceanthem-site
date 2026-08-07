@@ -1,47 +1,48 @@
 /* ==========================================================================
-   602Medicare — porcelain design system
-   Warm white ground, soft neutral grays, one deep navy accent.
+   602Medicare — badge design system
+   White ground, one deep navy, one accent red. Both colours are read straight
+   off the badge: the navy circle and mountains, the red sun and "MEDICARE".
+   There is no third brand colour, and there is no gold — the gold-and-cream
+   palette that preceded the badge is gone, not deprecated.
    ========================================================================== */
 
 :root {
-  /* --- Porcelain ground ------------------------------------------------- */
-  --porcelain:      #FBF9F6;  /* page background — warm white */
-  --porcelain-warm: #F5F1EA;  /* alternating band */
-  --porcelain-deep: #EDE7DE;  /* third band / inset wells */
-  --surface:        #FFFFFF;  /* cards */
+  /* --- Ground ------------------------------------------------------------ */
+  --page:       #FFFFFF;  /* page background — plain white, no warmth */
+  --tint:       #EEF1F9;  /* alternating band / card wells — navy at 6% */
+  --tint-deep:  #E2E8F4;  /* third band, one step down the same hue */
+  --surface:    #FFFFFF;  /* cards */
 
   /* --- Ink & neutrals ---------------------------------------------------- */
-  /* Contrast ratios below are measured against --porcelain. Every one clears
+  /* Contrast ratios below are measured against --page. Every one clears
      WCAG AA (4.5:1) with margin left over for the caustics layer, which can
      darken the effective background by a few percent at its densest. */
-  --ink:        #171A1D;  /* headings — 16.1:1 */
-  --ink-body:   #33383E;  /* body copy — 11.1:1 */
-  --ink-muted:  #5E656E;  /* secondary — 5.5:1 */
-  --ink-faint:  #5F666F;  /* small labels — 5.5:1 (4.7:1 on the deepest band) */
-  --rule:       #E2DCD3;  /* hairlines */
-  --rule-soft:  #EFEAE3;
+  --ink:        #011459;  /* headings — brand navy, 16.9:1 */
+  --ink-body:   #1A1F2E;  /* body copy — 15.3:1 */
+  --ink-muted:  #4A5265;  /* secondary — 7.8:1 */
+  --ink-faint:  #5A6273;  /* small labels — 6.3:1 (5.9:1 on the deepest band) */
+  --rule:       #D9DFEC;  /* hairlines */
+  --rule-soft:  #EAEEF7;
 
-  /* --- The one accent ---------------------------------------------------- */
-  --navy:       #0F3A5C;
-  --navy-deep:  #0A2740;
-  --navy-lift:  #17507E;
-  --navy-wash:  #EAF0F5;
-  --navy-tint:  rgba(15, 58, 92, 0.08);
+  /* --- Primary: badge navy ----------------------------------------------- */
+  /* #011459 is the circle, the mountains and the "602" of the mark. It carries
+     headings, nav, the footer ground and every button hover. */
+  --navy:       #011459;
+  --navy-deep:  #010D3C;  /* one step down — inset wells on navy */
+  --navy-lift:  #16277A;  /* one step up — 13.1:1, for hovers on light */
+  --navy-wash:  #EEF1F9;
+  --navy-tint:  rgba(1, 20, 89, 0.08);
 
-  /* --- Brand gold --------------------------------------------------------- */
-  /* The "602" half of the wordmark is gold, so the palette needs it — but as
-     TWO tokens, because the brand colour is not a text colour.
+  /* --- Accent: badge red -------------------------------------------------- */
+  /* #D10A0F is the sun, the saguaro and "MEDICARE" on the mark. Unlike the old
+     gold it is a real text colour: 5.6:1 on white, and white on it is the same
+     5.6:1, so it carries primary buttons AND link hovers with no second token.
 
-     --gold is the brand's exact gold. It measures only 2.4:1 on porcelain, so
-     it is for GRAPHIC use (rules, marks, fills on navy) and must never carry
-     body or label text on a light ground. It does clear AA on --navy-deep, at
-     6.0:1 — which is why the footer's giant "602" is set in it.
-
-     --gold-ink is that gold darkened until it clears WCAG AA on porcelain
-     (4.8:1). Use it for any gold TEXT on a light ground — the header's "602"
-     and the OG card's are both set in it. */
-  --gold:       #D5971F;
-  --gold-ink:   #96650F;
+     It does NOT survive on navy — 3.0:1 — so anything red on a navy ground uses
+     --red-lift (5.5:1) instead. That is the one rule to remember about it. */
+  --red:        #D10A0F;
+  --red-deep:   #A00A0E;  /* pressed / dense fills — white on it is 8.3:1 */
+  --red-lift:   #FF5A5F;  /* red ON navy: footer hovers, eyebrows, stars */
 
   /* --- Type -------------------------------------------------------------- */
   --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
@@ -98,7 +99,7 @@ html {
 }
 
 body {
-  background: var(--porcelain);
+  background: var(--page);
   color: var(--ink-body);
   font-family: var(--font-body);
   font-size: var(--t-base);
@@ -158,14 +159,14 @@ strong { font-weight: 600; color: var(--ink); }
 
 /* Alternating bands. Semi-transparent so the caustics read through, but opaque
    enough that every text/background pair stays above 4.5:1. */
-.band--warm  { background: color-mix(in srgb, var(--porcelain-warm) 92%, transparent); }
-.band--deep  { background: color-mix(in srgb, var(--porcelain-deep) 90%, transparent); }
-.band--navy  { background: var(--navy); color: #EAF0F5; }
+.band--tint  { background: color-mix(in srgb, var(--tint) 92%, transparent); }
+.band--tint-deep  { background: color-mix(in srgb, var(--tint-deep) 90%, transparent); }
+.band--navy  { background: var(--navy); color: #DCE2F5; }
 .band--navy h1, .band--navy h2, .band--navy h3 { color: #FFFFFF; }
-.band--solid { background: var(--porcelain); }
+.band--solid { background: var(--page); }
 
 /* Every band gets a hairline top edge to keep the page reading as layers. */
-.band--warm, .band--deep { border-block: 1px solid var(--rule-soft); }
+.band--tint, .band--tint-deep { border-block: 1px solid var(--rule-soft); }
 
 .grid { display: grid; gap: var(--s-5); }
 .stack > * + * { margin-top: var(--s-4); }
@@ -179,7 +180,10 @@ strong { font-weight: 600; color: var(--ink); }
   font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--navy);
+  /* The eyebrow is where the accent earns its keep: a small red label above a
+     navy heading, on every section, is most of what makes the palette read as
+     two colours rather than one. 5.6:1 on white, so it is legal as text. */
+  color: var(--red);
   margin-bottom: var(--s-3);
   display: flex;
   align-items: center;
@@ -193,7 +197,9 @@ strong { font-weight: 600; color: var(--ink); }
   opacity: 0.5;
   flex: none;
 }
-.band--navy .eyebrow { color: #9CC0DC; }
+/* --red is only 3.0:1 on navy, so the accent switches to its lifted twin here
+   rather than dropping back to a blue-grey. */
+.band--navy .eyebrow { color: var(--red-lift); }
 
 .lede {
   font-size: var(--t-lg);
@@ -201,7 +207,7 @@ strong { font-weight: 600; color: var(--ink); }
   max-width: 60ch;
   line-height: 1.6;
 }
-.band--navy .lede { color: #C7DAE8; }
+.band--navy .lede { color: #C6CEE8; }
 
 /* --------------------------------------------------------------------------
    Links — self-drawing underline
@@ -220,7 +226,9 @@ a { color: var(--navy); text-decoration: none; }
   transition: background-size 420ms var(--ease);
   padding-bottom: 1px;
 }
-.link:hover, .link:focus-visible { background-size: 100% 1px; }
+/* Navy at rest, red on hover — the accent is what moves, everywhere on the
+   site. Both ends clear AA on white (16.9:1 and 5.6:1). */
+.link:hover, .link:focus-visible { background-size: 100% 1px; color: var(--red); }
 
 /* Prose links draw in on hover the same way, but start visible at 30% so they
    are still recognisable as links without hovering. */
@@ -235,13 +243,16 @@ a { color: var(--navy); text-decoration: none; }
   padding-bottom: 1px;
   text-decoration: none;
 }
-.prose a:not(.btn):hover { color: var(--navy-lift); }
+.prose a:not(.btn):hover { color: var(--red); }
 
 /* --------------------------------------------------------------------------
    Buttons
    -------------------------------------------------------------------------- */
+/* Primary is RED, and hovers to navy — the two brand colours trading places
+   rather than one colour getting lighter. White on red is 5.6:1 and white on
+   navy is 16.9:1, so both states clear AA at any size. */
 .btn {
-  --btn-bg: var(--navy);
+  --btn-bg: var(--red);
   --btn-fg: #FFFFFF;
   position: relative;
   display: inline-flex;
@@ -265,7 +276,7 @@ a { color: var(--navy); text-decoration: none; }
               transform 240ms var(--ease), color 240ms var(--ease);
   will-change: transform;
 }
-.btn:hover { background: var(--navy-lift); box-shadow: var(--shadow-md); }
+.btn:hover { background: var(--navy); box-shadow: var(--shadow-md); }
 .btn:active { transform: translateY(1px) scale(0.995); }
 
 /* The magnetic sheen that follows the cursor. */
@@ -285,23 +296,27 @@ a { color: var(--navy); text-decoration: none; }
 }
 .btn:hover::after { opacity: 1; }
 
+/* Secondary: a navy outline, no fill. It stays navy on hover — if it turned
+   red it would compete with the primary sitting next to it. */
 .btn--ghost {
   --btn-bg: transparent;
   --btn-fg: var(--navy);
-  border-color: color-mix(in srgb, var(--navy) 28%, transparent);
+  border-color: color-mix(in srgb, var(--navy) 30%, transparent);
 }
 .btn--ghost:hover {
-  --btn-fg: var(--navy-deep);
+  --btn-fg: var(--navy);
   background: var(--navy-wash);
-  border-color: color-mix(in srgb, var(--navy) 45%, transparent);
+  border-color: var(--navy);
   box-shadow: none;
 }
 
+/* The primary FOR navy grounds — a red button on navy is 3.0:1 against its own
+   background and reads as a smudge, so on navy the primary goes white. */
 .btn--light {
   --btn-bg: #FFFFFF;
-  --btn-fg: var(--navy-deep);
+  --btn-fg: var(--navy);
 }
-.btn--light:hover { background: #FFFFFF; box-shadow: var(--shadow-lg); }
+.btn--light:hover { background: #FFFFFF; --btn-fg: var(--red); box-shadow: var(--shadow-lg); }
 
 .btn--onNavy {
   --btn-bg: transparent;
@@ -359,6 +374,7 @@ a { color: var(--navy); text-decoration: none; }
   color: var(--ink-body);
   line-height: 1.55;
 }
+/* Icon accent: the tick marks are red on light grounds. */
 .ticks li::before {
   content: '';
   position: absolute;
@@ -366,12 +382,12 @@ a { color: var(--navy); text-decoration: none; }
   top: 0.52em;
   width: 0.8rem;
   height: 0.45rem;
-  border-left: 1.5px solid var(--navy);
-  border-bottom: 1.5px solid var(--navy);
+  border-left: 1.5px solid var(--red);
+  border-bottom: 1.5px solid var(--red);
   transform: rotate(-45deg);
 }
-.band--navy .ticks li { color: #D7E5EF; }
-.band--navy .ticks li::before { border-color: #7FB0D6; }
+.band--navy .ticks li { color: #D5DBEF; }
+.band--navy .ticks li::before { border-color: var(--red-lift); }
 
 /* --------------------------------------------------------------------------
    Prose (article bodies)
@@ -383,7 +399,7 @@ a { color: var(--navy); text-decoration: none; }
 .prose ul, .prose ol { padding-left: 1.35em; display: grid; gap: 0.5em; }
 .prose li { line-height: 1.6; }
 .prose blockquote {
-  border-left: 2px solid var(--navy);
+  border-left: 2px solid var(--red);
   padding-left: var(--s-5);
   color: var(--ink-muted);
   font-family: var(--font-display);
@@ -393,7 +409,7 @@ a { color: var(--navy); text-decoration: none; }
 .prose hr { border: 0; border-top: 1px solid var(--rule); margin-block: 2.4em; }
 .prose table { width: 100%; border-collapse: collapse; font-size: var(--t-sm); }
 .prose th, .prose td { padding: 0.7rem 0.9rem; border-bottom: 1px solid var(--rule); text-align: left; }
-.prose th { font-weight: 600; color: var(--ink); background: var(--porcelain-warm); }
+.prose th { font-weight: 600; color: var(--ink); background: var(--tint); }
 
 /* --------------------------------------------------------------------------
    Wide content must scroll inside its own box — the page body never does.
@@ -477,15 +493,17 @@ html.motion [data-rise][data-armed] {
     transform 700ms var(--ease) var(--rise-delay, 0ms);
 }
 
-/* Self-drawing rule under section headings. */
+/* Self-drawing rule under section headings — the red accent underline. At 2px
+   and full opacity it reads as a deliberate brand rule rather than the ghosted
+   hairline the old navy-at-35% version was. */
 .draw-rule {
   display: block;
-  height: 1px;
-  background: var(--navy);
-  opacity: 0.35;
+  height: 2px;
+  background: var(--red);
   transform-origin: left center;
   margin-top: var(--s-5);
 }
+.band--navy .draw-rule { background: var(--red-lift); }
 html.motion .draw-rule[data-armed]:not([data-revealed]) { transform: scaleX(0); }
 html.motion .draw-rule[data-armed] { transition: transform 900ms var(--ease-io) 120ms; }
 
@@ -502,7 +520,7 @@ html.motion .draw-rule[data-armed] { transition: transform 900ms var(--ease-io) 
 .scroll-progress__bar {
   height: 100%;
   width: 100%;
-  background: linear-gradient(90deg, var(--navy-lift), var(--navy));
+  background: linear-gradient(90deg, var(--navy), var(--red));
   transform: scaleX(0);
   transform-origin: left center;
   will-change: transform;

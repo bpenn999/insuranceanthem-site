@@ -23,15 +23,23 @@ export const site = {
   name: '602Medicare',
   legalName: '602Medicare',
   /**
+   * The registered entity behind the brand. 602Medicare is a DBA, not a
+   * corporation, so the footer copyright has to name the company that actually
+   * holds it — "© 602Medicare, a DBA of Kenztara INC". Keep the spelling
+   * "Kenztara INC" exactly: that is how it is registered, capital INC and no
+   * full stop.
+   */
+  parentCompany: 'Kenztara INC',
+  /**
    * The wordmark lockup, split for the two-tone rendering in the header, the
    * footer band and scripts/og-card.html. It is deliberately NOT derived from
    * `name` by splitting on whitespace — the name has none. Both halves set tight
    * against each other with no letter-space between them.
    */
   wordmark: {
-    /** Gold half — --gold-ink on light grounds, --gold on navy. */
+    /** Accent half — --red on light grounds, --red-lift on navy. */
     mark: '602',
-    /** Navy half — white on navy grounds. */
+    /** Primary half — --navy on light grounds, white on navy. */
     product: 'Medicare',
   },
   /**
@@ -81,8 +89,15 @@ export const site = {
     regionName: 'Arizona',
     postalCode: '85086',
     country: 'US',
-    /** No street address published — appointments are by arrangement. */
-    display: 'Anthem, AZ 85086',
+    /**
+     * No street address published — appointments are by arrangement, and there
+     * is no storefront to send anyone to. City and state ONLY: do not add a
+     * street line here, and do not pad it back out to "Anthem, AZ 85086". The
+     * ZIP still reaches structured data through `postalCode` above, which is
+     * where a parser looks for it; on the page it just reads as a half-address
+     * that raises the question of the missing street.
+     */
+    display: 'Anthem, AZ',
   },
 
   /** Geo center of Anthem, AZ — used for LocalBusiness schema */
@@ -100,6 +115,13 @@ export const site = {
    * having earned a page of their own yet (Desert Hills, Cave Creek, Sun City).
    * Claiming more here than the pages do is fine; claiming less is not.
    */
+  /**
+   * The footer's one-line reach claim. Deliberately shorter than `serviceArea`
+   * below — it names the four markets that carry the positioning and then says
+   * "the Valley" rather than listing nine communities in a footer.
+   */
+  servingLine: 'Serving Anthem, Glendale, Peoria, North Phoenix & the Valley',
+
   serviceArea: [
     'Anthem',
     'Glendale',

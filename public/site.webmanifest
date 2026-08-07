@@ -5,17 +5,17 @@
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#FBF9F6",
-  "theme_color": "#0F3A5C",
+  "background_color": "#FFFFFF",
+  "theme_color": "#011459",
   "icons": [
     {
-      "src": "/brand/mark-192.png",
+      "src": "/logo/icon-192.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/brand/mark-512.png",
+      "src": "/logo/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"

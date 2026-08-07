@@ -79,7 +79,7 @@ const schemaNodes = [
     </div>
   </section>
 
-  <section class="section band--warm" data-caustics="0.2">
+  <section class="section band--tint" data-caustics="0.2">
     <div class="wrap wrap--narrow">
       <slot name="explainer" />
     </div>
@@ -141,7 +141,7 @@ const schemaNodes = [
     width: 100%;
     padding: 0.75rem 0.9rem;
     min-height: 48px;
-    background: var(--porcelain);
+    background: var(--page);
     border: 1px solid var(--rule);
     border-radius: var(--radius);
     color: var(--ink);
@@ -163,7 +163,7 @@ const schemaNodes = [
     align-items: flex-start;
     gap: 0.7rem;
     padding: 0.75rem 0.9rem;
-    background: var(--porcelain);
+    background: var(--page);
     border: 1px solid var(--rule);
     border-radius: var(--radius);
     cursor: pointer;
@@ -230,7 +230,7 @@ const schemaNodes = [
     margin: var(--s-5) 0;
     grid-template-columns: repeat(auto-fit, minmax(min(100%, 9rem), 1fr));
   }
-  .t-stat { background: var(--porcelain); padding: var(--s-4); display: grid; gap: 0.2rem; }
+  .t-stat { background: var(--page); padding: var(--s-4); display: grid; gap: 0.2rem; }
   .t-stat__value {
     font-family: var(--font-display);
     font-size: clamp(1.35rem, 3vw, 1.75rem);
@@ -291,7 +291,7 @@ const schemaNodes = [
     border: 1px solid var(--rule);
     border-radius: var(--radius-lg);
     padding: var(--s-5);
-    background: var(--porcelain);
+    background: var(--page);
   }
   .cost-col[data-winner] {
     border-color: var(--navy);

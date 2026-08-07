@@ -1,0 +1,232 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import CtaBand from '../../components/CtaBand.astro';
+import site, { abs } from '../../config/site';
+import type { BlogFrontmatter } from '../../layouts/BlogLayout.astro';
+
+/**
+ * The blog hub.
+ *
+ * Posts are .md files sitting next to this one. The glob below is eager and
+ * build-time, so dropping a new file into src/pages/blog/ adds a card here, a
+ * route, its structured data and its sitemap entry with no edit to this file —
+ * the same deal the Learn hub gives the content collection.
+ *
+ * Blog vs Learn: Learn is the evergreen reference shelf, revised in place. This
+ * is dated and local — seasonal deadlines, this market, this plan year. See the
+ * header comment in src/layouts/BlogLayout.astro.
+ */
+const modules = import.meta.glob<{ frontmatter: BlogFrontmatter; url: string }>(
+  './*.md',
+  { eager: true },
+);
+
+const posts = Object.values(modules)
+  .filter((m) => !m.frontmatter.draft)
+  .map((m) => ({
+    ...m.frontmatter,
+    // Astro gives the route without a trailing slash; the site is
+    // trailingSlash: 'always', so every internal href needs one or the audit's
+    // link check counts it as broken.
+    href: m.url.endsWith('/') ? m.url : `${m.url}/`,
+    date: new Date(m.frontmatter.publishedAt),
+  }))
+  .sort((a, b) => b.date.getTime() - a.date.getTime());
+
+const title = 'Medicare Blog — Deadlines, Dates & Local Notes';
+const description = `Dated Medicare notes for the Phoenix metro from ${site.agent.name} — enrollment deadlines, what changes each plan year, and what it means if you live in Anthem, Glendale, Peoria or North Phoenix.`;
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Blog', path: '/blog/' },
+];
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
+
+const schemaNodes = [
+  {
+    '@type': 'Blog',
+    '@id': `${abs('/blog/')}#blog`,
+    url: abs('/blog/'),
+    name: title,
+    description,
+    isPartOf: { '@id': `${site.origin}/#website` },
+    publisher: { '@id': `${site.origin}/#organization` },
+    inLanguage: 'en-US',
+    blogPost: posts.map((p) => ({
+      '@type': 'BlogPosting',
+      headline: p.title,
+      url: abs(p.href),
+      datePublished: p.date.toISOString(),
+      author: { '@id': `${site.origin}/#brian-penner` },
+    })),
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path="/blog/"
+  breadcrumbs={breadcrumbs}
+  schemaNodes={schemaNodes}
+>
+  <PageHero
+    eyebrow="Blog"
+    title="Dates, deadlines and local notes."
+    lede={`Shorter and more time-bound than the guides: what is happening in Medicare right now, when your own window opens, and what any of it means if you live north of the 101. Every figure is stamped with the plan year it applies to.`}
+    breadcrumbs={breadcrumbs}
+    caustics="0.46"
+  >
+    <div class="btn-row">
+      <a href={site.consult.url} class="btn btn--lg" data-magnetic="0.3">{site.consult.label}</a>
+      <a href="/learn/" class="btn btn--ghost btn--lg" data-magnetic="0.22">Read the full guides</a>
+    </div>
+  </PageHero>
+
+  <section class="section section--tight" data-caustics="0.22">
+    <div class="wrap">
+      {
+        posts.length === 0 ? (
+          <p class="empty">Nothing published yet — check back shortly.</p>
+        ) : (
+          <ul class="cards">
+            {posts.map((p, i) => (
+              <li data-rise data-armed style={`--rise-delay:${Math.min(i * 60, 320)}ms`}>
+                <a href={p.href} class="card-link">
+                  <article class="card card--hover post">
+                    <img class="post__thumb" src={p.image} alt={p.imageAlt}
+                         width="1200" height="630" loading="lazy" decoding="async" />
+                    <div class="post__inner">
+                      <header class="post__head">
+                        <span class="post__cat">{p.category}</span>
+                        <span class="post__time">{p.readMinutes} min</span>
+                      </header>
+                      <h2 class="post__title">{p.title}</h2>
+                      <p class="post__excerpt">{p.summary}</p>
+                      <footer class="post__foot">
+                        <time datetime={p.date.toISOString()}>{fmt(p.date)}</time>
+                        <span class="post__more">
+                          Read
+                          <svg viewBox="0 0 14 10" aria-hidden="true">
+                            <path d="M9 1l4 4-4 4M13 5H1" fill="none" stroke="currentColor"
+                                  stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+                          </svg>
+                        </span>
+                      </footer>
+                    </div>
+                  </article>
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+
+      <p class="hub__cross">
+        Looking for the long version instead? The
+        <a href="/learn/" class="link">Medicare guides</a> cover each topic end to end, and the
+        <a href="/tools/" class="link">free tools</a> let you work the numbers yourself.
+      </p>
+    </div>
+  </section>
+
+  <CtaBand
+    title="Deadlines are the one thing you cannot fix later."
+    body={`If you are not sure which window you are in, that is a five-minute answer. ${site.agent.name}, ${site.agent.experience} in Medicare, based in ${site.address.display}.`}
+    cta={site.consult.label}
+  />
+</BaseLayout>
+
+<style>
+  .cards {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-4);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 21rem), 1fr));
+  }
+  .cards > li { display: flex; }
+  .cards .card-link { display: flex; width: 100%; }
+
+  .post { display: flex; flex-direction: column; width: 100%; padding: 0; overflow: hidden; }
+  .post__thumb {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 630;
+    object-fit: cover;
+    border-bottom: 1px solid var(--rule);
+  }
+  .post__inner { display: flex; flex-direction: column; flex: 1; padding: var(--s-5); }
+
+  .post__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin-bottom: var(--s-4);
+  }
+  .post__cat {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  .post__time {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 0.12rem 0.55rem;
+    flex: none;
+  }
+
+  .post__title {
+    font-size: var(--t-lg);
+    line-height: 1.25;
+    margin-bottom: var(--s-3);
+    transition: color 220ms ease;
+  }
+  .card-link:hover .post__title { color: var(--red); }
+
+  .post__excerpt {
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: var(--s-5);
+  }
+
+  .post__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--rule-soft);
+    font-size: var(--t-xs);
+    color: var(--ink-faint);
+  }
+  .post__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    color: var(--red);
+  }
+  .post__more svg { width: 13px; height: 9px; transition: transform 340ms var(--ease); }
+  .card-link:hover .post__more svg { transform: translateX(4px); }
+
+  .empty { color: var(--ink-muted); }
+  .hub__cross { margin-top: var(--s-7); font-size: var(--t-sm); color: var(--ink-muted); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-link:hover .post__more svg { transform: none; }
+  }
+</style>

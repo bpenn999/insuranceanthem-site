@@ -15,10 +15,14 @@ const nav = [
 ];
 
 /**
- * The wordmark is two-tone: "602" in gold, "Medicare" in navy. The halves come
- * from `site.wordmark` rather than from splitting `site.name` — the name is one
- * word with no space to split on, and the lockup sets the two halves flush
- * against each other on purpose.
+ * The wordmark is two-tone: "602" in the badge red, "Medicare" in the badge
+ * navy. The halves come from `site.wordmark` rather than from splitting
+ * `site.name` — the name is one word with no space to split on, and the lockup
+ * sets the two halves flush against each other on purpose.
+ *
+ * Note the colours are the INVERSE of the badge itself, where "602" is navy and
+ * "MEDICARE" is red. That is deliberate: side by side, matching them made the
+ * lockup read as one long doubled word.
  */
 const { mark, product } = site.wordmark;
 ---
@@ -28,10 +32,20 @@ const { mark, product } = site.wordmark;
 <header class="site-header">
   <div class="wrap--wide header__inner">
     <a href="/" class="brand" aria-label={`${site.name} — home`}>
-      {/* Text wordmark, no mark. There is no 602Medicare logo yet; a placeholder
-          glyph next to the name would be worse than the name alone, and it is
-          one <img> off the critical path of every page until the real one
-          lands. Drop the mark back in here when it does. */}
+      {/* The badge. Decorative here — the wordmark beside it already carries the
+          name, and the <a> has its own aria-label — so it is alt="" rather than
+          a second announcement of "602Medicare". Explicit width/height reserve
+          the box before the PNG lands; `fetchpriority=high` because it is the
+          one image above the fold on every page. */}
+      <img
+        class="brand__mark"
+        src="/logo/602medicare-logo-transparent.png"
+        alt=""
+        width="464"
+        height="464"
+        decoding="async"
+        fetchpriority="high"
+      />
       <span class="brand__text">
         <span class="brand__name">
           <span class="brand__name-mark">{mark}</span><span class="brand__name-product">{product}</span>
@@ -116,7 +130,7 @@ const { mark, product } = site.wordmark;
     position: sticky;
     top: 0;
     z-index: 80;
-    background: color-mix(in srgb, var(--porcelain) 82%, transparent);
+    background: color-mix(in srgb, var(--page) 82%, transparent);
     backdrop-filter: saturate(180%) blur(14px);
     -webkit-backdrop-filter: saturate(180%) blur(14px);
     border-bottom: 1px solid transparent;
@@ -127,7 +141,7 @@ const { mark, product } = site.wordmark;
      ghost through it — at 92% the NPN line under the hero read as a smear. */
   .site-header.is-stuck {
     border-bottom-color: var(--rule);
-    background: color-mix(in srgb, var(--porcelain) 97%, transparent);
+    background: color-mix(in srgb, var(--page) 97%, transparent);
     box-shadow: 0 1px 20px rgba(23, 26, 29, 0.05);
   }
 
@@ -147,9 +161,19 @@ const { mark, product } = site.wordmark;
     color: var(--navy);
     flex: none;
   }
+  /* The badge, capped at 44px tall — under the 48px brief, and it keeps the
+     header row at its existing 4.5rem without the lockup crowding the nav.
+     Square source (464×464), so width follows height. */
+  .brand__mark {
+    height: 44px;
+    width: 44px;
+    flex: none;
+  }
+  @media (max-width: 400px) {
+    .brand__mark { height: 38px; width: 38px; }
+  }
+
   .brand__text { display: flex; flex-direction: column; line-height: 1.1; }
-  /* Carrying the whole lockup now that there is no mark beside it, so it runs a
-     step larger and a touch heavier than the old name-next-to-emblem did. */
   .brand__name {
     font-family: var(--font-display);
     font-size: 1.3rem;
@@ -157,9 +181,9 @@ const { mark, product } = site.wordmark;
     letter-spacing: -0.025em;
   }
   /* Tight lockup: no margin, no space, no word break between the halves — they
-     are two colours of ONE word. --gold-ink, not --gold: the raw gold is 2.4:1
-     on porcelain and the "602" is text, not a graphic. */
-  .brand__name-mark { color: var(--gold-ink); }
+     are two colours of ONE word. Both are real text colours on white (red
+     5.6:1, navy 16.9:1), which the old gold half never was. */
+  .brand__name-mark { color: var(--red); }
   .brand__name-product { color: var(--navy); }
   .brand__sub {
     font-size: 0.6875rem;
@@ -192,13 +216,13 @@ const { mark, product } = site.wordmark;
     left: 0.75rem;
     right: 0.75rem;
     bottom: 0.25rem;
-    height: 1px;
-    background: var(--navy);
+    height: 2px;
+    background: var(--red);
     transform: scaleX(0);
     transform-origin: left center;
     transition: transform 380ms var(--ease);
   }
-  .nav-link:hover { color: var(--navy); }
+  .nav-link:hover { color: var(--red); }
   .nav-link:hover::after,
   .nav-link.is-active::after { transform: scaleX(1); }
   .nav-link.is-active { color: var(--navy); }
@@ -251,8 +275,8 @@ const { mark, product } = site.wordmark;
     padding: 0.4rem 0.5rem;
     font-variant-numeric: tabular-nums;
   }
-  .header__phone:hover { color: var(--navy); }
-  .header__phone-icon { width: 15px; height: 15px; color: var(--navy); }
+  .header__phone:hover { color: var(--red); }
+  .header__phone-icon { width: 15px; height: 15px; color: var(--red); }
 
   .header__cta { display: none; }
   :global(.btn--sm) { padding: 0.6rem 1.1rem; min-height: 40px; font-size: 0.8125rem; }
@@ -277,7 +301,7 @@ const { mark, product } = site.wordmark;
     position: fixed;
     inset: 4.5rem 0 0;
     z-index: 79;
-    background: var(--porcelain);
+    background: var(--page);
     padding: var(--s-6) var(--gutter) var(--s-8);
     overflow-y: auto;
     opacity: 0;
