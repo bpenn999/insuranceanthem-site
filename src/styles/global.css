@@ -358,8 +358,13 @@ a { color: var(--navy); text-decoration: none; }
    -------------------------------------------------------------------------- */
 .card {
   position: relative;
+  /* No backdrop-filter. It was blur(2px) over a 94%-opaque surface — visually
+     indistinguishable from this, and it made EVERY card on the page its own
+     composited layer with a blur pass. On a mid-range phone with a dozen cards
+     in view that is real GPU work, and it shows up as Speed Index: the page
+     takes longer to become visually complete even though nothing is still
+     loading. */
   background: color-mix(in srgb, var(--surface) 94%, transparent);
-  backdrop-filter: blur(2px);
   border: 1px solid var(--rule);
   border-radius: var(--radius-lg);
   padding: var(--s-6);

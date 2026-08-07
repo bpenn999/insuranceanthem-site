@@ -47,9 +47,10 @@ import site from '../config/site';
     gap: 0.5rem;
     padding: 0.5rem var(--s-4);
     padding-bottom: calc(0.5rem + env(safe-area-inset-bottom, 0px));
-    background: color-mix(in srgb, var(--page) 96%, transparent);
-    backdrop-filter: saturate(180%) blur(12px);
-    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    /* Opaque, not frosted. This bar is fixed and full-width on every mobile
+       page; a backdrop-filter on it is a permanent composited blur layer on the
+       exact device that can least afford one. */
+    background: var(--page);
     border-top: 1px solid var(--rule);
     box-shadow: 0 -2px 20px rgba(1, 20, 89, 0.07);
   }

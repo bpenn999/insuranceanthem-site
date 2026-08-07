@@ -119,7 +119,8 @@ import site from '../config/site';
 <style>
   .funnel {
     background: color-mix(in srgb, var(--surface) 96%, transparent);
-    backdrop-filter: blur(6px);
+    /* No backdrop-filter — this sits in the first viewport, where a blur pass
+       costs visual-completeness time for an effect over a near-solid fill. */
     border: 1px solid var(--rule);
     border-radius: var(--radius-lg);
     box-shadow: var(--shadow-lg);

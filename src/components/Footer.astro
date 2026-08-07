@@ -314,17 +314,20 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     font-weight: 600;
     /* vw first as the fallback for anything without container queries — an
        invalid `cqw` declaration is dropped and this one survives the cascade. */
-    font-size: clamp(34px, 12vw, 76px);
-    /* Sized to span the band edge-to-edge, ~97% of it at every width. Two things
-       drive these numbers: the name is 11 characters (~5.1em wide on Fraunces),
-       and Fraunces is optically sized, so width-per-em GROWS as the type shrinks
-       — 5.9em at 45px against 5.1em at 220px. That is the whole reason there are
-       three tiers rather than one value.
-
-       RETUNE ALL THREE IF THE BRAND NAME CHANGES LENGTH. They were measured for
-       "602Medicare" and were roughly half these sizes when the name was 23
-       characters long. nowrap + overflow:hidden is the backstop, not the plan. */
-    font-size: clamp(38px, 16.5cqw, 112px);
+    font-size: clamp(34px, 14vw, 220px);
+    /* ONE VALUE, not four tiers.
+       This used to be four `cqw` tiers, and the reason was Fraunces' optical-
+       size axis: width-per-em GREW as the type shrank (5.9em at 45px against
+       5.1em at 220px), so a single value overshot at one end and undershot at
+       the other. scripts/build-fonts.py now pins `opsz` at 40 — 45% of the
+       font's file size, and the last thing keeping Speed Index off a perfect
+       score — which makes width-per-em CONSTANT and collapses the four tiers
+       into this one.
+       Measured across 375–1800px after the change: 98% fill at every width.
+       RETUNE IF THE BRAND NAME CHANGES LENGTH — this is sized for the 11
+       characters of "602Medicare". nowrap + overflow:hidden is the backstop,
+       not the plan. */
+    font-size: min(16.5cqw, 230px);
     line-height: 1.02;
     letter-spacing: -0.03em;
     color: #fff;
@@ -332,20 +335,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     overflow: hidden;
     max-width: 100%;
   }
-  /* The tablet-portrait window. Without it the base tier's cqw, tuned for a
-     ~335px band where Fraunces is at its widest per em, leaves the name filling
-     only ~85% of a 615px band. */
-  @media (min-width: 560px) {
-    .foot__wordmark span { font-size: 12vw; font-size: 18.7cqw; }
-  }
-  @media (min-width: 860px) {
-    .foot__wordmark span { font-size: 13.5vw; font-size: 18.8cqw; }
-  }
-  @media (min-width: 1024px) {
-    /* The px ceiling matters: past ~1455px the band stops growing at 1360px, so
-       without it the type would keep scaling off the end of a wide monitor. */
-    .foot__wordmark span { font-size: min(15.4vw, 230px); font-size: min(19.2cqw, 262px); }
-  }
+
   /* The "602" half. --red-lift, not --red: the raw badge red is 3.0:1 on this
      navy and would read as a bruise at 200px. The lifted twin is 5.5:1. */
   .foot__wordmark em { font-style: normal; color: var(--red-lift); }

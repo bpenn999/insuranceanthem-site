@@ -15,11 +15,18 @@ whole printable-ASCII range and the handful of typographic marks the copy uses
 (en/em dashes, curly quotes, ·, ×, ½, the arrows), cuts both files by well over
 half with no visible difference.
 
-BOTH FONTS ARE VARIABLE AND STAY VARIABLE. `--flavor=woff2` plus retaining the
-axes matters: the display face uses Fraunces' optical-size axis (the footer
-wordmark is tuned against it — see the notes in Footer.astro), and the body face
-uses weights 400–600. Dropping the axes would be a bigger saving and would break
-both.
+FRAUNCES IS INSTANCED AT opsz=40; INTER STAYS FULLY VARIABLE.
+
+Fraunces' optical-size axis is 45% of its file — 51 KB with it, 28 KB without.
+That axis buys one thing on this site: the footer wordmark rendered at 200px+
+picked up tighter optical metrics than the 40px headings did. Keeping it cost
+every visitor 23 KB on the critical path so that one decorative band could be
+optically correct, and the font-swap repaint it delayed was the single thing
+keeping Speed Index off a perfect score. The footer band's `cqw` tiers were
+re-tuned for the pinned metrics instead — see Footer.astro.
+
+`wght` stays variable on both: the site uses 400/500/600 of Inter and 500/600 of
+Fraunces, and a single variable file is smaller than two static instances.
 
 Re-run this after adding copy in a new language or with unusual symbols. The
 build does NOT run it automatically — a missing glyph should be a deliberate
@@ -76,7 +83,6 @@ def subset(src: Path, out: Path, chars: str) -> None:
         f"--text={chars}",
         "--flavor=woff2",
         f"--output-file={out}",
-        # Keep the variable axes — see the module docstring.
         "--layout-features=kern,liga,calt,ccmp,locl,tnum",
         "--drop-tables+=DSIG",
         "--no-hinting",
@@ -90,6 +96,25 @@ def subset(src: Path, out: Path, chars: str) -> None:
           f"({100 - after / before * 100:4.1f}% smaller)")
 
 
+def pin_optical_size(path: Path, opsz: float = 40) -> None:
+    """Drop Fraunces' `opsz` axis, pinning it at the value the headings ask for.
+
+    45% of the file. See the module docstring for the trade and Footer.astro for
+    the band that had to be re-tuned because of it.
+    """
+    from fontTools.ttLib import TTFont
+    from fontTools.varLib import instancer
+
+    before = path.stat().st_size
+    font = TTFont(path)
+    inst = instancer.instantiateVariableFont(font, {"opsz": opsz}, inplace=False)
+    inst.flavor = "woff2"
+    inst.save(path)
+    after = path.stat().st_size
+    print(f"  {path.name:<28} {before/1024:6.1f} KB -> {after/1024:6.1f} KB "
+          f"(opsz pinned at {opsz:g})")
+
+
 def main() -> None:
     chars = "".join(sorted(set(BASE) | set(EXTRA) | used_characters()))
     # Strip control characters the subsetter will not accept.
@@ -100,7 +125,10 @@ def main() -> None:
         src = FONTS / f"{stem}-latin.woff2"
         if not src.exists():
             sys.exit(f"missing {src} — see BaseHead.astro for where these come from")
-        subset(src, FONTS / f"{stem}-subset.woff2", chars)
+        out = FONTS / f"{stem}-subset.woff2"
+        subset(src, out, chars)
+        if stem == "fraunces":
+            pin_optical_size(out)
 
     print("\nWired in src/components/BaseHead.astro as /fonts/<name>-subset.woff2")
 
