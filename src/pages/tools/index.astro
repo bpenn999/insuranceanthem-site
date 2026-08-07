@@ -7,8 +7,10 @@ import SectionHead from '../../components/SectionHead.astro';
 import site from '../../config/site';
 
 const title = 'Free Medicare Tools';
+// Eight, not four — the count was written when there were four and never
+// updated as tools were added. scripts/audit.mjs knows the real number.
 const description =
-  'Four free Medicare tools — plan type finder, enrollment window checker, annual cost estimator and IRMAA bracket estimator. No email required, nothing stored, nothing sold.';
+  'Eight free Medicare tools — plan type finder, enrollment window checker, cost estimators and IRMAA brackets. No email, nothing stored, nothing sold.';
 
 const breadcrumbs = [
   { name: 'Home', path: '/' },

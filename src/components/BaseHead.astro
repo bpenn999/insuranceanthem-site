@@ -28,6 +28,27 @@ const {
 const canonical = abs(path);
 const ogImage = abs(image);
 const fullTitle = title.includes(site.name) ? title : `${title} | ${site.name}`;
+
+/**
+ * HARD CAP: 155 characters, every page, no exceptions.
+ *
+ * Google truncates past roughly 155, and a truncated description is the defect
+ * that ships silently — it renders fine, it just gets cut in the one place
+ * anybody sees it. Nineteen of this site's forty-two pages were over before
+ * this check existed, several of them over by construction (a fixed tail
+ * appended to a variable blurb).
+ *
+ * Thrown at BUILD rather than flagged in the audit so a long description can
+ * never reach a deploy. scripts/audit.mjs re-checks the built HTML as a
+ * backstop, because a description can also arrive from a static file that
+ * never passes through here.
+ */
+if (description.length > 155) {
+  throw new Error(
+    `BaseHead: meta description for ${path} is ${description.length} chars (max 155).\n` +
+      `  ${description}`,
+  );
+}
 ---
 
 <meta charset="utf-8" />

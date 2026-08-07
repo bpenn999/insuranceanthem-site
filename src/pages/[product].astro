@@ -21,7 +21,10 @@ const { product } = Astro.props;
 const others = products.filter((p) => p.slug !== product.slug);
 
 const title = `${product.fullName} in Anthem, AZ`;
-const description = `${product.blurb} Independent guidance from ${site.agent.name}, ${site.agent.experience} in Medicare, from an office in Anthem, AZ across the Phoenix metro.`;
+// Per-product, and capped at 155 in src/data/products.ts. It used to be
+// `${product.blurb} + a fixed tail`, which put every one of the four pages
+// between 179 and 186 characters — over the limit by construction.
+const description = product.seoDescription;
 
 const breadcrumbs = [
   { name: 'Home', path: '/' },

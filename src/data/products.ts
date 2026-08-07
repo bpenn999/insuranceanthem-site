@@ -11,6 +11,14 @@ export interface Product {
   fullName: string;
   /** One line, plain English */
   blurb: string;
+  /**
+   * The <meta name="description"> for this product page. SEPARATE FROM `blurb`
+   * on purpose, and HARD CAPPED at 155 — asserted at the bottom of this file.
+   * The page used to compose `blurb` plus a fixed name/experience/geography
+   * tail, which put all four pages between 179 and 186 characters: over the
+   * limit by construction, on every one of them, forever.
+   */
+  seoDescription: string;
   /** 2–3 sentences for the product page intro */
   intro: string;
   icon: 'shield' | 'plus' | 'pill' | 'home';
@@ -26,6 +34,8 @@ export const products: Product[] = [
     name: 'Medicare Advantage',
     fullName: 'Medicare Advantage (Part C)',
     blurb: 'All-in-one plans that bundle Part A, Part B and usually Part D.',
+    seoDescription:
+      'All-in-one plans bundling Part A, Part B and usually Part D — with your doctors checked against the network first. Anthem, Scottsdale & the Valley.',
     intro:
       'A Medicare Advantage plan replaces the way you receive your Original Medicare benefits. One card, one plan, usually with prescription drug coverage folded in — and often extras like dental, vision and hearing. The trade-off is a network and a set of plan rules, which is exactly what we go through together before you enroll.',
     icon: 'shield',
@@ -62,6 +72,8 @@ export const products: Product[] = [
     name: 'Medicare Supplement',
     fullName: 'Medicare Supplement Insurance (Medigap)',
     blurb: 'Fills the gaps in Original Medicare. Any doctor that takes Medicare.',
+    seoDescription:
+      'Medigap fills the gaps Original Medicare leaves, and any doctor who takes Medicare takes it. Independent guidance in Anthem, Scottsdale & the Valley.',
     intro:
       'A Medicare Supplement — often called Medigap — works alongside Original Medicare instead of replacing it. It pays the deductibles and coinsurance Medicare leaves behind, so your costs become far more predictable. There is no network: if a provider accepts Medicare, they accept your supplement.',
     icon: 'plus',
@@ -98,6 +110,8 @@ export const products: Product[] = [
     name: 'Part D',
     fullName: 'Medicare Part D Prescription Drug Coverage',
     blurb: 'Prescription drug plans, priced against your actual medication list.',
+    seoDescription:
+      'Part D drug plans priced against your actual medication list and pharmacy, not the premium alone. Anthem, Scottsdale & the Phoenix metro.',
     intro:
       'Part D covers prescription drugs. Every plan has its own formulary, its own tiers and its own preferred pharmacies, which means the cheapest premium is very often not the cheapest plan for you. The only honest way to choose is to price your specific medication list, at your specific pharmacy, across every plan available in your ZIP.',
     icon: 'pill',
@@ -134,6 +148,8 @@ export const products: Product[] = [
     name: 'Long-Term Care',
     fullName: 'Long-Term Care Planning',
     blurb: 'Coverage for the care Medicare was never designed to pay for.',
+    seoDescription:
+      'Coverage for the care Medicare was never designed to pay for — traditional and limited-pay. Independent guidance in Anthem, Scottsdale & the Valley.',
     intro:
       'This is the gap most people do not find out about until they need it. Medicare pays for short, skilled, rehabilitative stays — not for extended custodial care, assisted living or ongoing help with daily activities. Long-term care planning is how you keep that cost from landing on your savings or your family.',
     icon: 'home',
@@ -169,3 +185,17 @@ export const products: Product[] = [
 
 export const productBySlug = (slug: string) => products.find((p) => p.slug === slug);
 export default products;
+
+/**
+ * Fail the BUILD on an over-long meta description — the same guard
+ * src/data/locations.ts uses for city pages. Google truncates at roughly 155
+ * characters, and a truncated description is the defect that ships silently:
+ * it renders fine, it just gets cut in the one place anybody sees it.
+ */
+for (const p of products) {
+  if (p.seoDescription.length > 155) {
+    throw new Error(
+      `products.ts: ${p.slug} seoDescription is ${p.seoDescription.length} chars (max 155)`,
+    );
+  }
+}

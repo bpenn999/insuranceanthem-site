@@ -104,6 +104,18 @@ for (const f of htmls) {
   const r = routeOf(f);
   if (!/<title>[^<]{10,}<\/title>/.test(html)) note(`NO TITLE on ${r}`);
   if (!/<meta name="description" content="[^"]{50,}"/.test(html)) note(`WEAK DESCRIPTION on ${r}`);
+  // Hard cap, measured on the DECODED text — the raw attribute counts "&amp;"
+  // as five characters where a search engine sees one, so counting the markup
+  // would flag descriptions that are actually fine and miss ones that are not.
+  {
+    const raw = html.match(/<meta name="description" content="([^"]*)"/)?.[1] ?? '';
+    const decoded = raw
+      .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>')
+      .replace(/&quot;/g, '"').replace(/&#39;/g, "'").replace(/&nbsp;/g, ' ');
+    if (decoded.length > 155) {
+      note(`META DESCRIPTION ${decoded.length} chars (max 155) on ${r}`);
+    }
+  }
   if (!/<link rel="canonical" href="https:\/\/602medicare\.com/.test(html)) note(`NO CANONICAL on ${r}`);
   const h1s = (html.match(/<h1[\s>]/g) || []).length;
   if (h1s !== 1) note(`${h1s} <h1> on ${r}`);
