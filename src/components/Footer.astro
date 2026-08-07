@@ -131,8 +131,11 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
             mountains and the "602" — both navy — disappear and only the red sun
             and red "MEDICARE" survive. The disc IS the navy-ground variant. */}
         <span class="foot__disc" aria-hidden="true">
-          <img src="/logo/602medicare-logo-transparent.png" alt="" width="464" height="464"
-               loading="lazy" decoding="async" />
+          <picture>
+            <source srcset="/logo/badge-128.webp" type="image/webp" />
+            <img src="/logo/badge-128.png" alt="" width="128" height="128"
+                 loading="lazy" decoding="async" />
+          </picture>
         </span>
         <address class="foot__nap">
           <p class="foot__nap-name">{site.legalName}</p>
@@ -236,6 +239,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     background: #fff;
     margin-bottom: var(--s-4);
   }
+  .foot__disc picture { display: block; line-height: 0; }
   .foot__disc img { width: 62px; height: 62px; }
 
   .foot__nap { font-style: normal; display: grid; gap: 0.3rem; align-content: start; }

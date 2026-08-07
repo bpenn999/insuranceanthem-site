@@ -32,16 +32,16 @@ const faqSchema = {
   <section class="hero" data-caustics="0.68">
     <div class="wrap hero__inner">
       <div class="hero__copy">
-        <p class="hero__eyebrow" data-rise data-armed>
+        <p class="hero__eyebrow">
           <span class="hero__pin" aria-hidden="true"></span>
           {serviceAreaListText}
         </p>
 
         <h1 class="hero__title">
-          <Kinetic text="Medicare, explained by someone who lives here." stagger={44} />
+          <Kinetic text="Medicare, explained by someone who lives here." stagger={44} armed={false} />
         </h1>
 
-        <p class="hero__lede" data-rise data-armed style="--rise-delay:260ms">
+        <p class="hero__lede">
           {site.agent.experience} on one stage of life, and one job: work out which plan actually fits your
           doctors, your prescriptions and your budget — then get out of the way. No call center,
           no script, no charge.
@@ -50,7 +50,7 @@ const faqSchema = {
         {/* Call first and filled; the form CTA is the outline. Same reasoning as
             the header — the number is the primary path, so it gets the primary
             treatment and the first position. */}
-        <div class="hero__actions" data-rise data-armed style="--rise-delay:360ms">
+        <div class="hero__actions">
           <a href={site.phone.href} class="btn btn--lg" data-magnetic="0.3" data-cta="hero-call">
             Call {site.phone.display}
           </a>
@@ -59,13 +59,12 @@ const faqSchema = {
           </a>
         </div>
 
-        <p class="hero__meta" data-rise data-armed style="--rise-delay:440ms">
+        <p class="hero__meta">
           <strong>{site.agent.name}</strong> · {site.agent.title} · NPN {site.agent.npn}
         </p>
       </div>
 
-      <aside class="hero__funnel" aria-label="Start a free plan review" data-rise data-armed
-             style="--rise-delay:200ms">
+      <aside class="hero__funnel" aria-label="Start a free plan review">
         <HeroFunnel />
       </aside>
     </div>

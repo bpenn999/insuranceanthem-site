@@ -21,13 +21,19 @@ const hasSlot = Astro.slots.has('default');
 <section class="page-hero" data-caustics={caustics}>
   <div class="wrap">
     {breadcrumbs.length > 0 && <Breadcrumbs items={breadcrumbs} />}
-    {eyebrow && <p class="eyebrow" data-rise data-armed>{eyebrow}</p>}
-    <h1><Kinetic text={title} stagger={38} /></h1>
-    {lede && <p class="lede page-hero__lede" data-rise data-armed style="--rise-delay:220ms">{lede}</p>}
+    {/* NOTHING IN THIS BLOCK IS ARMED. A page hero is above the fold by
+        definition, and `data-armed` holds an element at opacity 0 until the
+        IntersectionObserver fires — which means Largest Contentful Paint waits
+        for JS. Reveals belong to content the reader scrolls to; the first
+        screen paints immediately. The draw-rule keeps its arming because it is
+        decorative, 2px tall, and can never be the LCP element. */}
+    {eyebrow && <p class="eyebrow">{eyebrow}</p>}
+    <h1><Kinetic text={title} stagger={38} armed={false} /></h1>
+    {lede && <p class="lede page-hero__lede">{lede}</p>}
     <span class="draw-rule page-hero__rule" data-armed aria-hidden="true"></span>
     {
       hasSlot && (
-        <div class="page-hero__slot" data-rise data-armed style="--rise-delay:320ms">
+        <div class="page-hero__slot">
           <slot />
         </div>
       )

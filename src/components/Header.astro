@@ -37,15 +37,23 @@ const { mark, product } = site.wordmark;
           a second announcement of "602Medicare". Explicit width/height reserve
           the box before the PNG lands; `fetchpriority=high` because it is the
           one image above the fold on every page. */}
-      <img
-        class="brand__mark"
-        src="/logo/602medicare-logo-transparent.png"
-        alt=""
-        width="464"
-        height="464"
-        decoding="async"
-        fetchpriority="high"
-      />
+      {/* 128px source for a 44px box — 2x for retina and no more. The full
+          464px master was 147 KB downloaded above the fold on every page to
+          fill 44 CSS pixels; this is 10 KB. WebP with a PNG fallback, because
+          the one browser that matters here (an older iPad in a kitchen) may
+          predate WebP. */}
+      <picture>
+        <source srcset="/logo/badge-128.webp" type="image/webp" />
+        <img
+          class="brand__mark"
+          src="/logo/badge-128.png"
+          alt=""
+          width="128"
+          height="128"
+          decoding="async"
+          fetchpriority="high"
+        />
+      </picture>
       <span class="brand__text">
         <span class="brand__name">
           <span class="brand__name-mark">{mark}</span><span class="brand__name-product">{product}</span>
@@ -172,6 +180,7 @@ const { mark, product } = site.wordmark;
   /* The badge, capped at 44px tall — under the 48px brief, and it keeps the
      header row at its existing 4.5rem without the lockup crowding the nav.
      Square source (464×464), so width follows height. */
+  .brand picture { display: block; flex: none; line-height: 0; }
   .brand__mark {
     height: 44px;
     width: 44px;

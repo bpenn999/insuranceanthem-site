@@ -11,7 +11,12 @@ export default defineConfig({
   trailingSlash: 'always',
   build: {
     format: 'directory',
-    inlineStylesheets: 'auto',
+    // 'always', not 'auto'. The home page shipped 34 KB of CSS as TWO
+    // render-blocking <link>s (Kinetic 23 KB + index 11 KB), which on a
+    // throttled 4G phone is two extra round trips standing between the HTML
+    // and first paint. Inlined, they cost bytes in a document that was already
+    // being downloaded — and the document is gzipped on the way out.
+    inlineStylesheets: 'always',
   },
   integrations: [
     sitemap({
