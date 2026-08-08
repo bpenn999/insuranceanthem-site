@@ -9,8 +9,8 @@ calls itself by.
 > it is safe whenever you want — nothing in the build reads it, and the
 > Cloudflare Pages project is `insuranceanthem` for the same historical reason.
 
-Astro 7, static output, deploy-ready for Cloudflare Pages. No `wrangler.toml` — Pages
-builds from the repo.
+Astro 7, static output, published to Cloudflare Pages. No `wrangler.toml` — the build is
+plain `npm run build`, and publishing is an explicit `wrangler pages deploy dist`.
 
 ---
 
@@ -42,6 +42,22 @@ Override the browser with `CHROME=/path/to/chrome npm run e2e`.
 ---
 
 ## Deploying to Cloudflare Pages
+
+**Publishing is manual — a push to `main` does not deploy.** The Pages project is not
+GitHub-connected (verified 2026-08-08: a push sat 25 minutes with no build, on the apex
+and on `insuranceanthem.pages.dev` alike). Ship a change with:
+
+```bash
+npm run verify                                            # gates, and leaves dist built
+npx wrangler pages deploy dist --project-name=insuranceanthem
+```
+
+Deploy `dist`, **never `.`** — the repo root has no `index.html`, so deploying it uploads
+`node_modules` and 404s the site. Wrangler authenticates from
+`~/.wrangler/config/default.toml`; no API token belongs in the repo or the environment.
+
+The table below is the configuration to use **if** the project is ever connected to GitHub
+for automatic builds. It does not describe how the site publishes today.
 
 **Build configuration**
 

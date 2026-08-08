@@ -4,8 +4,20 @@ Guidance for Claude Code working in this repo. Read this, then `README.md`.
 
 ## What this is
 The **live** site for **602Medicare**, Brian Penner's Phoenix-metro Medicare practice.
-Astro 7, static output, deploys to the Cloudflare **Pages** project `insuranceanthem` on
-push to `main`. No `wrangler.toml`, no manual deploy step.
+Astro 7, static output, published to the Cloudflare **Pages** project `insuranceanthem`.
+
+⚠️ **Pushing to `main` does NOT deploy.** The Pages project is not GitHub-connected
+(verified 2026-08-08: a push sat 25 minutes with no build, on both the apex and
+`insuranceanthem.pages.dev`). Publishing is an explicit step:
+
+```bash
+npm run verify                                            # builds dist and gates it
+npx wrangler pages deploy dist --project-name=insuranceanthem
+```
+
+`dist`, never `.` — deploying the repo root uploads `node_modules` and 404s the site.
+Wrangler authenticates from `~/.wrangler/config/default.toml`; there is no `wrangler.toml`
+in the repo and no API token in the environment.
 
 - **Brand:** 602Medicare (a DBA of Kenztara INC) · **Domain:** https://602medicare.com
 - **Advisor:** Brian Penner, NPN 8206556, 22+ years, licensed in 18 states
