@@ -330,7 +330,10 @@ for (const f of htmls) {
       note(`FOOTER: no serving line on ${r}`);
     }
     if (!footer.includes('(602) 844-6002')) note(`FOOTER: no phone on ${r}`);
-    if (!footer.includes('brian@602medicare.com')) note(`FOOTER: no email on ${r}`);
+    // The PRACTICE inbox, not brian@. The footer NAP is the citation surface —
+    // it has to match what GBP and the directories carry, and that is the role
+    // address. brian@ lives on /contact/ only.
+    if (!footer.includes('hello@602medicare.com')) note(`FOOTER: no email on ${r}`);
 
     // The DBA. 602Medicare is not a corporation; the copyright has to name the
     // entity that actually holds the trade name.

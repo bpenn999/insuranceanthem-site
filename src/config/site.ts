@@ -58,8 +58,24 @@ export const site = {
   origin: 'https://602medicare.com',
   domain: '602medicare.com',
 
-  /** Contact */
-  email: 'brian@602medicare.com',
+  /**
+   * Contact
+   *
+   * TWO addresses, on purpose, and they are not interchangeable.
+   *
+   * `email` is the PRACTICE inbox — hello@ — and it is what every public
+   * surface renders: the footer, the contact card, the legal pages, the
+   * Organization node's `email`, and the lead form's mailto fallback when the
+   * POST fails. A role address survives an inbox change, can be shared or
+   * forwarded without republishing the site, and is the address to hand a
+   * spam-harvesting scraper.
+   *
+   * `agent.email` is Brian's DIRECT address — brian@ — and it belongs on the
+   * Person node and nowhere else by default. Keep the split: pointing the
+   * Organization and the Person at one address collapses two schema entities
+   * into one identity, which is the opposite of what the graph is for.
+   */
+  email: 'hello@602medicare.com',
   phone: {
     raw: PHONE_RAW,
     /** (602) 844-6002 — what humans see */
@@ -80,6 +96,10 @@ export const site = {
     name: 'Brian Penner',
     firstName: 'Brian',
     title: 'Licensed Independent Medicare Advisor',
+    /** Brian direct. See the note on `email` above — this is the Person node's
+     *  address and the "reach me directly" line on /contact/, not a second
+     *  general inbox to sprinkle around the site. */
+    email: 'brian@602medicare.com',
     npn: '8206556',
     /** Always "22+ Years". Never 21. */
     experience: '22+ Years',
