@@ -38,11 +38,11 @@ email, phone, advisor, address, hours, service area. Pull from it; never retype 
 into a page. `scripts/audit.mjs` fails the build if the built site renders more than one
 distinct phone string, which is the guard rail that catches a hand-typed number.
 
-Two contact addresses, and they are not interchangeable:
-- `site.email` → **hello@602medicare.com**, the practice inbox. Footer NAP, contact card,
-  legal pages, the Organization node, the lead form's mailto fallback.
-- `site.agent.email` → **brian@602medicare.com**, Brian direct. The Person node and one
-  line on `/contact/`. Do not spread it further.
+**One contact address for the whole site: `site.email` → help@602medicare.com**, the
+practice inbox. Footer NAP, contact card, legal pages, both the Organization and Person
+schema nodes, the lead form's mailto fallback. A personal `brian@` address is deliberately
+not published anywhere (Brian, 2026-08-08) and `site.agent` has no `email` field — do not
+add one back without a mailbox that provably exists.
 
 Other data files, each the only place its subject lives:
 `src/data/medicare-figures.ts` (**every CY dollar figure** — annual update due mid-November)

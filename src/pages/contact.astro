@@ -67,13 +67,6 @@ const schemaNodes = [
               <dt>Email</dt>
               <dd><a href={`mailto:${site.email}`} class="link">{site.email}</a></dd>
             </div>
-            {/* The only place brian@ appears on the site. Everywhere else the
-                practice inbox is the right address — see the note on `email`
-                in src/config/site.ts. */}
-            <div>
-              <dt>{site.agent.firstName} direct</dt>
-              <dd><a href={`mailto:${site.agent.email}`} class="link">{site.agent.email}</a></dd>
-            </div>
             <div>
               <dt>Based in</dt>
               <dd>{site.address.display}</dd>

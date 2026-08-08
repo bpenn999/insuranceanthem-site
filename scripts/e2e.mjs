@@ -666,7 +666,7 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
     return {
       wordmark: t.includes('602Medicare'),
       agent: t.includes('Brian Penner') && t.includes('22+ Years') && t.includes('NPN 8206556'),
-      nap: t.includes('Anthem, AZ 85086') && t.includes('(602) 844-6002') && t.includes('hello@602medicare.com'),
+      nap: t.includes('Anthem, AZ 85086') && t.includes('(602) 844-6002') && t.includes('help@602medicare.com'),
       wrongBrand: ['Moab','Monticello','Grand Junction'].filter(c => t.includes(c)),
       services: ['/medicare-advantage/','/medicare-supplement/','/part-d/','/long-term-care/'].every(href),
       learnHub: href('/learn/'),
