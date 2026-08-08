@@ -1,0 +1,1057 @@
+---
+/**
+ * The booking picker — a date grid and a grid of time buttons, built for a
+ * 65-plus visitor on a phone.
+ *
+ * WHY THIS IS NOT AN IFRAME ANY MORE is set out in src/config/booking.ts. The
+ * short version: the embed's time picker was a scroll list and its date grid
+ * did not survive a 375px viewport, and a cross-origin frame cannot be styled
+ * or tested from out here. So this draws its own controls against the same two
+ * endpoints the embed calls.
+ *
+ * THE RULES THIS COMPONENT IS BUILT TO, all of them non-negotiable:
+ *
+ *   · Nothing is a dropdown, a scroll wheel or a `<select>`. Every choice is a
+ *     button you can see without opening anything.
+ *   · The month grid is always visible. It is not behind a "choose a date"
+ *     control, and it does not collapse to a text input at any width.
+ *   · Every control is at least 48px on its shortest side and at least 18px of
+ *     type. On a 375px screen seven 48px columns do not fit inside the page
+ *     gutter, so the calendar goes full-bleed there rather than shrinking the
+ *     cells — see the `max-width: 430px` block in the styles.
+ *   · The phone number is under the calendar in every state, including the
+ *     states where everything is working.
+ *
+ * PROGRESSIVE ENHANCEMENT: the markup ships with the fallback iframe in a
+ * `<noscript>`, and the script reveals the same iframe if the API fails. A
+ * visitor never reaches a dead page — the worst case is the calendar they had
+ * before, plus a phone number.
+ */
+import site from '../config/site';
+import booking from '../config/booking';
+import { DISPLAY_TZ } from '../lib/booking';
+
+/* Sunday-first, to match `monthGrid`. Two letters so seven of them fit at
+   375px; the full name is on each column header for a screen reader. */
+const weekdays = [
+  { short: 'Su', long: 'Sunday' },
+  { short: 'Mo', long: 'Monday' },
+  { short: 'Tu', long: 'Tuesday' },
+  { short: 'We', long: 'Wednesday' },
+  { short: 'Th', long: 'Thursday' },
+  { short: 'Fr', long: 'Friday' },
+  { short: 'Sa', long: 'Saturday' },
+];
+---
+
+<div
+  class="bk"
+  data-booking
+  data-supabase-url={booking.supabaseUrl}
+  data-supabase-key={booking.supabaseAnonKey}
+  data-location-slug={booking.locationSlug}
+  data-calendar-slug={booking.calendarSlug}
+  data-location-type={booking.locationType}
+  data-duration={String(booking.defaultDuration)}
+  data-warm-days={String(booking.warmDays)}
+  data-display-tz={DISPLAY_TZ}
+  data-embed-url={booking.embedUrl}
+  data-phone={site.phone.display}
+>
+  {/* ── Step 1 · the month grid ─────────────────────────────────────────── */}
+  <section class="bk__step" aria-labelledby="bk-h-date">
+    <h2 class="bk__h" id="bk-h-date">
+      <span class="bk__num" aria-hidden="true">1</span>
+      Choose a day
+    </h2>
+
+    <div class="bk__cal">
+      <div class="bk__month">
+        <button
+          type="button"
+          class="bk__nav"
+          data-cal-prev
+          aria-label="Previous month"
+        >
+          <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
+            <path d="M15 5 8 12l7 7" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+
+        {/* aria-live so a screen reader hears the month change when the arrows
+            are used — the grid below it redraws silently otherwise. */}
+        <p class="bk__month-name" data-cal-label aria-live="polite">&nbsp;</p>
+
+        <button
+          type="button"
+          class="bk__nav"
+          data-cal-next
+          aria-label="Next month"
+        >
+          <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
+            <path d="m9 5 7 7-7 7" fill="none" stroke="currentColor" stroke-width="2.5"
+                  stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="bk__dow" aria-hidden="true">
+        {weekdays.map((d) => <span>{d.short}</span>)}
+      </div>
+
+      {/* A grid of real buttons, not a table of links: every cell is a control
+          and the browser's own focus order walks them left to right. */}
+      <div class="bk__grid" data-cal-grid role="group" aria-label="Choose a day"></div>
+
+      <p class="bk__key">
+        <span class="bk__key-item"><span class="bk__swatch bk__swatch--open"></span> Available</span>
+        <span class="bk__key-item"><span class="bk__swatch bk__swatch--shut"></span> Not available</span>
+      </p>
+    </div>
+  </section>
+
+  {/* ── Step 2 · the time buttons ───────────────────────────────────────── */}
+  <section class="bk__step" aria-labelledby="bk-h-time" data-step-time hidden>
+    <h2 class="bk__h" id="bk-h-time">
+      <span class="bk__num" aria-hidden="true">2</span>
+      Choose a time
+    </h2>
+
+    <p class="bk__sub" data-time-sub></p>
+
+    <div class="bk__slots" data-slot-grid role="group" aria-label="Choose a time"></div>
+
+    <p class="bk__note" data-slot-note hidden></p>
+
+    <div class="bk__actions">
+      <button type="button" class="btn btn--lg bk__continue" data-continue disabled>
+        Continue
+      </button>
+    </div>
+  </section>
+
+  {/* ── Step 3 · who is calling ─────────────────────────────────────────── */}
+  <section class="bk__step" aria-labelledby="bk-h-you" data-step-details hidden>
+    <h2 class="bk__h" id="bk-h-you">
+      <span class="bk__num" aria-hidden="true">3</span>
+      Your details
+    </h2>
+
+    <p class="bk__chosen" data-chosen></p>
+
+    <form class="bk__form" data-booking-form novalidate>
+      <p class="bk__field">
+        <label for="bk-first">First name <span aria-hidden="true">*</span></label>
+        <input id="bk-first" name="firstName" type="text" autocomplete="given-name" required />
+      </p>
+      <p class="bk__field">
+        <label for="bk-last">Last name <span aria-hidden="true">*</span></label>
+        <input id="bk-last" name="lastName" type="text" autocomplete="family-name" required />
+      </p>
+      <p class="bk__field">
+        <label for="bk-phone">Phone <span aria-hidden="true">*</span></label>
+        <input id="bk-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required />
+      </p>
+      <p class="bk__field">
+        <label for="bk-email">Email <span class="bk__opt">(optional)</span></label>
+        <input id="bk-email" name="email" type="email" autocomplete="email" />
+      </p>
+      <p class="bk__field bk__field--full">
+        <label for="bk-notes">Anything I should know? <span class="bk__opt">(optional)</span></label>
+        <textarea id="bk-notes" name="notes" rows="3"
+                  placeholder="Doctors you want to keep, medications, questions."></textarea>
+      </p>
+
+      <p class="bk__error" data-form-error role="alert" hidden></p>
+
+      <div class="bk__actions bk__actions--split">
+        <button type="button" class="btn btn--ghost btn--lg" data-back>Back</button>
+        <button type="submit" class="btn btn--lg" data-submit>Confirm this appointment</button>
+      </div>
+
+      <p class="bk__consent">
+        By confirming you agree to be contacted about this appointment at the number
+        or address above. We do not share your details.
+      </p>
+    </form>
+  </section>
+
+  {/* ── Done ────────────────────────────────────────────────────────────── */}
+  <section class="bk__done" data-done hidden aria-live="polite">
+    <p class="bk__tick" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="40" height="40" focusable="false">
+        <path d="m4 12.5 5.5 5.5L20 7" fill="none" stroke="currentColor" stroke-width="2.5"
+              stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </p>
+    <h2 class="bk__h bk__h--done">You are booked in.</h2>
+    <p class="bk__done-when" data-done-when></p>
+    <p class="bk__done-note">
+      {site.agent.firstName} will call you at the number you gave. If you need to
+      change it, call <a href={site.phone.href} class="link">{site.phone.display}</a>.
+    </p>
+  </section>
+
+  {/* ── The fallback: the original embed, revealed only if the API fails ── */}
+  <div class="bk__fallback" data-fallback hidden>
+    <p class="bk__fallback-note" data-fallback-note></p>
+    <iframe
+      title="602Medicare — booking calendar"
+      class="bk__frame"
+      data-fallback-frame
+    ></iframe>
+  </div>
+
+  <noscript>
+    <iframe
+      src={booking.embedUrl}
+      title="602Medicare — booking calendar"
+      class="bk__frame"
+    ></iframe>
+  </noscript>
+</div>
+
+{/*
+  The fallback text this page is required to keep, in every state. It is outside
+  every `hidden` container on purpose: whatever else is or is not working, the
+  phone number is on the page.
+*/}
+<p class="bk__phone">
+  Calendar not loading? Call <a href={site.phone.href} class="link" data-cta="book-fallback-call">
+    {site.phone.display}</a> and we will put it in the diary the old-fashioned way,
+  or <a href="/contact/" class="link">send the details instead</a>.
+</p>
+
+<script>
+  import {
+    DISPLAY_TZ,
+    formatDayLong,
+    formatMonthLong,
+    formatSlotRange,
+    formatSlotTime,
+    isoDayIn,
+    monthGrid,
+    nextBookableDays,
+    parseDay,
+    shiftMonth,
+    validateDetails,
+  } from '../lib/booking';
+
+  type Slot = { start: string; end: string; startUtc: string; endUtc: string; available?: boolean };
+
+  const root = document.querySelector<HTMLElement>('[data-booking]');
+  if (root) init(root);
+
+  function init(root: HTMLElement) {
+    const cfg = {
+      url: root.dataset.supabaseUrl!,
+      key: root.dataset.supabaseKey!,
+      locationSlug: root.dataset.locationSlug!,
+      calendarSlug: root.dataset.calendarSlug!,
+      locationType: root.dataset.locationType!,
+      duration: Number(root.dataset.duration) || 30,
+      warmDays: Number(root.dataset.warmDays) || 10,
+      tz: root.dataset.displayTz || DISPLAY_TZ,
+      embedUrl: root.dataset.embedUrl!,
+      phone: root.dataset.phone!,
+    };
+
+    const $ = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
+    const grid = $('[data-cal-grid]');
+    const calLabel = $('[data-cal-label]');
+    const slotGrid = $('[data-slot-grid]');
+    const slotNote = $('[data-slot-note]');
+    const timeStep = $('[data-step-time]');
+    const timeSub = $('[data-time-sub]');
+    const detailStep = $('[data-step-details]');
+    const chosen = $('[data-chosen]');
+    const doneEl = $('[data-done]');
+    const doneWhen = $('[data-done-when]');
+    const form = $<HTMLFormElement>('[data-booking-form]');
+    const formError = $('[data-form-error]');
+    const continueBtn = $<HTMLButtonElement>('[data-continue]');
+    const submitBtn = $<HTMLButtonElement>('[data-submit]');
+
+    /** Today in the market's timezone, not the visitor's — see src/lib/booking.ts. */
+    const today = isoDayIn(new Date(), cfg.tz);
+    const start = parseDay(today);
+
+    const state = {
+      year: start.y,
+      month: start.m,
+      selectedDay: null as string | null,
+      selectedSlot: null as Slot | null,
+      calendarId: null as string | null,
+      calendarTz: null as string | null,
+      duration: cfg.duration,
+      /** [1..5] until the calendar tells us otherwise. */
+      bookableWeekdays: [1, 2, 3, 4, 5] as number[],
+      /** Days a lookup has proven empty. Greyed out without a second request. */
+      soldOut: new Set<string>(),
+      /** date → slots, so re-tapping a day is instant. */
+      cache: new Map<string, Slot[]>(),
+    };
+
+    /* ── the API ───────────────────────────────────────────────────────── */
+
+    async function availability(date: string) {
+      const q = new URLSearchParams({
+        date,
+        duration: String(state.duration),
+        location_slug: cfg.locationSlug,
+        calendar_slug: cfg.calendarSlug,
+      });
+      const res = await fetch(`${cfg.url}/functions/v1/get-availability?${q}`, {
+        headers: { Authorization: `Bearer ${cfg.key}` },
+      });
+      if (!res.ok) throw new Error(`availability ${res.status}`);
+      const body = await res.json();
+      if (!body?.success) throw new Error(body?.error || 'availability failed');
+
+      // The calendar object rides along with every response. Take it once —
+      // its slot length and bookable weekdays are what the grid is drawn from.
+      const cal = body.calendar;
+      if (cal && !state.calendarId) {
+        state.calendarId = cal.id ?? null;
+        state.calendarTz = cal.time_zone ?? null;
+        if (cal.slot_duration) state.duration = cal.slot_duration;
+        if (Array.isArray(cal.bookable_weekdays) && cal.bookable_weekdays.length) {
+          state.bookableWeekdays = cal.bookable_weekdays;
+        }
+      }
+
+      const slots: Slot[] = Array.isArray(body.slots)
+        ? body.slots.filter((s: Slot) => s?.startUtc && s?.endUtc && s.available !== false)
+        : [];
+      state.cache.set(date, slots);
+      if (!slots.length) state.soldOut.add(date);
+      return slots;
+    }
+
+    /**
+     * Give up on the native picker and show the embed instead.
+     *
+     * This is the whole reason the iframe is still in the markup. An
+     * undocumented endpoint that changes shape, a blocked request, a visitor
+     * behind a filter that eats the Supabase host — all of them land here, and
+     * all of them end with a working calendar rather than an empty box.
+     */
+    function fallback(why: string) {
+      const box = $('[data-fallback]');
+      const frame = $<HTMLIFrameElement>('[data-fallback-frame]');
+      const note = $('[data-fallback-note]');
+      if (!box.hidden) return;
+      note.textContent =
+        'Loading the calendar the long way round — it may take a moment.';
+      if (!frame.src) frame.src = cfg.embedUrl;
+      box.hidden = false;
+      root.querySelectorAll<HTMLElement>('.bk__step').forEach((s) => (s.hidden = true));
+      // Not console.error: a fallback that fired correctly is not a page error,
+      // and the e2e run asserts the console stays clean.
+      console.info('[booking] native picker unavailable, using the embed —', why);
+    }
+
+    /* ── the month grid ────────────────────────────────────────────────── */
+
+    function drawMonth() {
+      calLabel.textContent = formatMonthLong(state.year, state.month);
+
+      const cells = monthGrid(state.year, state.month, {
+        today,
+        bookableWeekdays: state.bookableWeekdays,
+        soldOut: state.soldOut,
+      });
+
+      grid.replaceChildren(
+        ...cells.map((c) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'bk__day';
+          b.textContent = String(c.day);
+          b.dataset.day = c.date;
+
+          if (!c.inMonth) {
+            b.classList.add('bk__day--outside');
+            b.disabled = true;
+            b.tabIndex = -1;
+            b.setAttribute('aria-hidden', 'true');
+            return b;
+          }
+
+          b.setAttribute('aria-label', formatDayLong(c.date));
+          if (c.isToday) b.classList.add('bk__day--today');
+
+          if (c.disabled) {
+            b.disabled = true;
+            b.classList.add('bk__day--shut');
+            b.setAttribute('aria-label', `${formatDayLong(c.date)} — no times available`);
+          }
+          if (c.date === state.selectedDay) {
+            b.classList.add('bk__day--on');
+            b.setAttribute('aria-pressed', 'true');
+          } else if (!c.disabled) {
+            b.setAttribute('aria-pressed', 'false');
+          }
+          return b;
+        }),
+      );
+
+      // The previous-month arrow is pointless once you are on the current
+      // month — there is nothing bookable behind today.
+      const atStart = state.year === start.y && state.month === start.m;
+      $<HTMLButtonElement>('[data-cal-prev]').disabled = atStart;
+    }
+
+    /* ── the time buttons ──────────────────────────────────────────────── */
+
+    function drawSlots(day: string, slots: Slot[]) {
+      state.selectedSlot = null;
+      continueBtn.disabled = true;
+      // "Arizona time" is spelled out because this calendar runs on Mountain
+      // time while the market it serves is on Arizona time, which does not
+      // change with the clocks. A bare "9:00 AM" would be ambiguous for exactly
+      // the visitor least able to absorb the ambiguity.
+      timeSub.textContent = `${formatDayLong(day)} — all times in Arizona time.`;
+
+      if (!slots.length) {
+        slotGrid.replaceChildren();
+        slotNote.hidden = false;
+        slotNote.textContent =
+          'No times left on this day. Please choose another day above.';
+        return;
+      }
+
+      slotNote.hidden = true;
+      slotGrid.replaceChildren(
+        ...slots.map((s, i) => {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'bk__slot';
+          b.dataset.slot = String(i);
+          b.setAttribute('aria-pressed', 'false');
+
+          const time = document.createElement('span');
+          time.className = 'bk__slot-time';
+          time.textContent = formatSlotTime(s.startUtc, cfg.tz);
+
+          // The tick lives in the DOM from the start and is revealed by CSS on
+          // the selected state, so choosing a time does not reflow the grid.
+          const tick = document.createElement('span');
+          tick.className = 'bk__slot-tick';
+          tick.setAttribute('aria-hidden', 'true');
+          tick.innerHTML =
+            '<svg viewBox="0 0 24 24" width="22" height="22" focusable="false">' +
+            '<path d="m4 12.5 5.5 5.5L20 7" fill="none" stroke="currentColor" ' +
+            'stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+          b.append(time, tick);
+          b.setAttribute('aria-label', `${formatSlotRange(s, cfg.tz)}, Arizona time`);
+          return b;
+        }),
+      );
+    }
+
+    /* ── moving between the steps ──────────────────────────────────────── */
+
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    function reveal(el: HTMLElement) {
+      el.hidden = false;
+      // Let the browser lay the panel out before asking it to scroll, or the
+      // target is still zero-height and the scroll goes nowhere.
+      requestAnimationFrame(() => {
+        el.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth', block: 'start' });
+      });
+    }
+
+    async function pickDay(day: string) {
+      state.selectedDay = day;
+      drawMonth();
+
+      timeStep.hidden = false;
+      slotNote.hidden = false;
+      slotNote.textContent = 'Looking up available times…';
+      slotGrid.replaceChildren();
+      timeSub.textContent = formatDayLong(day);
+      reveal(timeStep);
+
+      try {
+        const slots = state.cache.get(day) ?? (await availability(day));
+        // Someone who tapped another day while this was in flight owns the
+        // panel now — dropping the stale answer is the whole guard.
+        if (state.selectedDay !== day) return;
+        drawSlots(day, slots);
+        if (!slots.length) drawMonth(); // grey the day out now it is proven empty
+      } catch (err) {
+        if (state.selectedDay !== day) return;
+        fallback(String(err));
+      }
+    }
+
+    /* ── events ────────────────────────────────────────────────────────── */
+
+    grid.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-day]');
+      if (!b || b.disabled) return;
+      pickDay(b.dataset.day!);
+    });
+
+    slotGrid.addEventListener('click', (e) => {
+      const b = (e.target as HTMLElement).closest<HTMLButtonElement>('[data-slot]');
+      if (!b) return;
+      const slots = state.cache.get(state.selectedDay!) ?? [];
+      state.selectedSlot = slots[Number(b.dataset.slot)] ?? null;
+      slotGrid.querySelectorAll('.bk__slot').forEach((el) => {
+        const on = el === b;
+        el.classList.toggle('bk__slot--on', on);
+        el.setAttribute('aria-pressed', String(on));
+      });
+      continueBtn.disabled = !state.selectedSlot;
+    });
+
+    $('[data-cal-prev]').addEventListener('click', () => {
+      const m = shiftMonth(state.year, state.month, -1);
+      state.year = m.y;
+      state.month = m.m;
+      drawMonth();
+    });
+    $('[data-cal-next]').addEventListener('click', () => {
+      const m = shiftMonth(state.year, state.month, 1);
+      state.year = m.y;
+      state.month = m.m;
+      drawMonth();
+    });
+
+    continueBtn.addEventListener('click', () => {
+      if (!state.selectedSlot || !state.selectedDay) return;
+      chosen.textContent = `${formatDayLong(state.selectedDay)}, ${formatSlotRange(
+        state.selectedSlot,
+        cfg.tz,
+      )} Arizona time`;
+      reveal(detailStep);
+      // Not autofocus: dropping a 65-plus visitor straight into a text field
+      // pops the keyboard over the appointment they just chose, before they
+      // have read it back.
+    });
+
+    $('[data-back]').addEventListener('click', () => {
+      detailStep.hidden = true;
+      reveal(timeStep);
+    });
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (submitBtn.disabled) return;
+
+      const data = new FormData(form);
+      const details = {
+        firstName: String(data.get('firstName') || '').trim(),
+        lastName: String(data.get('lastName') || '').trim(),
+        phone: String(data.get('phone') || '').trim(),
+        email: String(data.get('email') || '').trim(),
+        notes: String(data.get('notes') || '').trim(),
+      };
+
+      const check = validateDetails(details);
+      if (!check.ok) {
+        formError.hidden = false;
+        formError.textContent = check.message;
+        form.querySelector<HTMLInputElement>(`[name="${check.field}"]`)?.focus();
+        return;
+      }
+      if (!state.selectedSlot || !state.calendarId) {
+        formError.hidden = false;
+        formError.textContent = 'Please choose a day and a time first.';
+        return;
+      }
+
+      formError.hidden = true;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Booking…';
+
+      // Mirrors the payload GoGuruX's own widget sends, field for field. The
+      // timezone sent is the CALENDAR's, not the visitor's, because that is
+      // what the widget sends and the server reads it as the booking's frame of
+      // reference. Only the DISPLAY is converted to Arizona time.
+      const payload = {
+        calendarId: state.calendarId,
+        firstName: details.firstName,
+        lastName: details.lastName,
+        email: details.email,
+        phone: details.phone,
+        startTime: state.selectedSlot.startUtc,
+        endTime: state.selectedSlot.endUtc,
+        timeZone: state.calendarTz || cfg.tz,
+        ...(state.calendarTz ? { time_zone_at_booking: state.calendarTz } : {}),
+        durationMinutes: state.duration,
+        locationType: cfg.locationType,
+        notes: details.notes,
+      };
+
+      try {
+        const res = await fetch(`${cfg.url}/functions/v1/create-booking`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${cfg.key}` },
+          body: JSON.stringify(payload),
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok || body?.error) throw new Error(body?.error || `booking ${res.status}`);
+
+        doneWhen.textContent = `${formatDayLong(state.selectedDay!)}, ${formatSlotRange(
+          state.selectedSlot,
+          cfg.tz,
+        )} Arizona time`;
+        root.querySelectorAll<HTMLElement>('.bk__step').forEach((s) => (s.hidden = true));
+        reveal(doneEl);
+      } catch (err) {
+        // A failed booking does NOT fall back to the iframe: the visitor has
+        // already typed everything in, and throwing them into a fresh calendar
+        // to type it again is worse than telling them the truth and giving them
+        // the phone number.
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Confirm this appointment';
+        formError.hidden = false;
+        // The number comes off the root element, not out of a string literal.
+        // src/config/site.ts is the only place a phone number is allowed to
+        // live, and scripts/audit.mjs fails the build on a second one.
+        formError.textContent =
+          'Sorry — that time could not be booked. It may have just been taken. ' +
+          `Please choose another time, or call ${cfg.phone} and we will book it for you.`;
+        console.info('[booking] create-booking failed —', String(err));
+      }
+    });
+
+    /* ── boot ──────────────────────────────────────────────────────────── */
+
+    drawMonth(); // draw immediately from the defaults so nothing pops in
+
+    (async () => {
+      try {
+        // One request establishes the calendar: its id, its slot length and the
+        // weekdays it takes bookings on. Everything else follows from it.
+        const first = nextBookableDays(today, state.bookableWeekdays, 1)[0] ?? today;
+        await availability(first);
+        drawMonth();
+
+        // Then warm a fortnight of lookups, gently, so fully-booked days are
+        // greyed out before anyone taps them. Sequential on purpose: this is a
+        // background nicety and should not race the visitor's own tap for a
+        // connection.
+        for (const day of nextBookableDays(today, state.bookableWeekdays, cfg.warmDays)) {
+          if (state.cache.has(day)) continue;
+          try {
+            await availability(day);
+          } catch {
+            break; // one failure is enough to stop warming; the picker still works
+          }
+          if (state.soldOut.has(day)) drawMonth();
+        }
+      } catch (err) {
+        fallback(String(err));
+      }
+    })();
+  }
+</script>
+
+<style>
+  /* Every size in here is deliberate and most of them are floors, not
+     preferences: 18px of type and a 48px target are the brief. Do not "tidy"
+     these down to the site's usual --t-sm.
+
+     WHY THE `:global()` SELECTORS, and why they are not a shortcut: Astro
+     scopes a component's CSS by stamping a `data-astro-cid-…` attribute on the
+     elements in its TEMPLATE and rewriting every selector to require it. The
+     day cells and the time buttons are not in the template — the script builds
+     them with `createElement`, so they never receive that attribute and a
+     scoped `.bk__day { … }` rule misses them entirely. It compiles, it ships,
+     and the calendar renders as unstyled 16px browser buttons; that is exactly
+     what the e2e run caught. Each one is written `.bk :global(.bk__day)` rather
+     than a bare `:global(.bk__day)` so the escape hatch is still fenced inside
+     this component's root. */
+  .bk {
+    --bk-cell: 3.25rem; /* 52px — the floor for a day cell */
+    --bk-type: 1.125rem; /* 18px — the floor for anything you tap */
+    max-width: 40rem;
+    margin-inline: auto;
+  }
+
+  .bk__step + .bk__step,
+  .bk__done {
+    margin-top: var(--s-7);
+  }
+
+  .bk__h {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    font-size: var(--t-xl);
+    margin-bottom: var(--s-4);
+  }
+  .bk__num {
+    display: grid;
+    place-content: center;
+    width: 2rem;
+    height: 2rem;
+    flex: none;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    font-weight: 700;
+  }
+
+  .bk__sub,
+  .bk__chosen {
+    font-size: var(--bk-type);
+    line-height: 1.5;
+    color: var(--ink-body);
+    margin-bottom: var(--s-4);
+  }
+  .bk__chosen {
+    font-weight: 600;
+    color: var(--navy);
+    background: var(--navy-wash);
+    border-radius: var(--radius);
+    padding: var(--s-3) var(--s-4);
+  }
+
+  /* ── the calendar ──────────────────────────────────────────────────── */
+  .bk__cal {
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    padding: var(--s-4);
+  }
+
+  .bk__month {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: var(--s-2);
+    margin-bottom: var(--s-3);
+  }
+  .bk__month-name {
+    text-align: center;
+    font-family: var(--font-display);
+    font-size: var(--t-xl);
+    color: var(--navy);
+    font-weight: 600;
+  }
+  .bk__nav {
+    display: grid;
+    place-content: center;
+    width: 3rem;
+    height: 3rem; /* 48px */
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--navy);
+    cursor: pointer;
+  }
+  .bk__nav:hover:not(:disabled) { background: var(--navy-wash); border-color: var(--navy); }
+  .bk__nav:disabled { opacity: 0.3; cursor: default; }
+
+  .bk__dow {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.25rem;
+    margin-bottom: 0.25rem;
+  }
+  .bk__dow span {
+    text-align: center;
+    font-size: 0.9375rem; /* a label, not a control — exempt from the 18px floor */
+    font-weight: 700;
+    color: var(--ink-faint);
+    letter-spacing: 0.04em;
+  }
+
+  .bk__grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 0.25rem;
+  }
+
+  .bk :global(.bk__day) {
+    min-height: var(--bk-cell);
+    display: grid;
+    place-content: center;
+    padding: 0;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink-body);
+    font-family: var(--font-body);
+    font-size: var(--bk-type);
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition: background-color 140ms var(--ease), color 140ms var(--ease),
+                border-color 140ms var(--ease);
+  }
+  .bk :global(.bk__day:hover:not(:disabled)) {
+    background: var(--navy-wash);
+    border-color: var(--navy);
+  }
+  /* Today gets a ring, not a fill — a fill here would read as "selected" before
+     anything has been chosen. */
+  .bk :global(.bk__day--today:not(.bk__day--on)) {
+    box-shadow: inset 0 0 0 2px var(--navy);
+  }
+  .bk :global(.bk__day--on) {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+  }
+  .bk :global(.bk__day--on:hover) { background: var(--navy); }
+  .bk :global(.bk__day--shut) {
+    background: var(--tint);
+    color: var(--ink-faint);
+    /* 4.6:1 on the tint — greyed out, but still legible enough to read the
+       date you are being told you cannot have. */
+    opacity: 0.65;
+    cursor: default;
+  }
+  .bk :global(.bk__day--outside) { visibility: hidden; }
+
+  .bk__key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-4);
+    justify-content: center;
+    margin-top: var(--s-4);
+    font-size: 1rem;
+    color: var(--ink-muted);
+  }
+  .bk__key-item { display: inline-flex; align-items: center; gap: 0.5rem; }
+  .bk__swatch {
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 3px;
+    border: 1px solid var(--rule);
+    flex: none;
+  }
+  .bk__swatch--open { background: var(--surface); }
+  .bk__swatch--shut { background: var(--tint); opacity: 0.65; }
+
+  /* ── the time buttons ──────────────────────────────────────────────── */
+  .bk__slots {
+    display: grid;
+    /* Two up on a phone, three or four as there is room. `auto-fill` rather
+       than `auto-fit` so a day with a single slot left gets a normal-width
+       button instead of one stretched across the whole row. */
+    grid-template-columns: repeat(auto-fill, minmax(8.5rem, 1fr));
+    gap: var(--s-3);
+  }
+
+  .bk :global(.bk__slot) {
+    position: relative;
+    min-height: 3.75rem; /* 60px */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.75rem 0.5rem;
+    border: 2px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--navy);
+    font-family: var(--font-body);
+    font-size: 1.25rem; /* 20px */
+    font-weight: 600;
+    font-variant-numeric: tabular-nums;
+    cursor: pointer;
+    transition: background-color 140ms var(--ease), color 140ms var(--ease),
+                border-color 140ms var(--ease);
+  }
+  .bk :global(.bk__slot:hover) { border-color: var(--navy); background: var(--navy-wash); }
+  .bk :global(.bk__slot--on) {
+    background: var(--navy);
+    border-color: var(--navy);
+    color: #fff;
+  }
+  .bk :global(.bk__slot--on:hover) { background: var(--navy); }
+  /* The tick occupies its width from the start, so selecting a time changes
+     colour only — the grid never reflows under the visitor's finger. */
+  .bk :global(.bk__slot-tick) {
+    display: inline-grid;
+    place-content: center;
+    width: 22px;
+    opacity: 0;
+    transition: opacity 140ms var(--ease);
+  }
+  .bk :global(.bk__slot--on .bk__slot-tick) { opacity: 1; }
+
+  .bk__note {
+    margin-top: var(--s-4);
+    font-size: var(--bk-type);
+    color: var(--ink-muted);
+    line-height: 1.5;
+  }
+
+  .bk__actions { margin-top: var(--s-5); }
+  .bk__actions--split {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--s-3);
+  }
+  .bk__actions--split .btn { flex: 1 1 12rem; }
+
+  /* The site's .btn is 48px tall at --t-sm. On this page every button is a
+     booking control, so they all take the 18px floor and a taller box. */
+  .bk :global(.btn--lg) {
+    min-height: 3.5rem; /* 56px */
+    font-size: var(--bk-type);
+    padding-inline: var(--s-6);
+  }
+  .bk__continue { width: 100%; }
+  .bk__continue:disabled {
+    background: var(--tint-deep);
+    color: var(--ink-faint);
+    cursor: default;
+    box-shadow: none;
+  }
+  .bk__continue:disabled:hover { background: var(--tint-deep); }
+
+  /* ── the details form ──────────────────────────────────────────────── */
+  .bk__form {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: var(--s-4);
+  }
+  .bk__field { display: grid; gap: 0.4rem; }
+  .bk__field--full,
+  .bk__error,
+  .bk__actions,
+  .bk__consent { grid-column: 1 / -1; }
+
+  .bk__field label {
+    font-size: var(--bk-type);
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .bk__opt { font-weight: 400; color: var(--ink-muted); }
+
+  .bk__field input,
+  .bk__field textarea {
+    min-height: 3.25rem; /* 52px */
+    padding: 0.75rem 0.9rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--ink-body);
+    font-family: var(--font-body);
+    /* 18px is also comfortably over the 16px below which iOS zooms the page on
+       focus — which on this form would throw the layout sideways mid-typing. */
+    font-size: var(--bk-type);
+    width: 100%;
+  }
+  .bk__field textarea { min-height: 6rem; resize: vertical; }
+  .bk__field input:focus-visible,
+  .bk__field textarea:focus-visible {
+    outline: 2px solid var(--navy);
+    outline-offset: 1px;
+    border-color: var(--navy);
+  }
+
+  .bk__error {
+    font-size: var(--bk-type);
+    font-weight: 600;
+    color: var(--red-deep);
+    background: color-mix(in srgb, var(--red) 8%, transparent);
+    border-radius: var(--radius);
+    padding: var(--s-3) var(--s-4);
+    line-height: 1.5;
+  }
+  .bk__consent {
+    font-size: 1rem;
+    color: var(--ink-muted);
+    line-height: 1.55;
+  }
+
+  /* ── done ──────────────────────────────────────────────────────────── */
+  .bk__done {
+    text-align: center;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    padding: var(--s-7) var(--s-5);
+  }
+  .bk__tick { color: var(--navy); line-height: 0; margin-bottom: var(--s-3); }
+  .bk__h--done { justify-content: center; }
+  .bk__done-when {
+    font-size: var(--t-xl);
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: var(--s-4);
+  }
+  .bk__done-note {
+    font-size: var(--bk-type);
+    color: var(--ink-body);
+    line-height: 1.6;
+    max-width: 34ch;
+    margin-inline: auto;
+  }
+
+  /* ── the fallback embed ────────────────────────────────────────────── */
+  .bk__fallback-note {
+    font-size: var(--bk-type);
+    color: var(--ink-muted);
+    margin-bottom: var(--s-3);
+    text-align: center;
+  }
+  .bk__frame {
+    width: 100%;
+    height: 680px;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    display: block;
+  }
+
+  .bk__phone {
+    margin-top: var(--s-6);
+    text-align: center;
+    font-size: var(--bk-type);
+    color: var(--ink-body);
+    max-width: 46ch;
+    margin-inline: auto;
+    line-height: 1.6;
+  }
+
+  /* Focus rings on the grids matter more here than anywhere else on the site —
+     the keyboard path through 30-odd buttons is the whole navigation. */
+  .bk :global(.bk__day:focus-visible),
+  .bk :global(.bk__slot:focus-visible),
+  .bk__nav:focus-visible {
+    outline: 3px solid var(--red);
+    outline-offset: 2px;
+    z-index: 1;
+  }
+
+  /* ── 375px ─────────────────────────────────────────────────────────────
+     Seven 48px columns need 336px before any gap or padding, and the page
+     gutter alone takes 40px off a 375px screen. Rather than shrink the cells
+     below the floor, the calendar breaks out of the gutter and runs full width.
+     This is the block that makes the grid render on an iPhone SE/12 mini. */
+  @media (max-width: 430px) {
+    .bk__cal {
+      margin-inline: calc(var(--gutter) * -1);
+      border-inline: 0;
+      border-radius: 0;
+      padding: var(--s-3) 0.25rem;
+    }
+    .bk__grid,
+    .bk__dow { gap: 0.1875rem; }
+    .bk :global(.bk__day) { min-height: 3.125rem; font-size: 1.125rem; }
+    .bk__slots { grid-template-columns: repeat(2, 1fr); }
+    .bk :global(.bk__slot) { font-size: 1.1875rem; padding-inline: 0.25rem; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bk :global(.bk__day),
+    .bk :global(.bk__slot),
+    .bk :global(.bk__slot-tick) { transition: none; }
+  }
+</style>

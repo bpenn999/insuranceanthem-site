@@ -9,6 +9,20 @@ const PORT = 9333;
 
 import { spawn } from 'node:child_process';
 
+/**
+ * The brand facts, from the one file that holds them.
+ *
+ * Node strips the types on its own from v23, so this needs no flag and no build
+ * step. It is imported rather than retyped because both of the checks that used
+ * a frozen literal here went stale the moment the value behind it moved: the
+ * footer CTA was asserted to be `/contact/?intent=15-minute-call` long after it
+ * became `/book/`, and the NAP block was asserted to read "Anthem, AZ 85086"
+ * after the ZIP was deliberately dropped from the published address. Both then
+ * failed for months while the site itself was correct. An assertion sourced
+ * from site.ts cannot go stale that way.
+ */
+import site from '../src/config/site.ts';
+
 const CHROME =
   process.env.CHROME ||
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
@@ -139,21 +153,34 @@ console.log('\nHome — motion engine');
     return new Promise(res => setTimeout(() => res(snap() !== a), 400));
   `));
   {
+    /* This used to assert against the viewport AT LOAD, and had been failing on
+       a correct page for as long as the hero has filled the first screen: the
+       first armed element on this page sits at y≈997 on a 900px viewport, so
+       "visible" was always 0 and `visible > 3` could never be true. It was
+       measuring the hero's height, not the reveal engine.
+
+       So it scrolls to the armed elements first and then asserts. That is the
+       behaviour worth pinning anyway — a reveal engine's job is to fire when
+       something comes INTO view, which is a thing this now actually does. */
     const rev = await evaluate(p, `
       const armed = [...document.querySelectorAll('[data-armed]')];
-      // Only assert on elements comfortably inside the viewport — one that is
-      // half off the bottom legitimately has not met the observer threshold yet.
-      const visible = armed.filter(el => {
-        const r = el.getBoundingClientRect();
-        return r.top >= 0 && r.bottom <= innerHeight * 0.85 && r.height > 0;
-      });
-      const missed = visible.filter(el => !el.hasAttribute('data-revealed'));
-      return {
-        vh: innerHeight, total: armed.length, visible: visible.length,
-        missed: missed.map(el => el.tagName + '.' + String(el.className).slice(0, 40)),
-      };
+      if (!armed.length) return { total: 0, visible: 0, missed: ['no armed elements at all'] };
+      armed[0].scrollIntoView({ block: 'center', behavior: 'auto' });
+      return new Promise(res => setTimeout(() => {
+        // Only assert on elements comfortably inside the viewport — one that is
+        // half off the bottom legitimately has not met the observer threshold yet.
+        const visible = armed.filter(el => {
+          const r = el.getBoundingClientRect();
+          return r.top >= 0 && r.bottom <= innerHeight * 0.85 && r.height > 0;
+        });
+        const missed = visible.filter(el => !el.hasAttribute('data-revealed'));
+        res({
+          vh: innerHeight, total: armed.length, visible: visible.length,
+          missed: missed.map(el => el.tagName + '.' + String(el.className).slice(0, 40)),
+        });
+      }, 1200));
     `);
-    check('every fully-visible armed element is revealed',
+    check('every armed element scrolled into view is revealed',
       rev.visible > 3 && rev.missed.length === 0, JSON.stringify(rev));
   }
   check('kinetic words carry staggered delays', await evaluate(p, `
@@ -612,7 +639,9 @@ for (const slug of LEARN_SLUGS) {
   ok('breadcrumbs rendered', a.crumbs === 3, String(a.crumbs));
   ok('links to a product page', a.productLinks > 0, String(a.productLinks));
   ok('links to a tool', a.toolLinks > 0, String(a.toolLinks));
-  ok('15-minute booking CTA', a.ctaHref.includes('15-minute'), a.ctaHref);
+  // The href is the booking page; the OFFER of a 15-minute call is in the
+  // label. Asserting the offer against the href is what made this stale.
+  ok('booking CTA points at the calendar', a.ctaHref === site.consult.url, a.ctaHref);
   ok('year-stamped 2026 figures', a.hasYear);
   ok('no unresolved {{tokens}}', !a.unresolved);
   ok('substantive length', a.words > 1200, `${a.words} rendered words`);
@@ -666,7 +695,9 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
     return {
       wordmark: t.includes('602Medicare'),
       agent: t.includes('Brian Penner') && t.includes('22+ Years') && t.includes('NPN 8206556'),
-      nap: t.includes('Anthem, AZ 85086') && t.includes('(602) 844-6002') && t.includes('help@602medicare.com'),
+      nap: t.includes(${JSON.stringify(site.address.display)})
+         && t.includes(${JSON.stringify(site.phone.display)})
+         && t.includes(${JSON.stringify(site.email)}),
       wrongBrand: ['Moab','Monticello','Grand Junction'].filter(c => t.includes(c)),
       services: ['/medicare-advantage/','/medicare-supplement/','/part-d/','/long-term-care/'].every(href),
       learnHub: href('/learn/'),
@@ -694,7 +725,10 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
   ok('Learn column with articles', f.learnHub && f.learnArticles >= 3, `${f.learnArticles} articles`);
   ok('Tools column with all 8', f.toolsHub && f.toolLinks === 8, `${f.toolLinks} tools`);
   ok('Company column complete', f.company);
-  ok('15-minute CTA', f.ctaHref.includes('15-minute') && /15-minute/.test(f.ctaLabel), `${f.ctaLabel} → ${f.ctaHref}`);
+  // href = where it goes, label = what it offers. Checking the offer against
+  // the href is what left this failing after the calendar page landed.
+  ok('booking CTA', f.ctaHref === site.consult.url && /15-minute/.test(f.ctaLabel),
+    `${f.ctaLabel} → ${f.ctaHref}`);
   ok('licensing line', f.license);
   ok('2026 copyright', f.copyright);
   ok('TPMO exactly once, in the footer', f.tpmoInPage === 1 && f.tpmoInFooter === 1,
@@ -1074,6 +1108,390 @@ console.log('\nAccessibility');
     return !b.style.translate;
   `));
   await closePage(m);
+}
+
+// ── 12. the booking picker, on a phone ───────────────────────────────────────
+// This is the page every CTA on the site lands on, and its audience is 65-plus
+// on a handset. So the whole flow is walked at 375×812 — an iPhone SE/12 mini,
+// the narrowest screen worth supporting — and the size of every control the
+// visitor has to hit is measured rather than eyeballed.
+//
+// The availability and booking calls are STUBBED. Two reasons, both firm:
+// a suite that booked an appointment every time it ran would fill Brian's real
+// calendar with test entries, and one that depended on a third party's uptime
+// would go red for reasons that have nothing to do with this code. The live API
+// is checked separately, once, read-only, at the end of this block.
+console.log('\nBooking — 375px, the full flow');
+{
+  const NAVY = 'rgb(1, 20, 89)';
+  const MIN_TAP = 48;   // px, the floor for anything you tap
+  const MIN_TYPE = 18;  // px, the floor for type on a control
+
+  // Intercepts only the scheduler's origin; every other request on the page is
+  // left completely alone.
+  const stub = `
+    (() => {
+      const real = window.fetch;
+      window.__bookingCalls = [];
+      const CAL = {
+        id: 'test-calendar-id', name: '602 Medicare', slot_duration: 30,
+        time_zone: 'America/Denver', bookable_weekdays: [1,2,3,4,5],
+      };
+      window.fetch = function (input, init) {
+        const url = String(typeof input === 'string' ? input : input.url || '');
+        if (!url.includes('supabase.co')) return real.apply(this, arguments);
+        window.__bookingCalls.push({ url, method: (init && init.method) || 'GET', body: init && init.body });
+
+        if (url.includes('get-availability')) {
+          const date = new URL(url).searchParams.get('date');
+          // 08:00–10:30 in the calendar's own timezone (UTC-6 in August), which
+          // is 07:00–09:30 in Arizona — the one-hour gap the picker exists to
+          // present correctly.
+          const slots = [0,1,2,3,4,5].map((i) => {
+            const s = new Date(date + 'T14:00:00.000Z');
+            s.setUTCMinutes(s.getUTCMinutes() + i * 30);
+            const e = new Date(s.getTime() + 30 * 60000);
+            return { start: date + 'T08:00:00', end: date + 'T08:30:00',
+                     startUtc: s.toISOString(), endUtc: e.toISOString(), available: true };
+          });
+          return Promise.resolve(new Response(
+            JSON.stringify({ success: true, calendar: CAL, slots }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        }
+        if (url.includes('create-booking')) {
+          return Promise.resolve(new Response(
+            JSON.stringify({ contact_id: 'test-contact' }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        }
+        return real.apply(this, arguments);
+      };
+    })();
+  `;
+
+  const p = await openPage('/book/', stub);
+  await p.send('Emulation.setDeviceMetricsOverride', {
+    width: 375, height: 812, deviceScaleFactor: 2, mobile: true,
+  });
+  await p.send('Page.reload');
+  await sleep(2200); // the boot request plus the first warm lookups
+
+  /* ── the date grid ─────────────────────────────────────────────────────── */
+
+  check('mobile: the date grid renders without being opened', await evaluate(p, `
+    const g = document.querySelector('[data-cal-grid]');
+    if (!g) return false;
+    const cells = g.querySelectorAll('[data-day]');
+    const r = g.getBoundingClientRect();
+    // A whole month of whole weeks is 35 or 42 cells, and the grid has to have
+    // real area — this is the check that would have caught the collapsed embed.
+    return cells.length >= 35 && r.width > 300 && r.height > 200;
+  `));
+
+  check('mobile: the grid is a full month, not a strip of a few days', await evaluate(p, `
+    const inMonth = [...document.querySelectorAll('[data-day]')]
+      .filter(b => !b.classList.contains('bk__day--outside'));
+    return inMonth.length >= 28 && inMonth.length <= 31;
+  `));
+
+  check('mobile: no dropdown, listbox or scroll wheel anywhere in the picker',
+    await evaluate(p, `
+      const bk = document.querySelector('[data-booking]');
+      return bk.querySelectorAll('select, [role="listbox"], [role="combobox"], input[type="date"], input[type="time"]').length === 0;
+    `));
+
+  check('mobile: no horizontal overflow', await evaluate(p, `
+    return document.documentElement.scrollWidth <= window.innerWidth + 1;
+  `));
+
+  {
+    const cells = await evaluate(p, `
+      const days = [...document.querySelectorAll('[data-day]')]
+        .filter(b => !b.disabled);
+      return days.map(b => {
+        const r = b.getBoundingClientRect();
+        return { w: Math.round(r.width * 100) / 100, h: Math.round(r.height * 100) / 100,
+                 f: parseFloat(getComputedStyle(b).fontSize), d: b.dataset.day };
+      });
+    `);
+    const tooSmall = cells.filter((c) => c.w < MIN_TAP || c.h < MIN_TAP);
+    const tooFine = cells.filter((c) => c.f < MIN_TYPE);
+    check(`mobile: every bookable day cell is ≥${MIN_TAP}px on both sides`,
+      cells.length > 5 && tooSmall.length === 0,
+      `${cells.length} cells, ${tooSmall.length} too small: ${JSON.stringify(tooSmall.slice(0, 3))}`);
+    check(`mobile: every day cell is ≥${MIN_TYPE}px type`,
+      tooFine.length === 0, JSON.stringify(tooFine.slice(0, 3)));
+  }
+
+  check('mobile: unavailable days are greyed and unclickable', await evaluate(p, `
+    const shut = [...document.querySelectorAll('[data-day].bk__day--shut')];
+    return shut.length > 3 && shut.every(b => b.disabled);
+  `));
+
+  check('the fallback phone line is present before anything is chosen',
+    await evaluate(p, `
+      return /Calendar not loading\\?/.test(document.body.innerText)
+          && !!document.querySelector('[data-cta="book-fallback-call"]');
+    `));
+
+  check('the time step is not shown until a day is chosen', await evaluate(p, `
+    return document.querySelector('[data-step-time]').hidden === true;
+  `));
+
+  /* ── pick a day ────────────────────────────────────────────────────────── */
+
+  check('choosing a day fills it navy', await evaluate(p, `
+    const day = [...document.querySelectorAll('[data-day]')].find(b => !b.disabled);
+    day.click();
+    return new Promise(res => setTimeout(() => {
+      const on = document.querySelector('[data-day].bk__day--on');
+      res(!!on && getComputedStyle(on).backgroundColor === '${NAVY}'
+          && on.getAttribute('aria-pressed') === 'true');
+    }, 600));
+  `));
+
+  check('the time slots appear below the calendar', await evaluate(p, `
+    const cal = document.querySelector('[data-cal-grid]').getBoundingClientRect();
+    const step = document.querySelector('[data-step-time]');
+    const slots = step.querySelectorAll('[data-slot]');
+    // "Below" literally: further down the document than the grid it follows.
+    return step.hidden === false && slots.length > 0
+        && step.getBoundingClientRect().top > cal.top;
+  `));
+
+  check('the times are labelled with the timezone they are in', await evaluate(p, `
+    return /Arizona time/i.test(document.querySelector('[data-time-sub]').textContent);
+  `));
+
+  check('slots are shown in Arizona time, not the calendar timezone', await evaluate(p, `
+    // The stub's first slot is 14:00Z. Denver reads that as 8:00 AM, Phoenix as
+    // 7:00 AM. Showing 8:00 would send a visitor to the phone an hour late.
+    const first = document.querySelector('[data-slot] .bk__slot-time');
+    return /^7:00\\s?AM$/.test(first.textContent.replace(/\\u00a0/g, ' ').trim());
+  `));
+
+  {
+    const slots = await evaluate(p, `
+      return [...document.querySelectorAll('[data-slot]')].map(b => {
+        const r = b.getBoundingClientRect();
+        return { w: Math.round(r.width), h: Math.round(r.height),
+                 f: parseFloat(getComputedStyle(b).fontSize), t: b.innerText.trim() };
+      });
+    `);
+    const small = slots.filter((s) => s.w < MIN_TAP || s.h < MIN_TAP);
+    const fine = slots.filter((s) => s.f < MIN_TYPE);
+    check(`mobile: every time button is ≥${MIN_TAP}px`,
+      slots.length > 1 && small.length === 0, JSON.stringify(small.slice(0, 3)));
+    check(`mobile: every time button is ≥${MIN_TYPE}px type`,
+      fine.length === 0, JSON.stringify(fine.slice(0, 3)));
+  }
+
+  check('Continue is disabled until a time is chosen', await evaluate(p, `
+    return document.querySelector('[data-continue]').disabled === true;
+  `));
+
+  /* ── pick a time ───────────────────────────────────────────────────────── */
+
+  check('choosing a time fills it navy and shows a checkmark', await evaluate(p, `
+    const s = document.querySelectorAll('[data-slot]')[1];
+    s.click();
+    // The fill and the tick both cross-fade over 140ms, and getComputedStyle
+    // during a transition returns the interpolated value — so read the END
+    // state, not the frame the click landed on.
+    return new Promise(res => setTimeout(() => {
+      const on = document.querySelector('[data-slot].bk__slot--on');
+      if (!on) return res(false);
+      const tick = on.querySelector('.bk__slot-tick');
+      res(getComputedStyle(on).backgroundColor === '${NAVY}'
+       && on.getAttribute('aria-pressed') === 'true'
+       && parseFloat(getComputedStyle(tick).opacity) === 1
+       && !!tick.querySelector('svg'));
+    }, 400));
+  `));
+
+  check('only one time is selected at a time', await evaluate(p, `
+    document.querySelectorAll('[data-slot]')[3].click();
+    return document.querySelectorAll('[data-slot].bk__slot--on').length === 1;
+  `));
+
+  check('Continue becomes available', await evaluate(p, `
+    return document.querySelector('[data-continue]').disabled === false;
+  `));
+
+  /* ── continue ──────────────────────────────────────────────────────────── */
+
+  check('Continue opens the details step with the chosen time echoed back',
+    await evaluate(p, `
+      document.querySelector('[data-continue]').click();
+      return new Promise(res => setTimeout(() => {
+        const step = document.querySelector('[data-step-details]');
+        const chosen = document.querySelector('[data-chosen]').textContent;
+        res(step.hidden === false && /Arizona time/.test(chosen) && /AM|PM/.test(chosen));
+      }, 700));
+    `));
+
+  {
+    const fields = await evaluate(p, `
+      return [...document.querySelectorAll('.bk__field input, .bk__field textarea')].map(el => {
+        const r = el.getBoundingClientRect();
+        return { n: el.name, h: Math.round(r.height), f: parseFloat(getComputedStyle(el).fontSize) };
+      });
+    `);
+    const fine = fields.filter((f) => f.f < MIN_TYPE);
+    const short = fields.filter((f) => f.h < MIN_TAP);
+    check(`mobile: every form field is ≥${MIN_TYPE}px type`,
+      fields.length >= 4 && fine.length === 0, JSON.stringify(fine));
+    check(`mobile: every form field is ≥${MIN_TAP}px tall`,
+      short.length === 0, JSON.stringify(short));
+  }
+
+  check('the form refuses a booking with no way to reach anyone', await evaluate(p, `
+    const f = document.querySelector('[data-booking-form]');
+    f.querySelector('[name=firstName]').value = 'Ada';
+    f.querySelector('[name=lastName]').value = 'Lovelace';
+    f.querySelector('[name=phone]').value = '';
+    f.querySelector('[name=email]').value = '';
+    f.requestSubmit();
+    return new Promise(res => setTimeout(() => {
+      const err = document.querySelector('[data-form-error]');
+      res(err.hidden === false && /phone number or an email/i.test(err.textContent)
+          && document.querySelector('[data-done]').hidden === true);
+    }, 300));
+  `));
+
+  /* ── book it ───────────────────────────────────────────────────────────── */
+
+  check('a complete form books and confirms', await evaluate(p, `
+    const f = document.querySelector('[data-booking-form]');
+    f.querySelector('[name=phone]').value = '(602) 555-0143';
+    f.requestSubmit();
+    return new Promise(res => setTimeout(() => {
+      const done = document.querySelector('[data-done]');
+      res(done.hidden === false && /Arizona time/.test(
+        document.querySelector('[data-done-when]').textContent));
+    }, 900));
+  `));
+
+  check('the booking POST carried the fields the API requires', await evaluate(p, `
+    const post = window.__bookingCalls.filter(c => c.url.includes('create-booking')).pop();
+    if (!post) return false;
+    const b = JSON.parse(post.body);
+    return post.method === 'POST'
+        && b.calendarId === 'test-calendar-id'
+        && b.firstName === 'Ada' && b.lastName === 'Lovelace'
+        && /^\\d{4}-\\d{2}-\\d{2}T/.test(b.startTime) && !!b.endTime
+        && b.durationMinutes === 30
+        && b.locationType === 'phone'
+        // The CALENDAR's timezone goes to the server; only the display is
+        // converted to Arizona. Sending Phoenix here would move the appointment.
+        && b.timeZone === 'America/Denver';
+  `));
+
+  check('the phone fallback survives all the way to the confirmation',
+    await evaluate(p, `
+      return /Calendar not loading\\?/.test(document.body.innerText);
+    `));
+
+  check('the third-party embed was never loaded on the happy path',
+    await evaluate(p, `
+      const f = document.querySelector('[data-fallback-frame]');
+      return document.querySelector('[data-fallback]').hidden === true && !f.src;
+    `));
+
+  check('no console errors through the whole flow',
+    p.consoleErrors.length === 0, p.consoleErrors.join(' | '));
+  await closePage(p);
+}
+
+// ── 12b. the fallback, when the API is down ──────────────────────────────────
+// The picker talks to an undocumented endpoint (see src/config/booking.ts). The
+// thing that keeps that acceptable is this: when it fails, the visitor gets the
+// embed they had before plus a phone number, not an empty box.
+console.log('\nBooking — the API is down');
+{
+  const p = await openPage('/book/', `
+    (() => {
+      const real = window.fetch;
+      window.fetch = function (input) {
+        const url = String(typeof input === 'string' ? input : input.url || '');
+        if (url.includes('supabase.co')) return Promise.reject(new Error('offline'));
+        return real.apply(this, arguments);
+      };
+    })();
+  `);
+  await p.send('Emulation.setDeviceMetricsOverride', {
+    width: 375, height: 812, deviceScaleFactor: 2, mobile: true,
+  });
+  await p.send('Page.reload');
+  await sleep(2200);
+
+  check('a failed lookup falls back to the embed rather than an empty box',
+    await evaluate(p, `
+      const box = document.querySelector('[data-fallback]');
+      const frame = document.querySelector('[data-fallback-frame]');
+      return box.hidden === false && !!frame.getAttribute('src');
+    `));
+
+  check('the phone number is still on the page when everything else failed',
+    await evaluate(p, `
+      return /Calendar not loading\\?/.test(document.body.innerText)
+          && !!document.querySelector('[data-cta="book-fallback-call"]');
+    `));
+
+  check('a fallback is not reported as a page error',
+    p.consoleErrors.length === 0, p.consoleErrors.join(' | '));
+  await closePage(p);
+}
+
+// ── 12c. the live scheduler still answers ────────────────────────────────────
+// The one check in this suite that touches the network. It is read-only — it
+// asks for availability and never books — and it exists because the endpoint
+// behind /book/ is undocumented and unversioned. If GoGuruX changes its shape,
+// this is what says so, instead of the page quietly falling back to the embed
+// for every visitor and nobody noticing.
+console.log('\nBooking — the live scheduler');
+{
+  const { booking } = await import('../src/config/booking.ts');
+
+  // The next Monday-to-Friday day from now, in the market's timezone. Asking
+  // about a Saturday would come back legitimately empty and read as a break.
+  const day = (() => {
+    const d = new Date();
+    for (let i = 0; i < 8; i++) {
+      const iso = new Intl.DateTimeFormat('en-CA', {
+        timeZone: 'America/Phoenix', year: 'numeric', month: '2-digit', day: '2-digit',
+      }).format(d);
+      const w = new Date(iso + 'T00:00:00Z').getUTCDay();
+      if (w >= 1 && w <= 5) return iso;
+      d.setDate(d.getDate() + 1);
+    }
+    return null;
+  })();
+
+  let body = null, err = '';
+  try {
+    const q = new URLSearchParams({
+      date: day, duration: String(booking.defaultDuration),
+      location_slug: booking.locationSlug, calendar_slug: booking.calendarSlug,
+    });
+    const res = await fetch(`${booking.supabaseUrl}/functions/v1/get-availability?${q}`, {
+      headers: { Authorization: `Bearer ${booking.supabaseAnonKey}` },
+      signal: AbortSignal.timeout(20000),
+    });
+    body = await res.json();
+  } catch (e) { err = String(e); }
+
+  check('the live availability endpoint answers', !!body?.success, err || JSON.stringify(body).slice(0, 200));
+  check('it still names the calendar the picker books against',
+    !!body?.calendar?.id && !!body?.calendar?.time_zone,
+    JSON.stringify(body?.calendar || {}).slice(0, 200));
+  check('it still returns slots shaped the way the picker reads them',
+    Array.isArray(body?.slots) && body.slots.length > 0
+      && typeof body.slots[0].startUtc === 'string'
+      && typeof body.slots[0].endUtc === 'string',
+    JSON.stringify(body?.slots?.[0] || body?.slots || null).slice(0, 200));
+  check('the calendar still takes bookings Monday to Friday',
+    Array.isArray(body?.calendar?.bookable_weekdays) && body.calendar.bookable_weekdays.length > 0,
+    JSON.stringify(body?.calendar?.bookable_weekdays));
 }
 
 /* ═══════════════════════════════════════════════════════════════════════ */

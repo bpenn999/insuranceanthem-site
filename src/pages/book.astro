@@ -1,10 +1,11 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import PageHero from '../components/PageHero.astro';
+import BookingPicker from '../components/BookingPicker.astro';
 import site, { abs } from '../config/site';
 
 /**
- * The booking page — the GoGuruX scheduler, embedded.
+ * The booking page.
  *
  * This is the page src/config/site.ts always anticipated: `consult.url` used to
  * point at /contact/?intent=15-minute-call because no calendar existed. It now
@@ -12,22 +13,39 @@ import site, { abs } from '../config/site';
  * footer, every Learn article, every blog post, every tool page, the hubs —
  * lands on a real calendar with no other edit.
  *
- * TWO THINGS THIS PAGE NEEDED THAT NOTHING ELSE ON THE SITE DOES:
+ * WHAT CHANGED 2026-08-08. Until now this page was a facade in front of a
+ * cross-origin `<iframe>` of GoGuruX's scheduler. The performance argument for
+ * the facade was sound and is preserved in spirit below, but the embed itself
+ * was wrong for the audience: its time picker was a scroll list, its date grid
+ * did not render usably at 375px, and neither could be reached from here —
+ * a cross-origin document cannot be styled, sized or tested by its host.
  *
- * 1. A CSP hole, and exactly one. public/_headers is `default-src 'self'`, which
- *    blocks a cross-origin iframe outright — the embed rendered as a blank box
- *    until `frame-src https://my.gogurux.com` was added. That is the ONLY origin
- *    allowed, and it is allowed only for framing; the site still loads zero
- *    third-party scripts, styles, fonts or images.
+ * So the calendar is now drawn by src/components/BookingPicker.astro, against
+ * the same endpoints the embed itself calls. The iframe survives as a fallback
+ * the picker reveals if those endpoints fail. See src/config/booking.ts for the
+ * API, and for the warning that it is undocumented.
  *
- * 2. A responsive width. The embed ships at `width: 60%`, which is right on a
- *    desktop and unusable on a phone — 60% of a 390px viewport is a 234px-wide
- *    calendar. It is 100% up to the point where 60% is wider than a comfortable
- *    reading measure, then 60%.
+ * The facade is gone with it, and the performance reason it existed goes too:
+ * the picker is this site's own JavaScript, it renders the month grid before
+ * any network call returns, and the one request it makes on load is an XHR to
+ * an API rather than a competing cross-origin *document*. There is nothing left
+ * for the browser to hold the paint for.
+ *
+ * The CSP hole in public/_headers changed shape to match: `frame-src` stays for
+ * the fallback, and `connect-src` now names the same origin the picker fetches
+ * from. It is still the only third party this site touches.
  *
  * The page is deliberately light: no caustics, no reveal animations, nothing
- * competing with the iframe for bandwidth. Someone who reached this page has
- * already decided.
+ * competing with the calendar. Someone who reached this page has already
+ * decided.
+ *
+ * ONE MORE THING ABOUT THE INLINE SCRIPT BELOW. Its postMessage allowlist used
+ * to carry GoGuruX's two `http://127.0.0.1` development origins. They were inert
+ * in production — nothing can post from a loopback origin in a visitor's browser
+ * unless they are running the app themselves — but CLAUDE.md's leak guard greps
+ * the BUILT site for that word, HTML comments included, and they were its only
+ * hits. They are gone. Keep the explanation up here in the frontmatter, which
+ * Astro strips, rather than in the comment on the script, which ships.
  */
 
 const title = 'Book a Free 15-Minute Medicare Call';
@@ -72,138 +90,39 @@ const schemaNodes = [
   <PageHero
     eyebrow="Book a call"
     title="Pick a time that suits you."
-    lede={`${site.consult.minutes} minutes, no cost, no obligation, and no call center — you get ${site.agent.name} directly. Bring your prescription list and the doctors you want to keep if you have them handy; if not, we will start anyway.`}
+    lede={`No cost, no obligation, and no call center — you get ${site.agent.name} directly. Bring your prescription list and the doctors you want to keep if you have them handy; if not, we will start anyway.`}
     breadcrumbs={breadcrumbs}
   />
 
   <section class="section section--tight">
     <div class="wrap">
-      {/* A FACADE, which is the pattern Lighthouse itself recommends for a
-          third-party embed ("lazy load third-party resources with facades").
-
-          Loaded inline, the calendar cost this page 4.9s FCP and 5.5s LCP and
-          scored 67, against 96 everywhere else on the site — because the browser
-          will not call a page painted while a same-priority cross-origin
-          document is still arriving. Since every CTA on this site now lands
-          here, the page every conversion goes through was the slowest one.
-
-          Deferring it to `load` alone was not enough: the fetch simply moved
-          into the measurement window and the score swung between 61 and 94 run
-          to run. So the iframe is attached on the visitor's FIRST INTERACTION —
-          a scroll, a pointer, a key, a touch — or on the button below.
-
-          This is not a trick to dodge a metric. It is strictly better for a real
-          person: the page is readable and interactive immediately, and someone
-          who lands here and leaves never pays for a third-party document they
-          never looked at. Anyone who does anything at all gets the calendar
-          within a frame of doing it. The button is a real, visible control for
-          the case where they do nothing. */}
-      <div class="booking">
-        <div class="booking__facade" data-booking-facade>
-          <p class="booking__facade-h">Available times</p>
-          <p class="booking__facade-p">
-            {site.consult.minutes} minutes with {site.agent.name}, free, no obligation.
-          </p>
-          <button type="button" class="btn btn--lg" data-booking-load>
-            Show available times
-          </button>
-          <p class="booking__facade-alt">
-            or call <a href={site.phone.href} data-cta="facade-call">{site.phone.display}</a>
-          </p>
-        </div>
-
-        <iframe
-          data-src="https://my.gogurux.com/book/medicareonmain-com/602-medicare?embed=1"
-          title="602Medicare — booking calendar"
-          class="booking__frame"
-          data-booking-frame
-          hidden
-        ></iframe>
-
-        <noscript>
-          <iframe
-            src="https://my.gogurux.com/book/medicareonmain-com/602-medicare?embed=1"
-            title="602Medicare — booking calendar"
-            class="booking__frame"
-          ></iframe>
-        </noscript>
-      </div>
-
-      <p class="booking__fallback">
-        Calendar not loading? That is usually an ad blocker or a locked-down
-        browser. Call <a href={site.phone.href} class="link" data-cta="book-fallback-call">
-          {site.phone.display}</a> and we will put it in the diary the old-fashioned
-        way, or <a href="/contact/" class="link">send the details instead</a>.
-      </p>
+      <BookingPicker />
     </div>
   </section>
 </BaseLayout>
 
 <!--
-  Booking-confirmation redirect. The embed posts a message when a booking
-  completes and this hands the visitor onward to whatever URL it names.
+  Booking-confirmation redirect, for the FALLBACK EMBED ONLY.
+
+  The native picker never posts this — it shows its own confirmation panel. But
+  if the picker has fallen back to the iframe, the embed still posts a message
+  when a booking completes and this hands the visitor onward.
 
   `is:inline` because it must NOT be bundled — it has to run on this page and
   only this page. The origin allowlist is the security boundary: a `message`
   listener with no origin check will accept a postMessage from ANY frame,
-  including a hostile one, and this one ends in `window.location.assign`. The
-  two localhost entries are for GoGuruX's own development and are harmless in
-  production — nothing can post from a localhost origin in a visitor's browser
-  unless they are running the app themselves.
+  including a hostile one, and this one ends in `window.location.assign`.
+
+  GoGuruX's own two development origins used to be in this list — see the
+  frontmatter note above for why they are gone.
 
   The URL is re-parsed and its protocol checked before navigating, so a
   `javascript:` payload from a compromised allowed origin still cannot execute.
 -->
 <script is:inline>
-  /**
-   * Attach the calendar on the visitor's first interaction, or on the button.
-   *
-   * See the note on the facade above for why. In short: loaded inline it was the
-   * page's Largest Contentful Paint and cost ~30 points; deferred to `load` it
-   * simply moved into the measurement window and the score swung 61-94. First
-   * interaction is both stable and, for a real person, strictly better.
-   *
-   * The listeners are `once` + passive and remove themselves after the first
-   * hit, so this costs nothing after it has run.
-   */
-  (function () {
-    var frame = document.querySelector('[data-booking-frame]');
-    var facade = document.querySelector('[data-booking-facade]');
-    if (!frame) return;
-
-    var done = false;
-    var EVENTS = ['pointerdown', 'touchstart', 'keydown', 'wheel', 'scroll'];
-
-    function attach() {
-      if (done) return;
-      done = true;
-      EVENTS.forEach(function (e) { window.removeEventListener(e, attach); });
-      frame.src = frame.getAttribute('data-src');
-      frame.hidden = false;
-      if (facade) facade.hidden = true;
-    }
-
-    EVENTS.forEach(function (e) {
-      window.addEventListener(e, attach, { once: true, passive: true });
-    });
-    var btn = document.querySelector('[data-booking-load]');
-    if (btn) btn.addEventListener('click', attach);
-  })();
-
-  /**
-   * Booking-confirmation redirect. The embed posts a message when a booking
-   * completes and this hands the visitor onward to whatever URL it names.
-   *
-   * The origin allowlist is the security boundary: a `message` listener with no
-   * origin check will accept a postMessage from ANY frame, including a hostile
-   * one, and this one ends in `window.location.assign`. The two localhost
-   * entries are GoGuruX's own dev origins and are inert in production. The URL
-   * is re-parsed and its protocol checked before navigating, so a `javascript:`
-   * payload from a compromised allowed origin still cannot execute.
-   */
   (function () {
     var MSG = 'ggx-booking-confirmation-redirect';
-    var ALLOWED = ['https://my.gogurux.com', 'http://localhost:5173', 'http://localhost:3000'];
+    var ALLOWED = ['https://my.gogurux.com'];
     window.addEventListener('message', function (event) {
       if (!event.data || event.data.type !== MSG) return;
       if (ALLOWED.indexOf(event.origin) === -1) return;
@@ -217,74 +136,3 @@ const schemaNodes = [
     });
   })();
 </script>
-
-<style>
-  .booking {
-    display: flex;
-    justify-content: center;
-  }
-  /* The embed ships at width:60%. That is right on a desktop and unusable on a
-     phone, so it is a max-width here instead: full width until 60% of the
-     container is wide enough to be comfortable. */
-  .booking__frame {
-    width: 100%;
-    max-width: 640px;
-    height: 680px;
-    border: 1px solid var(--rule);
-    border-radius: var(--radius-lg);
-    background: var(--surface);
-    display: block;
-  }
-  @media (min-width: 1100px) {
-    .booking__frame { width: 60%; max-width: none; }
-  }
-  /* A booking calendar is a form: it needs room on a short laptop screen, but
-     capping it at the viewport stops it scrolling inside a scrolling page. */
-  @media (max-height: 800px) and (min-width: 900px) {
-    .booking__frame { height: 620px; }
-  }
-
-  /* The facade occupies the same box the calendar will, so nothing jumps when
-     it swaps in — this is why CLS stays at 0 on this page. */
-  .booking__facade {
-    width: 100%;
-    max-width: 640px;
-    min-height: 680px;
-    border: 1px solid var(--rule);
-    border-radius: var(--radius-lg);
-    background: var(--tint);
-    display: grid;
-    place-content: center;
-    justify-items: center;
-    gap: var(--s-3);
-    padding: var(--s-6);
-    text-align: center;
-  }
-  .booking__facade[hidden] { display: none; }
-  .booking__facade-h {
-    font-family: var(--font-display);
-    font-size: var(--t-2xl);
-    color: var(--navy);
-  }
-  .booking__facade-p { color: var(--ink-muted); font-size: var(--t-sm); max-width: 34ch; }
-  .booking__facade-alt { font-size: var(--t-sm); color: var(--ink-muted); margin-top: var(--s-2); }
-  .booking__facade-alt a { color: var(--navy); font-weight: 600; }
-  .booking__facade-alt a:hover { color: var(--red); }
-
-  @media (min-width: 1100px) {
-    .booking__facade { width: 60%; max-width: none; }
-  }
-  @media (max-height: 800px) and (min-width: 900px) {
-    .booking__facade { min-height: 620px; }
-  }
-
-  .booking__fallback {
-    margin-top: var(--s-5);
-    text-align: center;
-    font-size: var(--t-sm);
-    color: var(--ink-muted);
-    max-width: 60ch;
-    margin-inline: auto;
-    line-height: 1.6;
-  }
-</style>

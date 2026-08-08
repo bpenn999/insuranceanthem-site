@@ -71,15 +71,28 @@ const RESIDUE = [/Western Slope/i, /Grand Junction/i, /\bMoab\b/i, /Palisade/i, 
 
 /**
  * The one sanctioned "medicareonmain" string in the markup: the GoGuruX booking
- * embed. The scheduler tenant is registered under the sister agency's account,
- * so its slug is in the iframe URL — a real integration detail, not a stale
- * copy-paste. Blanked before the residue scan so the check still catches a
- * genuine leak anywhere else on the same page.
+ * account slug. The scheduler tenant is registered under the sister agency's
+ * account, so `medicareonmain-com` is the tenant's own identifier — a real
+ * integration detail, not a stale copy-paste.
+ *
+ * It reaches the built page twice, and both are blanked before the residue scan
+ * so the check still catches a genuine leak anywhere else on the same page:
+ *
+ *   1. `data-location-slug` on the native booking picker, which passes it to
+ *      the availability API (src/components/BookingPicker.astro).
+ *   2. the fallback embed URL, still on the page for when that API fails.
+ *
+ * This is a NARROWER exemption than it looks: it is the exact slug and the
+ * exact URL, not the pattern. A stray "Medicare On Main" in body copy, a
+ * medicareonmain.com link, or the slug on any other page all still fail.
  */
-const BOOKING_EMBED = 'https://my.gogurux.com/book/medicareonmain-com/602-medicare?embed=1';
+const BOOKING_TENANT_SLUG = 'medicareonmain-com';
+const BOOKING_EMBED = `https://my.gogurux.com/book/${BOOKING_TENANT_SLUG}/602-medicare?embed=1`;
 
 for (const f of htmls) {
-  const html = readFileSync(f, 'utf8').split(BOOKING_EMBED).join('[booking-embed]');
+  const html = readFileSync(f, 'utf8')
+    .split(BOOKING_EMBED).join('[booking-embed]')
+    .split(`"${BOOKING_TENANT_SLUG}"`).join('"[booking-tenant]"');
   for (const re of RESIDUE) if (re.test(html)) note(`TEMPLATE RESIDUE ${re} on ${routeOf(f)}`);
 }
 
