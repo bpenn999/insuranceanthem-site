@@ -107,17 +107,16 @@ audit requires every sitemap URL to have an HTML route). There is no WebMCP endp
 npm install
 npm run dev        # http://localhost:4321
 npm run verify     # astro check → unit tests → build → audit. The gate. Must pass.
-npm run e2e        # dependency-free CDP suite (461 checks)
+npm run e2e        # dependency-free CDP suite (496 checks)
 ```
 - `npm run verify` must end "✅ All checks passed." Never weaken an audit rule to make a
   page pass.
 - Leak guard, must be 0:
   `grep -rEl 'netlify\.app|vercel\.app|workers\.dev|pages\.dev|localhost' dist | wc -l`
 - Canonicals must be `https://602medicare.com/…`, never `*.pages.dev`.
-- ⚠️ **`npm run e2e` is broken on `main` as of 2026-08-08** — it aborts at the home-page
-  motion-engine check ("caustics canvas has painted pixels") before reaching anything
-  else, and fails identically on a clean checkout. A failure at that first check is
-  pre-existing; a failure anywhere else is yours.
+- ✅ **`npm run e2e` passed clean — 496/496 — on 2026-08-09.** The home-page motion-engine
+  failure ("caustics canvas has painted pixels") that broke it on 2026-08-08 is gone, so
+  it is no longer a free pass: **treat any e2e failure as yours.**
 - Screenshot gotcha: Chrome's `--window-size` does not reach CDP-created targets in new
   headless, so a mobile-width `--screenshot` crops a desktop layout instead of reflowing
   it. Use `Emulation.setDeviceMetricsOverride`, as `scripts/e2e.mjs` does, and pass
