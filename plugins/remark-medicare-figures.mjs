@@ -6,6 +6,7 @@ import {
   partB,
   partD,
   irmaaBrackets,
+  careCosts,
   usd,
 } from '../src/data/medicare-figures.ts';
 
@@ -83,6 +84,17 @@ export const FIGURE_TOKENS = {
   'irmaa.t5.annualExtra': usd(
     (b(5).partBTotal - partB.standardPremium + b(5).partDSurcharge) * 12
   ),
+
+  // Long-term care costs — CareScout medians, same data the /tools/cost-of-care/
+  // estimator runs on. Medians, not quotes: the surrounding copy has to say so.
+  'care.surveyYear': String(careCosts.surveyYear),
+  'care.az.assistedLiving': usd(careCosts.arizona.assistedLivingMonthly),
+  'care.az.assistedLivingAnnual': usd(careCosts.arizona.assistedLivingMonthly * 12),
+  'care.az.memoryCare': usd(careCosts.arizona.memoryCareMonthly),
+  'care.az.homeCareHourly': usd(careCosts.arizona.homeCareHourly),
+  'care.az.nursingSemiPrivate': usd(careCosts.arizona.nursingSemiPrivateMonthly),
+  'care.az.nursingPrivate': usd(careCosts.arizona.nursingPrivateMonthly),
+  'care.us.assistedLiving': usd(careCosts.national.assistedLivingMonthly),
 };
 
 const TOKEN_RE = /\{\{\s*([A-Za-z0-9_.]+)\s*\}\}/g;
