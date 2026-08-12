@@ -223,8 +223,20 @@ export const onRequest = async (context: Context): Promise<Response> => {
     });
 
     if (!upstream.ok) {
+      // `upstream_status` is here because the alternative cost a day: the form
+      // was posting correctly and falling back to the email draft on a CRM
+      // rejection, and from the outside that was indistinguishable from a form
+      // that never posted. The status is the one fact that tells those apart.
+      // It names no URL and carries no credential, so it is safe to return.
+      //
+      // Read it on insuranceanthem.pages.dev — the apex serves Cloudflare's own
+      // error page for a 5xx and this body never reaches you there.
       console.error(`GoGuruX rejected the lead: ${upstream.status}`);
-      return json(502, { ok: false, error: 'The CRM did not accept the submission' });
+      return json(502, {
+        ok: false,
+        error: 'The CRM did not accept the submission',
+        upstream_status: upstream.status,
+      });
     }
 
     return json(200, { ok: true });

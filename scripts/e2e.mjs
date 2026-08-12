@@ -308,6 +308,8 @@ console.log('\nAPI — /api/lead relay (mocked upstream)');
     });
     check('an upstream 500 answers 502 { ok: false }',
       r.status === 502 && r.json?.ok === false, `${r.status} ${JSON.stringify(r.json)}`);
+    check('it reports what the CRM answered, so a rejection is diagnosable',
+      r.json?.upstream_status === 500, JSON.stringify(r.json));
   }
 
   {
@@ -566,6 +568,108 @@ console.log('\nContact — form');
     return names.includes('xtr_field') && !names.some(n => banned.includes(n));
   `));
   check('no console errors', p.consoleErrors.length === 0, p.consoleErrors.join(' | '));
+  await closePage(p);
+}
+
+// ── 3b. the contact form actually posts ──────────────────────────────────────
+// The check this suite was missing. /api/lead was covered in isolation and the
+// form was covered up to validation, and between those two the question nobody
+// asked was whether pressing the button reaches the relay at all. It did — but
+// a CRM rejection dropped it into the email draft, and from the outside that is
+// indistinguishable from a form that never posts. This pins both branches.
+//
+// `astro preview` serves static files and has no /api/lead, so the endpoint is
+// stubbed in the page: that is the point, since what is under test is the form's
+// behaviour against a given answer, not the relay's.
+const leadStub = (status) => `
+  (() => {
+    window.__lead = { posts: [] };
+    const real = window.fetch;
+    window.fetch = function (input, init) {
+      const url = String(typeof input === 'string' ? input : (input && input.url) || '');
+      if (url.includes('/api/lead')) {
+        window.__lead.posts.push({
+          url,
+          method: (init && init.method) || 'GET',
+          body: init && init.body,
+        });
+        return Promise.resolve(new Response(
+          ${status === 200 ? `'{"ok":true}'` : `'{"ok":false,"error":"The CRM did not accept the submission"}'`},
+          { status: ${status}, headers: { 'Content-Type': 'application/json' } }
+        ));
+      }
+      return real.apply(this, arguments);
+    };
+  })();
+`;
+
+const fillAndSubmit = `
+  document.getElementById('lead-name').value = 'Mary Anne Ruiz';
+  document.getElementById('lead-phone').value = '(480) 555-0147';
+  document.getElementById('lead-email').value = 'mary@example.com';
+  document.getElementById('lead-zip').value = '85086';
+  document.getElementById('lead-situation').value = 'turning-65';
+  document.getElementById('lead-message').value = 'I want to keep my cardiologist.';
+  document.getElementById('lead-consent').checked = true;
+  document.querySelector('[data-lead]').requestSubmit();
+  return new Promise(res => setTimeout(() => res({
+    posts: window.__lead.posts,
+    formHidden: document.querySelector('[data-lead]').hidden,
+    doneHidden: document.querySelector('[data-lead-done]').hidden,
+    doneBody: document.querySelector('[data-lead-done-body]').textContent,
+    protocol: location.protocol,
+  }), 900));
+`;
+
+console.log('\nContact — the submit actually posts');
+{
+  const p = await openPage('/contact/', leadStub(200));
+  const r = await evaluate(p, fillAndSubmit);
+  const body = r.posts[0] ? JSON.parse(r.posts[0].body) : null;
+
+  check('pressing send issues exactly one request to /api/lead',
+    r.posts.length === 1 && r.posts[0].url === '/api/lead',
+    JSON.stringify(r.posts.map((x) => x.url)));
+  check('it is a POST', r.posts[0]?.method === 'POST', r.posts[0]?.method);
+  check('the name field is split into first and last',
+    body?.first === 'Mary' && body?.last === 'Anne Ruiz', JSON.stringify(body));
+  check('the payload carries email, phone and ZIP',
+    body?.email === 'mary@example.com' && body?.phone === '(480) 555-0147'
+    && body?.zip === '85086', JSON.stringify(body));
+  check('the payload carries the message and the "what\'s going on" answer',
+    /cardiologist/.test(body?.message || '') && body?.coverage_interest === 'turning-65',
+    JSON.stringify(body));
+  check('the payload names this form as the source',
+    body?.source === `${site.domain}/contact`, body?.source);
+  check('the TCPA consent travels with it',
+    !!body?.consent, JSON.stringify(body?.consent));
+
+  check('a 200 swaps the form for the on-page success card',
+    r.formHidden === true && r.doneHidden === false, JSON.stringify(r));
+  check('the success card reads "Got it"',
+    /^Got it — I'll be in touch within one business day/.test(r.doneBody || ''), r.doneBody);
+  check('a successful post never mentions the email app',
+    !/email app/i.test(r.doneBody || ''), r.doneBody);
+  check('a successful post never leaves the page for a mailto',
+    r.protocol === 'http:', r.protocol);
+  await closePage(p);
+}
+
+// ── 3c. …and only falls back to email when the post fails ────────────────────
+console.log('\nContact — the mailto fallback, when the relay is down');
+{
+  const p = await openPage('/contact/', leadStub(502));
+  const r = await evaluate(p, fillAndSubmit);
+
+  check('a failing relay is still attempted first', r.posts.length === 1,
+    JSON.stringify(r.posts.map((x) => x.url)));
+  check('a non-200 falls back to the email draft',
+    /email app should be opening/i.test(r.doneBody || ''), r.doneBody);
+  check('the fallback names the practice inbox and the phone number',
+    (r.doneBody || '').includes(site.email) && (r.doneBody || '').includes(site.phone.display),
+    r.doneBody);
+  check('the fallback never claims the success copy',
+    !/^Got it/.test(r.doneBody || ''), r.doneBody);
   await closePage(p);
 }
 

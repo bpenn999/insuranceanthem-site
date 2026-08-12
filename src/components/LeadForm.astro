@@ -289,7 +289,41 @@ import site from '../config/site';
       return ok;
     };
 
-    /* --- submit ---------------------------------------------------------- */
+    /* --- submit ----------------------------------------------------------
+     *
+     * POST first, email only if the POST could not be made to work. The two
+     * are not interchangeable: a visitor who lands in the mailto path still
+     * has to press send in their own mail client, and the ones who do not are
+     * enquiries nobody ever sees. So the draft is the outage plan, never the
+     * default — which is why `endpoint` is checked before anything is composed
+     * and why the only route to the mailto branch is a fetch that failed.
+     *
+     * The success card must never be shown over a submission that went
+     * nowhere. Every early return below either sent something or told the
+     * visitor how to reach the practice another way.
+     */
+    const SUCCESS_COPY = `Got it — I'll be in touch within one business day.`;
+
+    /**
+     * Split "Your name" into first and last for the CRM.
+     *
+     * The relay does this too, for native form-encoded posts. Doing it here as
+     * well is not duplication for its own sake — it is what lets the JSON body
+     * carry the field names the CRM actually stores, so a payload read off the
+     * network tab says what it will become on the contact record.
+     */
+    const splitName = (full: string): { first: string; last: string } => {
+      const parts = full.trim().split(/\s+/).filter(Boolean);
+      if (!parts.length) return { first: '', last: '' };
+      return { first: parts[0], last: parts.slice(1).join(' ') };
+    };
+
+    const setBusy = (busy: boolean) => {
+      if (!submit) return;
+      submit.disabled = busy;
+      submit.textContent = busy ? 'Sending…' : 'Send my request';
+    };
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
 
@@ -315,37 +349,52 @@ import site from '../config/site';
         return;
       }
 
+      /* --- the primary path: post it -------------------------------------- */
       const endpoint = form.dataset.endpoint;
 
       if (endpoint) {
-        if (submit) { submit.disabled = true; submit.textContent = 'Sending…'; }
+        const { first, last } = splitName(data.name || '');
+        const payload = {
+          first,
+          last,
+          email: data.email || '',
+          phone: data.phone || '',
+          zip: data.zip || '',
+          message: data.message || '',
+          // The "What's going on?" answer, under the name /api/lead documents.
+          // The field itself stays `situation`, because that is what the hero
+          // funnel's prefill and the query string both key off.
+          coverage_interest: data.situation || '',
+          // Not decoration: the relay folds this into the CRM note, and TCPA
+          // requires the practice to be able to show the visitor agreed to be
+          // contacted. Dropping it from the payload would quietly lose that.
+          consent: data.consent || '',
+          source: `${site.domain}/contact`,
+        };
+
+        setBusy(true);
         try {
           const res = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            // `coverage_interest` is the name /api/lead documents; the field
-            // itself stays `situation` because that is what the prefill from
-            // the hero funnel and the query string both key off.
-            body: JSON.stringify({
-              ...data,
-              coverage_interest: data.situation || '',
-              source: 'contact-form',
-              site: site.domain,
-            }),
+            body: JSON.stringify(payload),
           });
-          if (!res.ok) throw new Error(String(res.status));
-          showDone(
-            `${site.agent.firstName} will get back to you within one business day — usually a lot sooner.`
-          );
-          return;
-        } catch {
-          // Fall through to the email hand-off rather than losing the inquiry.
-          if (submit) { submit.disabled = false; submit.textContent = 'Send my request'; }
+          if (res.ok) {
+            showDone(SUCCESS_COPY);
+            return;
+          }
+          throw new Error(`lead relay answered ${res.status}`);
+        } catch (err) {
+          // Logged, not swallowed. When this form last looked like it "wasn't
+          // posting at all", it was posting fine and falling through here on a
+          // 502 from the CRM — a silent catch is what made the two look alike.
+          console.warn('[lead] POST failed, falling back to the email draft:', err);
+          setBusy(false);
         }
       }
 
-      // No endpoint (or the endpoint failed): compose the email instead of
-      // pretending the message went somewhere.
+      /* --- the fallback: hand off to their mail client --------------------- */
+      // Reached only when there is no endpoint, or the POST above failed.
       const lines = [
         `Name: ${data.name || ''}`,
         `Phone: ${data.phone || ''}`,

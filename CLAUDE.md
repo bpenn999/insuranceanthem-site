@@ -107,14 +107,14 @@ audit requires every sitemap URL to have an HTML route). There is no WebMCP endp
 npm install
 npm run dev        # http://localhost:4321
 npm run verify     # astro check → unit tests → build → audit. The gate. Must pass.
-npm run e2e        # dependency-free CDP suite (522 checks), needs `astro preview --port 4331`
+npm run e2e        # dependency-free CDP suite (538 checks), needs `astro preview --port 4331`
 ```
 - `npm run verify` must end "✅ All checks passed." Never weaken an audit rule to make a
   page pass.
 - Leak guard, must be 0:
   `grep -rEl 'netlify\.app|vercel\.app|workers\.dev|pages\.dev|localhost' dist | wc -l`
 - Canonicals must be `https://602medicare.com/…`, never `*.pages.dev`.
-- ✅ **`npm run e2e` passed clean — 522/522 — on 2026-08-12.** The home-page motion-engine
+- ✅ **`npm run e2e` passed clean — 538/538 — on 2026-08-12.** The home-page motion-engine
   failure ("caustics canvas has painted pixels") that broke it on 2026-08-08 is gone, so
   it is no longer a free pass: **treat any e2e failure as yours.**
 - Screenshot gotcha: Chrome's `--window-size` does not reach CDP-created targets in new
@@ -141,6 +141,17 @@ variables → **Production**), never in `site.ts` and never in the page.
   real value for `wrangler pages dev dist`.
 - Adding a field? Add it to the relay's `notes` builder **and** to the `/api/lead` block
   in `scripts/e2e.mjs`, which drives the function directly against a mocked upstream.
+- ⚠️ **"The contact form isn't posting" almost always means the CRM rejected it.** The
+  form posts, gets a non-200, and falls back to the email draft — which looks exactly
+  like a form that never posted. Before touching the submit handler, curl the relay and
+  read `upstream_status` in the 502 body:
+  ```bash
+  curl -sX POST https://insuranceanthem.pages.dev/api/lead \
+    -H 'Content-Type: application/json' -d '{"first":"Smoke","phone":"0000000000"}'
+  ```
+  **pages.dev, not the apex** — the apex serves Cloudflare's own error page for a 5xx and
+  the JSON body never reaches you. The `Contact — the submit actually posts` block in
+  `scripts/e2e.mjs` pins both branches so this cannot be misread again.
 
 ## Brand assets
 Navy `#011459` + red `#D10A0F`, and **one rule: `--red` is only 3.0:1 on navy** — anything
