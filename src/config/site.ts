@@ -203,13 +203,19 @@ export const site = {
   },
 
   /**
-   * Lead endpoint. EMPTY ON PURPOSE — this is a static site with no backend,
-   * so the contact form falls back to opening a prefilled email instead of
-   * pretending to submit somewhere. Set this to a CRM/webhook URL (GHL inbound
-   * webhook, a Pages Function at /api/lead, Formspree, …) and every form on
-   * the site starts POSTing JSON to it with no other changes.
+   * Lead endpoint — the Pages Function at `functions/api/lead.ts`.
+   *
+   * Same-origin on purpose. The function holds the GoGuruX inbound webhook in
+   * `GOGURUX_WEBHOOK_URL` and relays to it server-side, so the credential never
+   * reaches the browser and `connect-src 'self'` in public/_headers stays shut.
+   * Pointing this at a CRM URL directly would publish that URL in the built
+   * HTML of every page — which is why it is not done that way.
+   *
+   * Emptying this value is still the honest fallback: every form drops back to
+   * composing a prefilled email to `site.email` rather than pretending to
+   * submit. The forms take the same path when the endpoint answers non-200.
    */
-  leadEndpoint: '',
+  leadEndpoint: '/api/lead',
 
   /** Social profiles — add real URLs as they go live; empty entries are skipped in schema. */
   social: {

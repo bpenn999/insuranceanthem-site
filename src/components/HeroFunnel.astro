@@ -4,17 +4,17 @@ import site from '../config/site';
 /**
  * Quote-interest funnel.
  *
- * This is a static site — there is no backend to post to, so the funnel does
- * not pretend there is one. It gathers intent, gives an honest read on which
- * direction fits, and hands off to /contact/ with the answers prefilled (and
- * stashed in sessionStorage) so nobody has to type them twice.
+ * It gathers intent, gives an honest read on which direction fits, and hands
+ * off to /contact/ with the answers prefilled (and stashed in sessionStorage)
+ * so nobody has to type them twice.
  *
- * When a lead endpoint exists, set `data-endpoint` on the root and the submit
- * step will POST the same payload before redirecting.
+ * `data-endpoint` is `site.leadEndpoint` — the /api/lead relay. See the note in
+ * the controller below for why the funnel's own answers ride to the CRM on the
+ * contact form's submission rather than in a POST of their own.
  */
 ---
 
-<div class="funnel" data-funnel>
+<div class="funnel" data-funnel data-endpoint={site.leadEndpoint || undefined}>
   <div class="funnel__head">
     <p class="funnel__kicker">Free · 60 seconds · No obligation</p>
     <div class="funnel__progress" role="presentation">
@@ -375,13 +375,31 @@ import site from '../config/site';
         sessionStorage.setItem('ia_funnel', JSON.stringify(answers));
       } catch { /* private mode — the query string still carries it */ }
 
-      // If a lead endpoint is ever wired up, this is the single place to post.
+      // The single place this funnel posts from — but only when there is
+      // somebody to post about.
+      //
+      // These three questions never ask for a name, a phone number or an email,
+      // and /api/lead refuses a submission carrying neither email nor phone,
+      // because a CRM contact nobody can reach is not a lead. Firing anyway
+      // would buy a guaranteed 400 on every visitor who reaches this card.
+      //
+      // The answers are not lost: they are stashed above and carried in the CTA
+      // query string, LeadForm.astro prefills from both, and they reach GoGuruX
+      // in the `notes` of the contact submission — the one POST that does carry
+      // a way to answer. The guard stays because the day this funnel grows a
+      // phone field is the day it should start posting on its own.
       const endpoint = root.dataset.endpoint;
-      if (endpoint) {
+      const reachable = 'email' in answers || 'phone' in answers;
+      if (endpoint && reachable) {
         fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ...answers, tool: 'hero-funnel', site: site.domain }),
+          body: JSON.stringify({
+            ...answers,
+            coverage_interest: answers.intent,
+            source: 'hero-funnel',
+            site: site.domain,
+          }),
         }).catch(() => { /* never block the UI on a lead post */ });
       }
     }

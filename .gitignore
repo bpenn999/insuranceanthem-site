@@ -79,6 +79,11 @@ web_modules/
 .env.production.local
 .env.local
 
+# Cloudflare Pages Functions secrets for local dev. .dev.vars.example is the
+# committed template; .dev.vars holds the real GOGURUX_WEBHOOK_URL and must not
+# be committed — that URL is the credential.
+.dev.vars
+
 # parcel-bundler cache (https://parceljs.org/)
 .cache
 .parcel-cache

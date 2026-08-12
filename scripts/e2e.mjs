@@ -130,6 +130,206 @@ async function closePage(cdp) {
 
 /* ═══════════════════════════════════════════════════════════════════════ */
 
+// ── 0. /api/lead — the CRM relay, against a mocked upstream ──────────────────
+// First, and before Chrome is even waited on. This is the only part of the site
+// with a server side, it never opens a page, and a browser that will not start
+// should not be what stops it being checked.
+//
+// The real GoGuruX webhook is never called: `globalThis.fetch` is stubbed, and
+// what is asserted is the payload shape this relay sends upstream plus the
+// status codes LeadForm.astro branches on — 200 shows the thank-you card,
+// anything else falls back to the mailto hand-off.
+console.log('\nAPI — /api/lead relay (mocked upstream)');
+{
+  const { onRequest } = await import('../functions/api/lead.ts');
+
+  const ORIGIN = `https://${site.domain}`;
+  const ENV = { GOGURUX_WEBHOOK_URL: 'https://stub.invalid/inbound/hook' };
+  const OK = () => new Response('{"received":true}', { status: 200 });
+
+  /**
+   * Drive the function once with a stubbed upstream, and report both what came
+   * back and what it tried to send. `console.error` is captured rather than
+   * printed: the 502 cases below log on purpose, and a wall of expected error
+   * text buried in the check output is how a real one gets missed.
+   */
+  async function callLead(opts = {}) {
+    const {
+      method = 'POST',
+      body,
+      contentType = 'application/json',
+      origin = ORIGIN,
+      env = ENV,
+      upstream = OK,
+    } = opts;
+
+    const sent = [];
+    const realFetch = globalThis.fetch;
+    const realError = console.error;
+    const logged = [];
+    globalThis.fetch = async (url, init) => {
+      sent.push({ url: String(url), init });
+      return upstream();
+    };
+    console.error = (...a) => logged.push(a.join(' '));
+
+    try {
+      const headers = {};
+      if (origin) headers.origin = origin;
+      if (body !== undefined) headers['content-type'] = contentType;
+      const request = new Request(`${ORIGIN}/api/lead`, {
+        method,
+        headers,
+        body: body === undefined ? undefined
+          : typeof body === 'string' ? body
+          : JSON.stringify(body),
+      });
+
+      const res = await onRequest({ request, env });
+      let json = null;
+      try { json = await res.clone().json(); } catch { /* not JSON */ }
+
+      return {
+        status: res.status,
+        allow: res.headers.get('allow'),
+        json,
+        calls: sent.length,
+        relayed: sent[0] ? JSON.parse(String(sent[0].init.body)) : null,
+        upstreamUrl: sent[0]?.url || '',
+        logged,
+      };
+    } finally {
+      globalThis.fetch = realFetch;
+      console.error = realError;
+    }
+  }
+
+  check('the forms post to the route this function serves',
+    site.leadEndpoint === '/api/lead', site.leadEndpoint);
+
+  // --- the happy path ------------------------------------------------------
+  {
+    const r = await callLead({
+      body: {
+        name: 'Mary Anne Ruiz', phone: '(480) 555-0147', email: 'mary@example.com',
+        zip: '85086', coverage_interest: 'turning-65', consent: 'on',
+        message: 'Most important to me: keeping my current doctors.',
+        source: 'contact-form',
+      },
+    });
+
+    check('a complete submission answers 200 { ok: true }',
+      r.status === 200 && r.json?.ok === true, `${r.status} ${JSON.stringify(r.json)}`);
+    check('it posts to the webhook from the environment, once',
+      r.calls === 1 && r.upstreamUrl === ENV.GOGURUX_WEBHOOK_URL,
+      `${r.calls} call(s) → ${r.upstreamUrl}`);
+    check('the relayed body carries the documented contact shape',
+      r.relayed?.contact?.email === 'mary@example.com'
+      && r.relayed.contact.phone === '(480) 555-0147'
+      && r.relayed.contact.zip === '85086',
+      JSON.stringify(r.relayed?.contact));
+    check('one name field is split into first_name and last_name',
+      r.relayed?.contact?.first_name === 'Mary'
+      && r.relayed.contact.last_name === 'Anne Ruiz',
+      JSON.stringify(r.relayed?.contact));
+    check('source is passed through when the form names one',
+      r.relayed?.source === 'contact-form', r.relayed?.source);
+    check('notes read as prose, not as machine values',
+      /Situation: Turning 65/.test(r.relayed?.notes || '')
+      && /Message: Most important to me/.test(r.relayed?.notes || ''),
+      JSON.stringify(r.relayed?.notes));
+    check('notes record the TCPA consent the checkbox captured',
+      /TCPA consent given/.test(r.relayed?.notes || ''), JSON.stringify(r.relayed?.notes));
+  }
+
+  // --- the shapes a submission can legitimately arrive in -------------------
+  {
+    const r = await callLead({
+      contentType: 'application/x-www-form-urlencoded',
+      body: 'first=Ada&last=Byron&email=ada@example.com&zip=85383&situation=review',
+    });
+    check('a form-encoded POST is accepted too (JS-off native submit)',
+      r.status === 200 && r.relayed?.contact?.first_name === 'Ada'
+      && r.relayed.contact.last_name === 'Byron',
+      `${r.status} ${JSON.stringify(r.relayed?.contact)}`);
+    check('`situation` is read as coverage_interest',
+      /Situation: Has a plan/.test(r.relayed?.notes || ''), JSON.stringify(r.relayed?.notes));
+    check('an unconsented submission says so rather than staying silent',
+      /No TCPA consent/.test(r.relayed?.notes || ''), JSON.stringify(r.relayed?.notes));
+  }
+
+  {
+    const r = await callLead({ body: { first: 'Sam', phone: '4805550147' } });
+    check('a phone with no email is enough',
+      r.status === 200 && r.relayed?.contact?.phone === '4805550147', String(r.status));
+    check('source falls back to the site when the form does not name one',
+      r.relayed?.source === site.domain, r.relayed?.source);
+  }
+
+  check('an email with no phone is enough',
+    (await callLead({ body: { first: 'Sam', email: 'sam@example.com' } })).status === 200);
+
+  // --- what it refuses -----------------------------------------------------
+  {
+    const r = await callLead({ body: { first: 'Nobody', zip: '85086' } });
+    check('neither email nor phone is refused with 400',
+      r.status === 400 && r.json?.ok === false, `${r.status} ${JSON.stringify(r.json)}`);
+    check('a refused submission is never relayed to the CRM', r.calls === 0, String(r.calls));
+  }
+
+  {
+    const r = await callLead({ method: 'GET', body: undefined });
+    check('GET is refused with 405 and an Allow header',
+      r.status === 405 && r.allow === 'POST', `${r.status} allow=${r.allow}`);
+    check('a non-POST never reaches the CRM', r.calls === 0, String(r.calls));
+  }
+
+  {
+    const r = await callLead({
+      origin: 'https://not-our-site.example',
+      body: { first: 'Spam', email: 'spam@example.com' },
+    });
+    check('a cross-origin POST is refused with 403',
+      r.status === 403, `${r.status} ${JSON.stringify(r.json)}`);
+    check('a cross-origin POST never reaches the CRM', r.calls === 0, String(r.calls));
+  }
+
+  check('a body that is not JSON at all is refused, not crashed on',
+    (await callLead({ body: 'not json{{{' })).status === 400);
+
+  // --- what it does when the CRM is the thing that is broken ---------------
+  // Every one of these must be non-200, because non-200 is what sends the
+  // visitor to the prefilled email instead of a thank-you card over a lead
+  // that went nowhere.
+  {
+    const r = await callLead({
+      body: { first: 'Sam', phone: '4805550147' },
+      upstream: () => new Response('nope', { status: 500 }),
+    });
+    check('an upstream 500 answers 502 { ok: false }',
+      r.status === 502 && r.json?.ok === false, `${r.status} ${JSON.stringify(r.json)}`);
+  }
+
+  {
+    const r = await callLead({
+      body: { first: 'Sam', phone: '4805550147' },
+      upstream: () => { throw new Error('connection reset'); },
+    });
+    check('an unreachable CRM answers 502 rather than throwing',
+      r.status === 502 && r.json?.ok === false, `${r.status} ${JSON.stringify(r.json)}`);
+  }
+
+  {
+    const r = await callLead({ env: {}, body: { first: 'Sam', phone: '4805550147' } });
+    check('an unset GOGURUX_WEBHOOK_URL answers 502, not a cheerful 200',
+      r.status === 502 && r.json?.ok === false, `${r.status} ${JSON.stringify(r.json)}`);
+    check('it says so in the logs so the cause is findable',
+      r.logged.some((l) => /GOGURUX_WEBHOOK_URL/.test(l)), r.logged.join(' | '));
+    check('nothing is posted anywhere when there is nowhere to post',
+      r.calls === 0, String(r.calls));
+  }
+}
+
 await waitForChrome();
 
 // ── 1. home page: motion engine + hero funnel ────────────────────────────────

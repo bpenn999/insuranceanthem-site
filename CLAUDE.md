@@ -107,20 +107,40 @@ audit requires every sitemap URL to have an HTML route). There is no WebMCP endp
 npm install
 npm run dev        # http://localhost:4321
 npm run verify     # astro check → unit tests → build → audit. The gate. Must pass.
-npm run e2e        # dependency-free CDP suite (496 checks)
+npm run e2e        # dependency-free CDP suite (522 checks), needs `astro preview --port 4331`
 ```
 - `npm run verify` must end "✅ All checks passed." Never weaken an audit rule to make a
   page pass.
 - Leak guard, must be 0:
   `grep -rEl 'netlify\.app|vercel\.app|workers\.dev|pages\.dev|localhost' dist | wc -l`
 - Canonicals must be `https://602medicare.com/…`, never `*.pages.dev`.
-- ✅ **`npm run e2e` passed clean — 496/496 — on 2026-08-09.** The home-page motion-engine
+- ✅ **`npm run e2e` passed clean — 522/522 — on 2026-08-12.** The home-page motion-engine
   failure ("caustics canvas has painted pixels") that broke it on 2026-08-08 is gone, so
   it is no longer a free pass: **treat any e2e failure as yours.**
 - Screenshot gotcha: Chrome's `--window-size` does not reach CDP-created targets in new
   headless, so a mobile-width `--screenshot` crops a desktop layout instead of reflowing
   it. Use `Emulation.setDeviceMetricsOverride`, as `scripts/e2e.mjs` does, and pass
   `--force-prefers-reduced-motion` or the reveal animations are caught mid-flight.
+
+## The one server-side thing: `/api/lead`
+`functions/api/lead.ts` is a Cloudflare Pages Function — the only code here that is not
+static. It relays form submissions to the **GoGuruX** inbound webhook, whose URL is the
+credential and therefore lives in `GOGURUX_WEBHOOK_URL` (Pages → Settings → Environment
+variables → **Production**), never in `site.ts` and never in the page.
+
+- **Deploy from the repo root.** `wrangler pages deploy dist` picks `functions/` up from
+  the working directory, not from `dist`. Run it anywhere else and the site ships without
+  the relay and every form silently falls back to mailto.
+- Both forms read `site.leadEndpoint` (`/api/lead`) — the single place the URL is set.
+  Anything other than a 200 drops the form to its prefilled-email hand-off, which is why
+  a broken CRM answers 502 rather than a tidy-looking 200.
+- The hero funnel is wired to the same endpoint but does not post on its own: it never
+  asks for a name or a number, and the relay refuses a submission with neither email nor
+  phone. Its answers reach GoGuruX in the `notes` of the contact form's submission.
+- `.dev.vars.example` is the committed template; `.dev.vars` is gitignored and holds the
+  real value for `wrangler pages dev dist`.
+- Adding a field? Add it to the relay's `notes` builder **and** to the `/api/lead` block
+  in `scripts/e2e.mjs`, which drives the function directly against a mocked upstream.
 
 ## Brand assets
 Navy `#011459` + red `#D10A0F`, and **one rule: `--red` is only 3.0:1 on navy** — anything

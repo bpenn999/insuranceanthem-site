@@ -1,0 +1,20 @@
+# Local secrets for the Pages Functions in functions/.
+#
+#   cp .dev.vars.example .dev.vars      # .dev.vars is gitignored — keep it that way
+#   npx wrangler pages dev dist         # picks .dev.vars up automatically
+#
+# THIS FILE IS COMMITTED. Never put a real webhook URL in it — the GoGuruX
+# inbound webhook is itself the credential, and anyone holding it can write
+# into the CRM.
+#
+# Production: Cloudflare dashboard → Pages → insuranceanthem → Settings →
+# Environment variables → Production → add GOGURUX_WEBHOOK_URL, then redeploy.
+# Pages only picks up a variable change on the next deployment, so saving it in
+# the dashboard is not enough on its own:
+#
+#   npm run verify
+#   npx wrangler pages deploy dist --project-name=insuranceanthem
+#
+# Unset, /api/lead answers 502 and every form falls back to the mailto
+# hand-off — no enquiry is lost, but none reaches the CRM either.
+GOGURUX_WEBHOOK_URL=placeholder

@@ -4,10 +4,11 @@ import site from '../config/site';
 /**
  * Contact / quote-request form.
  *
- * No backend is invented here. If `site.leadEndpoint` is empty (the default for
- * this static build) the form composes a prefilled email to the agency instead
- * of silently swallowing the submission. Set the endpoint in src/config/site.ts
- * and the same form POSTs JSON to it — nothing else needs to change.
+ * Posts JSON to `site.leadEndpoint` — the /api/lead Pages Function, which
+ * relays to GoGuruX server-side so the CRM webhook never ships in the page.
+ * If that endpoint is empty, or answers anything other than 200, the form
+ * composes a prefilled email to the agency instead of silently swallowing the
+ * submission. An enquiry is never lost to a CRM outage.
  *
  * Honeypot is deliberately named `xtr_field`: browsers autofill fields called
  * "company", "website" or "address" even when told not to, which turns a
@@ -322,7 +323,15 @@ import site from '../config/site';
           const res = await fetch(endpoint, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ ...data, source: 'contact-form', site: site.domain }),
+            // `coverage_interest` is the name /api/lead documents; the field
+            // itself stays `situation` because that is what the prefill from
+            // the hero funnel and the query string both key off.
+            body: JSON.stringify({
+              ...data,
+              coverage_interest: data.situation || '',
+              source: 'contact-form',
+              site: site.domain,
+            }),
           });
           if (!res.ok) throw new Error(String(res.status));
           showDone(

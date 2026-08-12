@@ -101,19 +101,60 @@ all update together. Same for `email`, `agent.npn`, `agent.experience`,
 > distinct phone string — a second one showing up means something hard-coded a
 > number instead of reading `site.phone`.
 
-### Wiring up lead capture
+### Lead capture — the /api/lead relay
 
-The contact form and hero funnel have no backend — this is a static site, so
-rather than pretending to submit, the form composes a prefilled email to
-`site.email`. To send leads somewhere real:
+The contact form POSTs JSON to **`/api/lead`**, a Cloudflare Pages Function at
+`functions/api/lead.ts`, which relays the submission to the **GoGuruX** inbound
+webhook. `leadEndpoint` in `src/config/site.ts` is the single place the URL is
+set; both the form and the hero funnel read it.
 
-1. Set `leadEndpoint` in `src/config/site.ts` to your URL (a GHL inbound
-   webhook, a Pages Function at `/api/lead`, Formspree, …).
-2. If that endpoint is on **another origin**, widen `connect-src` in
-   `public/_headers` — the current CSP is `connect-src 'self'` and will block it.
+The relay exists so the webhook URL never reaches the browser. That URL *is* the
+credential — anyone holding it can write into the CRM — so posting it from the
+page would publish it in the built HTML of every page. It lives in an
+environment variable only the Worker reads, and `connect-src 'self'` in
+`public/_headers` stays shut because the browser only ever talks to this origin.
 
-Both the form and the funnel then POST JSON automatically. The form falls back
-to the email hand-off if the endpoint errors, so an enquiry is never silently lost.
+**Set the secret before this does anything.** Cloudflare dashboard → Pages →
+`insuranceanthem` → Settings → Environment variables → **Production** → add:
+
+```
+GOGURUX_WEBHOOK_URL = <the GoGuruX inbound webhook URL>
+```
+
+then **redeploy** — Pages only picks a variable change up on the next
+deployment:
+
+```bash
+npm run verify
+npx wrangler pages deploy dist --project-name=insuranceanthem
+```
+
+Locally, `cp .dev.vars.example .dev.vars`, put the real value in it (it is
+gitignored) and run `npx wrangler pages dev dist`.
+
+What it sends:
+
+```jsonc
+{
+  "contact": { "first_name": "…", "last_name": "…", "email": "…", "phone": "…", "zip": "…" },
+  "source": "contact-form",              // defaults to "602medicare.com"
+  "notes": "Situation: …\nMessage: …\nTCPA consent given on the website form at …"
+}
+```
+
+What it answers: `200 {ok:true}` on an upstream 2xx · `400` when the submission
+carries neither email nor phone · `403` on a cross-origin POST · `405` on
+anything but POST · `502` when the CRM refuses, times out, or the variable is
+unset. Anything other than 200 drops the form back to the prefilled-email
+hand-off, so an enquiry is never silently lost to a CRM outage.
+
+The hero funnel is wired to the same endpoint but does not post on its own — its
+three questions never ask for a name or a number, so there is nothing reachable
+to file. Its answers ride to the CRM in the `notes` of the contact submission,
+prefilled from the query string and `sessionStorage`.
+
+`scripts/e2e.mjs` drives the function directly against a mocked upstream —
+`node scripts/e2e.mjs` covers it without a deployment.
 
 ---
 
