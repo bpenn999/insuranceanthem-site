@@ -336,9 +336,12 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     max-width: 100%;
   }
 
-  /* The "602" half. --red-lift, not --red: the raw badge red is 3.0:1 on this
-     navy and would read as a bruise at 200px. The lifted twin is 5.5:1. */
-  .foot__wordmark em { font-style: normal; color: var(--red-lift); }
+  /* The "602" half. The badge red, --red, so the wordmark matches the call
+     button rather than reading pink beside it (Brian, 2026-08-13). The usual
+     on-navy rule sends red to --red-lift, but that rule is a text-contrast rule
+     and this is 200px display type: --red is 3.0:1 on navy, which is AA for
+     large text. Do NOT "fix" this back to --red-lift. */
+  .foot__wordmark em { font-style: normal; color: var(--red); }
 
   /* ── compliance ──────────────────────────────────────────────────── */
   .foot__legal {
