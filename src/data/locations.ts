@@ -113,6 +113,26 @@ export const locations: Location[] = [
     proximity: 'A short run south down I-17 from Anthem.',
   },
   {
+    slug: 'scottsdale-az',
+    city: 'Scottsdale',
+    label: 'Scottsdale, AZ',
+    zips: ['85254', '85255', '85258', '85259', '85260', '85262', '85266'],
+    county: 'Maricopa County',
+    summary:
+      'Independent Medicare guidance across Scottsdale — Advantage, Supplement, Part D and long-term care, weighed against the specialists and the higher-income issues that come with this market.',
+    seoDescription:
+      'Independent Medicare guidance for Scottsdale, AZ — Advantage, Supplement and Part D, weighed against your own specialists, IRMAA and travel plans.',
+    local: [
+      'Scottsdale runs the better part of thirty miles north to south and behaves like three different Medicare markets along the way. The older, denser south end around Osborn and downtown has households that have used the same doctors for decades. Central Scottsdale — 85258, 85259, 85260 — is where most of the 55-plus community associations sit. North of the 101, in 85262 and 85266, the houses are further apart, the drive to a specialist is longer, and network reach matters more than anything a plan advertises.',
+      'This is a market full of people who are attached to a specific physician or practice, and that is the single fact that decides most Scottsdale plan comparisons. The large systems on this side of the Valley are not carried identically by every Advantage plan, and a practice can be in network one plan year and out the next. Bring the actual list of doctors you intend to keep and we check it before anything else — including whether a plan you already like still holds them for the coming year.',
+      'Concierge and direct-primary-care memberships are more common here than anywhere else I work. Medicare does not pay the membership fee, and neither does an Advantage plan or a Supplement — that money sits outside the coverage conversation entirely. What matters is whether the physician still bills Medicare for the covered visits underneath the membership, because some do and some have opted out, and the answer changes what your coverage is actually worth. It is worth a phone call to the practice before enrollment season, not after.',
+      'Higher incomes make IRMAA a live issue in Scottsdale rather than a footnote. The surcharge on Part B and Part D is set from a tax return two years old, so a business sale, a Roth conversion, an unusually large RMD or a spouse\'s death can raise a premium for reasons that have nothing to do with this year. There is a formal process for appealing it after a life-changing event, and plenty of people who qualify never file. The tax planning belongs with your CPA; getting the timing and the paperwork right is something I can walk you through.',
+      'A large share of this market is out of Arizona for part of the year — a summer place, extended family somewhere cooler, or genuine dual residency. Network-based plans and coverage that travels behave very differently for that household, and the honest comparison depends on where you actually receive routine care rather than where your mail goes.',
+    ],
+    proximity:
+      'About 35 to 40 minutes east of the Anthem office — the Carefree Highway across to Scottsdale Road, or the 101 if you are further south.',
+  },
+  {
     slug: 'carefree-az',
     city: 'Carefree',
     label: 'Carefree, AZ',
@@ -170,17 +190,19 @@ export const locationBySlug = (slug: string) => locations.find((l) => l.slug ===
  *  Tier two: communities we serve and name, but that do NOT have a page.
  * ─────────────────────────────────────────────────────────────────────────────
  *
- * Two of them are already covered in prose by an existing page — Desert Hills
- * shares the New River page and Cave Creek shares the Carefree page — and
- * `servedBy` points a reader at it. Scottsdale has no page yet and gets no
- * link rather than a link to nothing.
+ * Both are already covered in prose by an existing page — Desert Hills shares
+ * the New River page and Cave Creek shares the Carefree page — and `servedBy`
+ * points a reader at it, so every row in the home-page ZIP table now goes
+ * somewhere. Nothing here may be listed without a `servedBy`: a row that leads
+ * nowhere is the defect this arrangement exists to avoid.
  *
  * They are deliberately NOT entries in `locations` above. Adding them there
- * would generate three more routes, and the honest version of a city page on
+ * would generate two more routes, and the honest version of a city page on
  * this site runs 500+ words of genuinely local detail (the audit enforces it).
- * Three thin pages spun up to fill a table would cost more in crawl quality
- * than the rows are worth. Promote one to `locations` when there is real
- * content to put on it — and add it to CITIES in scripts/audit.mjs when you do.
+ * A thin page spun up to fill a table would cost more in crawl quality than the
+ * row is worth. Promote one to `locations` when there is real content to put on
+ * it — Scottsdale was promoted this way on 2026-08-14 — and add it to CITIES in
+ * scripts/audit.mjs and scripts/e2e.mjs when you do.
  */
 export interface AdditionalArea {
   city: string;
@@ -205,12 +227,6 @@ export const additionalAreas: AdditionalArea[] = [
     zips: ['85331'],
     county: 'Maricopa County',
     servedBy: 'carefree-az',
-  },
-  {
-    city: 'Scottsdale',
-    label: 'Scottsdale, AZ',
-    zips: ['85254', '85255', '85258', '85259', '85260', '85262', '85266'],
-    county: 'Maricopa County',
   },
 ];
 
@@ -239,8 +255,15 @@ const ROW_ORDER = [
 export interface ServiceAreaRow {
   city: string;
   zips: string[];
-  /** Path to the page covering this community, or undefined for a plain row. */
-  href?: string;
+  /**
+   * Path to the page covering this community. REQUIRED. Rows used to be allowed
+   * to render as plain text when a community had no page, which is exactly what
+   * it looks like when something is broken — Scottsdale sat in the middle of the
+   * table looking identical to its neighbors and not responding to a click
+   * (reported 2026-08-14). Every row now leads somewhere: either the community's
+   * own page or the page whose copy covers it.
+   */
+  href: string;
 }
 
 export const serviceAreaRows: ServiceAreaRow[] = ROW_ORDER.map((city) => {
@@ -253,11 +276,13 @@ export const serviceAreaRows: ServiceAreaRow[] = ROW_ORDER.map((city) => {
     // otherwise drop a whole community out of the table silently.
     throw new Error(`locations.ts: ROW_ORDER names "${city}", which is in neither list`);
   }
-  return {
-    city,
-    zips: extra.zips,
-    href: extra.servedBy ? `/service-area/${extra.servedBy}/` : undefined,
-  };
+  if (!extra.servedBy) {
+    throw new Error(
+      `locations.ts: "${city}" is in the ZIP table with no page and no servedBy — ` +
+        'give it a page in `locations`, or point servedBy at the page that covers it.',
+    );
+  }
+  return { city, zips: extra.zips, href: `/service-area/${extra.servedBy}/` };
 });
 
 /** Every community named on the site, for `areaServed` in structured data. */

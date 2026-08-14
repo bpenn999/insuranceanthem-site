@@ -1056,6 +1056,7 @@ console.log('\nService area — city pages');
     { slug: 'glendale-az', city: 'Glendale', zip: '85308' },
     { slug: 'peoria-az', city: 'Peoria', zip: '85383' },
     { slug: 'phoenix-85086', city: 'North Phoenix', zip: '85086' },
+    { slug: 'scottsdale-az', city: 'Scottsdale', zip: '85260' },
     { slug: 'carefree-az', city: 'Carefree', zip: '85377' },
     { slug: 'new-river-az', city: 'New River', zip: '85087' },
   ];

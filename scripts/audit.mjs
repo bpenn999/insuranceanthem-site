@@ -468,6 +468,7 @@ for (const f of htmls) {
     ['glendale-az', 'Glendale'],
     ['peoria-az', 'Peoria'],
     ['phoenix-85086', 'North Phoenix'],
+    ['scottsdale-az', 'Scottsdale'],
     ['carefree-az', 'Carefree'],
     ['new-river-az', 'New River'],
   ];
@@ -623,6 +624,14 @@ for (const f of htmls) {
         note(`ZIP TABLE MISSING ROW  ${city}`);
       }
       if (!home.includes(zips)) note(`ZIP TABLE WRONG ZIPS FOR ${city} — expected ${zips}`);
+    }
+
+    // Every row is a link. Scottsdale shipped as plain text for a while and
+    // read as a broken row rather than a deliberate one (Brian, 2026-08-14):
+    // same type, same rule, same hover target, no response to a click.
+    const linked = [...home.matchAll(/<a href="\/service-area\/[a-z0-9-]+\/" class="area__link"/g)];
+    if (linked.length !== ALL_NINE.length) {
+      note(`ZIP TABLE HAS ${linked.length} LINKED ROWS, EXPECTED ${ALL_NINE.length}`);
     }
   }
 

@@ -59,14 +59,19 @@ const breadcrumbs = [
       />
       <div class="prose">
         {/* The tier-two communities: served and listed on the home page, but
-            without a page of their own. Naming them here keeps the hub from
-            contradicting the home page's ZIP table. */}
+            without a page of their own — each one covered in the copy of the
+            page named in its `servedBy`. Naming them here keeps the hub from
+            contradicting the home page's ZIP table. The count is derived, not
+            written: this sentence said "those three" for a while after
+            Scottsdale was promoted to a page of its own. */}
         <p>
           I also work
           {' '}{additionalAreas.map((a) => a.city).join(', ').replace(/, ([^,]*)$/, ' and $1')}
-          {' '}— {additionalAreas.map((a) => `${a.city} (${a.zips.join(', ')})`).join('; ')}. Those
-          three do not have a page yet, which says something about how much I have written rather
-          than about whether I cover them.
+          {' '}— {additionalAreas.map((a) => `${a.city} (${a.zips.join(', ')})`).join('; ')}.
+          {' '}{additionalAreas.length === 1 ? 'That one does' : 'Those do'} not have a page of
+          {' '}{additionalAreas.length === 1 ? 'its' : 'their'} own, which says something about how
+          much I have written rather than about whether I cover
+          {' '}{additionalAreas.length === 1 ? 'it' : 'them'}.
         </p>
         <p>
           The pages above are the communities I work in most, but I am licensed in

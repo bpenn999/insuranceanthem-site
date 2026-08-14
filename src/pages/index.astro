@@ -223,24 +223,19 @@ const faqSchema = {
         </p>
       </div>
       {/* Ordered outward from the office, not in brand order — see
-          serviceAreaRows in src/data/locations.ts. Rows for communities that
-          have their own page link to it; Scottsdale has no page yet, so its row
-          is plain text rather than a link to nowhere. */}
+          serviceAreaRows in src/data/locations.ts. EVERY row is a link now:
+          either to the community's own page or to the page whose copy covers
+          it. Scottsdale used to render as plain text here, which read as a
+          broken row rather than a deliberate one. locations.ts throws at build
+          time if a row has nowhere to go, so the plain-text branch is gone. */}
       <ul class="area__list">
         {
           serviceAreaRows.map((r, i) => (
             <li data-rise data-armed style={`--rise-delay:${i * 55}ms`}>
-              {r.href ? (
-                <a href={r.href} class="area__link">
-                  <span class="area__city">{r.city}</span>
-                  <span class="area__zip">{r.zips.join(' · ')}</span>
-                </a>
-              ) : (
-                <span class="area__link area__link--plain">
-                  <span class="area__city">{r.city}</span>
-                  <span class="area__zip">{r.zips.join(' · ')}</span>
-                </span>
-              )}
+              <a href={r.href} class="area__link">
+                <span class="area__city">{r.city}</span>
+                <span class="area__zip">{r.zips.join(' · ')}</span>
+              </a>
             </li>
           ))
         }
@@ -434,10 +429,6 @@ const faqSchema = {
     background: var(--surface);
     padding-left: var(--s-4);
   }
-  /* Same row, no destination. Keeps the ZIPs aligned with the linked rows
-     without pretending to be clickable. */
-  .area__link--plain { cursor: default; }
-  .area__link--plain:hover { background: color-mix(in srgb, var(--tint) 96%, transparent); padding-left: var(--s-2); }
   .area__city {
     font-family: var(--font-display);
     font-size: var(--t-lg);
