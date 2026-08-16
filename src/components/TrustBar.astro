@@ -1,14 +1,27 @@
 ---
 import site from '../config/site';
+import { serviceAreaRows } from '../data/locations';
 
 /**
- * "22+ Years · Licensed in 18 States · NPN 8206556"
+ * "22+ Years · 9 Valley Communities · NPN 8206556"
  * The first two count up; the NPN is an identifier and must never animate
  * through wrong numbers, so it renders whole.
+ *
+ * ⚠️ The middle stat was "Licensed in 18 States" until 2026-08-16. Brian pulled
+ * it: 602Medicare's whole proposition is that the advisor lives here and works
+ * this Valley, and the second-largest number on the home page was a *national*
+ * credential arguing the opposite of the hero above it ("Medicare, explained by
+ * someone who lives here"). The 18-state licence is real and still stated on
+ * /about, /service-area and /terms, where "can he still help me if I move?" is
+ * the actual question — it just does not belong on the front door.
+ * Do not put a state count back here.
+ *
+ * The community count is derived from `serviceAreaRows`, so it tracks the ZIP
+ * table and the hero eyebrow instead of being a hand-typed number that drifts.
  */
 const items = [
   { value: site.agent.experienceYears, suffix: '+', label: 'Years', countable: true },
-  { value: site.agent.statesLicensed, suffix: '', label: 'States Licensed', countable: true },
+  { value: serviceAreaRows.length, suffix: '', label: 'Valley Communities', countable: true },
   { value: site.agent.npn, suffix: '', label: 'National Producer Number', countable: false },
 ];
 ---
@@ -40,7 +53,7 @@ const items = [
     <p class="trust__line">
       <span>{site.agent.experience}</span>
       <span aria-hidden="true">·</span>
-      <span>Licensed in {site.agent.statesLicensed} States</span>
+      <span>Serving {serviceAreaRows.length} Valley communities</span>
       <span aria-hidden="true">·</span>
       <span>NPN {site.agent.npn}</span>
     </p>

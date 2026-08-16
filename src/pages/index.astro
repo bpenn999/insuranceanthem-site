@@ -151,8 +151,7 @@ const faqSchema = {
         <p class="eyebrow" data-rise data-armed>Your advisor</p>
         <h2><Kinetic text="Brian Penner" stagger={50} /></h2>
         <p class="lede advisor__lede" data-rise data-armed style="--rise-delay:180ms">
-          {site.agent.experience} in Medicare, licensed in {site.agent.statesLicensed} states,
-          based in Anthem.
+          {site.agent.experience} in Medicare, based in Anthem, working the north Valley.
         </p>
         <div class="advisor__body" data-rise data-armed style="--rise-delay:250ms">
           <p>
@@ -178,10 +177,12 @@ const faqSchema = {
                 data-suffix="+">{site.agent.experienceYears}+</span>
           <span class="advisor__fact-label">Years in Medicare</span>
         </li>
+        {/* Was "18 · States licensed" until 2026-08-16 — pulled for the same reason
+            as the trust bar's middle stat: a national number on the page whose whole
+            argument is that the advisor is local. See TrustBar.astro. */}
         <li>
-          <span class="advisor__fact-value tabular" data-countup={site.agent.statesLicensed}
-                data-duration="1500">{site.agent.statesLicensed}</span>
-          <span class="advisor__fact-label">States licensed</span>
+          <span class="advisor__fact-value">{site.address.locality}</span>
+          <span class="advisor__fact-label">Where I am based, {site.address.region} {site.address.postalCode}</span>
         </li>
         <li>
           <span class="advisor__fact-value tabular">{site.agent.npn}</span>
