@@ -47,6 +47,8 @@ const weekdays = [
 <div
   class="bk"
   data-booking
+  data-brand={site.name}
+  data-agent={site.agent.name}
   data-supabase-url={booking.supabaseUrl}
   data-supabase-key={booking.supabaseAnonKey}
   data-location-slug={booking.locationSlug}
@@ -187,6 +189,21 @@ const weekdays = [
     </p>
     <h2 class="bk__h bk__h--done">You are booked in.</h2>
     <p class="bk__done-when" data-done-when></p>
+    {/* ── Put it in THEIR calendar ──────────────────────────────────────────
+        GoGuruX's confirmation email tells the client "A calendar invite (.ics)
+        is attached" and attaches nothing (verified on a real booking,
+        2026-08-17), so the one instruction it gives cannot be followed. These
+        buttons do not depend on that email arriving, being opened, or an
+        attachment being found — they are on screen the moment the booking
+        lands. Same arrangement as the Medicare On Main picker. */}
+    <p class="bk__done-cal">
+      <a class="btn btn-primary bk__cal-btn" data-done-gcal href="#" target="_blank" rel="noopener">
+        Add to Google Calendar
+      </a>
+      <a class="btn btn-ghost bk__cal-btn" data-done-ics href="#" download="appointment.ics">
+        Add to Apple or Outlook
+      </a>
+    </p>
     <p class="bk__done-note">
       {site.agent.firstName} will call you at the number you gave. If you need to
       change it, call <a href={site.phone.href} class="link">{site.phone.display}</a>.
@@ -255,6 +272,8 @@ const weekdays = [
       tz: root.dataset.displayTz || DISPLAY_TZ,
       embedUrl: root.dataset.embedUrl!,
       phone: root.dataset.phone!,
+      brand: root.dataset.brand!,
+      agent: root.dataset.agent!,
     };
 
     const $ = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
@@ -268,6 +287,8 @@ const weekdays = [
     const chosen = $('[data-chosen]');
     const doneEl = $('[data-done]');
     const doneWhen = $('[data-done-when]');
+    const doneGcal = $('[data-done-gcal]') as HTMLAnchorElement;
+    const doneIcs = $('[data-done-ics]') as HTMLAnchorElement;
     const form = $<HTMLFormElement>('[data-booking-form]');
     const formError = $('[data-form-error]');
     const continueBtn = $<HTMLButtonElement>('[data-continue]');
@@ -597,6 +618,57 @@ const weekdays = [
         });
         const body = await res.json().catch(() => ({}));
         if (!res.ok || body?.error) throw new Error(body?.error || `booking ${res.status}`);
+
+        // ── Let them put it in their own calendar ───────────────────────────
+        //  Built here rather than trusting the confirmation email, which
+        //  promises an .ics attachment GoGuruX does not actually attach.
+        const startD = new Date(state.selectedSlot.startUtc);
+        const endD = new Date(state.selectedSlot.endUtc);
+        // Calendar links want UTC basic-format stamps: 20260819T170000Z
+        const stamp = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+        const evTitle = `Medicare call — ${cfg.brand}`;
+        const evWhere = `${cfg.agent} will call you on ${details.phone}`;
+        const evDetails =
+          `${cfg.agent} will call you on ${details.phone} at this time. ` +
+          `Questions: ${cfg.phone}`;
+
+        doneGcal.href =
+          'https://calendar.google.com/calendar/render?action=TEMPLATE' +
+          `&text=${encodeURIComponent(evTitle)}` +
+          `&dates=${stamp(startD)}/${stamp(endD)}` +
+          `&details=${encodeURIComponent(evDetails)}` +
+          `&location=${encodeURIComponent(evWhere)}`;
+
+        // Fold at 75 octets and escape per RFC 5545, or Outlook truncates.
+        const fold = (line: string) =>
+          line.length <= 75 ? line : line.match(/.{1,73}/g)!.join('\r\n ');
+        const esc = (v: string) => v.replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n');
+        doneIcs.href =
+          'data:text/calendar;charset=utf-8,' +
+          encodeURIComponent(
+            [
+              'BEGIN:VCALENDAR',
+              'VERSION:2.0',
+              'PRODID:-//602Medicare//Booking//EN',
+              'CALSCALE:GREGORIAN',
+              'METHOD:PUBLISH',
+              'BEGIN:VEVENT',
+              `UID:${body?.id ?? stamp(startD)}@602medicare.com`,
+              `DTSTAMP:${stamp(new Date())}`,
+              `DTSTART:${stamp(startD)}`,
+              `DTEND:${stamp(endD)}`,
+              fold(`SUMMARY:${esc(evTitle)}`),
+              fold(`DESCRIPTION:${esc(evDetails)}`),
+              fold(`LOCATION:${esc(evWhere)}`),
+              'BEGIN:VALARM',
+              'TRIGGER:-PT1H',
+              'ACTION:DISPLAY',
+              `DESCRIPTION:Call with ${cfg.agent} in one hour`,
+              'END:VALARM',
+              'END:VEVENT',
+              'END:VCALENDAR',
+            ].join('\r\n'),
+          );
 
         doneWhen.textContent = `${formatDayLong(state.selectedDay!)}, ${formatSlotRange(
           state.selectedSlot,
@@ -986,6 +1058,27 @@ const weekdays = [
     color: var(--navy);
     margin-bottom: var(--s-4);
   }
+  /* The two add-to-calendar buttons. Stacked on a phone so neither becomes a
+     narrow tap target, side by side once there is room. */
+  .bk__done-cal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    justify-content: center;
+    margin: 0 0 1.25rem;
+  }
+  .bk__cal-btn {
+    font-size: var(--bk-type);
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  @media (max-width: 430px) {
+    .bk__done-cal { flex-direction: column; }
+    .bk__cal-btn { width: 100%; }
+  }
+
   .bk__done-note {
     font-size: var(--bk-type);
     color: var(--ink-body);
