@@ -52,6 +52,33 @@ const schemaNodes = [
       acceptedAnswer: { '@type': 'Answer', text: f.a },
     })),
   },
+  /**
+   * WebPage carrying the review date and the citations. These four are the
+   * money pages — the ones somebody reads before deciding whether to call — and
+   * they shipped with neither. `author` is the Organization with Brian as
+   * reviewedBy, matching the city pages: a product page is something the agency
+   * publishes, not an article a person wrote.
+   */
+  {
+    '@type': 'WebPage',
+    '@id': `${abs(`/${product.slug}/`)}#webpage`,
+    url: abs(`/${product.slug}/`),
+    name: title,
+    description,
+    isPartOf: { '@id': `${site.origin}/#website` },
+    inLanguage: 'en-US',
+    datePublished: product.reviewed,
+    dateModified: product.reviewed,
+    author: { '@id': `${site.origin}/#organization` },
+    reviewedBy: { '@id': `${site.origin}/#brian-penner` },
+    publisher: { '@id': `${site.origin}/#organization` },
+    mainEntity: { '@id': `${abs(`/${product.slug}/`)}#service` },
+    citation: product.sources.map((c) => ({
+      '@type': 'CreativeWork',
+      name: c.label,
+      url: c.url,
+    })),
+  },
 ];
 ---
 
@@ -237,6 +264,35 @@ const schemaNodes = [
     </div>
   </section>
 
+  <!-- ── Sources ──────────────────────────────────────────────────────
+       Official pages behind the claims above. These are the four pages
+       carrying the most weight in a decision to call, and they had no
+       citations and no review date until 2026-08-18.
+  ─────────────────────────────────────────────────────────────────── -->
+  <section class="section section--tight" data-caustics="0.18">
+    <div class="wrap wrap--narrow">
+      <h2 class="psrc__h2">Where this comes from</h2>
+      <p class="psrc__note">
+        Official Medicare pages for the rules described here. This page was last
+        reviewed {
+          new Date(`${product.reviewed}T12:00:00Z`).toLocaleDateString('en-US', {
+            month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+          })
+        } — plan benefits, networks and formularies change every plan year.
+      </p>
+      <ul class="psrc">
+        {
+          product.sources.map((c) => (
+            <li>
+              <a href={c.url} target="_blank" rel="noopener">{c.label}</a>
+              <span class="psrc__host">{new URL(c.url).hostname.replace(/^www\./, '')}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
   <!-- ── Related ──────────────────────────────────────────────────────── -->
   <section class="section band--tint-deep" data-caustics="0.24">
     <div class="wrap">
@@ -282,6 +338,13 @@ const schemaNodes = [
 </BaseLayout>
 
 <style>
+  .psrc__h2 { font-size: var(--t-xl); margin-bottom: var(--s-2); }
+  .psrc__note { font-size: var(--t-sm); color: var(--ink-muted); line-height: 1.55; margin-bottom: var(--s-4); max-width: 62ch; }
+  .psrc { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s-3); }
+  .psrc li { display: grid; gap: 0.1rem; padding-bottom: var(--s-3); border-bottom: 1px solid var(--rule-soft); }
+  .psrc li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .psrc__host { font-size: 0.75rem; color: var(--ink-muted); }
+
   .prod { display: grid; gap: var(--s-7); align-items: start; }
   .prod__h2 { font-size: var(--t-2xl); margin-bottom: var(--s-5); }
   .prod__points { font-size: var(--t-lg); }

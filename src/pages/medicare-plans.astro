@@ -5,7 +5,8 @@ import SectionHead from '../components/SectionHead.astro';
 import ServicesGrid from '../components/ServicesGrid.astro';
 import CtaBand from '../components/CtaBand.astro';
 import ToolsPreview from '../components/ToolsPreview.astro';
-import site from '../config/site';
+import site, { abs } from '../config/site';
+import Faq from '../components/Faq.astro';
 
 const title = 'Medicare Plans We Help With';
 const description =
@@ -15,9 +16,75 @@ const breadcrumbs = [
   { name: 'Home', path: '/' },
   { name: 'Medicare Plans', path: '/medicare-plans/' },
 ];
+
+/**
+ * This page is the fork in the road — the hub the four product pages hang off,
+ * and one of the first things somebody comparing options lands on. It shipped
+ * with NO FAQ schema, no citations and no review date, which made it the
+ * weakest of the money pages by some distance while being the one carrying the
+ * decision.
+ *
+ * The questions are the ones people actually arrive with, and they are the
+ * fork itself rather than product detail — that belongs on the product pages,
+ * which answer their own. Nothing here repeats a question asked on one of
+ * them.
+ */
+const reviewed = '2026-08-18';
+
+const faqs = [
+  {
+    q: 'Do I have to choose between Medicare Advantage and a Supplement?',
+    a: 'Effectively yes, and it is the fork this whole page is about. A Medicare Supplement pairs with Original Medicare and pays much of what Medicare leaves; a Medicare Advantage plan replaces how you receive Medicare and delivers it through a network instead. You cannot usefully hold both — a Supplement pays nothing toward an Advantage plan\'s costs. Part D sits with the Supplement side as a separate drug plan and is usually built into an Advantage plan.',
+  },
+  {
+    q: 'Which one is better?',
+    a: 'Neither, and anyone who answers that question without asking about you is selling something. The honest version is a set of trade-offs: a Supplement costs more every month and asks almost nothing of you at the point of care, travels anywhere in the country that accepts Medicare, and has no network to check. An Advantage plan usually costs far less monthly, often bundles drug coverage and extras, and in exchange asks you to stay inside a network and accept a yearly out-of-pocket maximum rather than near-complete coverage. Which trade you want depends on your doctors, your prescriptions, your travel and your tolerance for an unpredictable year.',
+  },
+  {
+    q: 'Can I switch later if I choose wrong?',
+    a: 'Moving from a Supplement to an Advantage plan is generally straightforward during an enrollment period. Moving the other way is the one that catches people: outside specific windows, a Supplement carrier in Arizona can ask health questions and decline you. Arizona does not have the birthday rule some states do. That asymmetry is the single most important thing to understand before the first choice, because it means the two directions are not equally reversible.',
+  },
+  {
+    q: 'What does it cost to have you help me choose?',
+    a: 'Nothing, at any point. Carriers pay licensed agents a commission set by CMS and it is identical whether you enroll through me, through a call center or directly with the carrier. Your premium is the same either way. The only difference is whether somebody checked your doctors and your prescriptions against the plan first.',
+  },
+];
+
+const sources = [
+  { label: 'The parts of Medicare', url: 'https://www.medicare.gov/basics/get-started-with-medicare/medicare-basics/parts-of-medicare' },
+  { label: 'Medigap basics', url: 'https://www.medicare.gov/health-drug-plans/medigap/basics' },
+  { label: 'Medicare Advantage and other health plans', url: 'https://www.medicare.gov/health-drug-plans/health-plans' },
+  { label: 'When you can buy Medigap without health questions', url: 'https://www.medicare.gov/health-drug-plans/medigap/ready-to-buy' },
+];
+
+const schemaNodes = [
+  {
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  },
+  {
+    '@type': 'WebPage',
+    '@id': `${abs('/medicare-plans/')}#webpage`,
+    url: abs('/medicare-plans/'),
+    name: title,
+    description,
+    isPartOf: { '@id': `${site.origin}/#website` },
+    inLanguage: 'en-US',
+    datePublished: reviewed,
+    dateModified: reviewed,
+    author: { '@id': `${site.origin}/#organization` },
+    reviewedBy: { '@id': `${site.origin}/#brian-penner` },
+    publisher: { '@id': `${site.origin}/#organization` },
+    citation: sources.map((c) => ({ '@type': 'CreativeWork', name: c.label, url: c.url })),
+  },
+];
 ---
 
-<BaseLayout title={title} description={description} path="/medicare-plans/" breadcrumbs={breadcrumbs}>
+<BaseLayout title={title} description={description} path="/medicare-plans/" breadcrumbs={breadcrumbs} schemaNodes={schemaNodes}>
   <PageHero
     eyebrow="Medicare plans"
     title="Four products. One decision, really."
@@ -176,6 +243,38 @@ const breadcrumbs = [
     </div>
   </section>
 
+  <!-- ── FAQ ──────────────────────────────────────────────────────────── -->
+  <section class="section band--tint" data-caustics="0.22">
+    <div class="wrap wrap--narrow">
+      <SectionHead eyebrow="Questions" title="The fork, answered." />
+      <Faq items={faqs} openFirst />
+    </div>
+  </section>
+
+  <!-- ── Sources ──────────────────────────────────────────────────────── -->
+  <section class="section section--tight" data-caustics="0.18">
+    <div class="wrap wrap--narrow">
+      <h2 class="mpsrc__h2">Where this comes from</h2>
+      <p class="mpsrc__note">
+        Official Medicare pages for the rules above. Last reviewed {
+          new Date(`${reviewed}T12:00:00Z`).toLocaleDateString('en-US', {
+            month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+          })
+        } — benefits, networks and formularies reset every plan year.
+      </p>
+      <ul class="mpsrc">
+        {
+          sources.map((c) => (
+            <li>
+              <a href={c.url} target="_blank" rel="noopener">{c.label}</a>
+              <span class="mpsrc__host">{new URL(c.url).hostname.replace(/^www\./, '')}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
   <CtaBand
     title="Bring me your doctors and your prescriptions."
     body={`That is genuinely all it takes to turn this from a brochure into an answer. ${site.agent.experience} of doing exactly this, at no cost to you.`}
@@ -183,6 +282,13 @@ const breadcrumbs = [
 </BaseLayout>
 
 <style>
+  .mpsrc__h2 { font-size: var(--t-xl); margin-bottom: var(--s-2); }
+  .mpsrc__note { font-size: var(--t-sm); color: var(--ink-muted); line-height: 1.55; margin-bottom: var(--s-4); max-width: 62ch; }
+  .mpsrc { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s-3); }
+  .mpsrc li { display: grid; gap: 0.1rem; padding-bottom: var(--s-3); border-bottom: 1px solid var(--rule-soft); }
+  .mpsrc li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .mpsrc__host { font-size: 0.75rem; color: var(--ink-muted); }
+
   .fork { display: grid; gap: var(--s-7); }
   .fork__h2 { font-size: var(--t-2xl); margin-bottom: var(--s-4); }
   .fork__intro p { color: var(--ink-muted); max-width: 60ch; font-size: var(--t-lg); line-height: 1.6; }

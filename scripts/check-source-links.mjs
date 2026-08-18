@@ -23,6 +23,7 @@
 
 import { readFileSync, readdirSync } from 'node:fs';
 import { locations } from '../src/data/locations.ts';
+import { products } from '../src/data/products.ts';
 
 /**
  * Learn-article sources, read straight out of the markdown frontmatter rather
@@ -62,6 +63,7 @@ const add = (url, slug) => {
   seen.get(url).push(slug);
 };
 for (const l of locations) for (const s of l.sources) add(s.url, l.slug);
+for (const p of products) for (const s of p.sources) add(s.url, p.slug);
 for (const a of learnSources()) for (const u of a.urls) add(u, a.slug);
 
 const UA =
@@ -72,8 +74,8 @@ let unverifiable = 0;
 
 const learnCount = learnSources().length;
 console.log(
-  `Checking ${seen.size} unique source URLs across ${locations.length} city pages ` +
-  `and ${learnCount} Learn articles…\n`,
+  `Checking ${seen.size} unique source URLs across ${locations.length} city pages, ` +
+  `${products.length} product pages and ${learnCount} Learn articles…\n`,
 );
 
 for (const [url, slugs] of [...seen].sort()) {

@@ -26,6 +26,28 @@ export interface Product {
   /** "Who it fits" bullets */
   fit: string[];
   faqs: { q: string; a: string }[];
+  /**
+   * The `.gov` pages behind this product's claims, rendered as a sources block
+   * and emitted as `citation` on the page's WebPage node.
+   *
+   * These are the four money pages and they carried no citations at all —
+   * describing what a Medicare Advantage network does, what a Supplement pays,
+   * what Part D costs, what Medicare does not cover for long-term care, with
+   * nothing a reader could check. Same gap the Learn shelf and the city pages
+   * had; same reason it matters more here, because these are the pages someone
+   * lands on before deciding to call.
+   *
+   * `.gov`/`.mil` only, asserted below. Never a carrier page: these pages must
+   * not imply carrier endorsement, so a carrier link would be a compliance
+   * problem before it was ever a sourcing one.
+   */
+  sources: { label: string; url: string }[];
+  /**
+   * ISO date the copy was last actually reviewed. Drives `dateModified` and a
+   * visible line, same contract as `reviewed` in locations.ts: bump it only
+   * when the copy really changed, and never forward to look fresh.
+   */
+  reviewed: string;
 }
 
 export const products: Product[] = [
@@ -51,6 +73,12 @@ export const products: Product[] = [
       'Your doctors are already in the plan network',
       'Extra benefits like dental and vision matter to you',
       'You are comfortable with referrals or network rules',
+    ],
+    reviewed: '2026-08-18',
+    sources: [
+      { label: 'Medicare Advantage and other health plans', url: 'https://www.medicare.gov/health-drug-plans/health-plans' },
+      { label: 'Joining a Medicare plan', url: 'https://www.medicare.gov/basics/get-started-with-medicare/get-more-coverage/joining-a-plan' },
+      { label: 'Find and compare plans in your ZIP', url: 'https://www.medicare.gov/plan-compare/' },
     ],
     faqs: [
       {
@@ -90,6 +118,12 @@ export const products: Product[] = [
       'You travel, snowbird, or split time between states',
       'You are in your Medigap open enrollment window or can pass underwriting',
     ],
+    reviewed: '2026-08-18',
+    sources: [
+      { label: 'Medigap basics', url: 'https://www.medicare.gov/health-drug-plans/medigap/basics' },
+      { label: 'When you can buy Medigap without health questions', url: 'https://www.medicare.gov/health-drug-plans/medigap/ready-to-buy' },
+      { label: 'Using providers with Original Medicare', url: 'https://www.medicare.gov/providers-services/original-medicare' },
+    ],
     faqs: [
       {
         q: 'What is the difference between Plan G and Plan N?',
@@ -127,6 +161,12 @@ export const products: Product[] = [
       'You take any regular prescriptions — even one',
       'You want to avoid the lifetime late-enrollment penalty',
       'Your drug costs jumped this year and you want to know why',
+    ],
+    reviewed: '2026-08-18',
+    sources: [
+      { label: 'Medicare Part D drug coverage', url: 'https://www.medicare.gov/drug-coverage-part-d' },
+      { label: 'Costs for Medicare drug coverage', url: 'https://www.medicare.gov/drug-coverage-part-d/costs-for-medicare-drug-coverage' },
+      { label: 'How to get prescription drug coverage', url: 'https://www.medicare.gov/drug-coverage-part-d/how-to-get-prescription-drug-coverage' },
     ],
     faqs: [
       {
@@ -166,6 +206,12 @@ export const products: Product[] = [
       'You are in your late 50s to early 70s and in reasonable health',
       'You want a plan that does not put the burden on your kids',
     ],
+    reviewed: '2026-08-18',
+    sources: [
+      { label: 'Long-term care — what Medicare covers', url: 'https://www.medicare.gov/coverage/long-term-care' },
+      { label: 'Skilled nursing facility care, and its limits', url: 'https://www.medicare.gov/coverage/skilled-nursing-facility-snf-care' },
+      { label: 'What Medicare covers', url: 'https://www.medicare.gov/coverage' },
+    ],
     faqs: [
       {
         q: "Doesn't Medicare cover nursing home care?",
@@ -197,5 +243,28 @@ for (const p of products) {
     throw new Error(
       `products.ts: ${p.slug} seoDescription is ${p.seoDescription.length} chars (max 155)`,
     );
+  }
+}
+
+/**
+ * Fail the BUILD on an unsourced or badly sourced product page, for the same
+ * reason locations.ts fails on a duplicated one: the defect ships silently. An
+ * uncited page renders perfectly and simply reads as less trustworthy to both a
+ * person and a crawler, and nobody notices because there is nothing to see.
+ */
+for (const p of products) {
+  if (p.sources.length < 2) {
+    throw new Error(`products.ts: ${p.slug} has ${p.sources.length} sources (minimum 2)`);
+  }
+  for (const { url } of p.sources) {
+    if (!/^https:\/\/(www\.)?[a-z0-9.-]+\.(gov|mil)\//.test(url)) {
+      throw new Error(`products.ts: ${p.slug} source ${url} is not an https .gov/.mil URL`);
+    }
+  }
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(p.reviewed)) {
+    throw new Error(`products.ts: ${p.slug} reviewed "${p.reviewed}" is not YYYY-MM-DD`);
+  }
+  if (p.reviewed > new Date().toISOString().slice(0, 10)) {
+    throw new Error(`products.ts: ${p.slug} reviewed ${p.reviewed} is in the future`);
   }
 }
