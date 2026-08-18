@@ -350,21 +350,22 @@ console.log('\nAPI — /api/lead relay (mocked upstream)');
   }
 }
 
-// ── the diary guard, which is what keeps a blocked hour off the page ─────────
-// Thursday 20 August 2026: the page offered an unbroken run of half-hours from
+// ── availability: the feed that is in step with Brian's calendar ────────────
+// Thursday 20 August 2026: this site offered an unbroken run of half-hours from
 // 7:00 while Brian's calendar carried "Off" 07:00–20:00, and he booked 7:30 to
-// prove it. /api/availability exists so that cannot happen again — it subtracts
-// the diary server-side and withholds everything if it cannot read it.
+// prove it. Medicare On Main greyed that Thursday out, because it reads
+// GoHighLevel's free-slots feed instead. Asked for 18–31 August that feed
+// answers 18, 25, 26, 27, 28, 31 and no 20th (verified against the live
+// calendar, 2026-08-18).
 //
-// Driven directly, like the lead relay above: real function, real RS256
-// signing against a throwaway key, every upstream stubbed. Nothing here touches
-// Google or GoGuruX.
-console.log('\nAPI — /api/availability (diary guard, mocked upstreams)');
+// /api/availability now reads the same feed. These drive the real function with
+// every upstream stubbed, and the sharpest check is that GoGuruX's slot list is
+// never used again for anything.
+console.log('\nAPI — /api/availability (the free-slots feed, mocked upstreams)');
 {
   const { onRequest } = await import('../functions/api/availability.ts');
   const { generateKeyPairSync } = await import('node:crypto');
 
-  // A genuine RSA key, so importKey/sign run for real rather than being faked.
   const { privateKey } = generateKeyPairSync('rsa', { modulusLength: 2048 });
   const SA = JSON.stringify({
     client_email: 'guard@602medicare.iam.gserviceaccount.com',
@@ -372,32 +373,34 @@ console.log('\nAPI — /api/availability (diary guard, mocked upstreams)');
   });
 
   const ORIGIN = `https://${site.domain}`;
-  const az = (hhmm) => `2026-08-20T${hhmm}:00-07:00`;
+  const az = (day, hhmm) => `${day}T${hhmm}:00-07:00`;
 
-  /** The eight slots the live site really offered that morning. */
-  const OFFERED = ['07:00','07:30','08:00','08:30','09:00','09:30','10:00','10:30'].map((t) => {
-    const startUtc = new Date(az(t)).toISOString();
+  /** What the feed really answers for a working Tuesday. */
+  const TUESDAY_FEED = {
+    '2026-08-25': { slots: ['08:30', '09:00', '09:30'].map((t) => az('2026-08-25', t)) },
+    traceId: 'stub',
+  };
+  /** And for the Thursday he is off: the day is simply not there. */
+  const THURSDAY_FEED = { traceId: 'stub' };
+
+  /** The eight slots GoGuruX offered that Thursday — which must never surface. */
+  const GOGURUX_SLOTS = ['07:00','07:30','08:00','08:30','09:00','09:30','10:00','10:30'].map((t) => {
+    const startUtc = new Date(az('2026-08-20', t)).toISOString();
     return { startUtc, endUtc: new Date(Date.parse(startUtc) + 30 * 60000).toISOString(), available: true };
   });
 
-  /** Brian's real Thursday. */
-  const THURSDAY_BUSY = [
-    { start: az('07:00'), end: az('20:00') },
-    { start: az('08:00'), end: az('08:30') },
-    { start: az('11:00'), end: az('12:00') },
-    { start: az('15:30'), end: az('16:00') },
-  ];
-
-  async function callAvailability(opts = {}) {
+  async function call(opts = {}) {
     const {
       method = 'GET',
       date = '2026-08-20',
-      env = { GOOGLE_SERVICE_ACCOUNT_JSON: SA },
-      slots = OFFERED,
-      busy = THURSDAY_BUSY,
+      env = {},
+      feed = THURSDAY_FEED,
+      feedStatus = 200,
+      goguruxSlots = GOGURUX_SLOTS,
+      goguruxCalendar = { id: 'gogurux-cal', slot_duration: 30, time_zone: 'America/Denver' },
       goguruxStatus = 200,
+      busy = [],
       freebusyStatus = 200,
-      freebusyBody = null,
       tokenStatus = 200,
     } = opts;
 
@@ -414,11 +417,14 @@ console.log('\nAPI — /api/availability (diary guard, mocked upstreams)');
           { status: tokenStatus });
       }
       if (u.includes('freeBusy')) {
-        const body = freebusyBody ?? { calendars: { 'brianinsuranceservices@gmail.com': { busy } } };
-        return new Response(JSON.stringify(body), { status: freebusyStatus });
+        return new Response(JSON.stringify({ calendars: { 'brianinsuranceservices@gmail.com': { busy } } }),
+          { status: freebusyStatus });
+      }
+      if (u.includes('free-slots')) {
+        return new Response(JSON.stringify(feed), { status: feedStatus });
       }
       if (u.includes('get-availability')) {
-        return new Response(JSON.stringify({ success: goguruxStatus === 200, calendar: { id: 'cal' }, slots }),
+        return new Response(JSON.stringify({ success: goguruxStatus === 200, calendar: goguruxCalendar, slots: goguruxSlots }),
           { status: goguruxStatus });
       }
       return realFetch(url, init);
@@ -441,86 +447,83 @@ console.log('\nAPI — /api/availability (diary guard, mocked upstreams)');
 
   /* ── the Thursday ─────────────────────────────────────────────────────── */
   {
-    const r = await callAvailability();
-    check('THE BUG: every slot offered on the blocked Thursday is withheld',
+    const r = await call();
+    check('THE BUG: the blocked Thursday now offers nothing',
       r.status === 200 && r.json.success === true && r.json.slots.length === 0,
       `${r.status} kept=${r.json?.slots?.length}`);
-    check('it reports what it withheld, so the guard is visible',
-      r.json?.filtered?.offered === 8 && r.json?.filtered?.withheld === 8,
-      JSON.stringify(r.json?.filtered));
-    check('specifically the 7:30 he was able to book is gone',
-      !r.json.slots.some((s) => s.startUtc === new Date(az('07:30')).toISOString()));
-    check('it did ask Google, not just the scheduler',
-      r.seen.some((u) => u.includes('freeBusy')) && r.seen.some((u) => u.includes('get-availability')));
+    check('THE SMOKING GUN: GoGuruX\'s eight slots are never used',
+      !JSON.stringify(r.json.slots).includes('T14:00:00'), JSON.stringify(r.json.slots).slice(0, 120));
+    check('it read the free-slots feed', r.seen.some((u) => u.includes('free-slots')));
+    check('it asked GoGuruX only for the calendar the booking needs',
+      r.json.calendar?.id === 'gogurux-cal');
   }
 
-  /* ── it is a filter, not a shutter ────────────────────────────────────── */
+  /* ── a working day ────────────────────────────────────────────────────── */
   {
-    const evening = [{
-      startUtc: new Date(az('20:00')).toISOString(),
-      endUtc: new Date(az('20:30')).toISOString(),
-      available: true,
-    }];
-    const r = await callAvailability({ slots: [...OFFERED, ...evening] });
-    check('a slot after "Off" ends is still offered', r.json.slots.length === 1);
-  }
-  {
-    const r = await callAvailability({ busy: [] });
-    check('a genuinely clear day passes every slot through', r.json.slots.length === 8);
-  }
-  {
-    // Back-to-back is not a conflict; deleting those would quietly shrink every
-    // day that has an appointment in it.
-    const r = await callAvailability({ busy: [{ start: az('07:30'), end: az('08:00') }] });
-    check('only the slot that actually collides is dropped',
-      r.json.slots.length === 7
-        && !r.json.slots.some((s) => s.startUtc === new Date(az('07:30')).toISOString()),
-      String(r.json.slots.length));
+    const r = await call({ date: '2026-08-25', feed: TUESDAY_FEED });
+    check('a day the feed lists is offered in full', r.json.slots.length === 3);
+    check('the feed\'s start times survive the round trip',
+      r.json.slots[0].startUtc === new Date(az('2026-08-25', '08:30')).toISOString(),
+      r.json.slots[0]?.startUtc);
+    check('an end time is derived from the calendar\'s slot length',
+      Date.parse(r.json.slots[0].endUtc) - Date.parse(r.json.slots[0].startUtc) === 30 * 60000);
+    check('a different slot length is honoured',
+      (await call({ date: '2026-08-25', feed: TUESDAY_FEED,
+        goguruxCalendar: { id: 'c', slot_duration: 45 } }))
+        .json.slots[0].endUtc === new Date(Date.parse(az('2026-08-25', '08:30')) + 45 * 60000).toISOString());
   }
 
   /* ── failing closed ───────────────────────────────────────────────────── */
   {
-    const r = await callAvailability({ freebusyStatus: 500 });
-    check('an unreadable diary answers 503 and NO slots', r.status === 503 && !r.json.slots);
-    check('it never falls through to the unfiltered list', !JSON.stringify(r.json).includes('startUtc'));
-    check('and says so in the logs', /withholding slots/.test(r.logged));
+    const r = await call({ feedStatus: 500, feed: {} });
+    check('a feed outage is 502 and NO slots', r.status === 502 && !r.json.slots);
+    check('it never falls back to GoGuruX\'s list', !JSON.stringify(r.json).includes('startUtc'));
+    check('and says so in the logs', /free-slots failed, withholding/.test(r.logged));
   }
   {
-    // Google says this when the calendar was never shared with the service
-    // account — an empty busy list that must not read as a clear day.
-    const r = await callAvailability({
-      freebusyBody: { calendars: { 'brianinsuranceservices@gmail.com': { busy: [], errors: [{ reason: 'notFound' }] } } },
+    const r = await call({ goguruxStatus: 500 });
+    check('no calendar object means 502 — there would be nothing to book against',
+      r.status === 502);
+  }
+
+  /* ── the optional second opinion ──────────────────────────────────────── */
+  {
+    const r = await call({ date: '2026-08-25', feed: TUESDAY_FEED });
+    check('with no credential set the feed is trusted on its own',
+      r.status === 200 && r.json.slots.length === 3);
+    check('and Google is not called at all', !r.seen.some((u) => u.includes('freeBusy')));
+  }
+  {
+    const r = await call({
+      date: '2026-08-25', feed: TUESDAY_FEED, env: { GOOGLE_SERVICE_ACCOUNT_JSON: SA },
+      busy: [{ start: az('2026-08-25', '09:00'), end: az('2026-08-25', '09:30') }],
     });
-    check('a calendar that was never shared is 503, not a clear day', r.status === 503);
+    check('a configured diary check subtracts anything the feed still listed',
+      r.json.slots.length === 2
+        && !r.json.slots.some((s) => s.startUtc === new Date(az('2026-08-25', '09:00')).toISOString()),
+      String(r.json.slots.length));
+    check('and reports what it withheld', r.json.filtered.withheld === 1);
   }
   {
-    const r = await callAvailability({ tokenStatus: 401 });
-    check('a bad credential is 503, not an unfiltered page', r.status === 503);
-  }
-  {
-    const r = await callAvailability({ env: {} });
-    check('unconfigured answers 501 rather than serving unchecked slots', r.status === 501);
-    check('unconfigured never reaches either upstream', r.seen.length === 0, r.seen.join(' '));
-    check('unconfigured says so loudly in the logs',
-      /GOOGLE_SERVICE_ACCOUNT_JSON is not set/.test(r.logged));
-  }
-  {
-    const r = await callAvailability({ goguruxStatus: 500 });
-    check('a scheduler outage is 502, distinct from a diary outage', r.status === 502);
+    const r = await call({
+      date: '2026-08-25', feed: TUESDAY_FEED,
+      env: { GOOGLE_SERVICE_ACCOUNT_JSON: SA }, tokenStatus: 401,
+    });
+    check('a broken optional check is skipped, not turned into an outage',
+      r.status === 200 && r.json.slots.length === 3);
+    check('but it is logged rather than passed over in silence',
+      /optional diary check skipped/.test(r.logged));
   }
 
   /* ── the shape of the route ───────────────────────────────────────────── */
   {
-    const r = await callAvailability({ method: 'POST' });
+    const r = await call({ method: 'POST' });
     check('POST is refused with 405 and an Allow header', r.status === 405 && r.allow === 'GET');
   }
   {
-    const r = await callAvailability({ date: null });
-    check('a missing date is 400', r.status === 400);
-  }
-  {
-    const r = await callAvailability({ date: '20th August' });
-    check('a date it cannot read is 400, never guessed at', r.status === 400);
+    check('a missing date is 400', (await call({ date: null })).status === 400);
+    check('a date it cannot read is 400, never guessed at',
+      (await call({ date: '20th August' })).status === 400);
   }
 }
 

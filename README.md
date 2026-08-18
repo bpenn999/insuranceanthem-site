@@ -132,52 +132,49 @@ npx wrangler pages deploy dist --project-name=insuranceanthem
 Locally, `cp .dev.vars.example .dev.vars`, put the real value in it (it is
 gitignored) and run `npx wrangler pages dev dist`.
 
-### `/api/availability` — the diary guard
+### `/api/availability` — where the bookable times come from
 
-The booking page does **not** ask the scheduler for times any more. It asks
-`functions/api/availability.ts`, which fetches the same slots server-side, asks
-Google what Brian is actually doing that day, and drops every slot that lands on
-something. On 2026-08-20 the page offered an unbroken run of half-hours from
-7:00 while his calendar carried a confirmed "Off" from 07:00 to 20:00; this
-route exists so that cannot happen again, whatever GoGuruX believes.
-
-**It fails closed.** No diary, no slots — it answers `503` and the page falls
-back to GoGuruX's widget plus the phone number rather than serving a list nobody
-checked. Until the credential below is set it answers `501` and the site behaves
-exactly as it did before.
-
-Setting it up, once, in the Google Cloud console with the account that owns the
-calendar:
-
-1. **Create a project** (any name) at <https://console.cloud.google.com>.
-2. **Enable the Google Calendar API** — APIs & Services → Library → "Google
-   Calendar API" → Enable.
-3. **Create a service account** — IAM & Admin → Service Accounts → Create. No
-   roles are needed; it reads through the calendar share below, not through IAM.
-4. **Make a key** — the service account → Keys → Add key → Create new key →
-   **JSON**. It downloads once.
-5. **Share the calendar with it** — Google Calendar → the calendar's Settings
-   and sharing → Share with specific people → add the service account's address
-   (`…@….iam.gserviceaccount.com`) with **"See all event details"**. This step is
-   what grants the access; without it Google answers `notFound` and the route
-   correctly refuses to serve anything.
-6. **Paste the key into Pages** — Settings → Environment variables →
-   **Production**:
+The booking page does **not** ask GoGuruX what is free any more. On 2026-08-20 it
+offered an unbroken run of half-hours from 7:00 while Brian's Google Calendar
+carried a confirmed "Off" from 07:00 to 20:00, and let him book the 7:30.
+Medicare On Main greyed that same Thursday out, because it reads a different
+feed. This route now reads that feed too:
 
 ```
-GOOGLE_SERVICE_ACCOUNT_JSON = <the entire contents of that JSON file>
-GOOGLE_CALENDAR_ID          = brianinsuranceservices@gmail.com   # optional; this is the default
+GET backend.leadconnectorhq.com/calendars/8CcYJMIVgaxb2XBKcKtk/free-slots
+    ?startDate={ms}&endDate={ms}&timezone=America/Phoenix
 ```
 
-Then redeploy. `GOOGLE_CALENDAR_ID` only needs setting if the blocks live on a
-different calendar from the one bookings land on — worth checking, because a
-mismatch there looks exactly like a clear diary.
+Unauthenticated, CORS-open, and it lists **only what is free** — a day with
+nothing on it is absent from the response entirely. Asked for 18–31 August it
+answered 18, 25, 26, 27, 28 and 31 and no 20th, matching MOM's own date grid
+(verified 2026-08-18).
 
-To confirm it is working, ask it about a day with a block on it. `withheld`
-greater than zero means the guard is doing its job:
+**There is nothing to configure.** No key, no service account, no environment
+variable. The booking is still written to GoGuruX, which is MOM's arrangement
+exactly: read from the feed that honours the diary, write where the diary lives.
+GoGuruX is still asked for the calendar object, because `create-booking` needs
+the id on it — but never again for what is free.
+
+The loop closes on its own: a booking goes to GoGuruX, GoGuruX puts it on
+Brian's Google Calendar, and the feed reads Google. A slot taken through this
+site disappears from the feed.
+
+**It fails closed.** If the feed cannot be read the route answers `502` with no
+slots rather than falling back to GoGuruX's list, and the page shows the widget
+and the phone number.
+
+Optionally, `GOOGLE_SERVICE_ACCOUNT_JSON` (Pages → Settings → Environment
+variables → Production) adds a second, independent check against Google's own
+busy list — share the calendar with the service account's address and paste the
+key JSON in. It is off by default and does not need to be turned on; a
+configured-but-failing credential is logged and skipped rather than closing the
+calendar.
+
+To see what a day looks like:
 
 ```bash
-curl -s 'https://insuranceanthem.pages.dev/api/availability?date=2026-08-20' | jq '.filtered'
+curl -s 'https://insuranceanthem.pages.dev/api/availability?date=2026-08-20' | jq '.filtered, (.slots|length)'
 ```
 
 What it sends:

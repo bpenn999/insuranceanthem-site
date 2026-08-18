@@ -160,41 +160,49 @@ GHL, a setting changed in one does not appear in the other, and a Google Calenda
 connected to one is invisible to the other. Do not go looking in GHL for a booking
 problem, and do not point `site.links` or `site.leadEndpoint` at a GHL URL.
 
-### `/book/` filters the scheduler against Brian's real calendar
+### `/book/` reads the feed that honours Brian's calendar
 `booking.mode` in `src/config/booking.ts` is `'native'`, and the picker reads
-**`/api/availability`** — never GoGuruX directly. That route fetches the same
-slots server-side, asks Google what Brian is doing that day, and drops every slot
-that lands on something.
+**`/api/availability`** — never GoGuruX directly.
 
-**Why it exists.** On Thursday 2026-08-20 the page offered 7:00, 7:30, 8:00,
-8:30, 9:00, 9:30, 10:00, 10:30 in an unbroken run while Brian's Google Calendar
-carried a confirmed "Off" from 07:00 to 20:00 Arizona. He booked the 7:30 to
-prove it. GoGuruX had every one of those hours marked free.
+**Why.** On Thursday 2026-08-20 this site offered 7:00 through 10:30 in an
+unbroken run while Brian's Google Calendar carried a confirmed "Off" from 07:00
+to 20:00 Arizona. He booked the 7:30 to prove it. Medicare On Main — same person,
+same diary — greyed that Thursday out, because it reads GoHighLevel's
+`free-slots` feed rather than GoGuruX's availability.
 
-**The Google link is real but one-way.** A booking made through GoGuruX on
-2026-08-17 is sitting on that same calendar, so appointments go out — busy time
-does not come back. GoGuruX blocks by PERSON, not by calendar (MOM's
-`src/config/booking.config.ts`, verified 2026-08-17), so a calendar with nobody
-assigned has no diary to consult. **That is still worth fixing on the GoGuruX
-side**, and doing so makes this guard redundant rather than wrong. The guard is
-here because a scheduler must not depend on a third party's setting staying
-right.
+So this route reads that feed too: `backend.leadconnectorhq.com/calendars/
+8CcYJMIVgaxb2XBKcKtk/free-slots`, unauthenticated and CORS-open, which lists
+**only what is free** — a blocked day is simply absent. Asked for 18–31 August it
+answered 18, 25, 26, 27, 28, 31 and **no 20th** (verified against the live
+calendar, 2026-08-18). **Nothing needs configuring for this to work.**
 
-⚠️ **The guard fails closed, and nothing may change that.** No diary → `503` and
-zero slots, never the unfiltered list. Unconfigured → `501`, and the site behaves
-as it did before. Both send the picker to `fallback()`, which shows the widget
-and the phone number. The arithmetic is `src/lib/freebusy.ts` — pure, and the
-tests in `test/freebusy.test.mjs` are written against that real Thursday.
+**READ from the feed, WRITE to GoGuruX** — MOM's arrangement exactly. GoGuruX is
+still asked for the calendar object because `create-booking` needs its id;
+`body.slots` from GoGuruX is deliberately never read again. The loop closes by
+itself: a booking goes to GoGuruX → GoGuruX writes it to Brian's Google Calendar
+→ the feed reads Google → the slot is gone.
 
-⚠️ **`'embed'` is not the safe setting.** An iframe cannot be filtered, and the
-widget asks the same endpoint the page used to, so under `'embed'` there is no
-guard at all. Use it only to take this site out of the loop deliberately.
+⚠️ **The calendar id is `8CcYJMIVgaxb2XBKcKtk` (`📞 PHONE APPOINTMENT`), NOT
+`spMuN10Xch53LxXzOgcF` ("15 - Minute Call").** MOM moved off that second one on
+2026-08-17: 11 appointments to this one's 276, and none of the hours, team
+assignment or meeting-format work done on it. Whatever a CTA here says about
+fifteen minutes, do not "correct" the id to match the name.
 
-Setup is six steps in the Google Cloud console plus one Pages variable —
-`GOOGLE_SERVICE_ACCOUNT_JSON`, see README. **The calendar must be shared with the
-service account's address**; without that Google answers `notFound` and the route
-refuses to serve anything, which is the correct behaviour and looks like an
-outage. If slots go quiet, check that share first.
+⚠️ **Fails closed.** No feed → `502` and zero slots, never a fall-through to
+GoGuruX's list. `GOOGLE_SERVICE_ACCOUNT_JSON` is an OPTIONAL second check against
+Google's own busy list (`src/lib/freebusy.ts`, tested in
+`test/freebusy.test.mjs`); unset is normal, and configured-but-broken is logged
+and skipped rather than closing the calendar.
+
+⚠️ **`'embed'` is not the safe setting.** An iframe cannot be filtered and the
+widget asks GoGuruX, so under `'embed'` there is no protection at all. Use it
+only to take this site out of the loop deliberately.
+
+The underlying GoGuruX fault is still real and still worth fixing there: the
+Google link on the 602 Medicare calendar writes appointments out without reading
+busy time back, and GoGuruX blocks by PERSON, not by calendar (MOM's
+`src/config/booking.config.ts`, verified 2026-08-17). Fixing it would make this
+route's choice of feed a preference rather than a necessity.
 
 The two **Add to Google Calendar / .ics** buttons on the confirmation screen are
 unrelated: a one-way hand-off so the *client* can put the appointment in their own

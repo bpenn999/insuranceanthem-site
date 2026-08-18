@@ -1,40 +1,54 @@
 /**
- * GET /api/availability?date=YYYY-MM-DD — the slots, minus Brian's actual diary.
+ * GET /api/availability?date=YYYY-MM-DD — the slots, from the feed that is
+ * actually in step with Brian's calendar.
  *
  * ── WHY THIS ROUTE EXISTS (2026-08-18)
- * On Thursday 20 August the booking page offered an unbroken run of half-hours
- * from 7:00, and Brian's Google Calendar carried a confirmed "Off" from 07:00 to
- * 20:00 Arizona. He booked 7:30 to prove it. GoGuruX had every one of those
- * hours marked free.
+ * On Thursday 20 August 602medicare.com offered an unbroken run of half-hours
+ * from 7:00 while Brian's Google Calendar carried a confirmed "Off" from 07:00
+ * to 20:00 Arizona. He booked the 7:30 to prove it. GoGuruX's availability had
+ * every one of those hours marked free.
  *
- * The Google connection is real — a booking made through GoGuruX on 2026-08-17
- * is sitting on that calendar — but for this calendar it runs ONE WAY:
- * appointments go out, busy time does not come back. That is a setting inside a
- * platform this site cannot reach and has no API for.
+ * Medicare On Main, the same person and the same diary, greyed that Thursday
+ * out. It reads a different feed:
  *
- * So the page stops taking the scheduler's word for it. It asks this route, and
- * this route asks Google. A slot that lands on anything in the diary is dropped
- * before the browser ever sees it. Whatever GoGuruX believes, the site cannot
- * offer a time Brian is not free.
+ *   GET backend.leadconnectorhq.com/calendars/{id}/free-slots
+ *       ?startDate={ms}&endDate={ms}&timezone={tz}
  *
- * ── IT FAILS CLOSED, AND THAT IS THE POINT
- * If Google cannot be reached, or the calendar has not been shared, or the
- * credential is wrong, this answers 503 and NO slots. It never falls through to
- * the unfiltered list. The picker then shows GoGuruX's own widget and the phone
- * number, which is a visible, ordinary state — where quietly serving unchecked
- * slots is the exact failure this route was built to end.
+ * Unauthenticated, CORS-open, and it lists ONLY what is free — a day with
+ * nothing on it is simply absent from the response. Asked for 18–31 August it
+ * answered 18, 25, 26, 27, 28 and 31 and **no 20th**, which is exactly what
+ * MOM's own date grid shows (verified 2026-08-18). The gaps inside those days
+ * are Brian's existing appointments.
  *
- * The one deliberate exception is being UNCONFIGURED. With no service-account
- * credential set, this answers 501 and the site behaves exactly as it did
- * before — no worse, no pretending. See README for the six lines of setup.
+ * So this route reads slots from there and stops asking GoGuruX for them. The
+ * booking itself is still written to GoGuruX, which is MOM's arrangement
+ * exactly: READ from the feed that honours the diary, WRITE where the diary
+ * lives. GoGuruX is still asked for the calendar object, because the id on it
+ * is what create-booking needs — but never again for what is free.
+ *
+ * ── WHY THE LOOP CLOSES
+ * A booking made here goes to GoGuruX, GoGuruX puts it on Brian's Google
+ * Calendar (a booking made on 2026-08-17 is sitting on it), and free-slots
+ * reads Google. So a slot taken through this site disappears from this feed.
+ *
+ * ── FAILING CLOSED
+ * If the feed cannot be read this answers 502 and NO slots — it never falls
+ * back to GoGuruX's unfiltered list, which is the whole reason this file
+ * exists. The picker then shows GoGuruX's widget and the phone number.
+ *
+ * GOOGLE_SERVICE_ACCOUNT_JSON is OPTIONAL and off by default. Set it and the
+ * route subtracts Google's own busy list as a second, independent check. Left
+ * unset — the normal case — the feed above is trusted on its own, because it
+ * has been shown to be right. A configured-but-failing credential is logged and
+ * skipped rather than closing the calendar: the primary source is sound, and
+ * taking the site's booking offline over a secondary check would be its own
+ * outage.
  *
  * ── THE CONTRACT the picker depends on, pinned by scripts/e2e.mjs
- *   200 { success: true, calendar, slots, filtered }  — checked against the diary
+ *   200 { success: true, calendar, slots, filtered }  — free per the feed
  *   400 { success: false }  — no date, or one that is not YYYY-MM-DD
  *   405 { success: false }  — anything that is not a GET
- *   501 { success: false }  — no Google credential configured here
- *   502 { success: false }  — GoGuruX refused, timed out, or answered nonsense
- *   503 { success: false }  — the diary could not be read; slots withheld
+ *   502 { success: false }  — the feed or the calendar lookup failed
  */
 
 import {
@@ -44,6 +58,7 @@ import {
   mergeIntervals,
   type Interval,
 } from '../../src/lib/freebusy.ts';
+import { parseFreeSlots } from '../../src/lib/booking.ts';
 
 interface Env {
   /**
@@ -78,6 +93,32 @@ const GOGURUX_ANON =
 const LOCATION_SLUG = 'medicareonmain-com';
 const CALENDAR_SLUG = '602-medicare';
 const DEFAULT_CALENDAR_ID = 'brianinsuranceservices@gmail.com';
+
+/** The availability feed. Public, unauthenticated, CORS-open. */
+const FREE_SLOTS_API = 'https://backend.leadconnectorhq.com';
+
+/**
+ * The calendar whose free time this site offers.
+ *
+ * `📞 PHONE APPOINTMENT` — Brian's phone calendar, 9:00–17:00 Mountain,
+ * Monday to Friday, and the one MOM books phone calls against. It is his diary,
+ * not a second one: 602Medicare is the same advisor taking the same calls, so
+ * its free time IS this site's free time. Reading it is what makes a day he has
+ * blocked disappear from this site too.
+ *
+ * ⚠️ NOT `spMuN10Xch53LxXzOgcF` ("15 - Minute Call"). MOM pointed at that one
+ * until 2026-08-17 and moved off it: 11 appointments to this one's 276, and
+ * none of the hours, team assignment or meeting-format work was ever done on
+ * it. Whatever a CTA on this site says about fifteen minutes, do not "correct"
+ * this to match the name.
+ */
+const FREE_SLOTS_CALENDAR = '8CcYJMIVgaxb2XBKcKtk';
+
+/** Arizona, which never observes DST — see src/lib/booking.ts. */
+const DISPLAY_TZ = 'America/Phoenix';
+
+/** Fallback slot length when the calendar object does not state one. */
+const DEFAULT_MINUTES = 30;
 
 /** Both upstreams together must stay well under a visitor's patience. */
 const TIMEOUT_MS = 8_000;
@@ -205,6 +246,39 @@ async function googleBusy(env: Env, day: string): Promise<Interval[]> {
   return busyFromFreeBusy(await res.json());
 }
 
+/* ── the feed ───────────────────────────────────────────────────────────── */
+
+/**
+ * The day's free slots, as start instants, from the free-slots feed.
+ *
+ * The feed is keyed by day and only carries days that have times, so a day
+ * Brian has blocked is simply not in the answer and this returns nothing for
+ * it. `parseFreeSlots` skips the `traceId` that rides alongside the days.
+ *
+ * The window is the requested day in Arizona, which is the timezone the feed is
+ * asked to answer in, so the keys come back as the same day string that was
+ * asked for.
+ */
+async function freeSlots(day: string): Promise<string[]> {
+  const startMs = Date.parse(`${day}T00:00:00-07:00`);
+  if (!Number.isFinite(startMs)) throw new Error(`bad day ${day}`);
+  const endMs = startMs + 86_400_000 - 1;
+
+  const q = new URLSearchParams({
+    startDate: String(startMs),
+    endDate: String(endMs),
+    timezone: DISPLAY_TZ,
+  });
+  const res = await fetch(
+    `${FREE_SLOTS_API}/calendars/${FREE_SLOTS_CALENDAR}/free-slots?${q}`,
+    { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(TIMEOUT_MS) },
+  );
+  if (!res.ok) throw new Error(`free-slots ${res.status}`);
+
+  const days = parseFreeSlots(await res.json());
+  return days.get(day) ?? [];
+}
+
 /* ── the route ──────────────────────────────────────────────────────────── */
 
 export const onRequest = async ({ request, env }: Context): Promise<Response> => {
@@ -220,20 +294,14 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
     return json(400, { success: false, error: 'date must be YYYY-MM-DD' });
   }
 
-  // Unconfigured is not a failure, it is "not switched on yet". Say so plainly
-  // and let the picker fall back, rather than serving slots nobody checked.
-  if (!env.GOOGLE_SERVICE_ACCOUNT_JSON) {
-    console.error('GOOGLE_SERVICE_ACCOUNT_JSON is not set — availability not filtered, none served');
-    return json(501, { success: false, error: 'diary check not configured' });
-  }
-
-  // The scheduler's answer, and the diary, fetched together — one is useless
-  // without the other and neither depends on the other's result.
-  const [slotsResult, busyResult] = await Promise.allSettled([
+  // The feed says what is free; GoGuruX is asked only for the calendar object,
+  // because create-booking needs the id on it. Neither depends on the other.
+  const [slotsResult, calendarResult] = await Promise.allSettled([
+    freeSlots(day),
     (async () => {
       const q = new URLSearchParams({
         date: day,
-        duration: '30',
+        duration: String(DEFAULT_MINUTES),
         location_slug: LOCATION_SLUG,
         calendar_slug: CALENDAR_SLUG,
       });
@@ -242,42 +310,63 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
         signal: AbortSignal.timeout(TIMEOUT_MS),
       });
       if (!res.ok) throw new Error(`get-availability ${res.status}`);
-      const body = await res.json();
-      if (!(body as { success?: boolean })?.success) throw new Error('get-availability not ok');
-      return body as { calendar?: unknown; slots?: unknown };
+      const body = (await res.json()) as { calendar?: { slot_duration?: number } };
+      // NOTE: body.slots is deliberately IGNORED. It is the list that offered a
+      // day Brian had blocked out, and nothing here reads it again.
+      if (!body?.calendar) throw new Error('get-availability returned no calendar');
+      return body.calendar;
     })(),
-    googleBusy(env, day),
   ]);
 
+  // ⚠️ No feed, no slots. Never a fall-through to the list this route replaced.
   if (slotsResult.status === 'rejected') {
-    console.error('availability: upstream failed —', String(slotsResult.reason));
+    console.error('availability: free-slots failed, withholding —', String(slotsResult.reason));
+    return json(502, { success: false, error: 'availability unavailable' });
+  }
+  if (calendarResult.status === 'rejected') {
+    console.error('availability: calendar lookup failed —', String(calendarResult.reason));
     return json(502, { success: false, error: 'scheduler unavailable' });
   }
 
-  // ⚠️ THE LINE THAT MATTERS. No diary, no slots. Not "serve them anyway".
-  if (busyResult.status === 'rejected') {
-    console.error('availability: diary unreadable, withholding slots —', String(busyResult.reason));
-    return json(503, { success: false, error: 'diary unavailable' });
-  }
+  const minutes = Number(calendarResult.value?.slot_duration) || DEFAULT_MINUTES;
+  const raw = slotsResult.value
+    .map((iso) => {
+      const start = Date.parse(iso);
+      if (!Number.isFinite(start)) return null;
+      return {
+        startUtc: new Date(start).toISOString(),
+        endUtc: new Date(start + minutes * 60_000).toISOString(),
+        available: true,
+      };
+    })
+    .filter((s): s is { startUtc: string; endUtc: string; available: true } => s !== null);
 
-  const raw = Array.isArray(slotsResult.value.slots)
-    ? (slotsResult.value.slots as Array<{ startUtc: string; endUtc: string }>)
-    : [];
-  const slots = filterSlots(raw, busyResult.value);
+  // The optional second opinion. Unset is the normal case and not a failure;
+  // configured-but-broken is logged and skipped rather than closing the
+  // calendar, because the feed above is already the trustworthy source.
+  let slots = raw;
+  let busy: Interval[] = [];
+  if (env.GOOGLE_SERVICE_ACCOUNT_JSON) {
+    try {
+      busy = await googleBusy(env, day);
+      slots = filterSlots(raw, busy);
+    } catch (err) {
+      console.error('availability: optional diary check skipped —', String(err));
+    }
+  }
 
   const dropped = raw.length - slots.length;
   if (dropped > 0) {
     console.log(
-      `availability ${day}: withheld ${dropped}/${raw.length} slot(s) against ` +
-        `${mergeIntervals(busyResult.value).length} busy span(s)`,
+      `availability ${day}: diary check withheld ${dropped}/${raw.length} slot(s) the ` +
+        `feed still listed, against ${mergeIntervals(busy).length} busy span(s)`,
     );
   }
 
   return json(200, {
     success: true,
-    calendar: slotsResult.value.calendar ?? null,
+    calendar: calendarResult.value,
     slots,
-    // So a human reading the network tab can see the guard did something.
     filtered: { offered: raw.length, withheld: dropped },
   });
 };
