@@ -24,6 +24,32 @@ const breadcrumbs = [
  * otherwise in structured data would be a citation error dressed as markup.
  */
 const schemaNodes = [
+  /**
+   * The hub's own WebPage node. Its `dateModified` is the date the CDC figures
+   * below were retrieved, not an editorial date — this page's factual content
+   * IS that dataset, so the day it was pulled is the honest answer to "how
+   * current is this". It moves when the data moves, which is the only time it
+   * should.
+   */
+  {
+    '@type': 'WebPage',
+    '@id': `${abs('/service-area/')}#webpage`,
+    url: abs('/service-area/'),
+    name: title,
+    description,
+    isPartOf: { '@id': `${site.origin}/#website` },
+    inLanguage: 'en-US',
+    datePublished: countyHealth.retrieved,
+    dateModified: countyHealth.retrieved,
+    author: { '@id': `${site.origin}/#organization` },
+    reviewedBy: { '@id': `${site.origin}/#brian-penner` },
+    publisher: { '@id': `${site.origin}/#organization` },
+    about: {
+      '@type': 'AdministrativeArea',
+      name: countyHealth.county,
+      identifier: countyHealth.fips,
+    },
+  },
   {
     '@type': 'Dataset',
     name: `Adult health prevalence, ${countyHealth.county}, Arizona`,
