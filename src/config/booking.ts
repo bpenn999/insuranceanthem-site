@@ -65,6 +65,43 @@ export const booking = {
    */
   mode: 'embed' as 'embed' | 'native',
 
+  /**
+   * ── THE MOM ARRANGEMENT, WAITING ON ONE VALUE (2026-08-18)
+   *
+   * Medicare On Main hit this same bug and fixed it by splitting the two halves
+   * of booking apart (its src/config/booking.config.ts, 2026-08-13 and -17):
+   *
+   *   · READ availability from GoHighLevel's free-slots feed. No auth, CORS-open,
+   *     one request per month. It lists ONLY what is free, so there is no flag to
+   *     misread and nothing can be offered that the vendor did not name.
+   *   · WRITE the appointment to GoGuruX `create-booking`, which is the diary
+   *     Brian actually works in and the one his Google Calendar syncs with.
+   *
+   * `src/lib/booking.ts` already carries that read path, ported and unit-tested:
+   * `monthWindow`, `parseFreeSlots`, `monthGridFromFeed`. The ONLY thing missing
+   * is the calendar id below.
+   *
+   * ⚠️ IT IS NOT IN THE GHL SUB-ACCOUNT THIS FLEET CAN SEE. That account
+   * (`YPFEoiE6fdPPaZYn6j7G`) holds MOM's calendars only — Phone Appointment,
+   * Moab, Monticello, Grand Junction, IRMAA — and `search-locations` is 403 from
+   * here, so 602's calendar cannot be discovered, only supplied. It is in
+   * whichever GHL account 602Medicare's own booking lives in, which is a
+   * different system from GoGuruX and always was.
+   *
+   * To finish this: put the calendar id here, set `mode` to `'native'`, and wire
+   * `BookingPicker.astro`'s feed to
+   *   `${ghl.api}/calendars/${ghl.calendarId}/free-slots?startDate=&endDate=&timezone=`
+   * Do NOT flip `mode` before the id is real — an empty id would ask GHL for
+   * `/calendars//free-slots` and fall the page back to the embed on every load.
+   */
+  ghl: {
+    api: 'https://backend.leadconnectorhq.com',
+    /** Empty until 602Medicare's own GHL calendar id is supplied. */
+    calendarId: '',
+    /** Arizona, which never observes DST — see src/lib/booking.ts. */
+    timezone: 'America/Phoenix',
+  },
+
   supabaseUrl: 'https://roiypxggqlgbzrspkeoo.supabase.co',
   supabaseAnonKey:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJvaXlweGdncWxnYnpyc3BrZW9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYwNDY3NTUsImV4cCI6MjA2MTYyMjc1NX0.KBULK0GoGRIXOW0uRFya8kLuiXaxpTsA5RW2tUlDOPY',

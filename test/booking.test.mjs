@@ -293,3 +293,118 @@ describe('the details form', () => {
     assert.equal(r.field, 'email');
   });
 });
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   The free-slots feed, ported from Medicare On Main.
+
+   These pin the rule that fixes the bug this whole exercise was about: a slot
+   is offered ONLY when the vendor positively lists it as free. The old path
+   asked for every slot and filtered on `available !== false`, so anything
+   returned without that flag was shown — which is how times Brian had blocked
+   in Google Calendar came to be bookable on the site.
+   ═══════════════════════════════════════════════════════════════════════════ */
+import {
+  MAX_RANGE_DAYS,
+  daysInMonth,
+  monthGridFromFeed,
+  monthWindow,
+  parseFreeSlots,
+} from '../src/lib/booking.ts';
+
+describe('parseFreeSlots', () => {
+  test('keeps only the date-shaped keys, dropping traceId', () => {
+    const days = parseFreeSlots({
+      '2026-08-19': { slots: ['2026-08-19T16:00:00Z'] },
+      traceId: '2d5d832f-9a20-4474-9d19-b46be25b7f03',
+    });
+    assert.deepEqual([...days.keys()], ['2026-08-19']);
+  });
+
+  test('a day with no slots is absent, not present-and-empty', () => {
+    const days = parseFreeSlots({
+      '2026-08-19': { slots: [] },
+      '2026-08-20': { slots: ['2026-08-20T16:00:00Z'] },
+    });
+    assert.equal(days.has('2026-08-19'), false);
+    assert.equal(days.has('2026-08-20'), true);
+  });
+
+  test('THE BUG: nothing is inferred from a slot that was never listed', () => {
+    // The old shape — every slot returned, availability carried on a flag.
+    // A busy slot that arrives WITHOUT the flag used to sail through
+    // `available !== false`. This parser reads no flags at all, so a feed that
+    // does not name a time cannot offer it, however the vendor decorates it.
+    const days = parseFreeSlots({
+      '2026-08-19': { slots: ['2026-08-19T16:00:00Z'] },
+      '2026-08-20': { available: true, booked: false },  // no `slots` key
+    });
+    assert.equal(days.has('2026-08-20'), false);
+  });
+
+  test('an unrecognised body is an empty map, not a throw', () => {
+    for (const junk of [null, undefined, 'nope', 42, []]) {
+      assert.equal(parseFreeSlots(junk).size, 0);
+    }
+  });
+});
+
+describe('monthWindow', () => {
+  test('a future month starts on the 1st and ends on the last day', () => {
+    const { startMs, endMs } = monthWindow(2026, 8, '2026-08-18'); // September
+    assert.equal(new Date(startMs).toISOString().slice(0, 10), '2026-09-01');
+    assert.equal(new Date(endMs).toISOString().slice(0, 10), '2026-09-30');
+  });
+
+  test('the current month starts today, not on the 1st', () => {
+    const { startMs } = monthWindow(2026, 7, '2026-08-18');
+    assert.equal(new Date(startMs).toISOString().slice(0, 10), '2026-08-18');
+  });
+
+  test('never spans more than the endpoint tolerates', () => {
+    // 31 days answers in full; 32 returns nothing at all rather than an error,
+    // which reads as "no availability" and is the worst way for this to fail.
+    for (const [y, m] of [[2026, 0], [2026, 6], [2026, 11]]) {
+      const { startMs, endMs } = monthWindow(y, m, `${y}-01-01`);
+      const spanDays = (endMs - startMs) / 86_400_000;
+      assert.ok(spanDays <= MAX_RANGE_DAYS, `${y}-${m + 1} spanned ${spanDays} days`);
+    }
+  });
+
+  test('February is not assumed to be 28 days', () => {
+    assert.equal(daysInMonth(2028, 1), 29);
+    assert.equal(daysInMonth(2026, 1), 28);
+  });
+});
+
+describe('monthGridFromFeed', () => {
+  const days = new Map([
+    ['2026-08-19', ['2026-08-19T16:00:00Z']],
+    ['2026-08-21', ['2026-08-21T16:00:00Z']],
+  ]);
+
+  test('opens only the days the feed named', () => {
+    const open = monthGridFromFeed(2026, 7, { today: '2026-08-18', days })
+      .filter((c) => c.inMonth && !c.disabled)
+      .map((c) => c.date);
+    assert.deepEqual(open, ['2026-08-19', '2026-08-21']);
+  });
+
+  test('a weekday the feed skipped stays shut', () => {
+    // 2026-08-20 is a Thursday — a working day by every rule, and absent from
+    // the feed because Brian blocked it. No weekday rule may reopen it.
+    const cell = monthGridFromFeed(2026, 7, { today: '2026-08-18', days })
+      .find((c) => c.date === '2026-08-20');
+    assert.equal(cell.disabled, true);
+  });
+
+  test('a listed day in the past is still shut', () => {
+    const cell = monthGridFromFeed(2026, 7, { today: '2026-08-20', days })
+      .find((c) => c.date === '2026-08-19');
+    assert.equal(cell.disabled, true);
+  });
+
+  test('the grid is still whole weeks', () => {
+    const cells = monthGridFromFeed(2026, 7, { today: '2026-08-18', days });
+    assert.equal(cells.length % 7, 0);
+  });
+});

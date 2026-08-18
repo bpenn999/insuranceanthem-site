@@ -186,6 +186,152 @@ export function nextBookableDays(
   return out;
 }
 
+/* ─────────────────────────────────────────────────────────────────────────
+   MOM'S FEED, PORTED (2026-08-18)
+
+   Medicare On Main spent a day on exactly this bug and landed somewhere
+   different from where this file started, so the difference is worth stating
+   plainly, because it is the whole fix:
+
+     · THIS SITE asked GoGuruX for a day's slots and then filtered them —
+       `slots.filter(s => s.available !== false)`. A slot the vendor returns
+       WITHOUT saying anything about its availability therefore passes straight
+       through and is offered to a visitor. That is how times Brian had blocked
+       in Google Calendar came to be bookable.
+
+     · MOM asks GoHighLevel's free-slots feed, which lists ONLY what is free —
+       days with no times are simply absent — and renders exactly what it is
+       handed. There is no flag to misread, and nothing can be offered that the
+       vendor did not positively name as free.
+
+   The second rule is the one that cannot go wrong: TRUST ONLY WHAT IS
+   POSITIVELY LISTED. Never open a day by rule and close it by evidence; open
+   nothing, and let the feed open what it will. Everything below implements
+   that, and it is pure so it can be tested without a network.
+   ───────────────────────────────────────────────────────────────────────── */
+
+/**
+ * GoHighLevel's free-slots endpoint answers with nothing at all when the range
+ * it is given exceeds a month (MOM verified 2026-08-13: 31 days returns the
+ * full set, 32 days returns `{traceId}` and no days). Every request is clamped
+ * to this.
+ */
+export const MAX_RANGE_DAYS = 31;
+
+/** Days in a calendar month. `day 0` of the next month is the last of this one. */
+export function daysInMonth(year: number, month: number): number {
+  return new Date(Date.UTC(year, month + 1, 0)).getUTCDate();
+}
+
+/**
+ * The `startDate`/`endDate` window for one month's free-slots request, in ms.
+ *
+ * Starts at today rather than the 1st when the month is the current one —
+ * asking about days already gone wastes the range — and never spans more than
+ * `MAX_RANGE_DAYS`, past which the endpoint returns nothing at all rather than
+ * an error, which is the failure mode most likely to be read as "no
+ * availability" instead of "the request was malformed".
+ */
+export function monthWindow(
+  year: number,
+  month: number,
+  today: string,
+): { startMs: number; endMs: number } {
+  const first = formatDay(year, month, 1);
+  const from = first < today ? today : first;
+  const { y, m, d } = parseDay(from);
+  const startMs = Date.UTC(y, m, d);
+
+  const spanEnd = Date.UTC(year, month, daysInMonth(year, month), 23, 59, 59);
+  const capped = startMs + MAX_RANGE_DAYS * 86_400_000;
+  return { startMs, endMs: Math.min(spanEnd, capped) };
+}
+
+/**
+ * The free-slots response → day → slot start instants.
+ *
+ * The body is keyed by "YYYY-MM-DD" and carries a `traceId` alongside the days,
+ * which is why the keys are matched against a date shape rather than simply
+ * iterated. A day with an empty `slots` array is dropped, so **the returned
+ * map's key set IS the set of bookable days** — no separate "sold out" bookkeeping,
+ * and no weekday rule that could open a day the feed never offered.
+ *
+ * Anything unrecognised yields an empty map rather than a throw. An empty
+ * calendar is a visible, honest state that still shows the phone number; a
+ * throw would fall back to the embed, which is also fine — but the caller
+ * should be the one deciding that, from a shape it can see.
+ */
+export function parseFreeSlots(body: unknown): Map<string, string[]> {
+  const days = new Map<string, string[]>();
+  if (!body || typeof body !== 'object') return days;
+
+  for (const [k, v] of Object.entries(body as Record<string, unknown>)) {
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(k)) continue; // skips `traceId`
+    const raw = (v as { slots?: unknown } | null)?.slots;
+    const slots = Array.isArray(raw) ? raw.map(String).filter(Boolean) : [];
+    if (slots.length) days.set(k, slots);
+  }
+  return days;
+}
+
+/**
+ * The month grid, drawn from a free-slots map rather than from a weekday rule.
+ *
+ * The companion to `monthGrid` above, and the difference between them is the
+ * point: `monthGrid` enables a day unless something proves it unbookable, while
+ * this enables a day only when the feed named it. Anything the vendor did not
+ * list — a bank holiday, a day Brian blocked out, a morning that filled while
+ * the page was open — is shut, without this file needing to know why.
+ */
+export function monthGridFromFeed(
+  year: number,
+  month: number,
+  opts: { today: string; days: Map<string, string[]> },
+): DayCell[] {
+  const { today, days } = opts;
+  const firstWeekday = new Date(Date.UTC(year, month, 1)).getUTCDay();
+  const cells: DayCell[] = [];
+
+  const prev = shiftMonth(year, month, -1);
+  const daysInPrev = daysInMonth(prev.y, prev.m);
+  for (let i = firstWeekday - 1; i >= 0; i--) {
+    const d = daysInPrev - i;
+    cells.push({
+      date: formatDay(prev.y, prev.m, d),
+      day: d,
+      inMonth: false,
+      disabled: true,
+      isToday: false,
+    });
+  }
+
+  for (let d = 1; d <= daysInMonth(year, month); d++) {
+    const date = formatDay(year, month, d);
+    cells.push({
+      date,
+      day: d,
+      inMonth: true,
+      // The whole rule, in one line.
+      disabled: !days.has(date) || date < today,
+      isToday: date === today,
+    });
+  }
+
+  const next = shiftMonth(year, month, 1);
+  let d = 1;
+  while (cells.length % 7 !== 0) {
+    cells.push({
+      date: formatDay(next.y, next.m, d),
+      day: d,
+      inMonth: false,
+      disabled: true,
+      isToday: false,
+    });
+    d++;
+  }
+  return cells;
+}
+
 /** "9:00 AM" for an instant, read in the display timezone. */
 export function formatSlotTime(startUtc: string, tz: string = DISPLAY_TZ): string {
   return new Intl.DateTimeFormat('en-US', {
