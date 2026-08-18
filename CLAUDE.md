@@ -247,3 +247,19 @@ single-phone-string audit or the footer-only disclaimer.
 `src/pages/blog/` from its own clone (launchd `com.602medicare.dailyblog`, log at
 `~/Library/Logs/602medicare-daily-blog.log`). Its full brief is `task.md` there. If you
 change the blog's conventions, change that file too or the two will drift.
+
+## When a scheduler misbehaves, read the skill first
+`.claude/skills/booking-calendar-integration/SKILL.md` is the distilled version of
+the two evenings this cost (2026-08-17 on MOM, 2026-08-18 here). It carries to
+every site in the fleet. The short form:
+
+- Offer only what a vendor **positively lists as free**; never filter "all slots"
+  by an `available` flag. Open nothing by rule.
+- **Fail closed.** No feed → no slots → phone number. Never an unchecked list.
+- **"Connected" is not conflict-checked.** A booking landing in Google proves the
+  write half only. Test the read half separately.
+- Verify with **two** days — one blocked, one ordinary. Both empty means broken.
+- **Cloudflare Pages picks production by git branch.** A deploy from a feature
+  branch is a preview and prints a `Deployment alias URL:` line. Use
+  `--branch=main`, from the repo root.
+- Say **"deployed"**, never "fixed", until it is confirmed on the live host.
