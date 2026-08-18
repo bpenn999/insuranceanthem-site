@@ -153,6 +153,43 @@ variables → **Production**), never in `site.ts` and never in the page.
   the JSON body never reaches you. The `Contact — the submit actually posts` block in
   `scripts/e2e.mjs` pins both branches so this cannot be misread again.
 
+## The scheduler at `/book/` — GoGuruX, and **GoGuruX is not GHL**
+**GoGuruX and GHL Pro are completely separate platforms.** This site talks only to
+GoGuruX — the `/book/` picker and the `/api/lead` relay both. Nothing here reads or writes
+GHL, a setting changed in one does not appear in the other, and a Google Calendar
+connected to one is invisible to the other. Do not go looking in GHL for a booking
+problem, and do not point `site.links` or `site.leadEndpoint` at a GHL URL.
+
+`BookingPicker.astro` is a **thin client**. It calls GoGuruX's `get-availability` edge
+function and renders whatever comes back, filtering only on the vendor's own flag
+(`s.available !== false`). It generates no slots, keeps no schedule and holds no
+calendar state beyond the current page load.
+
+⚠️ **"The booking page is offering times I'm busy" is therefore never a bug in this
+repo.** If a time you blocked in Google Calendar shows as bookable, GoGuruX returned it as
+`available: true`, and the picker faithfully displayed a wrong answer from upstream. The
+Google Calendar connection lives on the **calendar record in GoGuruX**, not in this code
+and not in GHL. Check it there:
+
+1. The `602-medicare` calendar (`src/config/booking.ts`) sits under the location
+   `medicareonmain-com` **alongside Medicare On Main's own calendar**, and the Google
+   connection is per calendar. MOM's calendar having one says nothing about this one —
+   compare the two side by side and look for conflict-checking / two-way sync, the setting
+   that reads busy blocks *out* of Google rather than only writing bookings *in*.
+2. If blocked times still leak but are consistently **exactly one hour off** in summer,
+   that is the calendar's `America/Denver` time zone against Arizona's `America/Phoenix`
+   (see `src/lib/booking.ts`), not a missing connection.
+
+The two **Add to Google Calendar / .ics** buttons on the confirmation screen are unrelated:
+a one-way hand-off so the *client* can put the appointment in their own calendar. They are
+not a sync and never were.
+
+Availability, as it stands on the far side of the fence:
+```bash
+curl -s "https://roiypxggqlgbzrspkeoo.supabase.co/functions/v1/get-availability?date=<YYYY-MM-DD>&duration=30&location_slug=medicareonmain-com&calendar_slug=602-medicare" \
+  -H "Authorization: Bearer $(grep -o 'eyJ[A-Za-z0-9._-]*' src/config/booking.ts | head -1)" | jq
+```
+
 ## Brand assets
 Navy `#011459` + red `#D10A0F`, and **one rule: `--red` is only 3.0:1 on navy** — anything
 red on a navy ground uses `--red-lift #FF5A5F`. The badge PNG is transparent inside its

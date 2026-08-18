@@ -177,7 +177,13 @@ export const site = {
     'NPN 8206556',
   ],
 
-  /** Booking / lead destinations. Point these at GHL when the account is wired. */
+  /**
+   * Booking / lead destinations.
+   *
+   * Both stay same-origin. The scheduler behind `/book/` and the relay behind
+   * `/api/lead` are **GoGuruX**; GHL Pro is a separate platform this site does
+   * not talk to, so do not point either of these at a GHL URL.
+   */
   links: {
     booking: '/contact/',
     quote: '/contact/?intent=quote',
