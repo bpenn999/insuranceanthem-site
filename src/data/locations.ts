@@ -52,6 +52,47 @@ export interface Location {
   faqs: { q: string; a: string }[];
   /** How this community relates to the Anthem home base */
   proximity: string;
+  /**
+   * ISO date (YYYY-MM-DD) this city's copy was last actually read and revised.
+   * Becomes `dateModified` on the page's WebPage node.
+   *
+   * These pages carried no date at all until 2026-08-18, which left the one
+   * question a reader and a crawler both ask — is this still true? — with no
+   * answer on the page. Medicare copy has a real shelf life: networks,
+   * formularies and premiums all reset every January, so a city page that was
+   * accurate in one plan year can be quietly wrong in the next while looking
+   * identical.
+   *
+   * BUMP THIS ONLY WHEN THE COPY ACTUALLY CHANGED. A date advanced to look
+   * fresh is worse than an honest old one — it tells Google the page was
+   * revised, Google re-crawls, finds nothing new, and trusts the next signal
+   * less. The build rejects a future date for the same reason.
+   */
+  reviewed: string;
+  /**
+   * The `.gov` pages behind the rules THIS city's copy leans on.
+   *
+   * City pages scored 11/20 on accuracy-and-sourcing before these existed, and
+   * the reason was not that anything was wrong — it was that every claim stood
+   * naked. The copy tells a Carefree reader that Medicare does not pay for
+   * custodial care and that Form SSA-44 exists, tells a New River reader the
+   * Part B penalty is permanent, tells a Glendale reader what TRICARE For Life
+   * does. All true, all consequential, none of it checkable without leaving the
+   * page and searching. On YMYL health-and-money content that gap is the whole
+   * difference between authoritative and merely confident.
+   *
+   * PER CITY, not shared. The point is to cite the rules that page actually
+   * relies on — which differ, because the copy differs. A single site-wide
+   * source list bolted onto all seven pages would be one more identical block,
+   * and identical blocks are what put these pages in "Crawled – currently not
+   * indexed" to begin with.
+   *
+   * `.gov` only, asserted at the bottom of this file. A carrier's own page is
+   * not a source for what Medicare covers, and linking one on a page that must
+   * not imply carrier endorsement is a compliance problem as well as a sourcing
+   * one.
+   */
+  sources: { label: string; url: string }[];
   primary?: boolean;
 }
 
@@ -93,6 +134,12 @@ export const locations: Location[] = [
         a: 'No, and there is no version of this where you pay me. Carriers pay licensed agents a commission set by CMS, and it is identical whether you enroll through me, through a television call center or directly with the carrier. Your premium does not change. The only thing that changes is whether somebody local checked your doctors and your prescriptions first.',
       },
     ],
+    sources: [
+      { label: 'Moving and Medicare — Special Enrollment Periods', url: 'https://www.medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start' },
+      { label: 'Medigap: when you can buy without health questions', url: 'https://www.medicare.gov/health-drug-plans/medigap/ready-to-buy' },
+      { label: 'Find & compare plans by ZIP', url: 'https://www.medicare.gov/plan-compare/' },
+    ],
+    reviewed: '2026-08-18',
     proximity: 'This is home base — appointments here are in person whenever you want them to be.',
   },
   {
@@ -130,6 +177,12 @@ export const locations: Location[] = [
         a: 'I come to you. It is about thirty minutes from the Anthem office down I-17 to the 101, and I would rather make that drive than have you make it. Phone and video work equally well if that is simpler — several Glendale clients have never met me in person and have had their plans reviewed every year regardless.',
       },
     ],
+    sources: [
+      { label: 'TRICARE For Life and Medicare', url: 'https://tricare.mil/Plans/HealthPlans/TFL' },
+      { label: 'Medicare alongside other coverage you already have', url: 'https://www.medicare.gov/basics/get-started-with-medicare/get-more-coverage' },
+      { label: 'Part D: pharmacy networks and drug costs', url: 'https://www.medicare.gov/drug-coverage-part-d/costs-for-medicare-drug-coverage' },
+    ],
+    reviewed: '2026-08-18',
     proximity:
       'About 30 minutes south-west of the Anthem office — I-17 down to the Loop 101 and straight across.',
   },
@@ -168,6 +221,12 @@ export const locations: Location[] = [
         a: 'You do not need to make it. North Peoria is about twenty-five minutes from the Anthem office out the Carefree Highway and down Lake Pleasant Parkway, and I would rather come to you. If the south end of the city is easier, that works too — and if a phone or video review suits you better, the comparison is exactly the same.',
       },
     ],
+    sources: [
+      { label: 'Medigap basics: how it works with Original Medicare', url: 'https://www.medicare.gov/health-drug-plans/medigap/basics' },
+      { label: 'Medicare Advantage plans and their networks', url: 'https://www.medicare.gov/health-drug-plans/health-plans' },
+      { label: 'Find & compare plans by ZIP', url: 'https://www.medicare.gov/plan-compare/' },
+    ],
+    reviewed: '2026-08-18',
     proximity:
       'Roughly 25 minutes from Anthem — out the Carefree Highway and down Lake Pleasant Parkway into north Peoria.',
   },
@@ -206,6 +265,12 @@ export const locations: Location[] = [
         a: 'Quickly — it is a short run south down I-17 from the office, and I would rather drive than have you come up. In-person, phone or video all work, and the comparison is identical in each. If it is easier to meet somewhere near Norterra or Happy Valley than at your house, that is fine too.',
       },
     ],
+    sources: [
+      { label: 'Plan availability is set where you live', url: 'https://www.medicare.gov/plan-compare/' },
+      { label: 'Joining a plan, and when you are allowed to', url: 'https://www.medicare.gov/basics/get-started-with-medicare/get-more-coverage/joining-a-plan' },
+      { label: 'Medigap: when you can buy without health questions', url: 'https://www.medicare.gov/health-drug-plans/medigap/ready-to-buy' },
+    ],
+    reviewed: '2026-08-18',
     proximity: 'A short run south down I-17 from Anthem.',
   },
   {
@@ -243,6 +308,12 @@ export const locations: Location[] = [
         a: 'It affects the answer more than people expect. South of the 101, in the older and denser part of the city, most households have long-standing relationships with nearby practices and the plan simply has to protect them. In central Scottsdale — 85258, 85259, 85260 — a lot of my work comes through 55-plus community associations, and the comparison tends to hinge on specific specialist groups. North of the 101 in 85262 and 85266 the houses are further apart and the drive to a specialist is longer, which pushes network reach ahead of everything a plan advertises.',
       },
     ],
+    sources: [
+      { label: 'Using doctors and providers with Original Medicare', url: 'https://www.medicare.gov/providers-services/original-medicare' },
+      { label: 'IRMAA: Part B and Part D income-related premiums', url: 'https://www.ssa.gov/benefits/medicare/medicare-premiums.html' },
+      { label: 'Form SSA-44 — life-changing event appeal', url: 'https://www.ssa.gov/forms/ssa-44.pdf' },
+    ],
+    reviewed: '2026-08-18',
     proximity:
       'About 35 to 40 minutes east of the Anthem office — the Carefree Highway across to Scottsdale Road, or the 101 if you are further south.',
   },
@@ -281,6 +352,13 @@ export const locations: Location[] = [
         a: 'It makes network reach the deciding factor. Nearly everyone here drives to Scottsdale or north Phoenix for specialist care, so the question is whether a plan holds those specific practices — not whether it operates in 85377. This is also why the advertised extras are a poor way to choose: a plan can lead with dental and a fitness membership and still not carry the cardiologist you have seen for a decade.',
       },
     ],
+    sources: [
+      { label: 'IRMAA: how the income-related premium is set', url: 'https://www.ssa.gov/benefits/medicare/medicare-premiums.html' },
+      { label: 'Form SSA-44 — life-changing event appeal', url: 'https://www.ssa.gov/forms/ssa-44.pdf' },
+      { label: 'What Medicare does not cover: long-term/custodial care', url: 'https://www.medicare.gov/coverage/long-term-care' },
+      { label: 'Skilled nursing facility care — the limits', url: 'https://www.medicare.gov/coverage/skilled-nursing-facility-snf-care' },
+    ],
+    reviewed: '2026-08-18',
     proximity: 'About a 30-minute drive east of Anthem across the Carefree Highway.',
   },
   {
@@ -318,6 +396,12 @@ export const locations: Location[] = [
         a: 'No. New River and Desert Hills sit immediately north and west of Anthem and a good part of the area shares my ZIP, so I am close. Most people find it easiest to meet in Anthem since they are already coming in, but I am happy to drive out, and phone or video works just as well if the trip is not convenient.',
       },
     ],
+    sources: [
+      { label: 'Part B late enrollment penalty', url: 'https://www.medicare.gov/basics/costs/medicare-costs/avoid-penalties' },
+      { label: 'When to sign up: your Initial Enrollment Period', url: 'https://www.medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start' },
+      { label: 'Part D costs and mail-order pharmacy', url: 'https://www.medicare.gov/drug-coverage-part-d/costs-for-medicare-drug-coverage' },
+    ],
+    reviewed: '2026-08-18',
     proximity: 'Immediately north and west of Anthem — often the same ZIP, always the same advisor.',
   },
 ];
@@ -375,6 +459,34 @@ for (const l of locations) {
         `locations.ts: ${l.slug} has ${l.local.length} local paragraphs (minimum 4). ` +
           'A three-line city page is the shape Google declines to index.',
       );
+    }
+
+    if (l.sources.length < 2) {
+      throw new Error(
+        `locations.ts: ${l.slug} has ${l.sources.length} sources (minimum 2). ` +
+          'Cite the rules this page actually leans on.',
+      );
+    }
+    for (const { url } of l.sources) {
+      // `.gov` and `.mil` both — tricare.mil is the Defense Health Agency's own
+      // page on TRICARE For Life, which is the authority for the Glendale copy
+      // about retired military households, and there is no .gov equivalent.
+      // Nothing else qualifies: a carrier's page is not a source for what
+      // Medicare covers, and linking one on a page that must not imply carrier
+      // endorsement is a compliance problem as well as a sourcing one.
+      if (!/^https:\/\/(www\.)?[a-z0-9.-]+\.(gov|mil)\//.test(url)) {
+        throw new Error(`locations.ts: ${l.slug} source ${url} is not an https .gov/.mil URL`);
+      }
+    }
+
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(l.reviewed)) {
+      throw new Error(`locations.ts: ${l.slug} reviewed "${l.reviewed}" is not YYYY-MM-DD`);
+    }
+    // A future review date is the specific failure worth blocking: it is what a
+    // date bumped to look fresh looks like, and it makes `dateModified` a claim
+    // the page cannot support.
+    if (l.reviewed > new Date().toISOString().slice(0, 10)) {
+      throw new Error(`locations.ts: ${l.slug} reviewed ${l.reviewed} is in the future`);
     }
 
     const words = l.local.join(' ').split(/\s+/).filter(Boolean).length;

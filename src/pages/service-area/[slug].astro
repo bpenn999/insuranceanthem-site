@@ -9,6 +9,7 @@ import Faq from '../../components/Faq.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import site, { abs } from '../../config/site';
 import { locations } from '../../data/locations';
+import { locationSchemaNodes } from '../../lib/location-schema';
 
 export const getStaticPaths = (() =>
   locations.map((location) => ({
@@ -52,28 +53,11 @@ const breadcrumbs = [
  */
 const localFaqs = location.faqs;
 
-const schemaNodes = [
-  {
-    '@type': 'FAQPage',
-    mainEntity: localFaqs.map((f) => ({
-      '@type': 'Question',
-      name: f.q,
-      acceptedAnswer: { '@type': 'Answer', text: f.a },
-    })),
-  },
-  {
-    '@type': 'Service',
-    name: `Medicare insurance guidance in ${location.label}`,
-    description: location.summary,
-    url: abs(`/service-area/${location.slug}/`),
-    provider: { '@id': `${site.origin}/#organization` },
-    areaServed: {
-      '@type': 'City',
-      name: location.city,
-      containedInPlace: { '@type': 'AdministrativeArea', name: location.county },
-    },
-  },
-];
+const schemaNodes = locationSchemaNodes(
+  location,
+  { title, description },
+  { origin: site.origin, abs },
+);
 ---
 
 <BaseLayout
@@ -133,6 +117,26 @@ const schemaNodes = [
             <dt>Advisor</dt>
             <dd>{site.agent.name} · NPN {site.agent.npn}</dd>
           </div>
+          {/*
+            Visible, and matching `dateModified` in the WebPage node exactly.
+            A date that exists only in structured data is a claim made to
+            crawlers and withheld from readers — and on Medicare copy, which
+            resets every January, "when was this checked" is a fair question to
+            answer out loud rather than in a script tag.
+          */}
+          <div>
+            <dt>Reviewed</dt>
+            <dd>
+              <time datetime={location.reviewed}>
+                {new Date(`${location.reviewed}T12:00:00Z`).toLocaleDateString('en-US', {
+                  month: 'long',
+                  day: 'numeric',
+                  year: 'numeric',
+                  timeZone: 'UTC',
+                })}
+              </time>
+            </dd>
+          </div>
         </dl>
         <a href={site.phone.href} class="btn btn--block loc__card-cta" data-magnetic="0.2">
           Call {site.phone.display}
@@ -172,6 +176,38 @@ const schemaNodes = [
     </div>
   </section>
 
+  <!-- ── Sources ──────────────────────────────────────────────────────────
+       The .gov / .mil pages behind the rules this city's copy relies on.
+       Placed after the FAQ because that is where the load-bearing claims are
+       made — the IRMAA lookback, the custodial-care gap, the Part B penalty —
+       and a reader who wants to check one should not have to hunt.
+       `rel="noopener"` on a new tab; not `nofollow`, because citing a
+       government source is exactly the link a search engine should follow.
+  ─────────────────────────────────────────────────────────────────────── -->
+  <section class="section section--tight" data-caustics="0.18">
+    <div class="wrap wrap--narrow">
+      <h2 class="src__h2">Where these rules come from</h2>
+      <p class="src__note">
+        Official sources for the Medicare rules referenced on this page. Figures and
+        rules are reviewed each plan year — this page was last checked {
+          new Date(`${location.reviewed}T12:00:00Z`).toLocaleDateString('en-US', {
+            month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC',
+          })
+        }.
+      </p>
+      <ul class="src">
+        {
+          location.sources.map((s) => (
+            <li>
+              <a href={s.url} target="_blank" rel="noopener">{s.label}</a>
+              <span class="src__host">{new URL(s.url).hostname.replace(/^www\./, '')}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </section>
+
   <!-- ── Nearby ───────────────────────────────────────────────────────── -->
   <section class="section" data-caustics="0.3">
     <div class="wrap">
@@ -198,6 +234,14 @@ const schemaNodes = [
 </BaseLayout>
 
 <style>
+  .src__h2 { font-size: var(--t-xl); margin-bottom: var(--s-2); }
+  .src__note { font-size: var(--t-sm); color: var(--ink-muted); line-height: 1.55; margin-bottom: var(--s-4); }
+  .src { display: grid; gap: var(--s-3); list-style: none; padding: 0; margin: 0; }
+  .src li { display: grid; gap: 0.1rem; padding-bottom: var(--s-3); border-bottom: 1px solid var(--rule-soft); }
+  .src li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .src a { font-size: var(--t-base); }
+  .src__host { font-size: 0.75rem; color: var(--ink-muted); font-variant-numeric: tabular-nums; }
+
   .loc { display: grid; gap: var(--s-7); align-items: start; }
   .loc__h2 { font-size: var(--t-2xl); margin-bottom: var(--s-5); }
   .loc__body { color: var(--ink-body); font-size: var(--t-lg); line-height: 1.65; max-width: 62ch; }

@@ -10,10 +10,45 @@ const walk = (dir, out = []) => {
   return out;
 };
 const files = walk(DIST);
-const htmls = files.filter(f => f.endsWith('.html'));
+const allHtmls = files.filter(f => f.endsWith('.html'));
 const routeOf = f => '/' + relative(DIST, f).replace(/index\.html$/, '').replace(/\\/g,'/');
-const routes = new Set(htmls.map(routeOf));
+// Routes and assets are built from EVERY html, so a link from a site page to a
+// standalone document still resolves in check 1.
+const routes = new Set(allHtmls.map(routeOf));
 const assets = new Set(files.map(f => '/' + relative(DIST, f).replace(/\\/g,'/')));
+
+/**
+ * ── Standalone documents: served, but NOT site pages ────────────────────────
+ *
+ * The Formal Benefit Recommendation sheets are self-contained print documents
+ * that live in `public/` and deliberately bypass the Astro layout — no nav, no
+ * footer, no sticky call bar, no site JSON-LD, because they are handed to a
+ * client on paper. Every site-chrome check below therefore fails on them, and
+ * on 2026-08-18 they were producing 47 of the audit's 47 findings.
+ *
+ * That is worse than it looks. A gate that always reports 47 problems is not a
+ * gate: `npm run verify` stops meaning "clean" and finding number 48 arrives
+ * invisible, in a list nobody reads any more. CLAUDE.md says verify must end
+ * "✅ All checks passed", and it could not.
+ *
+ * So the exclusion is EXPLICIT rather than a blanket "skip anything noindex" —
+ * an accidental noindex on a real page must still fail loudly. Two conditions,
+ * both required: the route is named here, AND the file actually declares
+ * noindex. Strip the noindex from one of these and it rejoins the audit.
+ *
+ * Their compliance is NOT waived by this. Check 10 at the bottom asserts the
+ * TPMO disclosure, the non-affiliation line and the NPN on each one, which is
+ * what actually matters for a document a client walks away holding.
+ */
+const STANDALONE_DOCS = new Set([
+  '/tools/digital-quote/',
+  '/tools/digital-quote-advantage/',
+]);
+const isStandaloneDoc = (f) =>
+  STANDALONE_DOCS.has(routeOf(f)) && /<meta name="robots" content="noindex/.test(readFileSync(f, 'utf8'));
+
+const standalone = allHtmls.filter(isStandaloneDoc);
+const htmls = allHtmls.filter(f => !isStandaloneDoc(f));
 
 let problems = [];
 const note = (m) => problems.push(m);
@@ -452,6 +487,9 @@ for (const f of htmls) {
   for (const r of routes) {
     if (!r.startsWith('/tools/') || r === '/tools/') continue;
     const slug = r.slice('/tools/'.length).replace(/\/$/, '');
+    // A declared standalone document under /tools/ is not a tool and is not an
+    // orphan — it is a print sheet that happens to live at that path.
+    if (STANDALONE_DOCS.has(r)) continue;
     if (!TOOLS.includes(slug)) note(`ORPHAN TOOL ROUTE  ${r}`);
   }
 }
@@ -668,7 +706,9 @@ if (phones.size > 1) note(`MULTIPLE PHONE NUMBERS: ${[...phones].join(', ')}`);
 
 // ── 8. sitemap covers every route (the orphan-page trap) ─────────────────────
 console.log(`Sitemap URLs: ${smUrls.size}`);
-const EXPECT_ABSENT = new Set(['/404.html','/404/']);
+// Standalone documents are noindex and deliberately absent from the sitemap;
+// listing them would invite Google to index a page telling it not to.
+const EXPECT_ABSENT = new Set(['/404.html','/404/', ...STANDALONE_DOCS]);
 for (const r of routes) {
   if (EXPECT_ABSENT.has(r)) continue;
   if (!smUrls.has(r)) note(`NOT IN SITEMAP  ${r}`);
@@ -705,7 +745,12 @@ for (const u of smUrls) if (!routes.has(u)) note(`SITEMAP URL WITH NO PAGE  ${u}
 
 // ── 9. orphan static HTML under public/ ──────────────────────────────────────
 try {
-  const pub = walk('public').filter(f => f.endsWith('.html'));
+  // A declared standalone document is not an orphan — it is invisible to the
+  // sitemap ON PURPOSE. Anything else under public/ still is: it would be a page
+  // nobody can find, which is the failure this check was written for.
+  const pub = walk('public')
+    .filter(f => f.endsWith('.html'))
+    .filter(f => !STANDALONE_DOCS.has('/' + relative('public', f).replace(/index\.html$/, '').replace(/\\/g, '/')));
   if (pub.length) note(`ORPHAN public/ HTML (invisible to the sitemap): ${pub.join(', ')}`);
 } catch {}
 
@@ -717,5 +762,36 @@ if (!/prefers-reduced-motion/.test(allCss)) note('NO prefers-reduced-motion RULE
 if (!/html:not\(\.motion\)/.test(allCss)) note('NO no-JS FALLBACK RULES SHIPPED');
 
 console.log('\n' + '─'.repeat(70));
+
+// ── 10. standalone documents carry their own compliance ──────────────────────
+// These are excluded from the site-chrome checks above (see STANDALONE_DOCS),
+// which must never become an exemption from the disclosures. A Formal Benefit
+// Recommendation is Medicare marketing material a client keeps, and it is the
+// one artefact here that leaves the website entirely — printed, handed over,
+// read on a kitchen table weeks later with no footer anywhere in sight.
+{
+  console.log(`Standalone documents: ${standalone.length}`);
+  for (const f of standalone) {
+    const html = readFileSync(f, 'utf8');
+    const r = routeOf(f);
+    // Substance, not the exact string from compliance.ts: these documents are
+    // hand-authored and word the same disclosure slightly differently ("Not
+    // connected with…" rather than "602Medicare is not connected with…").
+    // Matching the wording exactly would fail a document that fully complies.
+    if (!/do not offer every plan available in your area/i.test(html)) {
+      note(`STANDALONE DOC MISSING TPMO DISCLOSURE on ${r}`);
+    }
+    if (!/1-800-MEDICARE/i.test(html)) note(`STANDALONE DOC MISSING 1-800-MEDICARE on ${r}`);
+    if (!/not connected with or endorsed by the United States government/i.test(html)) {
+      note(`STANDALONE DOC MISSING NON-AFFILIATION on ${r}`);
+    }
+    if (!/NPN\s*8206556/i.test(html)) note(`STANDALONE DOC MISSING NPN on ${r}`);
+    // The reason it is allowed to skip the site checks in the first place.
+    if (!/<meta name="robots" content="noindex/.test(html)) {
+      note(`STANDALONE DOC IS NOT noindex on ${r}`);
+    }
+  }
+}
+
 if (problems.length === 0) console.log('✅ All checks passed.');
 else { console.log(`❌ ${problems.length} problem(s):\n`); for (const p of problems) console.log('  ' + p); }
