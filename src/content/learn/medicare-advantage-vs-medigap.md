@@ -18,6 +18,15 @@ faqs:
     a: "It replaces the way you receive your benefits, not your enrollment. You stay enrolled in Medicare and keep paying your Part B premium; the private plan then administers your Part A and Part B coverage under its own rules, networks and cost sharing."
   - q: "Do I need a separate drug plan with each option?"
     a: "Most Medicare Advantage plans include Part D coverage, so there is nothing extra to buy. Medigap policies sold today never include drug coverage, so a Medigap policy always needs a standalone Part D plan alongside it — and that plan should be chosen against your actual medication list."
+sources:
+  - label: "Medicare Advantage and other health plans"
+    url: "https://www.medicare.gov/health-drug-plans/health-plans"
+  - label: "Medigap basics"
+    url: "https://www.medicare.gov/health-drug-plans/medigap/basics"
+  - label: "Buying Medigap: when your rights apply"
+    url: "https://www.medicare.gov/health-drug-plans/medigap/ready-to-buy"
+  - label: "Using providers with Original Medicare"
+    url: "https://www.medicare.gov/providers-services/original-medicare"
 ---
 
 Almost every Medicare question people bring me is really this one wearing a disguise. Once you have Part A and Part B, you choose one of two structures for receiving your benefits, and nearly everything downstream — what you pay, which doctors you can see, whether coverage travels — follows from that single fork.

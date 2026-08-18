@@ -17,6 +17,13 @@ faqs:
     a: "No. COBRA is not coverage through active employment, so losing it does not open a Part B Special Enrollment Period and having it does not protect you from the late enrollment penalty. Losing COBRA does open a two-month Part D window, but the Part B position is unchanged."
   - q: "Can I get a Medigap policy during a Special Enrollment Period?"
     a: "Sometimes. Certain circumstances create federal guaranteed-issue rights — your Advantage plan leaving the area, losing employer coverage, or a trial-right situation in your first year on an Advantage plan. These are narrower than the enrollment windows themselves and usually last 63 days, so they are worth confirming rather than assuming."
+sources:
+  - label: "Joining a Medicare plan"
+    url: "https://www.medicare.gov/basics/get-started-with-medicare/get-more-coverage/joining-a-plan"
+  - label: "When your Medicare coverage starts"
+    url: "https://www.medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start"
+  - label: "Buying Medigap: when your rights apply"
+    url: "https://www.medicare.gov/health-drug-plans/medigap/ready-to-buy"
 ---
 
 Most of Medicare runs on a fixed calendar: seven months at 65, 15 October to 7 December each autumn, 1 January to 31 March for a couple of narrower windows. Special Enrollment Periods are the exception — they open because something happened to you, not because of the date.

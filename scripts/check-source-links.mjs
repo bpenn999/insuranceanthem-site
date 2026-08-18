@@ -21,7 +21,26 @@
  * Exit 1 on any hard failure (404/410/5xx or a dead host), 0 otherwise.
  */
 
+import { readFileSync, readdirSync } from 'node:fs';
 import { locations } from '../src/data/locations.ts';
+
+/**
+ * Learn-article sources, read straight out of the markdown frontmatter rather
+ * than through astro:content — this script runs outside Astro, so the content
+ * collection is not loadable here. The shape is fixed by the zod schema in
+ * src/content.config.ts, so a crude parse is safe: anything malformed fails the
+ * build long before it reaches this script.
+ */
+function learnSources() {
+  const dir = 'src/content/learn';
+  const out = [];
+  for (const file of readdirSync(dir).filter((f) => f.endsWith('.md'))) {
+    const fm = readFileSync(`${dir}/${file}`, 'utf8').split('\n---')[0];
+    const urls = [...fm.matchAll(/^\s+url:\s*"([^"]+)"/gm)].map((m) => m[1]);
+    if (urls.length) out.push({ slug: `learn/${file.replace(/\.md$/, '')}`, urls });
+  }
+  return out;
+}
 
 /**
  * Hosts whose WAF answers a script with 403 whether or not the page exists.
@@ -38,12 +57,12 @@ import { locations } from '../src/data/locations.ts';
 const BOT_BLOCKED = new Set(['www.ssa.gov', 'ssa.gov']);
 
 const seen = new Map(); // url -> [slug, …], so a shared URL is fetched once
-for (const l of locations) {
-  for (const s of l.sources) {
-    if (!seen.has(s.url)) seen.set(s.url, []);
-    seen.get(s.url).push(l.slug);
-  }
-}
+const add = (url, slug) => {
+  if (!seen.has(url)) seen.set(url, []);
+  seen.get(url).push(slug);
+};
+for (const l of locations) for (const s of l.sources) add(s.url, l.slug);
+for (const a of learnSources()) for (const u of a.urls) add(u, a.slug);
 
 const UA =
   'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36';
@@ -51,7 +70,11 @@ const UA =
 let broken = 0;
 let unverifiable = 0;
 
-console.log(`Checking ${seen.size} source URLs across ${locations.length} city pages…\n`);
+const learnCount = learnSources().length;
+console.log(
+  `Checking ${seen.size} unique source URLs across ${locations.length} city pages ` +
+  `and ${learnCount} Learn articles…\n`,
+);
 
 for (const [url, slugs] of [...seen].sort()) {
   const host = new URL(url).hostname;

@@ -17,6 +17,13 @@ faqs:
     a: "$1,736 per benefit period, not per year. A benefit period starts when you are admitted and ends after 60 consecutive days out of a hospital or skilled nursing facility, so two separate admissions far enough apart mean paying the deductible twice in one year."
   - q: "Does the Medicare Advantage out-of-pocket maximum cover everything?"
     a: "No. It covers in-network Part A and Part B services. Prescription drugs run on the separate Part D cap, and supplemental benefits like dental and vision generally sit outside it entirely. Out-of-network care may have a higher cap or none at all depending on the plan."
+sources:
+  - label: "Medicare costs at a glance"
+    url: "https://www.medicare.gov/basics/costs/medicare-costs"
+  - label: "Costs for Medicare drug coverage"
+    url: "https://www.medicare.gov/drug-coverage-part-d/costs-for-medicare-drug-coverage"
+  - label: "What Medicare covers"
+    url: "https://www.medicare.gov/coverage"
 ---
 
 Medicare is not free, and the places it costs money are not always the obvious ones. This is every {{year}} figure in one place, plus the structural point that matters more than any individual number: **only one of the two Medicare paths has a cap on what you can spend.**

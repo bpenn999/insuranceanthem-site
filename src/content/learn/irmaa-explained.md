@@ -18,6 +18,13 @@ faqs:
     a: "Yes, if a qualifying life-changing event reduced your income since the tax year used. Social Security lists eight: marriage, divorce or annulment, death of a spouse, you or your spouse stopping work or reducing hours, loss of income-producing property, loss of pension income, and an employer settlement payment. Retirement is the most commonly missed one. You file form SSA-44."
   - q: "Is IRMAA charged per person or per household?"
     a: "Per person. A married couple who are both on Medicare each pay their own surcharge, based on the same joint income — so the household cost is double the bracket figure."
+sources:
+  - label: "Medicare premiums and income-related adjustments (SSA)"
+    url: "https://www.ssa.gov/benefits/medicare/medicare-premiums.html"
+  - label: "Form SSA-44 — Medicare income-related premium reduction"
+    url: "https://www.ssa.gov/forms/ssa-44.pdf"
+  - label: "Medicare costs at a glance"
+    url: "https://www.medicare.gov/basics/costs/medicare-costs"
 ---
 
 IRMAA — the income-related monthly adjustment amount — is the surcharge Medicare adds to your Part B and Part D premiums when your income is above a threshold. It arrives as a letter from Social Security, usually in November, and it surprises people every year.

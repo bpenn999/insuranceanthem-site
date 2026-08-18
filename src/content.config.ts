@@ -44,6 +44,39 @@ const learn = defineCollection({
     faqs: z.array(z.object({ q: z.string(), a: z.string() })).default([]),
 
     /**
+     * The `.gov` / `.mil` pages behind this article's claims. Rendered as a
+     * sources block and emitted as `citation` on the Article node.
+     *
+     * REQUIRED, minimum two. All eleven Learn articles shipped with ZERO
+     * outbound citations — 3,400 to 4,300 words each, explaining IRMAA
+     * brackets, late-enrollment penalties and what Medicare will not pay for,
+     * with nothing a reader could check. This is the evergreen reference shelf:
+     * the pages most likely to be quoted by an answer engine, and the ones
+     * where being wrong costs a reader real money. Scored on the same rubric
+     * the city pages went through, unsourced YMYL copy lands at 11/20 on
+     * accuracy however correct it is, because correctness a reader cannot
+     * verify is indistinguishable from confidence.
+     *
+     * `.gov`/`.mil` only, enforced here. A carrier's own page is not a source
+     * for what Medicare covers, and linking one from an article that must not
+     * imply carrier endorsement is a compliance problem as well as a sourcing
+     * one. Every URL is checked by `npm run check:links`.
+     */
+    sources: z
+      .array(
+        z.object({
+          label: z.string().min(8),
+          url: z
+            .string()
+            .url()
+            .refine((u) => /^https:\/\/(www\.)?[a-z0-9.-]+\.(gov|mil)\//.test(u), {
+              message: 'sources must be https .gov or .mil URLs',
+            }),
+        }),
+      )
+      .min(2, 'every Learn article needs at least two .gov/.mil sources'),
+
+    /**
      * Related product pages, as slugs (`medicare-advantage`, `part-d`, …), and
      * tools (`irmaa-estimator`, …). Rendered as an in-article related block and
      * validated against the real data files at build time by the audit script.

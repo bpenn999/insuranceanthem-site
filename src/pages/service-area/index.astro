@@ -5,6 +5,8 @@ import SectionHead from '../../components/SectionHead.astro';
 import CtaBand from '../../components/CtaBand.astro';
 import site from '../../config/site';
 import { locations, additionalAreas } from '../../data/locations';
+import countyHealth from '../../data/county-health';
+import { abs } from '../../config/site';
 
 const title = 'Service Area — Anthem, Glendale, Peoria & the Phoenix Metro';
 const description = `Independent Medicare help across Anthem, Scottsdale & the Phoenix metro — plan availability and provider networks differ by ZIP. Call ${site.phone.display}.`;
@@ -13,9 +15,50 @@ const breadcrumbs = [
   { name: 'Home', path: '/' },
   { name: 'Service Area', path: '/service-area/' },
 ];
+
+/**
+ * Dataset, wrapping the CDC PLACES figures below — the fourth pillar of the
+ * location-page standard, and the only place on this site it applies, because
+ * this is the only page carrying sourced statistics. `creator` is the CDC, not
+ * 602Medicare: the agency is quoting this data, not producing it, and saying
+ * otherwise in structured data would be a citation error dressed as markup.
+ */
+const schemaNodes = [
+  {
+    '@type': 'Dataset',
+    name: `Adult health prevalence, ${countyHealth.county}, Arizona`,
+    description:
+      `Crude prevalence among adults 18 and over in ${countyHealth.county} for the ` +
+      'chronic conditions that most often shape a Medicare plan comparison.',
+    url: abs('/service-area/'),
+    isAccessibleForFree: true,
+    creator: {
+      '@type': 'GovernmentOrganization',
+      name: 'Centers for Disease Control and Prevention',
+      url: countyHealth.sourceUrl,
+    },
+    distribution: {
+      '@type': 'DataDownload',
+      contentUrl: countyHealth.datasetUrl,
+      encodingFormat: 'application/json',
+    },
+    spatialCoverage: {
+      '@type': 'AdministrativeArea',
+      name: countyHealth.county,
+      identifier: countyHealth.fips,
+    },
+    temporalCoverage: String(Math.min(...countyHealth.measures.map((m) => m.year))),
+    variableMeasured: countyHealth.measures.map((m) => ({
+      '@type': 'PropertyValue',
+      name: m.label,
+      value: m.value,
+      unitText: 'percent of adults 18+',
+    })),
+  },
+];
 ---
 
-<BaseLayout title={title} description={description} path="/service-area/" breadcrumbs={breadcrumbs}>
+<BaseLayout title={title} description={description} path="/service-area/" breadcrumbs={breadcrumbs} schemaNodes={schemaNodes}>
   <PageHero
     eyebrow="Service area"
     title="An office in Anthem, and a patch that runs across the Valley."
@@ -48,6 +91,50 @@ const breadcrumbs = [
           ))
         }
       </ul>
+    </div>
+  </section>
+
+  <!-- ── County health ─────────────────────────────────────────────────
+       The only sourced statistics on the site, and they sit HERE rather than
+       on the city pages on purpose: all seven cities are in Maricopa, so these
+       numbers are identical for every one of them. Repeating them seven times
+       would rebuild the near-duplicate problem the city pages were rewritten
+       to remove. This is the page whose subject is actually the county.
+  ──────────────────────────────────────────────────────────────────── -->
+  <section class="section" data-caustics="0.2">
+    <div class="wrap wrap--narrow">
+      <SectionHead
+        eyebrow="Maricopa County"
+        title="What people here are actually managing."
+        lede="Plan comparisons get abstract fast. These are the conditions most likely to be sitting behind a Medicare decision in this county — and each one changes which part of a plan matters."
+      />
+
+      <ul class="ch">
+        {
+          countyHealth.measures.map((m, i) => (
+            <li data-rise data-armed style={`--rise-delay:${i * 60}ms`}>
+              <div class="ch__figure">
+                <span class="ch__value">{m.value}%</span>
+                <span class="ch__label">{m.label}</span>
+              </div>
+              <p class="ch__so">{m.soWhat}</p>
+              <span class="ch__year">CDC PLACES, {m.year}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <p class="ch__source">
+        Crude prevalence among <strong>adults 18 and over</strong> in {countyHealth.county} —
+        not a Medicare-age figure, and the real rate among people over 65 is higher for
+        most of these. Source:{' '}
+        <a href={countyHealth.datasetUrl} target="_blank" rel="noopener">
+          {countyHealth.source}
+        </a>, retrieved {new Date(`${countyHealth.retrieved}T12:00:00Z`).toLocaleDateString('en-US',
+          { month: 'long', day: 'numeric', year: 'numeric', timeZone: 'UTC' })}.
+        Figures describe the county, not any individual — nothing here predicts what your own
+        coverage should be.
+      </p>
     </div>
   </section>
 
@@ -103,6 +190,17 @@ const breadcrumbs = [
 </BaseLayout>
 
 <style>
+  .ch { list-style: none; padding: 0; margin: 0 0 var(--s-5); display: grid; gap: var(--s-4); }
+  .ch li { padding-bottom: var(--s-4); border-bottom: 1px solid var(--rule-soft); }
+  .ch li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .ch__figure { display: flex; align-items: baseline; gap: var(--s-3); flex-wrap: wrap; }
+  .ch__value { font-family: var(--font-display, inherit); font-size: var(--t-2xl); font-weight: 600; color: var(--accent, currentColor); font-variant-numeric: tabular-nums; }
+  .ch__label { font-size: var(--t-base); font-weight: 600; }
+  .ch__so { font-size: var(--t-sm); color: var(--ink-body); line-height: 1.6; margin: 0.35rem 0 0.3rem; max-width: 60ch; }
+  .ch__year { font-size: 0.6875rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-muted); }
+  .ch__source { font-size: var(--t-sm); color: var(--ink-muted); line-height: 1.6; }
+  @media (min-width: 720px) { .ch { grid-template-columns: 1fr 1fr; gap: var(--s-5) var(--s-6); } }
+
   .places {
     list-style: none;
     padding: 0;

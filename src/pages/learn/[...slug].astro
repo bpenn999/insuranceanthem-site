@@ -69,6 +69,24 @@ const schemaNodes: Record<string, unknown>[] = [
     inLanguage: 'en-US',
     isAccessibleForFree: true,
     about: { '@type': 'Thing', name: d.category },
+    /**
+     * The .gov/.mil pages this article's claims rest on. `citation` is the
+     * schema.org property for exactly this and costs nothing to emit, which
+     * matters on the shelf most likely to be quoted by an answer engine: a
+     * machine reading this article can now see what it is grounded in.
+     *
+     * NOTE — `author` above stays the Person, deliberately, and diverges from
+     * the city pages, where it is the Organization with Brian as reviewedBy.
+     * That is not an inconsistency. A location page is a page the agency
+     * publishes; an article is something a credentialed human actually wrote,
+     * and a named expert author is the stronger E-E-A-T signal on one. The
+     * organization is still the publisher on both.
+     */
+    citation: d.sources.map((c) => ({
+      '@type': 'CreativeWork',
+      name: c.label,
+      url: c.url,
+    })),
   },
 ];
 
@@ -139,6 +157,34 @@ if (d.faqs.length) {
           </section>
         )
       }
+
+      <!-- ── Sources ───────────────────────────────────────────────────
+           Every Learn article shipped with zero outbound citations until
+           2026-08-18 — thousands of words explaining IRMAA brackets, penalty
+           maths and coverage gaps, with nothing a reader could check. On YMYL
+           that is the difference between authoritative and merely confident,
+           and it is the single biggest thing holding this shelf's quality
+           score down. Validated .gov/.mil only, in src/content.config.ts, and
+           checked by `npm run check:links`.
+      ─────────────────────────────────────────────────────────────────── -->
+      <section class="art__src" aria-labelledby="art-src-h">
+        <h2 id="art-src-h" class="art__src-h">Sources</h2>
+        <p class="art__src-note">
+          The official pages behind the rules described above. Where a figure is
+          quoted it is the plan-year amount published by CMS; where a rule is
+          described, these are the rule.
+        </p>
+        <ul class="art__src-list">
+          {
+            d.sources.map((c) => (
+              <li>
+                <a href={c.url} target="_blank" rel="noopener">{c.label}</a>
+                <span class="art__src-host">{new URL(c.url).hostname.replace(/^www\./, '')}</span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
 
       <!-- Compliance note on every article, not only in the footer. -->
       <aside class="art__note">
@@ -279,6 +325,14 @@ if (d.faqs.length) {
 </BaseLayout>
 
 <style>
+  .art__src { margin: var(--s-7) 0 var(--s-6); }
+  .art__src-h { font-size: var(--t-xl); margin-bottom: var(--s-2); }
+  .art__src-note { font-size: var(--t-sm); color: var(--ink-muted); line-height: 1.55; margin-bottom: var(--s-4); max-width: 60ch; }
+  .art__src-list { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--s-3); }
+  .art__src-list li { display: grid; gap: 0.1rem; padding-bottom: var(--s-3); border-bottom: 1px solid var(--rule-soft); }
+  .art__src-list li:last-child { border-bottom: 0; padding-bottom: 0; }
+  .art__src-host { font-size: 0.75rem; color: var(--ink-muted); }
+
   .art { padding-block: clamp(2rem, 5vw, 3.5rem) clamp(2.5rem, 6vw, 4rem); }
 
   .art__head { margin-bottom: var(--s-6); }

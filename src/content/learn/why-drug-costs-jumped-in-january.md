@@ -15,6 +15,13 @@ faqs:
     a: "Usually not. The Annual Enrollment Period runs 15 October to 7 December. Mid-year changes need a Special Enrollment Period, Extra Help eligibility, or a Medicare Advantage Open Enrollment switch between 1 January and 31 March."
   - q: "What is the Part D out-of-pocket cap?"
     a: "For 2026 it is $2,100. Once your out-of-pocket spending on covered drugs reaches it, the plan pays 100% of covered drugs for the rest of the year. Premiums do not count toward the cap."
+sources:
+  - label: "Costs for Medicare drug coverage"
+    url: "https://www.medicare.gov/drug-coverage-part-d/costs-for-medicare-drug-coverage"
+  - label: "Medicare Part D drug coverage"
+    url: "https://www.medicare.gov/drug-coverage-part-d"
+  - label: "Find and compare Medicare plans"
+    url: "https://www.medicare.gov/plan-compare/"
 ---
 
 Every January the same call comes in, usually within the first two weeks, usually from somebody who is genuinely worried they have been defrauded.

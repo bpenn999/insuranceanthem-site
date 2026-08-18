@@ -15,6 +15,15 @@ faqs:
     a: "Original Medicare covers essentially none of it. Many Medicare Advantage plans include an allowance for each, which is one of the genuine arguments in their favor — but read what the allowance actually covers before assuming it stretches to a crown or a hearing aid."
   - q: "When is the right time to look at long-term care coverage?"
     a: "Late fifties to early seventies, in reasonable health, is the window where it is most solvable. Both age and health drive price and eligibility, and both move in one direction."
+sources:
+  - label: "Long-term care — what Medicare covers"
+    url: "https://www.medicare.gov/coverage/long-term-care"
+  - label: "Dental services"
+    url: "https://www.medicare.gov/coverage/dental-services"
+  - label: "Routine eye exams"
+    url: "https://www.medicare.gov/coverage/eye-exams-routine"
+  - label: "Hearing and balance exams, and hearing aids"
+    url: "https://www.medicare.gov/coverage/hearing-balance-exams-hearing-aids"
 ---
 
 There is a specific conversation I have had more times than any other, and it almost always happens in a hospital corridor.

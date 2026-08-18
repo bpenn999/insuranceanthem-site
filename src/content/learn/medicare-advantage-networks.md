@@ -17,6 +17,13 @@ faqs:
     a: "No, and this is the most common mistake. A practice can accept Original Medicare and still be out-of-network for your specific Advantage plan. The question to ask is not 'do you take Medicare?' but 'are you in-network for [exact plan name] for the coming plan year?'"
   - q: "Is emergency care covered out of network?"
     a: "Yes. Every Medicare Advantage plan must cover emergency and urgent care anywhere in the United States at in-network cost sharing, regardless of plan type. It is routine and follow-up care outside the service area where plans differ sharply."
+sources:
+  - label: "Medicare Advantage and other health plans"
+    url: "https://www.medicare.gov/health-drug-plans/health-plans"
+  - label: "Using providers with Original Medicare"
+    url: "https://www.medicare.gov/providers-services/original-medicare"
+  - label: "Find and compare Medicare plans"
+    url: "https://www.medicare.gov/plan-compare/"
 ---
 
 When somebody asks how a Medicare Advantage plan can charge nothing per month while including dental, vision and a fitness membership, the answer is the network. It is not a detail buried in the plan documents — it is the mechanism that makes the economics work.

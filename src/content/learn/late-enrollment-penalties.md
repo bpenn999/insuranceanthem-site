@@ -17,6 +17,13 @@ faqs:
     a: "No. COBRA is not coverage through active employment, so it does not protect you from the Part B penalty and does not trigger a Special Enrollment Period when it ends. This is one of the most expensive misunderstandings in Medicare. Retiree coverage has the same problem."
   - q: "Can a late enrollment penalty ever be removed?"
     a: "Rarely, but it happens. You can request reconsideration if you had creditable coverage that was not recorded, if you were given incorrect information by a federal employee, or if you qualify for Extra Help — which eliminates the Part D penalty entirely. Otherwise both penalties are permanent."
+sources:
+  - label: "Avoiding Medicare late-enrollment penalties"
+    url: "https://www.medicare.gov/basics/costs/medicare-costs/avoid-penalties"
+  - label: "When your Medicare coverage starts"
+    url: "https://www.medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start"
+  - label: "How to get Medicare prescription drug coverage"
+    url: "https://www.medicare.gov/drug-coverage-part-d/how-to-get-prescription-drug-coverage"
 ---
 
 Medicare's late enrollment penalties get used as a scare tactic, which is a shame, because they are real, they are permanent, and understanding them accurately is genuinely useful. They are also entirely avoidable — the people who get caught are almost never the ones who decided to gamble. They are the ones who thought they were covered.

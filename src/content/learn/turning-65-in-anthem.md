@@ -15,6 +15,13 @@ faqs:
     a: "Arizona carriers can medically underwrite your application, which means they can charge you more or decline you outright based on your health. The window runs six months from the first day of the month you are both 65 and enrolled in Part B, and it does not come back."
   - q: "Can I delay Part B without a penalty?"
     a: "Only if you have creditable coverage through active employment — yours or your spouse’s. Retiree coverage and COBRA do not count, and if the employer has fewer than 20 employees Medicare usually becomes the primary payer at 65 whether you enrolled or not."
+sources:
+  - label: "When your Medicare coverage starts"
+    url: "https://www.medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start"
+  - label: "Get started with Medicare"
+    url: "https://www.medicare.gov/basics/get-started-with-medicare"
+  - label: "The parts of Medicare"
+    url: "https://www.medicare.gov/basics/get-started-with-medicare/medicare-basics/parts-of-medicare"
 ---
 
 The mail starts about four months before your birthday, and it does not stop. Glossy envelopes with a return address you half recognize. Phone calls from numbers in area codes you have never visited. Somewhere in that pile are two or three things that genuinely matter, and the rest is noise designed to look exactly like them.

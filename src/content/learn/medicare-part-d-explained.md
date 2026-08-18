@@ -18,6 +18,13 @@ faqs:
     a: "Because you are almost certainly on different plans. Every Part D plan sets its own formulary and tier structure, so the same drug at the same dose can sit on tier 1 for one plan and tier 3 for another. Preferred pharmacy status adds a second layer of difference on top."
   - q: "Can I change my Part D plan mid-year?"
     a: "Generally no. The Annual Enrollment Period runs 15 October to 7 December for changes effective 1 January. Mid-year changes require a Special Enrollment Period, Extra Help eligibility, or — if you are on a Medicare Advantage plan with drug coverage — the Medicare Advantage Open Enrollment Period between 1 January and 31 March."
+sources:
+  - label: "Medicare Part D drug coverage"
+    url: "https://www.medicare.gov/drug-coverage-part-d"
+  - label: "Costs for Medicare drug coverage"
+    url: "https://www.medicare.gov/drug-coverage-part-d/costs-for-medicare-drug-coverage"
+  - label: "How to get Medicare prescription drug coverage"
+    url: "https://www.medicare.gov/drug-coverage-part-d/how-to-get-prescription-drug-coverage"
 ---
 
 Part D is the part of Medicare people understand least and pay most unnecessarily for. Not because it is complicated in principle — it covers prescription drugs, you buy it from a private insurer, that is the whole concept — but because the thing that determines your cost is buried in a document nobody reads.

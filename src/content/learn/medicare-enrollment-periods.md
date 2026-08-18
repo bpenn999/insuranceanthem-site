@@ -17,6 +17,13 @@ faqs:
     a: "The first day of the month in which you are both 65 and enrolled in Part B. It runs six months. During that window no carrier can refuse you a Medicare Supplement or charge you more for health reasons, and it does not come back."
   - q: "What if I miss my Initial Enrollment Period?"
     a: "The General Enrollment Period runs 1 January to 31 March each year, with coverage starting the first of the month after you enroll. A late enrollment penalty may apply. Check first whether a Special Enrollment Period applies to you — if you had coverage through active employment, you may still be inside a penalty-free window."
+sources:
+  - label: "When your Medicare coverage starts"
+    url: "https://www.medicare.gov/basics/get-started-with-medicare/sign-up/when-does-medicare-coverage-start"
+  - label: "Joining a Medicare plan"
+    url: "https://www.medicare.gov/basics/get-started-with-medicare/get-more-coverage/joining-a-plan"
+  - label: "Get started with Medicare"
+    url: "https://www.medicare.gov/basics/get-started-with-medicare"
 ---
 
 Medicare has six enrollment windows. They overlap, they have different rules about what you are allowed to change, and the marketing you receive rarely distinguishes between them.
