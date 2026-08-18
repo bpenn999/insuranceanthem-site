@@ -34,24 +34,23 @@ const breadcrumbs = [
   { name: location.city, path: `/service-area/${location.slug}/` },
 ];
 
-const localFaqs = [
-  {
-    q: `Do you meet clients in ${location.city}?`,
-    a: `Yes. ${location.proximity} Appointments happen wherever suits you — kitchen table, library, coffee shop — and plenty of people prefer to do the whole thing by phone or video instead. Either way the comparison work is identical.`,
-  },
-  {
-    q: `Which Medicare plans are available in ${location.zips[0]}?`,
-    a: `Plan availability in Medicare is set by county, and ${location.county} has a substantial number of Advantage and Part D plans to choose between. I deliberately do not publish plan counts, names or premiums on this site — they change every plan year and a stale number is worse than no number. What I will do is pull the current list for your ZIP while we are talking.`,
-  },
-  {
-    q: `What does it cost to work with you in ${location.city}?`,
-    a: `Nothing, at any point. Carriers pay a set commission to licensed agents and it is identical whether you enroll through me, through a call center or directly. Your premium is the same either way — the only difference is whether somebody local checks your doctors and prescriptions first.`,
-  },
-  {
-    q: `I already have a plan. Is it worth a review?`,
-    a: `Usually. Networks, formularies and premiums all reset every January, and the most expensive mistake I see in ${location.county} is a plan that fit perfectly three years ago and quietly stopped fitting. A review takes about twenty minutes and costs nothing.`,
-  },
-];
+/**
+ * Written per city in locations.ts, NOT generated here.
+ *
+ * This block used to build four questions from one template with the city, ZIP
+ * and county tokens interpolated in, which meant every service-area page shipped
+ * the same four questions and the same four answers — and then emitted them a
+ * second time as FAQPage schema below. Measured against the Anthem page with
+ * shared chrome stripped out, the city page bodies were 56–85% identical, and
+ * Search Console classified the thin end of that range accordingly: 18 pages
+ * "Discovered – currently not indexed", 5 "Crawled – currently not indexed"
+ * (2026-08-13). Near-duplicate location pages are the doorway pattern Google
+ * declines to index, and requesting indexing on them does nothing.
+ *
+ * `faqs` is required on Location for that reason — a page cannot be added
+ * without somebody writing questions a resident of that town would really ask.
+ */
+const localFaqs = location.faqs;
 
 const schemaNodes = [
   {
