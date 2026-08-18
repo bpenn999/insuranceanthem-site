@@ -57,6 +57,7 @@ const weekdays = [
   data-duration={String(booking.defaultDuration)}
   data-warm-days={String(booking.warmDays)}
   data-display-tz={DISPLAY_TZ}
+  data-mode={booking.mode}
   data-embed-url={booking.embedUrl}
   data-phone={site.phone.display}
 >
@@ -270,6 +271,7 @@ const weekdays = [
       duration: Number(root.dataset.duration) || 30,
       warmDays: Number(root.dataset.warmDays) || 10,
       tz: root.dataset.displayTz || DISPLAY_TZ,
+      mode: root.dataset.mode === 'native' ? 'native' : 'embed',
       embedUrl: root.dataset.embedUrl!,
       phone: root.dataset.phone!,
       brand: root.dataset.brand!,
@@ -351,26 +353,37 @@ const weekdays = [
     }
 
     /**
-     * Give up on the native picker and show the embed instead.
+     * Show the embed instead of the native picker.
      *
-     * This is the whole reason the iframe is still in the markup. An
-     * undocumented endpoint that changes shape, a blocked request, a visitor
-     * behind a filter that eats the Supabase host — all of them land here, and
-     * all of them end with a working calendar rather than an empty box.
+     * Two ways in, and they are not the same event:
+     *
+     *   · `mode: 'embed'` — the configured default. The widget is what we mean
+     *     to show, because it is the only thing that reliably honours the
+     *     Google Calendar blocks (see src/config/booking.ts). Nothing has gone
+     *     wrong, so there is no apology in the copy and nothing in the console.
+     *
+     *   · a thrown request, under `mode: 'native'`. An undocumented endpoint
+     *     that changed shape, a blocked request, a visitor behind a filter that
+     *     eats the Supabase host — all land here, and all end with a working
+     *     calendar rather than an empty box.
      */
     function fallback(why: string) {
       const box = $('[data-fallback]');
       const frame = $<HTMLIFrameElement>('[data-fallback-frame]');
       const note = $('[data-fallback-note]');
       if (!box.hidden) return;
-      note.textContent =
-        'Loading the calendar the long way round — it may take a moment.';
+      const chosen = cfg.mode === 'embed';
+      note.textContent = chosen
+        ? ''
+        : 'Loading the calendar the long way round — it may take a moment.';
+      note.hidden = chosen;
       if (!frame.src) frame.src = cfg.embedUrl;
       box.hidden = false;
       root.querySelectorAll<HTMLElement>('.bk__step').forEach((s) => (s.hidden = true));
-      // Not console.error: a fallback that fired correctly is not a page error,
-      // and the e2e run asserts the console stays clean.
-      console.info('[booking] native picker unavailable, using the embed —', why);
+      // Not console.error even when it is a failure: a fallback that fired
+      // correctly is not a page error, and the e2e run asserts the console
+      // stays clean. When the embed is the configured choice, nothing at all.
+      if (!chosen) console.info('[booking] native picker unavailable, using the embed —', why);
     }
 
     /* ── the month grid ────────────────────────────────────────────────── */
@@ -695,6 +708,15 @@ const weekdays = [
     });
 
     /* ── boot ──────────────────────────────────────────────────────────── */
+
+    // The configured default: GoGuruX's own widget, the same one MOM books
+    // against. Nothing below this line runs, so the site makes no request to
+    // the availability endpoint at all and cannot draw a slot it should not
+    // have offered.
+    if (cfg.mode === 'embed') {
+      fallback('configured');
+      return;
+    }
 
     drawMonth(); // draw immediately from the defaults so nothing pops in
 

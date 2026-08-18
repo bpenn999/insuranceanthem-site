@@ -23,6 +23,14 @@ import { spawn } from 'node:child_process';
  */
 import site from '../src/config/site.ts';
 
+/**
+ * Read the same flag the page reads, so the booking blocks below follow what
+ * actually ships rather than what once did. Flipping `booking.mode` back to
+ * `'native'` re-arms the native-picker checks on its own — nothing here needs
+ * editing to match.
+ */
+import { booking } from '../src/config/booking.ts';
+
 const CHROME =
   process.env.CHROME ||
   '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
@@ -73,6 +81,16 @@ const check = (name, ok, detail = '') => {
   results.push({ name, ok, detail });
   console.log(`${ok ? '  ✔' : '  ✖'} ${name}${detail && !ok ? `  → ${detail}` : ''}`);
 };
+
+/**
+ * A check that is deliberately not running, printed rather than deleted.
+ *
+ * Used only for the native-picker blocks, which cover code that is still here
+ * and still correct but is not what `/book/` serves today. Deleting them would
+ * lose the coverage; running them would assert a page nobody is served. So they
+ * announce themselves, with the reason, and count as neither pass nor failure.
+ */
+const skip = (name, why) => console.log(`  ⊘ ${name}  → ${why}`);
 
 async function openPage(path, preload) {
   // Open blank first when a preload script is needed, so the instrumentation is
@@ -1427,7 +1445,9 @@ console.log('\nAccessibility');
 // would go red for reasons that have nothing to do with this code. The live API
 // is checked separately, once, read-only, at the end of this block.
 console.log('\nBooking — 375px, the full flow');
-{
+if (booking.mode !== 'native') {
+  skip('the whole native-picker flow', `booking.mode is '${booking.mode}' — /book/ serves GoGuruX's widget`);
+} else {
   const NAVY = 'rgb(1, 20, 89)';
   const MIN_TAP = 48;   // px, the floor for anything you tap
   const MIN_TYPE = 18;  // px, the floor for type on a control
@@ -1712,7 +1732,9 @@ console.log('\nBooking — 375px, the full flow');
 // thing that keeps that acceptable is this: when it fails, the visitor gets the
 // embed they had before plus a phone number, not an empty box.
 console.log('\nBooking — the API is down');
-{
+if (booking.mode !== 'native') {
+  skip('the failed-lookup fallback', `booking.mode is '${booking.mode}' — there is no lookup to fail`);
+} else {
   const p = await openPage('/book/', `
     (() => {
       const real = window.fetch;
@@ -1754,9 +1776,9 @@ console.log('\nBooking — the API is down');
 // this is what says so, instead of the page quietly falling back to the embed
 // for every visitor and nobody noticing.
 console.log('\nBooking — the live scheduler');
-{
-  const { booking } = await import('../src/config/booking.ts');
-
+if (booking.mode !== 'native') {
+  skip('the live availability endpoint', `booking.mode is '${booking.mode}' — the site no longer calls it`);
+} else {
   // The next Monday-to-Friday day from now, in the market's timezone. Asking
   // about a Saturday would come back legitimately empty and read as a break.
   const day = (() => {
@@ -1797,6 +1819,73 @@ console.log('\nBooking — the live scheduler');
   check('the calendar still takes bookings Monday to Friday',
     Array.isArray(body?.calendar?.bookable_weekdays) && body.calendar.bookable_weekdays.length > 0,
     JSON.stringify(body?.calendar?.bookable_weekdays));
+}
+
+// ── 12d. the widget, which is what /book/ actually serves ────────────────────
+// GoGuruX's own booking widget, the same one Medicare On Main books against.
+// It is primary because it is the only thing that reliably honours the Google
+// Calendar blocks on this calendar — the hand-rolled picker offered times Brian
+// had blocked, which is the failure these checks exist to keep from returning.
+//
+// The strongest assertion here is the negative one: the page must not call the
+// availability endpoint AT ALL. A slot this site never fetches is a slot it
+// cannot offer over the top of something in Brian's diary.
+console.log('\nBooking — the GoGuruX widget');
+if (booking.mode !== 'embed') {
+  skip('the widget path', `booking.mode is '${booking.mode}' — /book/ draws its own controls`);
+} else {
+  const p = await openPage('/book/', `
+    (() => {
+      const real = window.fetch;
+      window.__calls = [];
+      window.fetch = function (input) {
+        window.__calls.push(String(typeof input === 'string' ? input : input.url || ''));
+        return real.apply(this, arguments);
+      };
+    })();
+  `);
+  await p.send('Emulation.setDeviceMetricsOverride', {
+    width: 375, height: 812, deviceScaleFactor: 2, mobile: true,
+  });
+  await p.send('Page.reload');
+  await sleep(2200);
+
+  const w = await evaluate(p, `
+    const box = document.querySelector('[data-fallback]');
+    const frame = document.querySelector('[data-fallback-frame]');
+    const note = document.querySelector('[data-fallback-note]');
+    const steps = [...document.querySelectorAll('.bk__step')];
+    const r = frame ? frame.getBoundingClientRect() : null;
+    return {
+      shown: !!box && box.hidden === false,
+      src: frame ? frame.src : null,
+      w: r ? Math.round(r.width) : 0,
+      h: r ? Math.round(r.height) : 0,
+      noteText: note ? note.textContent.trim() : null,
+      stepsHidden: steps.length > 0 && steps.every(s => s.hidden),
+      dayCells: document.querySelectorAll('[data-day]').length,
+      supabase: (window.__calls || []).filter(u => u.includes('supabase.co')),
+      overflow: document.documentElement.scrollWidth <= window.innerWidth + 1,
+      phone: /Calendar not loading\\?/.test(document.body.innerText)
+             && !!document.querySelector('[data-cta="book-fallback-call"]'),
+    };
+  `);
+
+  check('the widget is what the page shows', w.shown && !!w.src);
+  check('it points at the calendar MOM books against',
+    w.src === booking.embedUrl, w.src);
+  check('NOTHING asks the availability endpoint',
+    w.supabase.length === 0, w.supabase.join(' | '));
+  check('the native picker is not drawn at all',
+    w.stepsHidden && w.dayCells === 0, `stepsHidden=${w.stepsHidden} cells=${w.dayCells}`);
+  check('the widget is not apologised for — it is the intended calendar',
+    w.noteText === '', w.noteText);
+  check('the frame has real area on a phone', w.w > 300 && w.h > 200, `${w.w}×${w.h}`);
+  check('no horizontal overflow at 375px', w.overflow);
+  check('the phone number is on the page, as in every other state', w.phone);
+  check('the widget path is not reported as a page error',
+    p.consoleErrors.length === 0, p.consoleErrors.join(' | '));
+  await closePage(p);
 }
 
 /* ═══════════════════════════════════════════════════════════════════════ */

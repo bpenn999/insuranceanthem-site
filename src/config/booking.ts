@@ -9,8 +9,13 @@
  * and no amount of CSS here could reach either of them: a cross-origin frame is
  * opaque by design.
  *
- * So the page now talks to the same endpoints the embed does and draws its own
- * controls. GoGuruX is a Supabase application; its public booking widget calls
+ * So the page talked to the same endpoints the embed does and drew its own
+ * controls. **That is no longer what ships — see `mode` below: the widget is
+ * primary again because the hand-rolled picker offered times Brian had blocked
+ * in Google Calendar.** The rest of this note still describes how the native
+ * path works, and stays because that path is still here behind the flag.
+ *
+ * GoGuruX is a Supabase application; its public booking widget calls
  * two edge functions, both of which answer a plain cross-origin request from
  * this site (verified 2026-08-08 — the preflight returns
  * `access-control-allow-origin: https://602medicare.com`):
@@ -34,6 +39,32 @@
  */
 
 export const booking = {
+  /**
+   * Which picker `/book/` shows.
+   *
+   * ⚠️ **`'embed'`, and it is not a preference — it is a correctness fix.**
+   *
+   * The Google Calendar connection on this calendar in GoGuruX is live, and the
+   * widget honours it: MOM books against the same location and never offers a
+   * blocked time. The native picker did, because `get-availability` called
+   * cold, with the four parameters below, does not come back filtered the way
+   * the widget's own call does — something in what the widget sends, or does
+   * with the answer, we never reproduced. Nobody outside GoGuruX can say what,
+   * because **there is no API here to read**: those endpoints are undocumented
+   * and unversioned, which the header above already said and this is the bill
+   * for. The result was a scheduler that let people book over Brian's blocked
+   * time, which is worse than any layout problem the native picker solved.
+   *
+   * So the widget is primary again, exactly as MOM has it, and the native
+   * picker stays behind this flag rather than being deleted — its date grid and
+   * time list are still the better controls for a 65-plus visitor, and none of
+   * that work is wrong. Flipping this back to `'native'` needs one thing first:
+   * a real `get-availability` response for a day with a known Google block,
+   * showing the busy slot either absent or flagged. Until that exists, this
+   * stays where it is.
+   */
+  mode: 'embed' as 'embed' | 'native',
+
   supabaseUrl: 'https://roiypxggqlgbzrspkeoo.supabase.co',
   supabaseAnonKey:
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJvaXlweGdncWxnYnpyc3BrZW9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYwNDY3NTUsImV4cCI6MjA2MTYyMjc1NX0.KBULK0GoGRIXOW0uRFya8kLuiXaxpTsA5RW2tUlDOPY',

@@ -160,35 +160,39 @@ GHL, a setting changed in one does not appear in the other, and a Google Calenda
 connected to one is invisible to the other. Do not go looking in GHL for a booking
 problem, and do not point `site.links` or `site.leadEndpoint` at a GHL URL.
 
-`BookingPicker.astro` is a **thin client**. It calls GoGuruX's `get-availability` edge
-function and renders whatever comes back, filtering only on the vendor's own flag
-(`s.available !== false`). It generates no slots, keeps no schedule and holds no
-calendar state beyond the current page load.
+### `/book/` serves GoGuruX's widget, and **that is a correctness decision**
+`booking.mode` in `src/config/booking.ts` is `'embed'`. The page shows GoGuruX's own
+booking widget in an iframe — the same one MOM books against — and makes **no request to
+the availability endpoint at all**.
 
-⚠️ **"The booking page is offering times I'm busy" is therefore never a bug in this
-repo.** If a time you blocked in Google Calendar shows as bookable, GoGuruX returned it as
-`available: true`, and the picker faithfully displayed a wrong answer from upstream. The
-Google Calendar connection lives on the **calendar record in GoGuruX**, not in this code
-and not in GHL. Check it there:
+**Google Calendar is connected on this calendar, and it works — through the widget.**
+Brian's blocked time never appears there. It did appear in the hand-rolled picker that
+shipped in `891e8bb`, which called `get-availability` directly with four parameters and
+drew its own grid: called that way the endpoint does not come back filtered the way the
+widget's own call does, and the page offered slots over the top of Brian's diary. **There
+is no API here to read** — those endpoints are undocumented and unversioned, reverse-
+engineered from the widget — so nobody outside GoGuruX can say what the difference is.
 
-1. The `602-medicare` calendar (`src/config/booking.ts`) sits under the location
-   `medicareonmain-com` **alongside Medicare On Main's own calendar**, and the Google
-   connection is per calendar. MOM's calendar having one says nothing about this one —
-   compare the two side by side and look for conflict-checking / two-way sync, the setting
-   that reads busy blocks *out* of Google rather than only writing bookings *in*.
-2. If blocked times still leak but are consistently **exactly one hour off** in summer,
-   that is the calendar's `America/Denver` time zone against Arizona's `America/Phoenix`
-   (see `src/lib/booking.ts`), not a missing connection.
+So: **do not "fix" this by pointing the page back at the endpoint.** A scheduler that
+double-books is worse than any layout problem the native picker solved. The native picker
+is still in `BookingPicker.astro` behind the flag, and its date grid and time list are
+still the better controls for a 65-plus visitor — none of that work is wrong. Flipping
+`mode` back to `'native'` needs one thing first: **a real `get-availability` response for a
+day with a known Google block, showing the busy slot either absent or flagged.** Until that
+JSON exists, the flag stays.
+
+`scripts/e2e.mjs` reads the same flag. Under `'embed'` the three native-picker blocks print
+`⊘` with the reason and the widget block runs; flipping the flag re-arms them automatically,
+so neither the suite nor this file needs editing to match. The strongest assertion in the
+widget block is the negative one — *nothing asks the availability endpoint* — because a slot
+this site never fetches is a slot it cannot offer over something in Brian's diary.
 
 The two **Add to Google Calendar / .ics** buttons on the confirmation screen are unrelated:
 a one-way hand-off so the *client* can put the appointment in their own calendar. They are
 not a sync and never were.
 
-Availability, as it stands on the far side of the fence:
-```bash
-curl -s "https://roiypxggqlgbzrspkeoo.supabase.co/functions/v1/get-availability?date=<YYYY-MM-DD>&duration=30&location_slug=medicareonmain-com&calendar_slug=602-medicare" \
-  -H "Authorization: Bearer $(grep -o 'eyJ[A-Za-z0-9._-]*' src/config/booking.ts | head -1)" | jq
-```
+Keep `frame-src https://my.gogurux.com` in `public/_headers`. The widget is an iframe; drop
+that hole in the CSP and `/book/` renders a blank box.
 
 ## Brand assets
 Navy `#011459` + red `#D10A0F`, and **one rule: `--red` is only 3.0:1 on navy** — anything
