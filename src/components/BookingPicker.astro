@@ -344,8 +344,18 @@ const weekdays = [
         }
       }
 
+      // FAIL CLOSED. This was `s.available !== false`, which offers any slot the
+      // vendor returns without an opinion — and that is how times blocked in
+      // Brian's Google Calendar came to be bookable here. MOM's feed lists only
+      // what is free and so has no flag to misread; this endpoint does have one,
+      // so the flag must be read the strict way round: a slot is offered only
+      // when it is POSITIVELY marked available.
+      //
+      // If that empties the calendar, the endpoint is not marking slots the way
+      // this assumes, and an empty calendar under a phone number is the right
+      // way to be wrong. Offering someone a time Brian cannot keep is not.
       const slots: Slot[] = Array.isArray(body.slots)
-        ? body.slots.filter((s: Slot) => s?.startUtc && s?.endUtc && s.available !== false)
+        ? body.slots.filter((s: Slot) => s?.startUtc && s?.endUtc && s.available === true)
         : [];
       state.cache.set(date, slots);
       if (!slots.length) state.soldOut.add(date);

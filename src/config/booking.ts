@@ -42,7 +42,23 @@ export const booking = {
   /**
    * Which picker `/book/` shows.
    *
-   * ⚠️ **`'embed'`, and it is not a preference — it is a correctness fix.**
+   * ⚠️ **`'embed'` — but do NOT read this as "the widget fixes the blocked-time
+   * bug". It probably does not.** GoGuruX computes availability server-side and
+   * its widget asks the same endpoint this page did, so a calendar that hands
+   * back blocked time hands it to both. The widget is here because it is the
+   * vendor's own rendering of the vendor's own answer, which is the least
+   * surprising thing to serve while the calendar itself is being sorted out.
+   *
+   * The real cause is almost certainly on the calendar record: **GoGuruX blocks
+   * by PERSON, not by calendar** (MOM's src/config/booking.config.ts, verified
+   * 2026-08-17). A calendar with no team member assigned has nobody whose Google
+   * Calendar to check, so it returns every slot inside its open hours. MOM hit
+   * this same class of thing — its site was pointed at a calendar with "none of
+   * the hours, team assignment or meeting-format work" done on it.
+   *
+   * So before touching any code here: open the **602 Medicare** calendar in
+   * GoGuruX and check it is assigned to Brian, next to a MOM calendar that
+   * works.
    *
    * The Google Calendar connection on this calendar in GoGuruX is live, and the
    * widget honours it: MOM books against the same location and never offers a
