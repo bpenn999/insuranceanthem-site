@@ -1,0 +1,82 @@
+# Publish 602medicare.com from a button, so a deploy never needs a laptop.
+#
+# WHY THIS EXISTS (2026-08-18). Publishing this site has always meant running
+# `wrangler pages deploy` on the one machine holding the Cloudflare login — the
+# Pages project is not Git-connected, so a push does nothing on its own. That is
+# fine until a fix is ready at eight in the evening and the laptop is shut.
+#
+# This changes only WHO runs the deploy, not what a deploy is: the same
+# `npm run verify` gate, the same `wrangler pages deploy dist`, from the repo
+# root so `functions/` is picked up. It runs ONLY when someone presses the
+# button — Actions → Deploy to Cloudflare Pages → Run workflow, which the GitHub
+# mobile app can do — and never on a push, because an unattended deploy of a
+# live Medicare site is a different decision and nobody has made it.
+#
+# ── ONE-TIME SETUP, both doable from a phone
+#
+#   1. Cloudflare dashboard → My Profile → API Tokens → Create Token →
+#      "Edit Cloudflare Workers" template (or a custom token with
+#      Account → Cloudflare Pages → Edit). Copy it once.
+#      Your account id is in the dashboard URL, and on any account's overview.
+#
+#   2. GitHub → this repo → Settings → Secrets and variables → Actions →
+#      New repository secret, twice:
+#
+#        CLOUDFLARE_API_TOKEN   = the token from step 1
+#        CLOUDFLARE_ACCOUNT_ID  = the account id
+#
+# Until those exist this workflow fails at the last step and changes nothing.
+# It cannot deploy anything by accident before then.
+#
+# ⚠️ The Pages environment variables (GOGURUX_WEBHOOK_URL and any others) live
+# in the Pages project, not here, and are untouched by this. A deploy does not
+# reset them.
+name: Deploy to Cloudflare Pages
+
+on:
+  workflow_dispatch:
+    inputs:
+      ref:
+        description: 'Branch, tag or SHA to publish'
+        required: false
+        default: main
+
+permissions:
+  contents: read
+
+concurrency:
+  # Two deploys racing would leave the live site on whichever finished last,
+  # which is not necessarily the newer one.
+  group: pages-deploy
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      # The gate, unchanged: astro check → unit tests → build → audit. It must
+      # pass here for the same reason it must pass locally — never weakened to
+      # make a deploy go through.
+      - name: Verify
+        run: npm run verify
+
+      # From the repo root, NOT from dist: wrangler picks `functions/` up from
+      # the working directory. Run it elsewhere and the site ships without
+      # /api/lead and /api/availability, every form silently falls back to
+      # mailto, and /book/ falls back to the widget.
+      - name: Publish
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler pages deploy dist --project-name=insuranceanthem
