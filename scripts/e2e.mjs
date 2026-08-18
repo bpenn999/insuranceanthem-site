@@ -350,6 +350,180 @@ console.log('\nAPI — /api/lead relay (mocked upstream)');
   }
 }
 
+// ── the diary guard, which is what keeps a blocked hour off the page ─────────
+// Thursday 20 August 2026: the page offered an unbroken run of half-hours from
+// 7:00 while Brian's calendar carried "Off" 07:00–20:00, and he booked 7:30 to
+// prove it. /api/availability exists so that cannot happen again — it subtracts
+// the diary server-side and withholds everything if it cannot read it.
+//
+// Driven directly, like the lead relay above: real function, real RS256
+// signing against a throwaway key, every upstream stubbed. Nothing here touches
+// Google or GoGuruX.
+console.log('\nAPI — /api/availability (diary guard, mocked upstreams)');
+{
+  const { onRequest } = await import('../functions/api/availability.ts');
+  const { generateKeyPairSync } = await import('node:crypto');
+
+  // A genuine RSA key, so importKey/sign run for real rather than being faked.
+  const { privateKey } = generateKeyPairSync('rsa', { modulusLength: 2048 });
+  const SA = JSON.stringify({
+    client_email: 'guard@602medicare.iam.gserviceaccount.com',
+    private_key: privateKey.export({ type: 'pkcs8', format: 'pem' }),
+  });
+
+  const ORIGIN = `https://${site.domain}`;
+  const az = (hhmm) => `2026-08-20T${hhmm}:00-07:00`;
+
+  /** The eight slots the live site really offered that morning. */
+  const OFFERED = ['07:00','07:30','08:00','08:30','09:00','09:30','10:00','10:30'].map((t) => {
+    const startUtc = new Date(az(t)).toISOString();
+    return { startUtc, endUtc: new Date(Date.parse(startUtc) + 30 * 60000).toISOString(), available: true };
+  });
+
+  /** Brian's real Thursday. */
+  const THURSDAY_BUSY = [
+    { start: az('07:00'), end: az('20:00') },
+    { start: az('08:00'), end: az('08:30') },
+    { start: az('11:00'), end: az('12:00') },
+    { start: az('15:30'), end: az('16:00') },
+  ];
+
+  async function callAvailability(opts = {}) {
+    const {
+      method = 'GET',
+      date = '2026-08-20',
+      env = { GOOGLE_SERVICE_ACCOUNT_JSON: SA },
+      slots = OFFERED,
+      busy = THURSDAY_BUSY,
+      goguruxStatus = 200,
+      freebusyStatus = 200,
+      freebusyBody = null,
+      tokenStatus = 200,
+    } = opts;
+
+    const seen = [];
+    const realFetch = globalThis.fetch;
+    const realError = console.error;
+    const realLog = console.log;
+    const logged = [];
+    globalThis.fetch = async (url, init) => {
+      const u = String(url);
+      seen.push(u);
+      if (u.includes('oauth2.googleapis.com')) {
+        return new Response(JSON.stringify(tokenStatus === 200 ? { access_token: 'tok' } : { error: 'nope' }),
+          { status: tokenStatus });
+      }
+      if (u.includes('freeBusy')) {
+        const body = freebusyBody ?? { calendars: { 'brianinsuranceservices@gmail.com': { busy } } };
+        return new Response(JSON.stringify(body), { status: freebusyStatus });
+      }
+      if (u.includes('get-availability')) {
+        return new Response(JSON.stringify({ success: goguruxStatus === 200, calendar: { id: 'cal' }, slots }),
+          { status: goguruxStatus });
+      }
+      return realFetch(url, init);
+    };
+    console.error = (...a) => logged.push(a.join(' '));
+    console.log = (...a) => logged.push(a.join(' '));
+
+    try {
+      const qs = date === null ? '' : `?date=${encodeURIComponent(date)}`;
+      const res = await onRequest({ request: new Request(`${ORIGIN}/api/availability${qs}`, { method }), env });
+      let json = null;
+      try { json = await res.clone().json(); } catch { /* not JSON */ }
+      return { status: res.status, json, seen, logged: logged.join(' | '), allow: res.headers.get('allow') };
+    } finally {
+      globalThis.fetch = realFetch;
+      console.error = realError;
+      console.log = realLog;
+    }
+  }
+
+  /* ── the Thursday ─────────────────────────────────────────────────────── */
+  {
+    const r = await callAvailability();
+    check('THE BUG: every slot offered on the blocked Thursday is withheld',
+      r.status === 200 && r.json.success === true && r.json.slots.length === 0,
+      `${r.status} kept=${r.json?.slots?.length}`);
+    check('it reports what it withheld, so the guard is visible',
+      r.json?.filtered?.offered === 8 && r.json?.filtered?.withheld === 8,
+      JSON.stringify(r.json?.filtered));
+    check('specifically the 7:30 he was able to book is gone',
+      !r.json.slots.some((s) => s.startUtc === new Date(az('07:30')).toISOString()));
+    check('it did ask Google, not just the scheduler',
+      r.seen.some((u) => u.includes('freeBusy')) && r.seen.some((u) => u.includes('get-availability')));
+  }
+
+  /* ── it is a filter, not a shutter ────────────────────────────────────── */
+  {
+    const evening = [{
+      startUtc: new Date(az('20:00')).toISOString(),
+      endUtc: new Date(az('20:30')).toISOString(),
+      available: true,
+    }];
+    const r = await callAvailability({ slots: [...OFFERED, ...evening] });
+    check('a slot after "Off" ends is still offered', r.json.slots.length === 1);
+  }
+  {
+    const r = await callAvailability({ busy: [] });
+    check('a genuinely clear day passes every slot through', r.json.slots.length === 8);
+  }
+  {
+    // Back-to-back is not a conflict; deleting those would quietly shrink every
+    // day that has an appointment in it.
+    const r = await callAvailability({ busy: [{ start: az('07:30'), end: az('08:00') }] });
+    check('only the slot that actually collides is dropped',
+      r.json.slots.length === 7
+        && !r.json.slots.some((s) => s.startUtc === new Date(az('07:30')).toISOString()),
+      String(r.json.slots.length));
+  }
+
+  /* ── failing closed ───────────────────────────────────────────────────── */
+  {
+    const r = await callAvailability({ freebusyStatus: 500 });
+    check('an unreadable diary answers 503 and NO slots', r.status === 503 && !r.json.slots);
+    check('it never falls through to the unfiltered list', !JSON.stringify(r.json).includes('startUtc'));
+    check('and says so in the logs', /withholding slots/.test(r.logged));
+  }
+  {
+    // Google says this when the calendar was never shared with the service
+    // account — an empty busy list that must not read as a clear day.
+    const r = await callAvailability({
+      freebusyBody: { calendars: { 'brianinsuranceservices@gmail.com': { busy: [], errors: [{ reason: 'notFound' }] } } },
+    });
+    check('a calendar that was never shared is 503, not a clear day', r.status === 503);
+  }
+  {
+    const r = await callAvailability({ tokenStatus: 401 });
+    check('a bad credential is 503, not an unfiltered page', r.status === 503);
+  }
+  {
+    const r = await callAvailability({ env: {} });
+    check('unconfigured answers 501 rather than serving unchecked slots', r.status === 501);
+    check('unconfigured never reaches either upstream', r.seen.length === 0, r.seen.join(' '));
+    check('unconfigured says so loudly in the logs',
+      /GOOGLE_SERVICE_ACCOUNT_JSON is not set/.test(r.logged));
+  }
+  {
+    const r = await callAvailability({ goguruxStatus: 500 });
+    check('a scheduler outage is 502, distinct from a diary outage', r.status === 502);
+  }
+
+  /* ── the shape of the route ───────────────────────────────────────────── */
+  {
+    const r = await callAvailability({ method: 'POST' });
+    check('POST is refused with 405 and an Allow header', r.status === 405 && r.allow === 'GET');
+  }
+  {
+    const r = await callAvailability({ date: null });
+    check('a missing date is 400', r.status === 400);
+  }
+  {
+    const r = await callAvailability({ date: '20th August' });
+    check('a date it cannot read is 400, never guessed at', r.status === 400);
+  }
+}
+
 await waitForChrome();
 
 // ── 1. home page: motion engine + hero funnel ────────────────────────────────
@@ -1464,11 +1638,11 @@ if (booking.mode !== 'native') {
       };
       window.fetch = function (input, init) {
         const url = String(typeof input === 'string' ? input : input.url || '');
-        if (!url.includes('supabase.co')) return real.apply(this, arguments);
+        if (!url.includes('supabase.co') && !url.includes('/api/availability')) return real.apply(this, arguments);
         window.__bookingCalls.push({ url, method: (init && init.method) || 'GET', body: init && init.body });
 
-        if (url.includes('get-availability')) {
-          const date = new URL(url).searchParams.get('date');
+        if (url.includes('/api/availability')) {
+          const date = new URL(url, location.origin).searchParams.get('date');
           // 08:00–10:30 in the calendar's own timezone (UTC-6 in August), which
           // is 07:00–09:30 in Arizona — the one-hour gap the picker exists to
           // present correctly.
@@ -1740,7 +1914,7 @@ if (booking.mode !== 'native') {
       const real = window.fetch;
       window.fetch = function (input) {
         const url = String(typeof input === 'string' ? input : input.url || '');
-        if (url.includes('supabase.co')) return Promise.reject(new Error('offline'));
+        if (url.includes('/api/availability') || url.includes('supabase.co')) return Promise.reject(new Error('offline'));
         return real.apply(this, arguments);
       };
     })();

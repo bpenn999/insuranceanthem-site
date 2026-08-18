@@ -318,16 +318,21 @@ const weekdays = [
 
     /* ── the API ───────────────────────────────────────────────────────── */
 
+    /**
+     * Availability, via this site's own /api/availability.
+     *
+     * ⚠️ NOT the scheduler directly, and that is the whole point. That route
+     * fetches the same slots server-side and then subtracts Brian's Google
+     * Calendar, because GoGuruX offered an entire day he had blocked out (see
+     * functions/api/availability.ts). It answers 503 and no slots rather than
+     * serving a list it could not check, and a throw here lands in fallback(),
+     * which shows the widget and the phone number.
+     *
+     * Same-origin on purpose: `connect-src` no longer needs to admit a third
+     * party for the read, and the browser never sees an unfiltered slot.
+     */
     async function availability(date: string) {
-      const q = new URLSearchParams({
-        date,
-        duration: String(state.duration),
-        location_slug: cfg.locationSlug,
-        calendar_slug: cfg.calendarSlug,
-      });
-      const res = await fetch(`${cfg.url}/functions/v1/get-availability?${q}`, {
-        headers: { Authorization: `Bearer ${cfg.key}` },
-      });
+      const res = await fetch(`/api/availability?date=${encodeURIComponent(date)}`);
       if (!res.ok) throw new Error(`availability ${res.status}`);
       const body = await res.json();
       if (!body?.success) throw new Error(body?.error || 'availability failed');
@@ -344,18 +349,17 @@ const weekdays = [
         }
       }
 
-      // FAIL CLOSED. This was `s.available !== false`, which offers any slot the
-      // vendor returns without an opinion — and that is how times blocked in
-      // Brian's Google Calendar came to be bookable here. MOM's feed lists only
-      // what is free and so has no flag to misread; this endpoint does have one,
-      // so the flag must be read the strict way round: a slot is offered only
-      // when it is POSITIVELY marked available.
+      // Every slot here has ALREADY been checked against Brian's diary by
+      // /api/availability, which is where the guarantee now lives. This is the
+      // cheap belt: drop anything the scheduler explicitly marks unavailable,
+      // and anything missing the timestamps the grid needs.
       //
-      // If that empties the calendar, the endpoint is not marking slots the way
-      // this assumes, and an empty calendar under a phone number is the right
-      // way to be wrong. Offering someone a time Brian cannot keep is not.
+      // Deliberately `!== false` rather than `=== true`. The strict form would
+      // be right if this flag were the only protection — it was, briefly — but
+      // it is not any more, and if the vendor returns slots with no flag at all
+      // the strict form empties a calendar the server has already verified.
       const slots: Slot[] = Array.isArray(body.slots)
-        ? body.slots.filter((s: Slot) => s?.startUtc && s?.endUtc && s.available === true)
+        ? body.slots.filter((s: Slot) => s?.startUtc && s?.endUtc && s.available !== false)
         : [];
       state.cache.set(date, slots);
       if (!slots.length) state.soldOut.add(date);

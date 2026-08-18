@@ -107,7 +107,7 @@ audit requires every sitemap URL to have an HTML route). There is no WebMCP endp
 npm install
 npm run dev        # http://localhost:4321
 npm run verify     # astro check → unit tests → build → audit. The gate. Must pass.
-npm run e2e        # dependency-free CDP suite (538 checks), needs `astro preview --port 4331`
+npm run e2e        # dependency-free CDP suite (562 checks), needs `astro preview --port 4331`
 ```
 - `npm run verify` must end "✅ All checks passed." Never weaken an audit rule to make a
   page pass.
@@ -122,9 +122,9 @@ npm run e2e        # dependency-free CDP suite (538 checks), needs `astro previe
   it. Use `Emulation.setDeviceMetricsOverride`, as `scripts/e2e.mjs` does, and pass
   `--force-prefers-reduced-motion` or the reveal animations are caught mid-flight.
 
-## The one server-side thing: `/api/lead`
-`functions/api/lead.ts` is a Cloudflare Pages Function — the only code here that is not
-static. It relays form submissions to the **GoGuruX** inbound webhook, whose URL is the
+## Server-side: `/api/lead`
+`functions/api/lead.ts` is a Cloudflare Pages Function — one of the two things here
+that are not static (the other is `/api/availability`, below). It relays form submissions to the **GoGuruX** inbound webhook, whose URL is the
 credential and therefore lives in `GOGURUX_WEBHOOK_URL` (Pages → Settings → Environment
 variables → **Production**), never in `site.ts` and never in the page.
 
@@ -160,39 +160,48 @@ GHL, a setting changed in one does not appear in the other, and a Google Calenda
 connected to one is invisible to the other. Do not go looking in GHL for a booking
 problem, and do not point `site.links` or `site.leadEndpoint` at a GHL URL.
 
-### `/book/` serves GoGuruX's widget, and **that is a correctness decision**
-`booking.mode` in `src/config/booking.ts` is `'embed'`. The page shows GoGuruX's own
-booking widget in an iframe — the same one MOM books against — and makes **no request to
-the availability endpoint at all**.
+### `/book/` filters the scheduler against Brian's real calendar
+`booking.mode` in `src/config/booking.ts` is `'native'`, and the picker reads
+**`/api/availability`** — never GoGuruX directly. That route fetches the same
+slots server-side, asks Google what Brian is doing that day, and drops every slot
+that lands on something.
 
-**Google Calendar is connected on this calendar, and it works — through the widget.**
-Brian's blocked time never appears there. It did appear in the hand-rolled picker that
-shipped in `891e8bb`, which called `get-availability` directly with four parameters and
-drew its own grid: called that way the endpoint does not come back filtered the way the
-widget's own call does, and the page offered slots over the top of Brian's diary. **There
-is no API here to read** — those endpoints are undocumented and unversioned, reverse-
-engineered from the widget — so nobody outside GoGuruX can say what the difference is.
+**Why it exists.** On Thursday 2026-08-20 the page offered 7:00, 7:30, 8:00,
+8:30, 9:00, 9:30, 10:00, 10:30 in an unbroken run while Brian's Google Calendar
+carried a confirmed "Off" from 07:00 to 20:00 Arizona. He booked the 7:30 to
+prove it. GoGuruX had every one of those hours marked free.
 
-So: **do not "fix" this by pointing the page back at the endpoint.** A scheduler that
-double-books is worse than any layout problem the native picker solved. The native picker
-is still in `BookingPicker.astro` behind the flag, and its date grid and time list are
-still the better controls for a 65-plus visitor — none of that work is wrong. Flipping
-`mode` back to `'native'` needs one thing first: **a real `get-availability` response for a
-day with a known Google block, showing the busy slot either absent or flagged.** Until that
-JSON exists, the flag stays.
+**The Google link is real but one-way.** A booking made through GoGuruX on
+2026-08-17 is sitting on that same calendar, so appointments go out — busy time
+does not come back. GoGuruX blocks by PERSON, not by calendar (MOM's
+`src/config/booking.config.ts`, verified 2026-08-17), so a calendar with nobody
+assigned has no diary to consult. **That is still worth fixing on the GoGuruX
+side**, and doing so makes this guard redundant rather than wrong. The guard is
+here because a scheduler must not depend on a third party's setting staying
+right.
 
-`scripts/e2e.mjs` reads the same flag. Under `'embed'` the three native-picker blocks print
-`⊘` with the reason and the widget block runs; flipping the flag re-arms them automatically,
-so neither the suite nor this file needs editing to match. The strongest assertion in the
-widget block is the negative one — *nothing asks the availability endpoint* — because a slot
-this site never fetches is a slot it cannot offer over something in Brian's diary.
+⚠️ **The guard fails closed, and nothing may change that.** No diary → `503` and
+zero slots, never the unfiltered list. Unconfigured → `501`, and the site behaves
+as it did before. Both send the picker to `fallback()`, which shows the widget
+and the phone number. The arithmetic is `src/lib/freebusy.ts` — pure, and the
+tests in `test/freebusy.test.mjs` are written against that real Thursday.
 
-The two **Add to Google Calendar / .ics** buttons on the confirmation screen are unrelated:
-a one-way hand-off so the *client* can put the appointment in their own calendar. They are
-not a sync and never were.
+⚠️ **`'embed'` is not the safe setting.** An iframe cannot be filtered, and the
+widget asks the same endpoint the page used to, so under `'embed'` there is no
+guard at all. Use it only to take this site out of the loop deliberately.
 
-Keep `frame-src https://my.gogurux.com` in `public/_headers`. The widget is an iframe; drop
-that hole in the CSP and `/book/` renders a blank box.
+Setup is six steps in the Google Cloud console plus one Pages variable —
+`GOOGLE_SERVICE_ACCOUNT_JSON`, see README. **The calendar must be shared with the
+service account's address**; without that Google answers `notFound` and the route
+refuses to serve anything, which is the correct behaviour and looks like an
+outage. If slots go quiet, check that share first.
+
+The two **Add to Google Calendar / .ics** buttons on the confirmation screen are
+unrelated: a one-way hand-off so the *client* can put the appointment in their own
+calendar. They are not a sync and never were.
+
+Keep `frame-src https://my.gogurux.com` in `public/_headers` — the fallback is an
+iframe, and dropping that hole renders it a blank box.
 
 ## Brand assets
 Navy `#011459` + red `#D10A0F`, and **one rule: `--red` is only 3.0:1 on navy** — anything
