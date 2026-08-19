@@ -173,6 +173,17 @@ const weekdays = [
         <button type="submit" class="btn btn--lg" data-submit>Confirm this appointment</button>
       </div>
 
+      {/* Shown only while create-booking is in flight. GoGuruX's endpoint takes
+          5-10s (measured: their get-availability alone is ~2s, and the booking
+          call appears to send its confirmation email synchronously). A button
+          reading "Booking…" for that long looks frozen to a 65-plus visitor,
+          who clicks again and books twice. Nothing here makes their server
+          faster — it makes the wait legible. */}
+      <p class="bk__working" data-working role="status" aria-live="polite" hidden>
+        <span class="bk__spinner" aria-hidden="true"></span>
+        <span data-working-text>Booking your appointment…</span>
+      </p>
+
       <p class="bk__consent">
         By confirming you agree to be contacted about this appointment at the number
         or address above. We do not share your details.
@@ -295,6 +306,37 @@ const weekdays = [
     const formError = $('[data-form-error]');
     const continueBtn = $<HTMLButtonElement>('[data-continue]');
     const submitBtn = $<HTMLButtonElement>('[data-submit]');
+    const backBtn = $<HTMLButtonElement>('[data-back]');
+    const workingEl = $('[data-working]');
+    const workingText = $('[data-working-text]');
+
+    /* ── the waiting state ──────────────────────────────────────────────────
+       Nothing here speeds the request up. It exists so the visitor can see
+       that something is still happening, and so Back cannot pull the form out
+       from under an in-flight booking. */
+    const WORKING_STEPS: ReadonlyArray<readonly [number, string]> = [
+      [0, 'Booking your appointment…'],
+      [2500, 'Checking the calendar…'],
+      [5000, 'Almost there — confirming with the office…'],
+      [9000, 'Still working. Please do not close this page.'],
+    ];
+    let workingTimers: number[] = [];
+
+    function startWorking() {
+      workingText.textContent = WORKING_STEPS[0][1];
+      workingEl.hidden = false;
+      backBtn.disabled = true;
+      workingTimers = WORKING_STEPS.slice(1).map(([ms, msg]) =>
+        window.setTimeout(() => (workingText.textContent = msg), ms),
+      );
+    }
+
+    function stopWorking() {
+      workingTimers.forEach(clearTimeout);
+      workingTimers = [];
+      workingEl.hidden = true;
+      backBtn.disabled = false;
+    }
 
     /** Today in the market's timezone, not the visitor's — see src/lib/booking.ts. */
     const today = isoDayIn(new Date(), cfg.tz);
@@ -617,6 +659,7 @@ const weekdays = [
       formError.hidden = true;
       submitBtn.disabled = true;
       submitBtn.textContent = 'Booking…';
+      startWorking();
 
       // Mirrors the payload GoGuruX's own widget sends, field for field. The
       // timezone sent is the CALENDAR's, not the visitor's, because that is
@@ -701,6 +744,7 @@ const weekdays = [
           state.selectedSlot,
           cfg.tz,
         )} Arizona time`;
+        stopWorking();
         root.querySelectorAll<HTMLElement>('.bk__step').forEach((s) => (s.hidden = true));
         reveal(doneEl);
       } catch (err) {
@@ -708,6 +752,7 @@ const weekdays = [
         // already typed everything in, and throwing them into a fresh calendar
         // to type it again is worse than telling them the truth and giving them
         // the phone number.
+        stopWorking();
         submitBtn.disabled = false;
         submitBtn.textContent = 'Confirm this appointment';
         formError.hidden = false;
@@ -1061,6 +1106,36 @@ const weekdays = [
     outline: 2px solid var(--navy);
     outline-offset: 1px;
     border-color: var(--navy);
+  }
+
+  /* In-flight booking state. Reduced-motion gets a pulse rather than a spin. */
+  .bk__working {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 12px 0 0;
+    font-weight: 600;
+    color: var(--ink-600, #555);
+    line-height: 1.5;
+  }
+  .bk__spinner {
+    flex: none;
+    width: 1.15em;
+    height: 1.15em;
+    border-radius: 50%;
+    border: 2px solid currentColor;
+    border-top-color: transparent;
+    opacity: 0.75;
+    animation: bk-spin 0.7s linear infinite;
+  }
+  @keyframes bk-spin { to { transform: rotate(360deg); } }
+  @media (prefers-reduced-motion: reduce) {
+    .bk__spinner {
+      border-top-color: currentColor;
+      animation: bk-pulse 1.4s ease-in-out infinite;
+    }
+    @keyframes bk-pulse { 50% { opacity: 0.2; } }
   }
 
   .bk__error {
