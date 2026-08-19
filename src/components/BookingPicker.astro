@@ -674,6 +674,13 @@ const weekdays = [
         startTime: state.selectedSlot.startUtc,
         endTime: state.selectedSlot.endUtc,
         timeZone: state.calendarTz || cfg.tz,
+        // REVERTED 2026-08-19: briefly sent the visitor's browser zone here so
+        // GoGuruX might render confirmations in the booker's clock. It stopped
+        // the confirmation email sending altogether — bookings at 15:43 and
+        // 15:54 got one, the 16:06 booking after the change got nothing. Not
+        // worth a silent no-confirmation, which is the exact failure this whole
+        // day started with. The dual-clock line on the done panel covers the
+        // same need safely, entirely in the browser.
         ...(state.calendarTz ? { time_zone_at_booking: state.calendarTz } : {}),
         durationMinutes: state.duration,
         locationType: cfg.locationType,
@@ -740,11 +747,34 @@ const weekdays = [
             ].join('\r\n'),
           );
 
-        doneWhen.textContent = `${formatDayLong(state.selectedDay!)}, ${formatSlotRange(
-          state.selectedSlot,
-          cfg.tz,
-        )} Arizona time`;
         stopWorking();
+        // Both clocks, when they differ.
+        //
+        // Arizona does not observe DST, so from March to November it sits an
+        // hour behind Mountain. Someone booking this Arizona calendar from Moab
+        // sees "12:30 PM Arizona time" and has no reason to suspect that is
+        // 1:30 PM where they are standing — they turn up an hour early, or
+        // decide the confirmation is wrong. Stating one clock is only safe when
+        // everyone shares it, and they do not.
+        //
+        // So: the market's time always, and the visitor's alongside it whenever
+        // the two actually differ for THIS instant (compared on the rendered
+        // string, which is what a person reads, rather than on offsets).
+        const arizona = formatSlotRange(state.selectedSlot, cfg.tz);
+        const visitorTz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        let when = `${formatDayLong(state.selectedDay!)}, ${arizona} Arizona time`;
+        if (visitorTz && visitorTz !== cfg.tz) {
+          const mine = formatSlotRange(state.selectedSlot, visitorTz);
+          if (mine !== arizona) {
+            // e.g. "MDT" — the visitor's own abbreviation, not one we guessed.
+            const abbr =
+              new Intl.DateTimeFormat('en-US', { timeZone: visitorTz, timeZoneName: 'short' })
+                .formatToParts(new Date(state.selectedSlot.startUtc))
+                .find((p) => p.type === 'timeZoneName')?.value ?? 'your time';
+            when += ` — that is ${mine} ${abbr} where you are`;
+          }
+        }
+        doneWhen.textContent = when;
         root.querySelectorAll<HTMLElement>('.bk__step').forEach((s) => (s.hidden = true));
         reveal(doneEl);
       } catch (err) {
