@@ -8,8 +8,8 @@ import site, { abs } from '../config/site';
  * The booking page.
  *
  * This is the page src/config/site.ts always anticipated: `consult.url` used to
- * point at /contact/?intent=15-minute-call because no calendar existed. It now
- * points here, so every "Book a free 15-minute call" CTA on the site — the
+ * point at /contact/?intent=30-minute-call because no calendar existed. It now
+ * points here, so every "Book a free 30-minute call" CTA on the site — the
  * footer, every Learn article, every blog post, every tool page, the hubs —
  * lands on a real calendar with no other edit.
  *
@@ -48,7 +48,7 @@ import site, { abs } from '../config/site';
  * Astro strips, rather than in the comment on the script, which ships.
  */
 
-const title = 'Book a Free 15-Minute Medicare Call';
+const title = 'Book a Free 30-Minute Medicare Call';
 const description = `Pick a time that works — no cost, no obligation. Talk to ${site.agent.name} directly about your Medicare options, or call ${site.phone.display}.`;
 
 const breadcrumbs = [

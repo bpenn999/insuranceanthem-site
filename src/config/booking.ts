@@ -87,11 +87,12 @@ export const booking = {
    * Fallback slot length in minutes, used only to form the first availability
    * request. The real value comes back on the calendar object and takes over.
    *
-   * ⚠️ The calendar is configured for 30-minute slots, while every CTA on this
-   * site offers a "free 15-minute call" (`site.consult.minutes`). The two do not
-   * agree. The picker shows the real start and end times rather than either
-   * number, so the page never states a length it cannot keep — but the mismatch
-   * is Brian's to settle in GoGuruX, not something to paper over here.
+   * RESOLVED 2026-08-24: the calendar is configured for 30-minute slots and the
+   * site now offers a "free 30-minute call" (`site.consult.minutes` = 30), so the
+   * two agree. Brian chose to match the copy to the calendar rather than shorten
+   * the calendar. If the GoGuruX calendar is ever changed to another length,
+   * change `site.consult.minutes`, `.label` and `.phrase` with it — and note that
+   * scripts/audit.mjs and scripts/e2e.mjs both assert the string "30-minute".
    */
   defaultDuration: 30,
 

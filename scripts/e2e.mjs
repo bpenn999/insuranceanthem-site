@@ -15,7 +15,7 @@ import { spawn } from 'node:child_process';
  * Node strips the types on its own from v23, so this needs no flag and no build
  * step. It is imported rather than retyped because both of the checks that used
  * a frozen literal here went stale the moment the value behind it moved: the
- * footer CTA was asserted to be `/contact/?intent=15-minute-call` long after it
+ * footer CTA was asserted to be `/contact/?intent=30-minute-call` long after it
  * became `/book/`, and the NAP block was asserted to read "Anthem, AZ 85086"
  * after the ZIP was deliberately dropped from the published address. Both then
  * failed for months while the site itself was correct. An assertion sourced
@@ -1138,7 +1138,7 @@ for (const slug of LEARN_SLUGS) {
   ok('breadcrumbs rendered', a.crumbs === 3, String(a.crumbs));
   ok('links to a product page', a.productLinks > 0, String(a.productLinks));
   ok('links to a tool', a.toolLinks > 0, String(a.toolLinks));
-  // The href is the booking page; the OFFER of a 15-minute call is in the
+  // The href is the booking page; the OFFER of a 30-minute call is in the
   // label. Asserting the offer against the href is what made this stale.
   ok('booking CTA points at the calendar', a.ctaHref === site.consult.url, a.ctaHref);
   ok('year-stamped 2026 figures', a.hasYear);
@@ -1226,7 +1226,7 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
   ok('Company column complete', f.company);
   // href = where it goes, label = what it offers. Checking the offer against
   // the href is what left this failing after the calendar page landed.
-  ok('booking CTA', f.ctaHref === site.consult.url && /15-minute/.test(f.ctaLabel),
+  ok('booking CTA', f.ctaHref === site.consult.url && /30-minute/.test(f.ctaLabel),
     `${f.ctaLabel} → ${f.ctaHref}`);
   ok('licensing line', f.license);
   ok('2026 copyright', f.copyright);
