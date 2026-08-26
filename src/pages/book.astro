@@ -97,6 +97,25 @@ const schemaNodes = [
   <section class="section section--tight">
     <div class="wrap">
       <BookingPicker />
+
+      {/* The intake form, offered BEFORE the appointment as well as on the
+          picker's confirmation panel. Someone who books three weeks out will
+          not scroll back to a panel they saw once — and a client who fills it
+          in ahead of time turns the appointment into a plan comparison rather
+          than an interview. Same link the GoGuruX confirmation text and the
+          reminder email carry. */}
+      <aside class="intake">
+        <p class="intake__eyebrow">Before we meet</p>
+        <h2 class="intake__h">Fill out your Medicare intake form</h2>
+        <p class="intake__copy">{site.intake.blurb}</p>
+        <a class="btn btn--lg" href={site.intake.url} target="_blank" rel="noopener">
+          {site.intake.label} →
+        </a>
+        <p class="intake__hint">
+          Opens in a new tab. Already booked? Fill it in any time before your
+          appointment — or we will do it together on the call.
+        </p>
+      </aside>
     </div>
   </section>
 </BaseLayout>
@@ -136,3 +155,45 @@ const schemaNodes = [
     });
   })();
 </script>
+
+<style>
+  .intake {
+    max-width: 40rem;
+    margin: var(--s-9) auto 0;
+    padding: var(--s-6) var(--s-5);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    background: var(--navy-wash);
+    text-align: center;
+  }
+  .intake__eyebrow {
+    font-size: var(--t-sm);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--navy);
+    margin: 0;
+  }
+  .intake__h {
+    font-size: var(--t-xl);
+    margin: var(--s-2) 0 var(--s-3);
+  }
+  /* 18px body and a 54px button — the same floors the picker above it uses
+     for a 65-plus audience. */
+  .intake__copy {
+    font-size: 1.125rem;
+    line-height: 1.55;
+    color: var(--ink-body);
+    max-width: 42ch;
+    margin: 0 auto var(--s-5);
+  }
+  .intake__hint {
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+    max-width: 46ch;
+    margin: var(--s-4) auto 0;
+  }
+  @media (max-width: 430px) {
+    .intake .btn { width: 100%; }
+  }
+</style>

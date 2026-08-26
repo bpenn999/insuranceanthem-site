@@ -209,6 +209,29 @@ export const site = {
   },
 
   /**
+   * The client intake form — SeniorSimple, hosted, opened in a new tab.
+   *
+   * WHY IT IS NOT A PAGE HERE. It collects doctors, prescriptions and current
+   * coverage — the answers that let Brian shop a plan accurately BEFORE the
+   * appointment rather than spending the first half of it collecting basics.
+   * Rebuilding it on this site would mean holding PHI in the Pages Function,
+   * which `leadEndpoint` below deliberately avoids (name, phone, email, free
+   * text and nothing more).
+   *
+   * The invite slug says `medicare-on-main` because all three of Brian's sites
+   * — 602Medicare, Medicare On Main and New Mexico Medicare Help — and the
+   * GoGuruX appointment reminders feed ONE intake queue. It is not a wrong
+   * link. If it ever moves, it moves in all four places.
+   */
+  intake: {
+    url: 'https://app.seniorsimple.io/invite/medicare-on-main',
+    label: 'Medicare Intake Form',
+    /** One line of "why bother" — kept identical across the three sites. */
+    blurb:
+      'Filling this out before we meet lets Brian shop your plan accurately — your doctors, your prescriptions, your current coverage. It takes about five minutes.',
+  },
+
+  /**
    * Lead endpoint — the Pages Function at `functions/api/lead.ts`.
    *
    * Same-origin on purpose. The function holds the GoGuruX inbound webhook in

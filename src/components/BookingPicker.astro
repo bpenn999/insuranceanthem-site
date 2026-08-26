@@ -220,6 +220,22 @@ const weekdays = [
       {site.agent.firstName} will call you at the number you gave. If you need to
       change it, call <a href={site.phone.href} class="link">{site.phone.display}</a>.
     </p>
+    {/* ── The one thing we want them to do next ────────────────────────────
+        The appointment is only as good as what Brian knows walking into it.
+        This is the same intake form the GoGuruX confirmation text and the
+        reminder email point at, on screen at the only moment we are certain
+        the visitor is still here — the second after they booked. Deliberately
+        LAST: the booking is settled first, then the ask. */}
+    <p class="bk__done-intake">
+      <span class="bk__done-intake-label">Before we meet</span>
+      <span class="bk__done-intake-copy">{site.intake.blurb}</span>
+      <a class="btn bk__done-intake-btn" href={site.intake.url} target="_blank" rel="noopener">
+        {site.intake.label} →
+      </a>
+      <span class="bk__done-intake-hint">
+        Opens in a new tab. If you would rather do it together, we will fill it in on the call.
+      </span>
+    </p>
   </section>
 
   {/* ── The fallback: the original embed, revealed only if the API fails ── */}
@@ -1226,6 +1242,51 @@ const weekdays = [
     line-height: 1.6;
     max-width: 34ch;
     margin-inline: auto;
+  }
+
+  /* The intake ask. Same width and centring as the rest of the panel, on a
+     navy wash rather than the card's own surface because it is the only thing
+     on this screen that is a request rather than a receipt. */
+  .bk__done-intake {
+    display: grid;
+    gap: 0.5rem;
+    justify-items: center;
+    margin: var(--s-6) auto 0;
+    padding: var(--s-5) var(--s-4);
+    max-width: 36rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    background: var(--navy-wash);
+  }
+  .bk__done-intake-label {
+    font-size: var(--t-sm);
+    font-weight: 700;
+    color: var(--navy);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .bk__done-intake-copy {
+    font-size: var(--bk-type);
+    color: var(--ink-body);
+    line-height: 1.55;
+    max-width: 42ch;
+  }
+  .bk__done-intake-btn {
+    font-size: var(--bk-type);
+    min-height: 48px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0.25rem;
+  }
+  .bk__done-intake-hint {
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+    line-height: 1.5;
+    max-width: 44ch;
+  }
+  @media (max-width: 430px) {
+    .bk__done-intake-btn { width: 100%; }
   }
 
   /* ── the fallback embed ────────────────────────────────────────────── */
