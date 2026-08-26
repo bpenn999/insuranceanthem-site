@@ -226,9 +226,14 @@ export const site = {
   intake: {
     url: 'https://app.seniorsimple.io/invite/medicare-on-main',
     label: 'Medicare Intake Form',
-    /** One line of "why bother" — kept identical across the three sites. */
+    /**
+     * Brian's own words for the ask (2026-08-26), lightly formalised for a
+     * public page — the SMS and the reminder email carry the chattier version.
+     * The Scope of Appointment half is the part that earns the click: CMS
+     * requires an SOA on file before a specific plan can be discussed.
+     */
     blurb:
-      'Filling this out before we meet lets Brian shop your plan accurately — your doctors, your prescriptions, your current coverage. It takes about five minutes.',
+      'It takes about five minutes and sends Brian your medications, your doctors and the rest of the picture, so he can recommend the right plan options. It also includes the Scope of Appointment that Medicare requires before we can discuss specific plans.',
   },
 
   /**
