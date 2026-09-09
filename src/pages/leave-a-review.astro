@@ -1,0 +1,274 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import site, { abs } from '../config/site';
+
+/**
+ * LEAVE A REVIEW — the happy/sad face funnel, same shape as Medicare On Main
+ * and New Mexico Medicare Help.
+ *
+ *   😊 Great     → a 5-star ask and ONE link, the Google Business Profile's
+ *                  write-a-review URL from `site.links.review`.
+ *   😞 Not great → a private "how can we improve?" form → POST /api/lead
+ *                  (source 602medicare.com/leave-a-review). No public link on
+ *                  this path, on purpose: unhappy visitors stay private.
+ *
+ * The face gate (not stars), the private sad path and the absence of a
+ * "prefer to post publicly?" escape link are decided trade-offs. Don't add
+ * them back for compliance or UX reasons. The DESTINATION is the variable.
+ */
+
+const REVIEW_LINK = site.links.review;
+
+const title = `Leave a Review — ${site.name}`;
+const description = `How was your experience with ${site.name}? A 30-second review helps other Phoenix-metro families find honest, local Medicare guidance.`;
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Leave a Review', path: '/leave-a-review/' },
+];
+
+const schemaNodes = [
+  {
+    '@type': 'WebPage',
+    url: abs('/leave-a-review/'),
+    name: title,
+    about: { '@id': `${site.origin}/#organization` },
+  },
+];
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  path="/leave-a-review/"
+  breadcrumbs={breadcrumbs}
+  schemaNodes={schemaNodes}
+>
+  <PageHero
+    eyebrow="Your feedback"
+    title="How was your experience?"
+    lede="Tap the face that fits. Either way, it takes about thirty seconds."
+    breadcrumbs={breadcrumbs}
+    caustics="0.5"
+  />
+
+  <section class="section section--tight" data-caustics="0.22">
+    <div class="wrap review-wrap">
+      <div class="card review-card" id="review">
+
+        <!-- STEP 1: happy or sad -->
+        <div class="rv-step is-active" id="rv-rate">
+          <h2 class="rv-h2">How did we do?</h2>
+          <div class="faces">
+            <button type="button" class="face" id="rv-happy" aria-label="I had a great experience">
+              <span class="face-emoji" aria-hidden="true">😊</span>
+              <span class="face-label">Great!</span>
+            </button>
+            <button type="button" class="face" id="rv-sad" aria-label="My experience could have been better">
+              <span class="face-emoji" aria-hidden="true">😞</span>
+              <span class="face-label">Not great</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- STEP 2a: happy path -->
+        <div class="rv-step" id="rv-happy-step">
+          <p class="rv-emoji" aria-hidden="true">🎉</p>
+          <h2 class="rv-h2">Thank you — that means a lot.</h2>
+          <p class="rv-msg">
+            Would you take thirty seconds to leave a 5-star review on Google? It genuinely helps
+            other families in the Phoenix metro find honest Medicare help.
+          </p>
+          <a class="btn btn--block rv-btn" id="rv-google" href={REVIEW_LINK} target="_blank" rel="noopener">
+            ★★★★★ Leave a Google review
+          </a>
+        </div>
+
+        <!-- STEP 2b: sad path — private feedback -->
+        <div class="rv-step" id="rv-feedback">
+          <p class="rv-emoji" aria-hidden="true">😞</p>
+          <h2 class="rv-h2">We're sorry about that.</h2>
+          <p class="rv-msg">How can we improve? Your note goes straight to {site.agent.firstName}.</p>
+          <form id="rv-form" class="rv-form" novalidate>
+            <label class="sr-only" for="rv-text">What could we have done better?</label>
+            <textarea id="rv-text" name="message" rows="4" placeholder="What could we have done better?" required></textarea>
+            <label class="sr-only" for="rv-contact">Best phone or email so we can make it right</label>
+            <input id="rv-contact" name="contact" type="text" autocomplete="tel email" placeholder="Best phone or email so we can make it right" required />
+            <p class="rv-error" id="rv-error" aria-live="polite"></p>
+            <div class="rv-hp" aria-hidden="true">
+              <label for="rv-xtr">Leave this empty</label>
+              <input id="rv-xtr" name="xtr_field" type="text" tabindex="-1" autocomplete="off" />
+            </div>
+            <button type="submit" class="btn btn--block rv-btn" id="rv-submit">Send private feedback</button>
+          </form>
+        </div>
+
+        <!-- STEP 3: done -->
+        <div class="rv-step" id="rv-done">
+          <p class="rv-emoji" aria-hidden="true">✅</p>
+          <h2 class="rv-h2">Got it — thank you.</h2>
+          <p class="rv-msg" id="rv-done-msg">{site.agent.firstName} will follow up personally to make it right.</p>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <script
+    is:inline
+    define:vars={{
+      endpoint: site.leadEndpoint,
+      email: site.email,
+      phone: site.phone.display,
+      firstName: site.agent.firstName,
+      source: `${site.domain}/leave-a-review`,
+    }}
+  >
+    (function () {
+      var $ = function (s) { return document.querySelector(s); };
+      var steps = { rate: $('#rv-rate'), happy: $('#rv-happy-step'), feedback: $('#rv-feedback'), done: $('#rv-done') };
+      function show(n) {
+        Object.keys(steps).forEach(function (k) { steps[k].classList.toggle('is-active', k === n); });
+        var h = steps[n].querySelector('h2');
+        if (h) { h.setAttribute('tabindex', '-1'); h.focus({ preventScroll: true }); }
+      }
+      $('#rv-happy').addEventListener('click', function () { show('happy'); });
+      $('#rv-sad').addEventListener('click', function () { show('feedback'); });
+
+      var form = $('#rv-form');
+      var err = $('#rv-error');
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var text = $('#rv-text').value.trim();
+        var contact = $('#rv-contact').value.trim();
+        if (!text) { err.textContent = 'Please tell us what we could have done better.'; $('#rv-text').focus(); return; }
+        if (!contact) { err.textContent = 'Please leave a phone number or email so we can make it right.'; $('#rv-contact').focus(); return; }
+        err.textContent = '';
+
+        // Honeypot: show the normal done state, send nothing.
+        if ($('#rv-xtr').value) { show('done'); return; }
+
+        var isEmail = contact.indexOf('@') > -1;
+        var message = 'Review page — NOT-GREAT experience.\nFeedback: ' + text;
+        var payload = {
+          name: '',
+          email: isEmail ? contact : '',
+          phone: isEmail ? '' : contact,
+          message: message,
+          consent: '',
+          source: source,
+        };
+
+        var btn = $('#rv-submit');
+        btn.disabled = true;
+
+        var fallback = function () {
+          // Same degrade path as the contact form: a prefilled email draft.
+          var body = message + '\nContact: ' + contact + '\n\n— Sent from ' + source;
+          window.location.href = 'mailto:' + email +
+            '?subject=' + encodeURIComponent('Website feedback') +
+            '&body=' + encodeURIComponent(body);
+          $('#rv-done-msg').textContent =
+            'Your email app should be opening with your note filled in — press send and ' +
+            firstName + ' will follow up personally. If nothing opened, call ' + phone + ' instead.';
+          show('done');
+        };
+
+        if (!endpoint) { fallback(); return; }
+        fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        })
+          .then(function (res) { if (res.ok) { show('done'); } else { fallback(); } })
+          .catch(fallback)
+          .finally(function () { btn.disabled = false; });
+      });
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .review-wrap { width: min(40rem, 100% - var(--gutter) * 2); }
+  .review-card {
+    text-align: center;
+    padding: clamp(1.75rem, 4vw, 2.5rem) clamp(1.25rem, 4vw, 2.25rem);
+    background: color-mix(in srgb, var(--surface) 97%, transparent);
+  }
+  .rv-h2 { font-size: var(--t-2xl); margin-bottom: var(--s-3); }
+  .rv-h2:focus { outline: none; }
+
+  .rv-step { display: none; animation: rvFade 300ms ease; }
+  .rv-step.is-active { display: block; }
+  @keyframes rvFade {
+    from { opacity: 0; transform: translateY(6px); }
+    to { opacity: 1; transform: none; }
+  }
+
+  .faces {
+    display: flex;
+    justify-content: center;
+    gap: var(--s-4);
+    margin: var(--s-5) 0 var(--s-2);
+    flex-wrap: wrap;
+  }
+  .face {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 1.15rem 1.75rem;
+    min-width: 9rem;
+    transition: transform 150ms ease, border-color 150ms ease, box-shadow 150ms ease;
+  }
+  .face:hover,
+  .face:focus-visible {
+    transform: scale(1.05);
+    border-color: var(--navy);
+    box-shadow: var(--shadow-md);
+  }
+  .face:focus-visible { outline: 2px solid var(--navy); outline-offset: 3px; }
+  .face-emoji { font-size: clamp(2.75rem, 12vw, 3.5rem); line-height: 1; }
+  .face-label { font-weight: 600; color: var(--navy); }
+
+  .rv-emoji { font-size: 2.75rem; line-height: 1; margin-bottom: var(--s-3); }
+  .rv-msg { font-size: var(--t-base); line-height: 1.6; color: var(--ink-body); }
+  .rv-btn { margin-top: var(--s-5); }
+
+  .rv-form { margin-top: var(--s-4); text-align: left; display: grid; gap: var(--s-3); }
+  .rv-form textarea,
+  .rv-form input {
+    width: 100%;
+    padding: 0.75rem 0.9rem;
+    min-height: 48px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    color: var(--ink);
+    font-size: 1rem;
+    transition: border-color 200ms ease, box-shadow 200ms ease;
+  }
+  .rv-form textarea { min-height: 7rem; resize: vertical; line-height: 1.55; }
+  .rv-form textarea:focus-visible,
+  .rv-form input:focus-visible {
+    border-color: var(--navy);
+    box-shadow: 0 0 0 3px var(--navy-tint);
+    outline: none;
+  }
+  .rv-form .rv-btn { margin-top: var(--s-2); }
+  .rv-error { font-size: var(--t-sm); color: #A42C1E; margin: 0; }
+  .rv-error:empty { display: none; }
+
+  /* Honeypot — off-canvas rather than display:none, which some bots detect. */
+  .rv-hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .rv-step { animation: none; }
+    .face:hover, .face:focus-visible { transform: none; }
+  }
+</style>

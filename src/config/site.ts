@@ -187,6 +187,13 @@ export const site = {
   links: {
     booking: '/contact/',
     quote: '/contact/?intent=quote',
+    /**
+     * The Google Business Profile "write a review" URL for 602Medicare
+     * (visible on Maps since 2026-09-09). Only the happy path of
+     * /leave-a-review/ links here — unhappy visitors get a private form, never
+     * a public link. Re-point this one value if the listing ever changes.
+     */
+    review: 'https://g.page/r/Cbg2zM-XptwDEBM/review',
   },
 
   /**
