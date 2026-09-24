@@ -27,6 +27,9 @@
 /*.png
   Cache-Control: public, max-age=604800
 
+/*.webp
+  Cache-Control: public, max-age=604800
+
 # HTML must revalidate — same filename, changing content.
 /*.html
   Cache-Control: public, max-age=0, must-revalidate

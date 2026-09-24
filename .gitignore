@@ -142,3 +142,6 @@ dist
 
 # Astro generated types
 .astro/
+
+# hero master photo (14.8 MB, Adobe Stock #724663960) — outputs in public/img are committed
+src/assets/hero/*-master.jpg

@@ -166,6 +166,17 @@ const fontFaceCss = `
 -->
 <link rel="preload" as="font" type="font/woff2" href={fonts.fraunces} crossorigin />
 <link rel="preload" as="font" type="font/woff2" href={fonts.inter} crossorigin />
+{/* Home-page hero photo is the LCP element: preload the exact candidate the
+    <picture> in index.astro will pick, phone and desktop each scoped by the
+    same 820px media query so only one file is fetched. */}
+{path === '/' && (
+  <>
+    <link rel="preload" as="image" media="(max-width:820px)" href="/img/hero-az-sonoran-640.webp" fetchpriority="high" />
+    <link rel="preload" as="image" media="(min-width:821px)" href="/img/hero-az-sonoran.webp"
+      imagesrcset="/img/hero-az-sonoran-800.webp 800w, /img/hero-az-sonoran-1200.webp 1200w, /img/hero-az-sonoran.webp 1600w"
+      imagesizes="100vw" fetchpriority="high" />
+  </>
+)}
 <style is:inline set:html={fontFaceCss}></style>
 
 <!--
