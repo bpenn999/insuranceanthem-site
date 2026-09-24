@@ -1051,7 +1051,7 @@ const LEARN_SLUGS = [
       chips: document.querySelectorAll('.cat').length,
       hrefs: [...document.querySelectorAll('[data-learn-grid] a')].map(a => a.getAttribute('href')),
       h1: document.querySelector('h1')?.textContent.trim(),
-      navLearn: !!document.querySelector('.nav-desktop a[href="/learn/"]'),
+      navLearn: !!document.querySelector('.nav-mobile a[href="/learn/"]'),
       footerLearn: !!document.querySelector('.site-footer a[href="/learn/"]'),
     };
   `);
@@ -1059,7 +1059,9 @@ const LEARN_SLUGS = [
   check('every required article is on the hub',
     LEARN_SLUGS.every((s) => hub.hrefs.includes(`/learn/${s}/`)),
     LEARN_SLUGS.filter((s) => !hub.hrefs.includes(`/learn/${s}/`)).join(', '));
-  check('"Learn" is in the top nav', hub.navLearn);
+  // Learn is `mobileOnly` in Header.astro since 4b07605 (2026-09-02): the desktop
+  // row was wrapping, so Learn/About live in the mobile panel + footer only.
+  check('"Learn" is in the mobile nav panel', hub.navLearn);
   check('"Learn" is in the footer', hub.footerLearn);
   check('hub h1 has no double spaces', !/\s{2,}/.test(hub.h1 || 'x'), hub.h1);
 
@@ -1293,7 +1295,7 @@ console.log('\nService area — city pages');
         crumbs: document.querySelectorAll('.crumbs li').length,
         types: ld.map(n => Array.isArray(n['@type']) ? n['@type'].join('+') : n['@type']),
         areaServed: (org?.areaServed || []).map(x => x.name),
-        svcArea: svc?.areaServed?.name || '',
+        svcArea: svc?.areaServed?.name || svc?.areaServed?.['@id'] || '',
         faqCount: faq?.mainEntity?.length ?? 0,
         faqRendered: document.querySelectorAll('details').length,
         nearby: document.querySelectorAll('.nearby a[href^="/service-area/"]').length,
@@ -1315,7 +1317,10 @@ console.log('\nService area — city pages');
     ok('Service + FAQPage + BreadcrumbList schema',
       a.types.includes('Service') && a.types.includes('FAQPage') && a.types.includes('BreadcrumbList'),
       a.types.join(','));
-    ok('Service areaServed is this city', a.svcArea === c.city, a.svcArea);
+    // location-schema.ts now points Service.areaServed at the page's Place node
+    // by @id (…/service-area/<slug>/#place) instead of a bare name.
+    ok('Service areaServed is this city',
+      a.svcArea === c.city || a.svcArea.endsWith(`/service-area/${c.slug}/#place`), a.svcArea);
     // The whole point of the data-driven list: the org node's areaServed has to
     // carry EVERY city, on every page, not just the one being viewed.
     ok('LocalBusiness areaServed covers all cities',
