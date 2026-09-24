@@ -28,7 +28,17 @@ const {
 
 const canonical = abs(path);
 const ogImage = abs(image);
-const fullTitle = title.includes(site.name) ? title : `${title} | ${site.name}`;
+/**
+ * Brand suffix only while the whole tag still fits Google's ~60-character
+ * title slot. 21 of 34 blog titles were running 61-70 chars WITH the suffix
+ * (2026-09-24 audit), so Google was truncating or rewriting them; the
+ * nmmedicarehelp.com blog, which earns clicks on far fewer impressions, never
+ * suffixes a post title. Short page titles (home, service areas, tools) keep
+ * the brand — the e2e suite still asserts it on the service-area pages.
+ */
+const TITLE_SLOT = 60;
+const suffixed = `${title} | ${site.name}`;
+const fullTitle = title.includes(site.name) || suffixed.length > TITLE_SLOT ? title : suffixed;
 
 /**
  * HARD CAP: 155 characters, every page, no exceptions.
