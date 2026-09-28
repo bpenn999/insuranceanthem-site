@@ -719,8 +719,10 @@ console.log('\nHome — hero funnel');
   check('reaches the result step', funnel.step === '4', JSON.stringify(funnel));
   check('result matches the "keep my doctors" branch', /Supplement/.test(funnel.headline), funnel.headline);
   check('result folds in the turning-65 note', /Medigap|65/.test(funnel.body), funnel.body.slice(0, 90));
-  check('CTA carries zip + situation + priority', funnel.cta === '/contact/?intent=quote&zip=85086&situation=turning-65&priority=doctors', funnel.cta);
-  check('answers stashed for the contact page', JSON.parse(funnel.stash || '{}').zip === '85086', funnel.stash);
+  // The survey ends in an appointment, not a form (2026-09-28). A CTA that
+  // drifts back to /contact/ is the regression this pins.
+  check('CTA opens the scheduler, carrying zip + situation + priority', funnel.cta === '/book/?zip=85086&situation=turning-65&priority=doctors', funnel.cta);
+  check('answers stashed for the scheduler', JSON.parse(funnel.stash || '{}').zip === '85086', funnel.stash);
   check('progress bar reaches 100%', funnel.progress === '100%', funnel.progress);
   check('no console errors', p.consoleErrors.length === 0, p.consoleErrors.join(' | '));
   await closePage(p);
@@ -1675,12 +1677,20 @@ if (booking.mode !== 'native') {
     })();
   `;
 
-  const p = await openPage('/book/', stub);
+  // Arrives the way a visitor who finished the home-page survey arrives: with
+  // the three answers in the query string. The rest of the flow is unchanged.
+  const p = await openPage('/book/?zip=85086&situation=turning-65&priority=doctors', stub);
   await p.send('Emulation.setDeviceMetricsOverride', {
     width: 375, height: 812, deviceScaleFactor: 2, mobile: true,
   });
   await p.send('Page.reload');
   await sleep(2200); // the boot request plus the first warm lookups
+
+  check('survey answers are read back above the calendar', await evaluate(p, `
+    const c = document.querySelector('[data-carry]');
+    return !!c && c.hidden === false
+        && /You are turning 65 · ZIP 85086 · keeping your doctors matters most/.test(c.textContent);
+  `));
 
   /* ── the date grid ─────────────────────────────────────────────────────── */
 
@@ -1722,8 +1732,21 @@ if (booking.mode !== 'native') {
     `);
     const tooSmall = cells.filter((c) => c.w < MIN_TAP || c.h < MIN_TAP);
     const tooFine = cells.filter((c) => c.f < MIN_TYPE);
+    // "More than five" guards against an empty grid passing vacuously — but the
+    // grid shows the CURRENT month, and from the 24th or so there are not six
+    // weekdays left in it (on 2026-09-28 there were three, and this failed on a
+    // grid that was entirely correct). So the floor is what the calendar can
+    // actually hold: the weekdays remaining this month in Arizona, capped at six.
+    const [y, m, d] = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Phoenix' })
+      .format(new Date()).split('-').map(Number);
+    let weekdaysLeft = 0;
+    for (let day = d; day <= new Date(Date.UTC(y, m, 0)).getUTCDate(); day++) {
+      const wd = new Date(Date.UTC(y, m - 1, day)).getUTCDay();
+      if (wd >= 1 && wd <= 5) weekdaysLeft++;
+    }
+    const floor = Math.max(1, Math.min(6, weekdaysLeft));
     check(`mobile: every bookable day cell is ≥${MIN_TAP}px on both sides`,
-      cells.length > 5 && tooSmall.length === 0,
+      cells.length >= floor && tooSmall.length === 0,
       `${cells.length} cells, ${tooSmall.length} too small: ${JSON.stringify(tooSmall.slice(0, 3))}`);
     check(`mobile: every day cell is ≥${MIN_TYPE}px type`,
       tooFine.length === 0, JSON.stringify(tooFine.slice(0, 3)));
@@ -1893,6 +1916,12 @@ if (booking.mode !== 'native') {
         && b.timeZone === 'America/Denver';
   `));
 
+  check('the survey answers ride in the booking notes', await evaluate(p, `
+    const post = window.__bookingCalls.filter(c => c.url.includes('create-booking')).pop();
+    return !!post && /Survey: turning 65 · ZIP 85086 · keeping my doctors/.test(
+      JSON.parse(post.body).notes || '');
+  `));
+
   check('the phone fallback survives all the way to the confirmation',
     await evaluate(p, `
       return /Calendar not loading\\?/.test(document.body.innerText);
@@ -1927,6 +1956,30 @@ if (booking.mode !== 'native') {
       };
     })();
   `);
+  await sleep(300);
+  check('no survey banner for a visitor who skipped the survey', await evaluate(p, `
+    const c = document.querySelector('[data-carry]');
+    return !!c && c.hidden === true;
+  `));
+  {
+    // The embed cannot carry the answers, so it must not say it will.
+    const q = await openPage('/book/?zip=85086&situation=turning-65&priority=doctors', `
+      (() => {
+        const real = window.fetch;
+        window.fetch = function (input) {
+          const url = String(typeof input === 'string' ? input : input.url || '');
+          if (url.includes('/api/availability') || url.includes('supabase.co')) return Promise.reject(new Error('offline'));
+          return real.apply(this, arguments);
+        };
+      })();
+    `);
+    await sleep(900);
+    check('the survey banner is withdrawn when the picker falls back to the embed', await evaluate(q, `
+      return document.querySelector('[data-fallback]').hidden === false
+          && document.querySelector('[data-carry]').hidden === true;
+    `));
+    await closePage(q);
+  }
   await p.send('Emulation.setDeviceMetricsOverride', {
     width: 375, height: 812, deviceScaleFactor: 2, mobile: true,
   });

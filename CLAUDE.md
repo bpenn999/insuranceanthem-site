@@ -136,7 +136,14 @@ variables → **Production**), never in `site.ts` and never in the page.
   a broken CRM answers 502 rather than a tidy-looking 200.
 - The hero funnel is wired to the same endpoint but does not post on its own: it never
   asks for a name or a number, and the relay refuses a submission with neither email nor
-  phone. Its answers reach GoGuruX in the `notes` of the contact form's submission.
+  phone.
+- **The survey ends in an appointment, not a form (Brian, 2026-09-28 — "like NM Medicare
+  Help").** Its result button opens `site.consult.url` (`/book/`) with `zip`, `situation`
+  and `priority` in the query string and a copy in `sessionStorage.ia_funnel`. The picker
+  reads them (`readSurvey` in `src/lib/booking.ts`), shows them back in a banner, and
+  appends `Survey: …` to the booking's `notes`. Every booking-style **button** on the site
+  points at `site.consult.url` too; `/contact/` is reached only from the nav, the footer
+  and in-text "or write instead" links. Do not send a primary CTA back to `/contact/`.
 - `.dev.vars.example` is the committed template; `.dev.vars` is gitignored and holds the
   real value for `wrangler pages dev dist`.
 - Adding a field? Add it to the relay's `notes` builder **and** to the `/api/lead` block

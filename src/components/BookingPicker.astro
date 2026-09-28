@@ -61,6 +61,13 @@ const weekdays = [
   data-embed-url={booking.embedUrl}
   data-phone={site.phone.display}
 >
+  {/* Shown only to a visitor who arrived from the home-page survey: what they
+      already told us, read back, so it is plain nobody will ask again. */}
+  <p class="bk__carry" data-carry hidden>
+    <strong>Your answers come with you.</strong>
+    <span data-carry-text></span>
+  </p>
+
   {/* ── Step 1 · the month grid ─────────────────────────────────────────── */}
   <section class="bk__step" aria-labelledby="bk-h-date">
     <h2 class="bk__h" id="bk-h-date">
@@ -278,8 +285,11 @@ const weekdays = [
     isoDayIn,
     monthGrid,
     nextBookableDays,
+    notesWithSurvey,
     parseDay,
+    readSurvey,
     shiftMonth,
+    surveyReadBack,
     validateDetails,
   } from '../lib/booking';
 
@@ -306,6 +316,18 @@ const weekdays = [
     };
 
     const $ = <T extends HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
+
+    // What the visitor told the home-page survey, if they came through it. Read
+    // once, here, so the banner and the booking's notes cannot disagree.
+    let stash: string | null = null;
+    try { stash = sessionStorage.getItem('ia_funnel'); } catch { /* private mode */ }
+    const survey = readSurvey(location.search, stash);
+    const carried = surveyReadBack(survey);
+    if (carried) {
+      $('[data-carry-text]').textContent =
+        ` ${carried} ${cfg.agent.split(' ')[0]} will have this before your call, so there is nothing to repeat.`;
+      $('[data-carry]').hidden = false;
+    }
     const grid = $('[data-cal-grid]');
     const calLabel = $('[data-cal-label]');
     const slotGrid = $('[data-slot-grid]');
@@ -452,6 +474,10 @@ const weekdays = [
       if (!frame.src) frame.src = cfg.embedUrl;
       box.hidden = false;
       root.querySelectorAll<HTMLElement>('.bk__step').forEach((s) => (s.hidden = true));
+      // The embed is somebody else's form in a frame: the survey's answers
+      // cannot be written into a booking made there, so the banner promising
+      // they will be has to go with the picker that could keep the promise.
+      $('[data-carry]').hidden = true;
       // Not console.error even when it is a failure: a fallback that fired
       // correctly is not a page error, and the e2e run asserts the console
       // stays clean. When the embed is the configured choice, nothing at all.
@@ -700,7 +726,8 @@ const weekdays = [
         ...(state.calendarTz ? { time_zone_at_booking: state.calendarTz } : {}),
         durationMinutes: state.duration,
         locationType: cfg.locationType,
-        notes: details.notes,
+        // The home-page survey's answers, when the visitor came through it.
+        notes: notesWithSurvey(details.notes, survey),
       };
 
       try {
@@ -868,6 +895,21 @@ const weekdays = [
      what the e2e run caught. Each one is written `.bk :global(.bk__day)` rather
      than a bare `:global(.bk__day)` so the escape hatch is still fenced inside
      this component's root. */
+  /* The survey's answers, read back. Tint band with a red rule — the same
+     treatment as the site's other "note" asides, so it reads as ours. */
+  .bk__carry {
+    margin: 0 0 var(--s-5);
+    padding: var(--s-3) var(--s-4);
+    background: var(--tint);
+    border-left: 3px solid var(--red);
+    border-radius: var(--radius);
+    font-size: var(--t-sm);
+    color: var(--ink-body);
+    line-height: 1.55;
+  }
+  .bk__carry strong { color: var(--navy); }
+  .bk__carry[hidden] { display: none; }
+
   .bk {
     --bk-cell: 3.25rem; /* 52px — the floor for a day cell */
     --bk-type: 1.125rem; /* 18px — the floor for anything you tap */

@@ -1,4 +1,5 @@
 ---
+import site from '../../config/site';
 import ToolLayout from '../../layouts/ToolLayout.astro';
 import { PLAN_YEAR, partB, partD, usd } from '../../data/medicare-figures';
 ---
@@ -85,7 +86,7 @@ import { PLAN_YEAR, partB, partD, usd } from '../../data/medicare-figures';
 
     <div class="t-result__body" id="cost-body"></div>
     <div class="t-actions">
-      <a href="/contact/" class="btn btn--lg" data-magnetic="0.24">Get real numbers for your ZIP</a>
+      <a href={site.consult.url} class="btn btn--lg" data-magnetic="0.24">Get real numbers for your ZIP</a>
     </div>
   </div>
 

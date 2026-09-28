@@ -21,8 +21,12 @@ import {
   isoDayIn,
   monthGrid,
   nextBookableDays,
+  notesWithSurvey,
   parseDay,
+  readSurvey,
   shiftMonth,
+  surveyReadBack,
+  surveySummary,
   validateDetails,
   weekdayOf,
 } from '../src/lib/booking.ts';
@@ -406,5 +410,48 @@ describe('monthGridFromFeed', () => {
   test('the grid is still whole weeks', () => {
     const cells = monthGridFromFeed(2026, 7, { today: '2026-08-18', days });
     assert.equal(cells.length % 7, 0);
+  });
+});
+
+describe('survey answers carried into a booking', () => {
+  test('reads the three answers from the query string', () => {
+    assert.deepEqual(
+      readSurvey('?zip=85086&situation=turning-65&priority=doctors'),
+      { intent: 'turning-65', zip: '85086', priority: 'doctors' },
+    );
+  });
+
+  test('falls back to the stash, and the query string wins over it', () => {
+    const stash = JSON.stringify({ intent: 'review', zip: '85383', priority: 'rx' });
+    assert.deepEqual(readSurvey('', stash), { intent: 'review', zip: '85383', priority: 'rx' });
+    assert.equal(readSurvey('?zip=85086', stash).zip, '85086');
+  });
+
+  test('drops anything that is not one of the survey\'s own choices', () => {
+    assert.deepEqual(readSurvey('?zip=8508&situation=%3Cscript%3E&priority=everything'), {});
+    assert.deepEqual(readSurvey('', '{not json'), {});
+  });
+
+  test('summarises in plain words', () => {
+    assert.equal(
+      surveySummary({ intent: 'turning-65', zip: '85086', priority: 'doctors' }),
+      'turning 65 · ZIP 85086 · keeping my doctors',
+    );
+    assert.equal(surveySummary({}), '');
+  });
+
+  test('reads back to the visitor in the second person', () => {
+    assert.equal(
+      surveyReadBack({ intent: 'review', zip: '85383', priority: 'rx' }),
+      'You have a plan you want reviewed · ZIP 85383 · your prescription costs matter most.',
+    );
+    assert.equal(surveyReadBack({ zip: '85383' }), 'ZIP 85383.');
+    assert.equal(surveyReadBack({}), '');
+  });
+
+  test('appends to the visitor\'s note without replacing it', () => {
+    assert.equal(notesWithSurvey('  Call after 3  ', { zip: '85086' }), 'Call after 3 — Survey: ZIP 85086');
+    assert.equal(notesWithSurvey('', { priority: 'cost' }), 'Survey: lowest monthly cost');
+    assert.equal(notesWithSurvey('Call after 3', {}), 'Call after 3');
   });
 });

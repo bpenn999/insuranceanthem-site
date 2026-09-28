@@ -413,3 +413,101 @@ export function validateDetails(d: {
   }
   return { ok: true };
 }
+
+/**
+ * The home-page survey's answers, as they travel to the scheduler.
+ *
+ * The survey ends in a booking, not a form (2026-09-28 — it used to hand off to
+ * /contact/). Its three answers are the one thing the visitor has already told
+ * us, so they ride into the appointment's notes rather than being asked again
+ * on the call.
+ */
+export type SurveyAnswers = { intent?: string; zip?: string; priority?: string };
+
+const SURVEY_INTENT: Record<string, string> = {
+  'turning-65': 'turning 65',
+  review: 'has a plan, wants it reviewed',
+  retiring: 'retiring, leaving employer coverage',
+  ltc: 'long-term care planning',
+};
+
+const SURVEY_PRIORITY: Record<string, string> = {
+  doctors: 'keeping my doctors',
+  cost: 'lowest monthly cost',
+  rx: 'prescription costs',
+  travel: 'coverage when travelling',
+};
+
+/**
+ * Read survey answers from a query string, falling back to the stashed copy.
+ *
+ * Only the three known keys are read, a ZIP must be five digits, and an intent
+ * or priority outside the survey's own choices is dropped — this text ends up
+ * in a CRM note, and a query string is something anyone can type.
+ */
+export function readSurvey(search: string, stash?: string | null): SurveyAnswers {
+  let stored: Record<string, unknown> = {};
+  try {
+    const parsed = stash ? JSON.parse(stash) : null;
+    if (parsed && typeof parsed === 'object') stored = parsed as Record<string, unknown>;
+  } catch { /* a corrupt stash is the same as no stash */ }
+
+  const q = new URLSearchParams(search);
+  const pick = (param: string, key: string) =>
+    String(q.get(param) ?? stored[key] ?? '').trim();
+
+  const out: SurveyAnswers = {};
+  const intent = pick('situation', 'intent');
+  const zip = pick('zip', 'zip');
+  const priority = pick('priority', 'priority');
+  if (intent in SURVEY_INTENT) out.intent = intent;
+  if (/^\d{5}$/.test(zip)) out.zip = zip;
+  if (priority in SURVEY_PRIORITY) out.priority = priority;
+  return out;
+}
+
+/** "turning 65 · ZIP 85086 · keeping my doctors" — empty when nothing was answered. */
+export function surveySummary(a: SurveyAnswers): string {
+  return [
+    a.intent ? SURVEY_INTENT[a.intent] : '',
+    a.zip ? `ZIP ${a.zip}` : '',
+    a.priority ? SURVEY_PRIORITY[a.priority] : '',
+  ].filter(Boolean).join(' · ');
+}
+
+/**
+ * The same answers, said TO the visitor rather than about them. `surveySummary`
+ * is a note for the appointment; read back on the page it sounds like a file
+ * being kept on someone ("has a plan, wants it reviewed").
+ */
+const SURVEY_INTENT_YOU: Record<string, string> = {
+  'turning-65': 'You are turning 65',
+  review: 'You have a plan you want reviewed',
+  retiring: 'You are retiring and leaving employer coverage',
+  ltc: 'You are planning for long-term care',
+};
+
+const SURVEY_PRIORITY_YOU: Record<string, string> = {
+  doctors: 'keeping your doctors matters most',
+  cost: 'the lowest monthly cost matters most',
+  rx: 'your prescription costs matter most',
+  travel: 'coverage when you travel matters most',
+};
+
+export function surveyReadBack(a: SurveyAnswers): string {
+  const parts = [
+    a.intent ? SURVEY_INTENT_YOU[a.intent] : '',
+    a.zip ? `ZIP ${a.zip}` : '',
+    a.priority ? SURVEY_PRIORITY_YOU[a.priority] : '',
+  ].filter(Boolean);
+  if (!parts.length) return '';
+  const text = parts.join(' · ');
+  return `${text.charAt(0).toUpperCase()}${text.slice(1)}.`;
+}
+
+/** The visitor's own note, with the survey answers appended when there are any. */
+export function notesWithSurvey(notes: string, a: SurveyAnswers): string {
+  const summary = surveySummary(a);
+  if (!summary) return notes.trim();
+  return [notes.trim(), `Survey: ${summary}`].filter(Boolean).join(' — ');
+}

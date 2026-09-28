@@ -1,4 +1,5 @@
 ---
+import site from '../../config/site';
 import ToolLayout from '../../layouts/ToolLayout.astro';
 ---
 
@@ -40,7 +41,7 @@ import ToolLayout from '../../layouts/ToolLayout.astro';
     <ol class="t-timeline" id="ewc-timeline"></ol>
     <div class="t-result__body" id="ewc-body"></div>
     <div class="t-actions">
-      <a href="/contact/" class="btn btn--lg" data-magnetic="0.24">Get help hitting these dates</a>
+      <a href={site.consult.url} class="btn btn--lg" data-magnetic="0.24">Get help hitting these dates</a>
     </div>
   </div>
 
