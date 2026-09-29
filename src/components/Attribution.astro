@@ -1,0 +1,66 @@
+---
+// Attribution — records how this visitor found the site, once, and makes it
+// available to whatever they do next. The reasoning, the storage and the
+// classifier all live in src/lib/attribution.ts; this is only the part that
+// has to run in a browser.
+//
+// Rendered by BaseLayout on every page. It exposes two things:
+//   window.__src()            the attribution on file, or null
+//   window.__track(type, …)   report a booking or a call click to /api/track
+//
+// Forms do not call either. They post to /api/lead as they always have, and
+// the cookie this script writes goes with the request.
+//
+// ⚠️ SESSION COOKIE ONLY — no Max-Age. /privacy/ tells visitors this cookie is
+// cleared when the browser closes. Do not lengthen it without a consent
+// mechanism and a matching edit to that page.
+---
+<script>
+  import {
+    classify, encodeCookie, readAttribution, shouldReplace,
+    SITE_COOKIE, type Attribution,
+  } from '../lib/attribution';
+
+  const write = (a: Attribution) => {
+    try {
+      const secure = location.protocol === 'https:' ? '; Secure' : '';
+      document.cookie = `${SITE_COOKIE}=${encodeCookie(a)}; Path=/; SameSite=Lax${secure}`;
+    } catch { /* cookies disabled — attribution is best-effort */ }
+  };
+
+  const current = readAttribution(document.cookie);
+  const fresh = classify(location.search, document.referrer, location.hostname);
+  if (shouldReplace(current, fresh)) {
+    write({
+      ...fresh,
+      landing: location.pathname.slice(0, 200),
+      first_seen: new Date().toISOString().slice(0, 10),
+    });
+  }
+
+  const w = window as any;
+  w.__src = () => readAttribution(document.cookie);
+  w.__track = (type: 'booking' | 'call_click', payload: Record<string, unknown> = {}) => {
+    try {
+      const body = JSON.stringify({ type, page: location.pathname, ...payload });
+      // sendBeacon survives the page being left, which a tap on a phone number
+      // often causes.
+      if (!navigator.sendBeacon?.('/api/track', new Blob([body], { type: 'text/plain' }))) {
+        fetch('/api/track', { method: 'POST', body, keepalive: true, headers: { 'content-type': 'text/plain' } }).catch(() => {});
+      }
+    } catch { /* never let reporting break the page */ }
+  };
+
+  // A tap on any phone number, anywhere on the site. Counted once per page per
+  // session: a second tap on the same page is the same person trying again.
+  document.addEventListener('click', (e) => {
+    const link = (e.target as Element | null)?.closest?.('a[href^="tel:"]');
+    if (!link) return;
+    const key = `call:${location.pathname}`;
+    try {
+      if (sessionStorage.getItem(key)) return;
+      sessionStorage.setItem(key, '1');
+    } catch { /* no storage: count it */ }
+    w.__track('call_click');
+  }, { capture: true, passive: true });
+</script>

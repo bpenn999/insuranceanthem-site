@@ -23,7 +23,11 @@
  * a failure here answers honestly instead of returning 200 to look tidy.
  */
 
-interface Env {
+import {
+  attributionNote, isBot, readAttribution, reportConversion, type TrackEnv,
+} from '../../src/lib/attribution.ts';
+
+interface Env extends TrackEnv {
   /** GoGuruX inbound webhook. Secret — set in the Pages dashboard, never here. */
   GOGURUX_WEBHOOK_URL?: string;
 }
@@ -32,6 +36,7 @@ interface Env {
 interface Context {
   request: Request;
   env: Env;
+  waitUntil?: (p: Promise<unknown>) => void;
 }
 
 /** Where a submission came from when the form did not say. */
@@ -126,7 +131,7 @@ function splitName(full: string): { first: string; last: string } {
  * decoration: TCPA requires the practice to be able to show that the visitor
  * agreed to be contacted, and this note is where that evidence lands.
  */
-function buildNotes(f: Record<string, string>): string {
+function buildNotes(f: Record<string, string>, sourceLines: string[] = []): string {
   const interest = clean(f.coverage_interest || f.situation || f.intent);
   const lines: string[] = [];
 
@@ -145,6 +150,10 @@ function buildNotes(f: Record<string, string>): string {
       ? `TCPA consent given on the website form at ${new Date().toISOString()}.`
       : 'No TCPA consent checkbox recorded with this submission.'
   );
+
+  // How the visitor found the site — read from their attribution cookie by the
+  // caller, never from the form. Last, so the note still opens with the person.
+  lines.push(...sourceLines);
 
   return lines.join('\n');
 }
@@ -190,6 +199,11 @@ export const onRequest = async (context: Context): Promise<Response> => {
     return json(400, { ok: false, error: 'An email address or a phone number is required' });
   }
 
+  // src/lib/attribution.ts. Written into the CRM note below, which puts the
+  // source on the contact itself, and reported to the lead scoreboard once the
+  // CRM has accepted the lead.
+  const attr = readAttribution(request.headers.get('cookie'));
+
   const named = splitName(clean(fields.name));
   const first = clean(fields.first || fields.first_name) || named.first;
   const last = clean(fields.last || fields.last_name) || named.last;
@@ -203,7 +217,7 @@ export const onRequest = async (context: Context): Promise<Response> => {
       zip: clean(fields.zip),
     },
     source: clean(fields.source) || DEFAULT_SOURCE,
-    notes: buildNotes(fields),
+    notes: buildNotes(fields, attributionNote(attr)),
   };
 
   const webhook = env.GOGURUX_WEBHOOK_URL;
@@ -237,6 +251,24 @@ export const onRequest = async (context: Context): Promise<Response> => {
         error: 'The CRM did not accept the submission',
         upstream_status: upstream.status,
       });
+    }
+
+    // ── The scoreboard ───────────────────────────────────────────────────
+    //  Only here, after the CRM said yes: a submission that was lost is an
+    //  outage, not a lead. The review form's private feedback is an existing
+    //  client, so it is left out. Runs after the response is sent and does
+    //  nothing at all until TRACK_URL and TRACK_KEY are set.
+    const ua = request.headers.get('user-agent');
+    if (!/review/i.test(payload.source) && !(ua && isBot(ua))) {
+      const job = reportConversion(env, {
+        site: DEFAULT_SOURCE,
+        type: 'lead',
+        attr,
+        page: clean(fields.page).slice(0, 200),
+        form: payload.source === DEFAULT_SOURCE ? 'contact-form' : payload.source,
+        contact: { first, last, phone, email },
+      });
+      if (context.waitUntil) context.waitUntil(job); else await job;
     }
 
     return json(200, { ok: true });

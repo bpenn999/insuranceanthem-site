@@ -276,6 +276,7 @@ const weekdays = [
 </p>
 
 <script>
+  import { attributionNote, readAttribution } from '../lib/attribution';
   import {
     DISPLAY_TZ,
     formatDayLong,
@@ -727,7 +728,9 @@ const weekdays = [
         durationMinutes: state.duration,
         locationType: cfg.locationType,
         // The home-page survey's answers, when the visitor came through it.
-        notes: notesWithSurvey(details.notes, survey),
+        // …and how they found the site, so it is on the appointment itself.
+        notes: [notesWithSurvey(details.notes, survey), attributionNote(readAttribution(document.cookie)).join(' · ')]
+          .filter(Boolean).join(' — '),
       };
 
       try {
@@ -738,6 +741,14 @@ const weekdays = [
         });
         const body = await res.json().catch(() => ({}));
         if (!res.ok || body?.error) throw new Error(body?.error || `booking ${res.status}`);
+
+        // Tell the lead scoreboard. The booking went browser → GoGuruX, so this
+        // is the only way the site's own record hears about it. Fire-and-forget.
+        (window as any).__track?.('booking', {
+          form: 'Phone call',
+          contact: { first: details.firstName, last: details.lastName, phone: details.phone, email: details.email },
+          appt: { start: state.selectedSlot.startUtc, kind: 'Phone call', ref: String(body?.id ?? body?.booking?.id ?? '') },
+        });
 
         // ── Let them put it in their own calendar ───────────────────────────
         //  Built here rather than trusting the confirmation email, which

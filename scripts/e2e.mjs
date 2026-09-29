@@ -179,6 +179,8 @@ console.log('\nAPI — /api/lead relay (mocked upstream)');
       origin = ORIGIN,
       env = ENV,
       upstream = OK,
+      cookie,
+      userAgent,
     } = opts;
 
     const sent = [];
@@ -195,6 +197,8 @@ console.log('\nAPI — /api/lead relay (mocked upstream)');
       const headers = {};
       if (origin) headers.origin = origin;
       if (body !== undefined) headers['content-type'] = contentType;
+      if (cookie) headers.cookie = cookie;
+      if (userAgent) headers['user-agent'] = userAgent;
       const request = new Request(`${ORIGIN}/api/lead`, {
         method,
         headers,
@@ -212,6 +216,7 @@ console.log('\nAPI — /api/lead relay (mocked upstream)');
         allow: res.headers.get('allow'),
         json,
         calls: sent.length,
+        sent,
         relayed: sent[0] ? JSON.parse(String(sent[0].init.body)) : null,
         upstreamUrl: sent[0]?.url || '',
         logged,
@@ -258,6 +263,50 @@ console.log('\nAPI — /api/lead relay (mocked upstream)');
       JSON.stringify(r.relayed?.notes));
     check('notes record the TCPA consent the checkbox captured',
       /TCPA consent given/.test(r.relayed?.notes || ''), JSON.stringify(r.relayed?.notes));
+  }
+
+  // --- where the lead came from --------------------------------------------
+  // The attribution cookie is written by Attribution.astro and read here; the
+  // form never sends it. With tracking configured the accepted lead is also
+  // reported to the scoreboard, as a second call made after the CRM's.
+  {
+    const COOKIE = 'src_v1=' + encodeURIComponent(JSON.stringify({
+      channel: 'organic-search', source: 'google', landing: '/blog/a-post/', first_seen: '2026-09-29',
+    }));
+    const UA = 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 Safari/604.1';
+    const TRACKED = { ...ENV, TRACK_URL: 'https://stub.invalid/scoreboard/e', TRACK_KEY: 'k-123' };
+    const body = { name: 'Mary Anne Ruiz', phone: '(480) 555-0147', consent: 'on' };
+
+    const r = await callLead({ body, cookie: COOKIE, userAgent: UA, env: TRACKED });
+    check('the CRM note says how the visitor found the site',
+      /Found us via: Organic search \(google\)/.test(r.relayed?.notes || '')
+      && /First page: \/blog\/a-post\//.test(r.relayed?.notes || ''),
+      JSON.stringify(r.relayed?.notes));
+    const report = r.sent.find((c) => c.url === TRACKED.TRACK_URL);
+    const reported = report ? JSON.parse(String(report.init.body)) : null;
+    check('an accepted lead is reported to the scoreboard, with the key',
+      r.status === 200 && report?.init.headers['x-track-key'] === 'k-123'
+      && reported?.type === 'lead' && reported.site === site.domain
+      && reported.attr?.channel === 'organic-search',
+      JSON.stringify(reported));
+
+    const off = await callLead({ body, cookie: COOKIE, userAgent: UA });
+    check('with tracking unconfigured, nothing but the CRM is called',
+      off.status === 200 && off.calls === 1, String(off.calls));
+
+    const none = await callLead({ body, userAgent: UA, env: TRACKED });
+    check('no cookie: the note adds nothing, the report says unknown',
+      !/Found us via/.test(none.relayed?.notes || '')
+      && JSON.parse(String(none.sent.find((c) => c.url === TRACKED.TRACK_URL)?.init.body || '{}')).attr?.channel === 'unknown',
+      JSON.stringify(none.relayed?.notes));
+
+    const refused = await callLead({
+      body, cookie: COOKIE, userAgent: UA, env: TRACKED,
+      upstream: () => new Response('no', { status: 500 }),
+    });
+    check('a lead the CRM refused is not counted as a lead',
+      refused.status === 502 && !refused.sent.some((c) => c.url === TRACKED.TRACK_URL),
+      `${refused.status}, ${refused.calls} call(s)`);
   }
 
   // --- the shapes a submission can legitimately arrive in -------------------
@@ -1642,6 +1691,16 @@ if (booking.mode !== 'native') {
     (() => {
       const real = window.fetch;
       window.__bookingCalls = [];
+      // /api/track is a Pages Function, which \`astro preview\` does not serve.
+      // The beacon is recorded here instead of being sent, so the report can
+      // be asserted and its 404 is not mistaken for a page error.
+      window.__trackCalls = [];
+      navigator.sendBeacon = function (url, data) {
+        if (!String(url).includes('/api/track')) return false;
+        Promise.resolve(data && data.text ? data.text() : data)
+          .then((t) => window.__trackCalls.push(JSON.parse(String(t))));
+        return true;
+      };
       const CAL = {
         id: 'test-calendar-id', name: '602 Medicare', slot_duration: 30,
         time_zone: 'America/Denver', bookable_weekdays: [1,2,3,4,5],
@@ -1920,6 +1979,20 @@ if (booking.mode !== 'native') {
     const post = window.__bookingCalls.filter(c => c.url.includes('create-booking')).pop();
     return !!post && /Survey: turning 65 · ZIP 85086 · keeping my doctors/.test(
       JSON.parse(post.body).notes || '');
+  `));
+
+  check('the booking notes say how the visitor found the site', await evaluate(p, `
+    const post = window.__bookingCalls.filter(c => c.url.includes('create-booking')).pop();
+    return !!post && /Found us via: /.test(JSON.parse(post.body).notes || '');
+  `));
+
+  check('the booking is reported to the scoreboard, once', await evaluate(p, `
+    const sent = window.__trackCalls.filter(c => c.type === 'booking');
+    const b = sent[0];
+    return sent.length === 1
+        && b.page === '/book/'
+        && b.contact.first === 'Ada' && b.contact.last === 'Lovelace'
+        && /^\\d{4}-\\d{2}-\\d{2}T/.test(b.appt.start);
   `));
 
   check('the phone fallback survives all the way to the confirmation',
