@@ -123,6 +123,10 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
         <ul>
           <li><a href="/tools/">All tools</a></li>
           {tools.map((t) => <li><a href={`/tools/${t.slug}/`}>{t.name}</a></li>)}
+          {/* ManhattanLife prescription drug claim form (RXCML3322) — a PDF, so
+              audit.mjs can't crawl it as a page; sits with the intake link below
+              the contiguous tool list for the same reason. */}
+          <li><a href="/forms/manhattanlife-prescription-drug-claim-form.pdf" target="_blank" rel="noopener">ManhattanLife Rx Claim Form (PDF)</a></li>
           {/* The only external link in this column — the hosted intake form.
               audit.mjs checks internal footer links by href, so an off-site
               one is invisible to it; keep it last so the tool list it does
