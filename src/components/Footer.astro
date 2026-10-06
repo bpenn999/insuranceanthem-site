@@ -5,6 +5,7 @@ import { products } from '../data/products';
 import { tools } from '../data/tools';
 import { locations } from '../data/locations';
 import { tpmoText, nonAffiliation, notAdvice } from '../data/compliance';
+import { partners } from '../config/partners';
 
 /**
  * Site-wide footer.
@@ -115,6 +116,10 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
         <ul>
           {products.map((p) => <li><a href={`/${p.slug}/`}>{p.fullName}</a></li>)}
           <li><a href="/medicare-plans/">Compare all four</a></li>
+          {/* Referral link (see src/config/partners.ts). External, so audit.mjs
+              ignores it; kept last so the product list it checks stays contiguous. */}
+          <li><a href={partners.geoBlue.url} target="_blank" rel="sponsored noopener">{partners.geoBlue.label}</a></li>
+          <li><a href="/blog/travel-insurance-for-medicare-beneficiaries-arizona-2027/">Travel Insurance &amp; Medicare Guide</a></li>
         </ul>
       </div>
 
