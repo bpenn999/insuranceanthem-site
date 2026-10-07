@@ -1,0 +1,90 @@
+---
+import site from '../config/site';
+
+/**
+ * Desktop help launcher — a booking-first "Questions?" bubble, ≥1000px only.
+ *
+ * Under 1000px the MobileCallBar already pins Call + Book to the bottom of the
+ * viewport, so this hides there rather than stacking a second control on top
+ * of it. On desktop the header carries the phone and the CTA, but they scroll
+ * away; this keeps Book / Call / Text one click away at any scroll depth.
+ *
+ * Why no chat widget: Brian does not work from the inbox a third-party chat
+ * would land in, so every chat was a dead lead. These three actions all reach
+ * him — the text goes to the same (602) line, which opens the thread in his
+ * CRM. No third-party script, no cookie, nothing indexed.
+ */
+const smsBody = encodeURIComponent('Hi Brian, I have a Medicare question.');
+const smsHref = `sms:${site.phone.href.replace(/^tel:/, '')}?&body=${smsBody}`;
+---
+
+<div class="help" data-help>
+  <button class="help__btn" type="button" aria-expanded="false" aria-controls="help-panel" aria-label="Questions? Book, call or text">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.6 8.6 0 0 1-3.6-.8L3 21l1.9-4.6A8.4 8.4 0 1 1 21 11.5z"/></svg>
+    <span>Questions?</span>
+  </button>
+  <div class="help__panel" id="help-panel" role="dialog" aria-label="Talk to Brian" hidden>
+    <div class="help__head">
+      <strong>Talk to Brian</strong>
+      <button class="help__x" type="button" aria-label="Close">×</button>
+    </div>
+    <p class="help__sub">A licensed Arizona advisor, not a bot. Calls and texts come straight to Brian.</p>
+    <a class="help__act help__act--primary" href={site.consult.url} data-cta="help-book"><span aria-hidden="true">📅</span><span><b>Book a free call</b><small>Pick a time that suits you</small></span></a>
+    <a class="help__act" href={site.phone.href} data-cta="help-call"><span aria-hidden="true">📞</span><span><b>Call now</b><small>{site.phone.display}</small></span></a>
+    <a class="help__act" href={smsHref} data-cta="help-text" data-help-sms><span aria-hidden="true">💬</span><span><b>Text Brian</b><small>Reply usually within the hour</small></span></a>
+  </div>
+</div>
+
+<style>
+  .help { display: none; }
+  @media (min-width: 1000px) {
+    .help { display: block; position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 80; font-family: var(--font-body); }
+  }
+  .help__btn {
+    display: flex; align-items: center; gap: 0.5rem; height: 54px; padding: 0 1.1rem 0 0.95rem;
+    border-radius: 999px; border: 0; cursor: pointer; background: var(--navy); color: #fff;
+    font: inherit; font-weight: 600; font-size: 1rem; box-shadow: 0 12px 30px -10px rgba(1, 20, 89, 0.5);
+    transition: background 120ms, transform 120ms;
+  }
+  .help__btn:hover { background: var(--navy-lift); transform: translateY(-2px); }
+  .help__btn:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+  .help__panel {
+    position: absolute; right: 0; bottom: 4.3rem; width: 320px; background: var(--surface);
+    border: 1px solid var(--rule); border-radius: var(--radius, 12px);
+    box-shadow: 0 30px 70px -20px rgba(1, 20, 89, 0.45); padding: 1rem 1.1rem 1.1rem;
+  }
+  .help__panel[hidden] { display: none; }
+  .help__head { display: flex; align-items: center; justify-content: space-between; color: var(--ink); font-size: 1.125rem; }
+  .help__x { border: 0; background: none; font-size: 1.6rem; line-height: 1; cursor: pointer; color: var(--ink-muted); padding: 0.1rem 0.3rem; }
+  .help__sub { margin: 0.3rem 0 0.8rem; color: var(--ink-muted); font-size: 0.95rem; }
+  .help__act {
+    display: flex; align-items: center; gap: 0.8rem; padding: 0.75rem 0.85rem; margin-top: 0.5rem;
+    border: 1px solid var(--rule); border-radius: var(--radius, 12px); text-decoration: none;
+    color: var(--ink); background: var(--tint);
+  }
+  .help__act:hover { border-color: var(--navy); }
+  .help__act--primary { background: var(--red); border-color: var(--red); color: #fff; }
+  .help__act--primary:hover { background: var(--red-deep); border-color: var(--red-deep); }
+  .help__act--primary small { color: rgba(255, 255, 255, 0.85); }
+  .help__act > span:first-child { font-size: 1.4rem; }
+  .help__act b { display: block; font-size: 1.05rem; }
+  .help__act small { display: block; color: var(--ink-muted); font-size: 0.85rem; }
+  @media print { .help { display: none; } }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-help]');
+  if (root) {
+    const btn = root.querySelector<HTMLButtonElement>('.help__btn')!;
+    const panel = root.querySelector<HTMLElement>('.help__panel')!;
+    const set = (open: boolean) => { panel.hidden = !open; btn.setAttribute('aria-expanded', String(open)); };
+    btn.addEventListener('click', () => set(panel.hidden));
+    root.querySelector('.help__x')!.addEventListener('click', () => { set(false); btn.focus(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !panel.hidden) { set(false); btn.focus(); } });
+    document.addEventListener('click', (e) => { if (!panel.hidden && !root.contains(e.target as Node)) set(false); });
+    // A text is as good as a call: count it on the scoreboard beside call taps.
+    root.querySelector('[data-help-sms]')!.addEventListener('click', () => {
+      (window as any).__track?.('call_click', { form: 'sms' });
+    });
+  }
+</script>
