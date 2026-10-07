@@ -1,0 +1,40 @@
+---
+// Turning-65 router, rendered at the end of every blog post by BlogLayout.
+// Brian, 2026-10-07: "make sure T65 is a focus for 602 Medicare." The plan-exit
+// traffic brings in people whose plan is ending; the most valuable reader
+// inside that crowd is the one NEW to Medicare — a one-time Medigap open
+// enrollment, no health questions. This block separates the two and sends the
+// T65 reader to a tagged booking (?topic=t65 → notes prefix + scoreboard label).
+// No TPMO sentence here: the footer carries it exactly once per page and the
+// audit fails a second copy.
+import site from '../config/site';
+const BOOK = '/book/?topic=t65';
+---
+<aside class="post__cta" data-rise data-armed aria-label="Turning 65 soon">
+  <p class="post__cta-eyebrow">Turning 65 in the next 6 months?</p>
+  <h2 class="post__cta-h">Your situation is different from someone whose plan is ending.</h2>
+  <p class="post__cta-body">
+    A plan-ending member picks a replacement. Someone new to Medicare gets a window that never
+    repeats: a 7-month Initial Enrollment Period around your 65th birthday, and a 6-month Medigap
+    open enrollment that starts with Part B — any Medigap policy, no health questions. Miss it and
+    the same policy can be declined or cost more for life. A {site.consult.minutes}-minute call puts
+    your exact dates on a calendar, settles Part B timing if you are still working, and sorts out
+    whether Medigap or Medicare Advantage fits first. No cost, no obligation.
+  </p>
+  {/* --light, not the default red primary: on this navy panel the red
+      button's own edge is only 3.0:1 against the ground behind it. */}
+  <div class="btn-row">
+    <a href={BOOK} class="btn btn--light btn--lg" data-magnetic="0.28" data-cta="article-t65">
+      Book a Turning-65 planning call
+    </a>
+    <a href="/tools/enrollment-timeline/" class="btn btn--onNavy btn--lg" data-magnetic="0.2">
+      See my enrollment dates
+    </a>
+  </div>
+  <p class="post__cta-meta">
+    {site.agent.name} · {site.agent.title} · NPN {site.agent.npn} · {site.hours.display}
+  </p>
+  <p class="post__cta-phone">
+    Or call <a href={site.phone.href} data-cta="article-call">{site.phone.display}</a>
+  </p>
+</aside>

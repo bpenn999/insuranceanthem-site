@@ -4,6 +4,7 @@ import BaseLayout from './BaseLayout.astro';
 import Kinetic from '../components/Kinetic.astro';
 import Breadcrumbs from '../components/Breadcrumbs.astro';
 import Faq from '../components/Faq.astro';
+import TurningSixtyFive from '../components/TurningSixtyFive.astro';
 import site, { abs } from '../config/site';
 
 /**
@@ -226,32 +227,7 @@ if (d.faqs?.length) {
         </p>
       </aside>
 
-      <aside class="post__cta" data-rise data-armed>
-        <p class="post__cta-eyebrow">Turning 65 in the Valley?</p>
-        <h2 class="post__cta-h">Let's put your dates on a calendar.</h2>
-        <p class="post__cta-body">
-          Your window is set by your own birthday, not by the general enrollment dates in the news.
-          Working out which one you are in takes about {site.consult.minutes} minutes on the phone,
-          costs nothing, and there is no product at the end of it unless one belongs there.
-        </p>
-        {/* --light, not the default red primary: on this navy panel the red
-            button's own edge is only 3.0:1 against the ground behind it. */}
-        <div class="btn-row">
-          <a href={site.consult.url} class="btn btn--light btn--lg" data-magnetic="0.28">
-            {site.consult.label}
-          </a>
-          <a href={site.phone.href} class="btn btn--onNavy btn--lg" data-magnetic="0.2">
-            Call {site.phone.display}
-          </a>
-        </div>
-        {/* Same as the Learn articles: the number ends the block, live. */}
-        <p class="post__cta-meta">
-          {site.agent.name} · {site.agent.title} · NPN {site.agent.npn} · {site.hours.display}
-        </p>
-        <p class="post__cta-phone">
-          Or call <a href={site.phone.href} data-cta="article-call">{site.phone.display}</a>
-        </p>
-      </aside>
+      <TurningSixtyFive />
 
       <p class="post__back"><a href="/blog/" class="link">All blog posts</a></p>
     </div>

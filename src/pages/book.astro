@@ -197,3 +197,17 @@ const schemaNodes = [
     .intake .btn { width: 100%; }
   }
 </style>
+
+<script>
+  // ?topic=t65 (TurningSixtyFive.astro) or situation=turning-65 (home survey):
+  // say so above the calendar; the picker tags the booking itself.
+  {
+    const q = new URLSearchParams(location.search);
+    if (q.get('topic') === 't65' || q.get('situation') === 'turning-65') {
+      const h = document.querySelector<HTMLElement>('main h1, .hero h1, h1');
+      const eb = document.querySelector<HTMLElement>('.eyebrow');
+      if (h) h.textContent = 'Book your Turning-65 planning call.';
+      if (eb) eb.textContent = 'Turning 65';
+    }
+  }
+</script>

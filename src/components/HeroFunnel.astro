@@ -379,6 +379,7 @@ import site from '../config/site';
       const params = new URLSearchParams();
       if (answers.zip) params.set('zip', answers.zip);
       if (answers.intent) params.set('situation', answers.intent);
+      if (answers.intent === 'turning-65') params.set('topic', 't65');
       if (answers.priority) params.set('priority', answers.priority);
       const query = params.toString();
       const booking = root.dataset.booking || '/book/';
