@@ -770,7 +770,9 @@ console.log('\nHome — hero funnel');
   check('result folds in the turning-65 note', /Medigap|65/.test(funnel.body), funnel.body.slice(0, 90));
   // The survey ends in an appointment, not a form (2026-09-28). A CTA that
   // drifts back to /contact/ is the regression this pins.
-  check('CTA opens the scheduler, carrying zip + situation + priority', funnel.cta === '/book/?zip=85086&situation=turning-65&priority=doctors', funnel.cta);
+  // Since e8f3769 (2026-10-07) the turning-65 answer also tags the booking
+  // with topic=t65, so the picker labels and prefixes it as a T65 call.
+  check('CTA opens the scheduler, carrying zip + situation + topic + priority', funnel.cta === '/book/?zip=85086&situation=turning-65&topic=t65&priority=doctors', funnel.cta);
   check('answers stashed for the scheduler', JSON.parse(funnel.stash || '{}').zip === '85086', funnel.stash);
   check('progress bar reaches 100%', funnel.progress === '100%', funnel.progress);
   check('no console errors', p.consoleErrors.length === 0, p.consoleErrors.join(' | '));
