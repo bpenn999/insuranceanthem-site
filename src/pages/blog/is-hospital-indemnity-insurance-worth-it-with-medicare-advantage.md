@@ -7,8 +7,8 @@ summary: 'A Medicare Advantage plan does not charge a Part A deductible when you
 category: Coverage
 publishedAt: 2026-09-24
 readMinutes: 10
-image: /blog/hospital-indemnity-medicare-advantage-peoria-2026.png
-imageAlt: '602Medicare article card reading "Is hospital indemnity insurance worth it with Medicare Advantage?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/is-hospital-indemnity-insurance-worth-it-with-medicare-advantage-photo.jpg
+imageAlt: 'An older woman with gray hair and glasses, seen from over her shoulder, reads through printed bills at a table.'
 faqs:
   - q: What does hospital indemnity insurance cover?
     a: It pays you a fixed dollar amount for each day you are confined to a hospital, usually for a set number of days per stay or per year, regardless of what the hospital bills. Many policies add optional benefits for observation stays, emergency room visits, ambulance transport, outpatient surgery and skilled nursing days. The money is paid to you, not to the hospital, and you can spend it on the copay, on transportation, or on anything else.

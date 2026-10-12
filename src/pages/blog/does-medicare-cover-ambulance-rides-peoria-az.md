@@ -7,8 +7,8 @@ summary: 'Medicare pays for the ambulance when travelling any other way would en
 category: Coverage
 publishedAt: 2026-09-02
 readMinutes: 10
-image: /blog/does-medicare-cover-ambulance-rides-peoria-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover ambulance rides?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-ambulance-rides-peoria-az-photo.jpg
+imageAlt: 'An emergency medical technician in a navy jacket stands with arms crossed beside the rear doors of a blue and yellow ambulance.'
 faqs:
   - q: Does Medicare cover ambulance rides?
     a: Yes, within limits. Medicare Part B covers ground ambulance transportation when travelling in any other vehicle could endanger your health and you need medically necessary services from a hospital, a critical access hospital, a rural emergency hospital or a skilled nursing facility. Medicare states the boundary plainly on the same page — it will only cover ambulance services to the nearest appropriate medical facility that is able to give you the care you need. The ride is covered because it is medically necessary transport, not because you called 911.

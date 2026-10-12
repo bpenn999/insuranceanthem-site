@@ -7,8 +7,8 @@ summary: 'CMS published the 2027 Star Ratings on October 8, and for a Peoria hou
 category: Medicare Advantage
 publishedAt: 2026-10-09
 readMinutes: 11
-image: /blog/medicare-advantage-star-ratings-arizona-2027-peoria.png
-imageAlt: '602Medicare article card reading "Are there any 5-star Medicare Advantage plans in Arizona for 2027?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/are-there-any-5-star-medicare-advantage-plans-in-arizona-2027-photo.jpg
+imageAlt: 'An older couple sits close together at a white table with printed forms and a pen in front of them.'
 faqs:
   - q: Are there any 5-star Medicare Advantage plans in Arizona for 2027?
     a: Not among the general plans. In the 2027 Star Ratings CMS published on October 8, 2026, one contract sold in Arizona earned five stars overall, UnitedHealthcare's H0710, and the only plan it sells in Maricopa County is the UHC Nursing Home Plan, an institutional special needs plan for people who live in a nursing facility. Every general Medicare Advantage contract sold in Maricopa County is rated 4.5 or lower for 2027. Four contracts, three from Humana and one from Devoted Health, carry 4.5 stars, and five more carry 4 stars.

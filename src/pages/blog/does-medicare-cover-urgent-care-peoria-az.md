@@ -7,8 +7,8 @@ summary: 'Medicare pays for an urgent care visit the same way it pays for a doct
 category: Coverage
 publishedAt: 2026-09-21
 readMinutes: 9
-image: /blog/does-medicare-cover-urgent-care-peoria-az-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover urgent care?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-urgent-care-peoria-az-photo.jpg
+imageAlt: 'Rugged desert mountains glow in early light above a valley floor dotted with saguaro cactus.'
 faqs:
   - q: Does Medicare cover urgent care visits?
     a: Yes. Medicare Part B covers urgently needed care, which Medicare defines as care for a sudden illness or injury that is not a medical emergency. On Original Medicare you pay the Part B deductible if you have not met it yet, then 20 percent of the Medicare-approved amount. Medicare Advantage plans cover it too, usually for a flat copay set by the plan.

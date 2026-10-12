@@ -7,8 +7,8 @@ summary: 'It is the second-most-common question I get in north Peoria, usually f
 category: Enrollment
 publishedAt: 2026-08-14
 readMinutes: 10
-image: /blog/medicare-advantage-to-medigap-arizona-2026.png
-imageAlt: '602Medicare article card reading "Switching from Advantage to Medigap", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/can-i-switch-from-medicare-advantage-to-medigap-in-arizona-photo.jpg
+imageAlt: 'Hikers climb a desert ridge in silhouette against a bright golden sunset with mountain ranges in the distance.'
 faqs:
   - q: Can I switch from Medicare Advantage to Medigap?
     a: Yes, but it is two separate steps and only the first one is guaranteed. You can leave your Medicare Advantage plan and return to Original Medicare during the Open Enrollment Period, October 15 through December 7, or during the Medicare Advantage Open Enrollment Period, January 1 through March 31 if you are already in an Advantage plan. Buying a Medigap policy to go with it is a separate application to a private insurer, and outside a guaranteed issue right that insurer is allowed to ask health questions and say no.

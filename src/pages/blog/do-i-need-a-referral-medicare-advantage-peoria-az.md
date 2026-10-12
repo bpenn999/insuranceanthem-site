@@ -7,8 +7,8 @@ summary: 'The answer turns almost entirely on two letters on your card. Here is 
 category: Medicare Advantage
 publishedAt: 2026-08-25
 readMinutes: 9
-image: /blog/medicare-advantage-referral-specialist-peoria-2026.png
-imageAlt: '602Medicare article card reading "Do I need a referral to see a specialist?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/do-i-need-a-referral-medicare-advantage-peoria-az-photo.jpg
+imageAlt: 'A black stethoscope, a blank sheet of paper, a pen and a laptop are arranged on a plain green desk.'
 faqs:
   - q: Do I need a referral to see a specialist with Medicare Advantage?
     a: It depends on the plan type, and Medicare answers it plan type by plan type. For HMOs, Medicare says that in most cases you have to get a referral to use a specialist. For PPOs and for Private Fee-for-Service plans, the answer on Medicare's own pages is simply no. For Special Needs Plans it varies by plan, and referrals may be required for some services but not others. The two letters after the plan name on your card decide it, not the carrier.

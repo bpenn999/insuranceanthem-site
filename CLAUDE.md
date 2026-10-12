@@ -69,11 +69,12 @@ wherever one exists.
 
 The header comment in `src/layouts/BlogLayout.astro` is the authority on the split.
 
-**Featured images are generated, not stock:**
-`node scripts/build-blog-card.mjs <name> "<kicker>" "<title>"` → `public/blog/<name>.png`
-at 1200×630, serving as both in-article image and social card. Needs Chrome and network
-(Google Fonts). **Always a new filename** — `public/_headers` caches `/*.png` for seven
-days, so overwriting a card keeps serving the stale one from the edge.
+**Featured images are real photos (Brian, 2026-10-12), self-hosted:**
+`scripts/blog-photo.sh try <slug> "<scene>" [index]`, look at the candidate, then
+`scripts/blog-photo.sh keep <slug>` → `public/blog/<slug>-photo.jpg` at 1200×630, serving
+as both in-article image and social image. No masks, no clinical-distress scenes, no text
+or logos, Arizona-appropriate. **Always a new filename** — images are edge-cached for
+seven days. `scripts/build-blog-card.mjs` (the old typographic card) is the fallback only.
 
 ## Schema
 Centralised in `src/components/Schema.astro` and the layouts. **Never hand-roll JSON-LD in

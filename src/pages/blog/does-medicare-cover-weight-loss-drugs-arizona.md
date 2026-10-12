@@ -7,8 +7,8 @@ summary: 'For the first time, Medicare pays for GLP-1 drugs prescribed for weigh
 category: Part D
 publishedAt: 2026-09-28
 readMinutes: 9
-image: /blog/does-medicare-cover-weight-loss-drugs-arizona-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover weight loss drugs?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-weight-loss-drugs-arizona-photo.jpg
+imageAlt: 'A halved grapefruit and lemon slices in white bowls on a wooden cutting board in soft light.'
 faqs:
   - q: Does Medicare cover Wegovy for weight loss?
     a: "Yes, through the Medicare GLP-1 Bridge. Since July 1, 2026, the injection and the tablet are both covered for $50 for a one-month supply if you have Part D and meet the program's body mass index criteria. The program runs through December 31, 2027. If you have established cardiovascular disease or another condition your Part D plan already covers Wegovy for, you get it through the plan at the plan's cost sharing instead, not through the Bridge."

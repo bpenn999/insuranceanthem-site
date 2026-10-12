@@ -7,8 +7,8 @@ summary: 'Cigna left Medicare Advantage everywhere on March 19, 2025, when it so
 category: Medicare Advantage
 publishedAt: 2026-10-08
 readMinutes: 11
-image: /blog/cigna-healthspring-medicare-advantage-arizona-2027.png
-imageAlt: '602Medicare article card reading "Is Cigna leaving Medicare Advantage in Arizona?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/is-cigna-leaving-medicare-advantage-in-arizona-2027-photo.jpg
+imageAlt: 'An older woman with a sweater over her shoulders sits on a sofa and types on a laptop at home.'
 faqs:
   - q: Is Cigna leaving Medicare Advantage in 2027?
     a: Cigna already left. It completed the sale of its Medicare Advantage, Part D and Medicare supplement businesses to Health Care Service Corporation on March 19, 2025, and those plans have been sold under the HealthSpring name since January 1, 2026. There are no Cigna-branded Medicare plans for 2027 anywhere. The company that now runs them, HCSC, is shrinking its Medicare Advantage footprint for 2027 from 948 counties to 450 by one analysis of the CMS file, but in Arizona it keeps four of its five general plans in Maricopa, Pima and Pinal counties.

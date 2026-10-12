@@ -7,8 +7,8 @@ summary: "Medicare has no family coverage, so the day you turn 65 nothing change
 category: Enrollment
 publishedAt: 2026-10-08
 readMinutes: 9
-image: /blog/spouse-medicare-when-i-turn-65-peoria-2027.png
-imageAlt: '602Medicare article card reading "Can my spouse get Medicare when I turn 65?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/can-my-spouse-get-medicare-when-i-turn-65-photo.jpg
+imageAlt: 'An older man and woman sit in wicker chairs on a shaded patio, smiling as they talk with two younger visitors.'
 faqs:
   - q: Can my spouse get Medicare when I turn 65?
     a: No. Medicare is an individual program with no family or dependent coverage, so your enrollment does nothing for a spouse who is under 65. They become eligible on their own 65th birthday, or earlier only through their own disability after 24 months of Social Security Disability Insurance, or a diagnosis of ALS or permanent kidney failure. Until then they need coverage from somewhere else, and the most common sources are a current employer plan, retiree coverage or COBRA.

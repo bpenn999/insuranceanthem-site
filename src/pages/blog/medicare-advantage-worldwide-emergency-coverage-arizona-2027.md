@@ -7,8 +7,8 @@ summary: 'Maybe, and the only document that answers it for your plan is the Annu
 category: Medicare Advantage
 publishedAt: 2026-10-06
 readMinutes: 9
-image: /blog/medicare-advantage-worldwide-emergency-2027-anthem.png
-imageAlt: '602Medicare article card reading "Is your Medicare Advantage plan dropping worldwide emergency coverage?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/medicare-advantage-worldwide-emergency-coverage-arizona-2027-photo.jpg
+imageAlt: 'An older couple seen from behind walks along a riverside promenade toward a large iron arch bridge on a sunny day.'
 faqs:
   - q: Are Medicare Advantage plans removing worldwide emergency coverage in 2027?
     a: Some may be, and the answer is plan by plan. Worldwide emergency and urgent care coverage is a supplemental benefit a plan chooses to offer, not something Medicare requires, so a plan can reduce or drop it in any year. For 2027, industry reporting describes insurers paring back extras broadly, and one report describes member notices removing the benefit on certain UnitedHealthcare plans. Whether your plan did is written in your Annual Notice of Change.

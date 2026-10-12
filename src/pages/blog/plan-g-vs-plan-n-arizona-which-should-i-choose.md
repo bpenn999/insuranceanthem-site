@@ -7,8 +7,8 @@ summary: 'The two Medicare Supplements almost everyone in Arizona ends up choosi
 category: Medicare Supplement
 publishedAt: 2026-09-12
 readMinutes: 9
-image: /blog/medigap-plan-g-vs-plan-n-arizona-peoria-2026.png
-imageAlt: '602Medicare article card reading "Plan G or Plan N in Arizona?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/plan-g-vs-plan-n-arizona-which-should-i-choose-photo.jpg
+imageAlt: 'A smiling advisor in a shirt and tie shows a document to an older couple seated on a green sofa beside a laptop.'
 faqs:
   - q: What is the difference between Medicare Plan G and Plan N?
     a: Both are standardised Medicare Supplement plans that pay the hospital and doctor costs Original Medicare leaves behind, and both leave you the annual Part B deductible. Plan G then covers everything else Medicare approves. Plan N covers everything else too, except three things — a copay of up to $20 for some office visits, a copay of up to $50 for an emergency room visit that does not end in admission, and any Part B excess charge from a provider who does not accept Medicare assignment. In exchange, Plan N carries a lower monthly premium.

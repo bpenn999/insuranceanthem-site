@@ -7,8 +7,8 @@ summary: 'Medicare pays for an MRI when a doctor orders it to find or treat a pr
 category: Coverage
 publishedAt: 2026-10-02
 readMinutes: 8
-image: /blog/does-medicare-cover-an-mri-peoria-az-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover an MRI?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-an-mri-peoria-az-photo.jpg
+imageAlt: 'A gray-haired man in glasses holds a coffee mug and works on a puzzle magazine while seated in a quiet room.'
 faqs:
   - q: How much does an MRI cost with Medicare?
     a: On Original Medicare you pay the Part B deductible, which is $283 in 2026, and then 20 percent of the Medicare-approved amount when the scan is done in a doctor's office or an independent imaging center. In a hospital outpatient department you pay the hospital a copayment instead, which can be more than 20 percent but in most cases cannot exceed the Part A hospital deductible of $1,736. The approved amount differs by body part, by whether contrast is used and by setting, so Medicare.gov's Procedure Price Lookup is the place to see the national averages for the exact scan you have been ordered.

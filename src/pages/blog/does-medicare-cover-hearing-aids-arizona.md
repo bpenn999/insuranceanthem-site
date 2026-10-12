@@ -7,8 +7,8 @@ summary: 'Original Medicare has never paid for hearing aids, and it still does n
 category: Coverage
 publishedAt: 2026-08-28
 readMinutes: 9
-image: /blog/medicare-hearing-aids-arizona-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover hearing aids?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-hearing-aids-arizona-photo.jpg
+imageAlt: 'Three older women in polka dot party hats laugh and talk together at a table set with cake and coffee cups.'
 faqs:
   - q: Does Medicare cover hearing aids?
     a: 'No. Medicare.gov states it in a single line on its hearing aids page: "Medicare doesn''t cover hearing aids or exams for fitting hearing aids," and under costs it says "You pay all costs." That has been true since Medicare began and it is still true in 2026. What can cover hearing aids is a Medicare Advantage plan that includes a hearing benefit, or a standalone hearing policy you buy separately. A Medicare Supplement does not, because a supplement pays its share of what Medicare itself approves — and Medicare approves nothing here.'

@@ -7,8 +7,8 @@ summary: 'A Roth conversion is taxable income, and Medicare reads that income tw
 category: IRMAA
 publishedAt: 2026-09-08
 readMinutes: 9
-image: /blog/medicare-roth-conversion-irmaa-2026.png
-imageAlt: '602Medicare article card reading "Does a Roth conversion affect Medicare premiums?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-a-roth-conversion-affect-medicare-premiums-photo.jpg
+imageAlt: 'A calculator and a magnifying glass rest on federal income tax forms spread across a wooden table.'
 faqs:
   - q: Does a Roth conversion affect Medicare premiums?
     a: Yes. The amount you convert from a traditional IRA or 401(k) to a Roth is taxed as ordinary income in the year you convert, and it is included in the modified adjusted gross income Social Security uses to set your Medicare Part B and Part D premiums. If the conversion pushes your income past an IRMAA threshold, you pay a higher premium for the full year, two years after the conversion.

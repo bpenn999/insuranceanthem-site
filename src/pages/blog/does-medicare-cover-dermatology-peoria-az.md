@@ -7,8 +7,8 @@ summary: 'Yes, when there is a medical reason for the visit, and no when there i
 category: Coverage
 publishedAt: 2026-09-19
 readMinutes: 10
-image: /blog/does-medicare-cover-dermatology-peoria-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover dermatology?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-dermatology-peoria-az-photo.jpg
+imageAlt: 'Tall green columns of a desert cactus rise toward a bright sun in a clear blue sky, seen from below.'
 faqs:
   - q: Does Medicare cover skin cancer screening?
     a: Not as a routine preventive benefit. A full-body skin check on someone with no symptoms and no history is not on Medicare's list of covered preventive services, so it is not one of the $0 screenings and Original Medicare may not pay for it at all. What Medicare does cover is a visit with a clinical reason behind it. If you or your doctor have found a spot that is new, changing, bleeding or not healing, or you are being followed after a previous skin cancer, the visit is diagnostic and Part B covers it at the usual deductible and 20 percent coinsurance.

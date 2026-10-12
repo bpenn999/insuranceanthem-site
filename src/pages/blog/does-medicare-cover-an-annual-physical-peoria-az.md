@@ -7,8 +7,8 @@ summary: 'No, and the word that trips people up is "physical." Original Medicare
 category: Coverage
 publishedAt: 2026-09-15
 readMinutes: 10
-image: /blog/medicare-annual-physical-wellness-visit-peoria-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover an annual physical?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-an-annual-physical-peoria-az-photo.jpg
+imageAlt: 'An older woman in glasses checks an older man with a home blood pressure monitor at a round table by a sunny window.'
 faqs:
   - q: Does Medicare pay for a yearly physical?
     a: No. Original Medicare does not cover a routine annual physical exam, and never has. It covers two preventive visits instead. The Welcome to Medicare visit is available once in the first 12 months you have Part B, and the yearly wellness visit is available once every 12 months after that. Both cost nothing when the provider accepts assignment and neither is subject to the Part B deductible. If your doctor performs a full physical at the same appointment, the physical portion is billed separately and can be your full responsibility.

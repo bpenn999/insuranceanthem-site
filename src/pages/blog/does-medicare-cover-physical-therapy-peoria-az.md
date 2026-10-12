@@ -7,8 +7,8 @@ summary: 'Medicare pays for physical therapy for as long as it is medically nece
 category: Coverage
 publishedAt: 2026-09-26
 readMinutes: 9
-image: /blog/does-medicare-cover-physical-therapy-peoria-az-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover physical therapy?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-physical-therapy-peoria-az-photo.jpg
+imageAlt: 'A smiling gray-haired man in a red shirt sits on an exercise mat with a towel on his shoulder while a trainer kneels beside him.'
 faqs:
   - q: How many physical therapy sessions does Medicare cover?
     a: There is no set number. Medicare removed the hard cap on outpatient therapy in 2018, and Medicare.gov now says there is no limit on how much it pays for medically necessary outpatient therapy in a calendar year. What exists instead is a documentation threshold. Once your physical therapy and speech-language pathology charges pass $2,480 in 2026, your therapist has to attest on each claim that continued treatment is still medically necessary. It is a paperwork step for the clinic, not a stop sign for you.

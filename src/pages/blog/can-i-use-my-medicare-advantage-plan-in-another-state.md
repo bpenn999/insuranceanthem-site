@@ -7,8 +7,8 @@ summary: 'Half the north Valley is somewhere cooler right now, and a fair number
 category: Coverage
 publishedAt: 2026-08-08
 readMinutes: 9
-image: /blog/medicare-advantage-out-of-state-2026.png
-imageAlt: '602Medicare article card reading "Medicare Advantage out of state", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/can-i-use-my-medicare-advantage-plan-in-another-state-photo.jpg
+imageAlt: 'A smiling gray-haired man in sunglasses sits behind the wheel of a vehicle with a woman in the passenger seat beside him.'
 faqs:
   - q: Can I use my Medicare Advantage plan in another state?
     a: For emergency and urgent care, yes — every Medicare Advantage plan covers those anywhere in the United States, at in-network cost sharing. For routine care, it depends on the plan. An HMO generally pays nothing out of network, a PPO pays at a higher out-of-network share, and some plans add a visitor or traveler benefit that treats you as in-network in specified areas. The answer is in your plan's Evidence of Coverage, not in the brochure.

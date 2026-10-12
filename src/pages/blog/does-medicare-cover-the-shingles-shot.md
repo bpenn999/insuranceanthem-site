@@ -7,8 +7,8 @@ summary: 'The shingles vaccine is the one shot that falls on the drug side of Me
 category: Part D
 publishedAt: 2026-09-06
 readMinutes: 9
-image: /blog/does-medicare-cover-shingles-shot-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover the shingles shot?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-the-shingles-shot-photo.jpg
+imageAlt: 'An older woman with long gray hair and glasses reads the label on a medicine container while seated at a wooden counter.'
 faqs:
   - q: Does Medicare cover the shingles shot?
     a: Yes, but through Medicare drug coverage rather than through Part A or Part B. Medicare's own coverage page says plainly that Medicare drug coverage (Part D) covers the shingles vaccine and that you pay nothing for it if you have Part D. That holds whether your drug coverage is a standalone Part D plan sitting alongside Original Medicare or the drug portion built into a Medicare Advantage plan. What it does not do is come with Parts A and B by themselves.

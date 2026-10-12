@@ -7,8 +7,8 @@ summary: 'Two people can spend the same three nights in the same hospital bed an
 category: Coverage
 publishedAt: 2026-09-01
 readMinutes: 9
-image: /blog/medicare-hospital-observation-status-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover a hospital stay under observation?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-hospital-observation-stay-photo.jpg
+imageAlt: 'Hands hold a pen over a stack of printed documents and press the keys of a calculator at a wooden desk by a window.'
 faqs:
   - q: Does Medicare cover observation status in the hospital?
     a: Yes, but it pays as outpatient care under Part B rather than as an inpatient stay under Part A. Medicare's own wording is that you are an outpatient if you are getting emergency department services, observation services, outpatient surgery, lab tests or X-rays and the doctor has not written an order to admit you — and that you are an outpatient in those cases even if you spend the night in the hospital. So the care is covered; it is covered under the part of Medicare with a percentage coinsurance and no cap rather than the part with a single deductible.

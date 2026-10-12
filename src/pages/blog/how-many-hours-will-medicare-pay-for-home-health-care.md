@@ -7,8 +7,8 @@ summary: 'Medicare puts a number on this, and it is smaller than most families e
 category: Coverage
 publishedAt: 2026-08-27
 readMinutes: 10
-image: /blog/medicare-home-health-care-hours-peoria-2026.png
-imageAlt: '602Medicare article card reading "How many hours of home health will Medicare pay for?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/how-many-hours-will-medicare-pay-for-home-health-care-photo.jpg
+imageAlt: 'A visiting nurse in a yellow shirt listens to the chest of a bearded older man seated on a living room sofa.'
 faqs:
   - q: How many hours a day will Medicare pay for home health care?
     a: Medicare's own wording is that in most cases, "part-time or intermittent" means you may be able to get skilled nursing care and home health aide services up to 8 hours a day combined, for a maximum of 28 hours a week. It also says you may be able to get more frequent care for a short time — less than 8 hours a day and up to 35 hours a week — if your provider decides it is necessary. The visits themselves are not capped — if you qualify, Medicare says you can get unlimited home health visits.

@@ -7,8 +7,8 @@ summary: 'Original Medicare has never paid for a gym, and it does not start now.
 category: Medicare Advantage
 publishedAt: 2026-09-01
 readMinutes: 9
-image: /blog/does-medicare-cover-gym-membership-peoria-2027.png
-imageAlt: '602Medicare article card reading "Does Medicare cover a gym membership?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-gym-membership-peoria-az-photo.jpg
+imageAlt: 'Three older women in workout clothes stand in a bright studio, each holding a rolled exercise mat in purple, green or pink.'
 faqs:
   - q: Does Medicare cover a gym membership?
     a: Not Original Medicare. Parts A and B pay for medically necessary hospital and medical care, and a gym membership is not that — Medicare's own page on what Original Medicare covers describes inpatient hospital care, doctors' services and tests, and preventive services, and points you separately to a list of what it does not cover. The fitness benefit people are asking about is a supplemental benefit added by a private Medicare Advantage plan, and Medicare says plainly that most Advantage plans offer extra benefits that Original Medicare does not.

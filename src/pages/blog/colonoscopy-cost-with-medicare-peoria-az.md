@@ -7,8 +7,8 @@ summary: 'A screening colonoscopy is one of the few things Medicare pays for at 
 category: Coverage
 publishedAt: 2026-09-03
 readMinutes: 11
-image: /blog/colonoscopy-cost-medicare-peoria-2026.png
-imageAlt: '602Medicare article card reading "How much does a colonoscopy cost with Medicare?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/colonoscopy-cost-with-medicare-peoria-az-photo.jpg
+imageAlt: 'A person sits on a rock outcrop at dusk looking over the Phoenix skyline and the mountains beyond it.'
 faqs:
   - q: Does Medicare cover a colonoscopy?
     a: Yes. Medicare Part B covers a screening colonoscopy as a preventive service, and when your doctor accepts assignment you pay nothing for the screening itself — no deductible, no coinsurance, and the anesthesia is included. Medicare covers the other colorectal screening tests too, on their own schedules — flexible sigmoidoscopy, an annual fecal occult blood test, a multi-target stool DNA test every three years, and a blood-based biomarker test every three years. The zero-dollar price applies to the screening. It does not automatically survive the procedure, which is the part of this that catches people.

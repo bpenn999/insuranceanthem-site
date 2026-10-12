@@ -7,8 +7,8 @@ summary: 'Peoria runs nearly thirty miles north to south and crosses a county li
 category: Coverage
 publishedAt: 2026-08-09
 readMinutes: 8
-image: /blog/medicare-zip-code-peoria-az.png
-imageAlt: '602Medicare article card reading "Do Medicare plans change by ZIP code?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/medicare-plans-by-zip-code-peoria-az-photo.jpg
+imageAlt: 'An aerial view of a Phoenix area suburb shows rows of homes, a school and a long straight street running toward distant mountains.'
 faqs:
   - q: Do Medicare plans change by ZIP code?
     a: Not as much as people assume. Medicare Advantage and Part D service areas are approved county by county, so every Maricopa County ZIP in Peoria — 85345, 85381, 85382, 85383, 85385 — is generally offered the same list of plans. What genuinely changes with your address is which doctors and hospitals each plan's network reaches from where you live, and what a Medicare Supplement costs, because supplements are priced by ZIP.

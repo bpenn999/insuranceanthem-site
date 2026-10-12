@@ -7,8 +7,8 @@ summary: 'If you retired this year, the Medicare surcharge letter arriving this 
 category: IRMAA
 publishedAt: 2026-09-13
 readMinutes: 9
-image: /blog/irmaa-appeal-after-retirement-peoria-2027.png
-imageAlt: '602Medicare article card reading "How do I appeal IRMAA after retirement?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/how-do-i-appeal-irmaa-after-retirement-photo.jpg
+imageAlt: 'An older man in a pink shirt signs a printed application form with a blue pen at a white table.'
 faqs:
   - q: How long does an IRMAA appeal take?
     a: Social Security does not publish a service standard, and in practice a life-changing-event request takes somewhere between several weeks and a few months to come back. Filing online with the documents attached is usually faster than mailing a paper form, because nothing has to be scanned in at the office. While it is pending you keep paying the surcharge; if the request is approved, Social Security adjusts the premium going forward and refunds the extra you paid for the months already billed in that year.

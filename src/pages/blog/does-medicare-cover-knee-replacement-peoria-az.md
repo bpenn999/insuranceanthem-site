@@ -7,8 +7,8 @@ summary: 'The surgery is covered. What it costs you depends on whether the hospi
 category: Coverage
 publishedAt: 2026-09-07
 readMinutes: 9
-image: /blog/medicare-knee-replacement-peoria-az-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover a knee replacement?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-knee-replacement-peoria-az-photo.jpg
+imageAlt: 'Three people walk away down a rocky dirt trail in dry desert country, with prickly pear cactus in the foreground and a mesa beyond.'
 faqs:
   - q: Does Medicare cover knee replacement surgery?
     a: Yes, when your doctor documents it as medically necessary — and that is the usual case for advanced arthritis that has not responded to conservative treatment. Both Original Medicare and Medicare Advantage plans cover total knee replacement. What differs is which part of Medicare pays and what your share works out to, and that depends on whether the hospital books the surgery as an inpatient admission under Part A or an outpatient procedure under Part B.

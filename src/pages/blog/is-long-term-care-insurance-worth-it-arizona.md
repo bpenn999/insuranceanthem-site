@@ -7,8 +7,8 @@ summary: 'Medicare was never going to pay for this, and most people in north Peo
 category: Long-Term Care
 publishedAt: 2026-10-01
 readMinutes: 10
-image: /blog/is-long-term-care-insurance-worth-it-peoria-2026.png
-imageAlt: '602Medicare article card reading "Is long-term care insurance worth it?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/is-long-term-care-insurance-worth-it-arizona-photo.jpg
+imageAlt: 'An older couple sit on a sofa while an advisor in a blue shirt and tie walks them through a printed document.'
 faqs:
   - q: Does Medicare cover long-term care?
     a: No. Medicare pays for skilled, rehabilitative care, which means up to 100 days in a skilled nursing facility after a qualifying three-day inpatient hospital stay, with a daily coinsurance from day 21. It pays nothing for custodial care, which is help with bathing, dressing, eating and getting around, whether that help happens in a nursing home, an assisted living community or your own house. Medicare Supplement plans follow Medicare, so they pay nothing toward it either, and a Medicare Advantage plan's extra benefits are a few hours of help, not a care plan.

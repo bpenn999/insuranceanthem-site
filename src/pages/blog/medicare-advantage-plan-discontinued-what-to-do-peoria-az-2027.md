@@ -7,8 +7,8 @@ summary: 'A non-renewal letter dated October 2 means your plan stops on December
 category: Medicare Advantage
 publishedAt: 2026-10-04
 readMinutes: 10
-image: /blog/medicare-advantage-plan-discontinued-what-to-do-peoria-2027.png
-imageAlt: '602Medicare article card reading "My Advantage plan is being discontinued. What now?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/medicare-advantage-plan-discontinued-what-to-do-peoria-az-2027-photo.jpg
+imageAlt: 'A woman with long gray hair leans on a sunlit kitchen counter reading a booklet beside a cutting board.'
 faqs:
   - q: What happens if my Medicare Advantage plan is discontinued?
     a: Your plan's coverage ends on December 31 and you keep Medicare. Parts A and B are federal and are not affected by a private plan closing. You need to choose how you want Medicare delivered in 2027 — another Medicare Advantage plan, or Original Medicare with a Part D drug plan and, if you want one, a Medicare Supplement. If you choose nothing, you are placed in Original Medicare on January 1 with no drug coverage and no cap on your share of costs.

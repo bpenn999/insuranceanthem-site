@@ -7,8 +7,8 @@ summary: 'Humana is releasing about 600,000 Medicare Advantage members nationall
 category: Medicare Advantage
 publishedAt: 2026-10-07
 readMinutes: 11
-image: /blog/humana-medicare-advantage-arizona-2027.png
-imageAlt: '602Medicare article card reading "Is Humana leaving Medicare Advantage in Arizona?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/is-humana-leaving-medicare-advantage-in-arizona-2027-photo.jpg
+imageAlt: 'An older man with a white beard and round glasses reads a book outdoors in a pale yellow shirt.'
 faqs:
   - q: Is Humana leaving Medicare Advantage in 2027?
     a: No. Humana is ending plans that cover about 600,000 members, roughly 8% of its 7.2 million Medicare Advantage members, and says most of those plans are rated 3.5 stars or lower. It is not leaving the program, and in Arizona it is not ending any plan at all. A comparison of the CMS 2026 and 2027 landscape files by contract and plan number shows every Humana plan sold in Arizona this year sold again in 2027, in the same counties, plus one new PPO in Maricopa, Pima and Pinal counties.

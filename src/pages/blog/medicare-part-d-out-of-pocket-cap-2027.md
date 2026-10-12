@@ -7,8 +7,8 @@ summary: 'CMS has set the 2027 Part D cap at $2,400, and your plan has known sin
 category: Part D
 publishedAt: 2026-09-09
 readMinutes: 9
-image: /blog/medicare-part-d-cap-2027-peoria.png
-imageAlt: '602Medicare article card reading "What is the Part D cap for 2027?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/medicare-part-d-out-of-pocket-cap-2027-photo.jpg
+imageAlt: 'A gray-haired woman in glasses reads the label on a medicine box that a pharmacy worker is showing her.'
 faqs:
   - q: What is the Medicare Part D out-of-pocket maximum for 2027?
     a: $2,400. CMS set the figure in its Calendar Year 2027 Rate Announcement on April 6, 2026, up from $2,100 in 2026. Once your out-of-pocket spending on covered Part D drugs reaches $2,400 in the calendar year, you pay nothing for covered drugs for the rest of that year. The cap applies to every Part D plan — standalone drug plans and Medicare Advantage plans with drug coverage alike — because it is set by law, not by the plan.

@@ -7,8 +7,8 @@ summary: 'Medicare pays a chiropractor for one thing, which is adjusting your sp
 category: Coverage
 publishedAt: 2026-09-30
 readMinutes: 8
-image: /blog/does-medicare-cover-chiropractic-care-peoria-az-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover chiropractic care?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-chiropractic-care-peoria-az-photo.jpg
+imageAlt: 'A practitioner in a green tunic places both hands on the lower back of a seated patient who is pointing to a sore spot.'
 faqs:
   - q: How many chiropractic visits does Medicare allow per year?
     a: Original Medicare sets no fixed number. It pays for spinal adjustments for as long as the treatment is correcting a problem and you can be expected to improve. Once your condition is stable and the visits are keeping you where you are, Medicare calls that maintenance therapy and stops paying. A Medicare Advantage plan follows the same rule for Medicare-covered adjustments, and if it adds routine chiropractic visits as an extra benefit, the plan sets its own yearly limit on those.

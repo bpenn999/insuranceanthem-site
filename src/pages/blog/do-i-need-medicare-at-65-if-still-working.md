@@ -7,8 +7,8 @@ summary: "More people in north Peoria are working at 65 than the retirement broc
 category: Enrollment
 publishedAt: 2026-08-11
 readMinutes: 9
-image: /blog/medicare-at-65-still-working-2026.png
-imageAlt: '602Medicare article card reading "Medicare at 65 while still working", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/do-i-need-medicare-at-65-if-still-working-photo.jpg
+imageAlt: 'An older man in glasses and a button-up shirt works at a laptop on a wooden desk with a tablet nearby.'
 faqs:
   - q: Do I need to sign up for Medicare at 65 if I'm still working?
     a: Usually not, if you are actively working and covered by a group health plan through an employer with 20 or more employees. In that case you can wait until you or your spouse stop working — or lose the coverage, whichever comes first — to sign up for Part B, without a late enrollment penalty. If the employer has fewer than 20 employees, Medicare generally pays first and you should enroll at 65, because the group plan may pay very little once you are eligible.

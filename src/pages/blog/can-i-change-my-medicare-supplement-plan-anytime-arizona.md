@@ -7,8 +7,8 @@ summary: 'You can apply to change a Medicare Supplement in any month of the year
 category: Medicare Supplement
 publishedAt: 2026-10-02
 readMinutes: 9
-image: /blog/change-medicare-supplement-plan-anytime-arizona-peoria-2026.png
-imageAlt: '602Medicare article card reading "Can I change my Medicare Supplement plan anytime?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/can-i-change-my-medicare-supplement-plan-anytime-arizona-photo.jpg
+imageAlt: 'A smiling older woman in a red top and a man in glasses read a sheet of paper together at home.'
 faqs:
   - q: Can I change my Medicare Supplement plan at any time?
     a: You can apply at any time. Medicare Supplement plans are not tied to the October 15 to December 7 enrollment period, so an application can go in during any month and the new policy starts the first of a month you choose. What changes is whether the insurer has to accept you. Medicare.gov puts it plainly that in most cases you have no right under federal law to switch Medigap policies unless you are inside your six-month Medigap open enrollment period or have a guaranteed issue right. Outside those, the company can ask health questions and decline the application.

@@ -7,8 +7,8 @@ summary: 'It is the question I get more than any other in Peoria, usually a week
 category: Coverage
 publishedAt: 2026-08-13
 readMinutes: 9
-image: /blog/medicare-dental-coverage-arizona-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover dental?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-dental-in-arizona-photo.jpg
+imageAlt: 'Several bamboo toothbrushes with dark and white bristles stand in a brown glass cup against a pale marble wall.'
 faqs:
   - q: Does Medicare cover dental?
     a: In almost all cases, no. The 1965 Medicare statute specifically bars payment for services connected with the care, treatment, filling, removal or replacement of teeth, so Original Medicare pays for no routine cleanings, exams, fillings, crowns, root canals, dentures or implants. The exceptions are narrow and medical rather than dental — dental work that is inextricably linked to the success of a covered medical treatment. Most people get dental coverage either through a Medicare Advantage plan that includes a dental benefit or through a separate dental policy they buy themselves.

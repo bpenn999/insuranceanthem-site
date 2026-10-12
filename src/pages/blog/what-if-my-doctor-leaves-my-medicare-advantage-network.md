@@ -7,8 +7,8 @@ summary: 'A letter arrives saying your doctor is leaving the network. It almost 
 category: Medicare Advantage
 publishedAt: 2026-08-19
 readMinutes: 9
-image: /blog/doctor-left-my-medicare-advantage-network-peoria-2026.png
-imageAlt: '602Medicare article card reading "Your doctor left the network. Now what?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/what-if-my-doctor-leaves-my-medicare-advantage-network-photo.jpg
+imageAlt: 'A doctor with short blond hair and red glasses, wearing a white coat, adjusts the stethoscope around her neck.'
 faqs:
   - q: Can my doctor leave my Medicare Advantage plan in the middle of the year?
     a: Yes. Medicare's own fact sheet on Advantage networks says it plainly — a provider can choose to leave your plan's network at any time, and the plan can add or remove providers from its network at any time during the year. Nothing about that is a violation, and it does not require your consent or the plan's permission.

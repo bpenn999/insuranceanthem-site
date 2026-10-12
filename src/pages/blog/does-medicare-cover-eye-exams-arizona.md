@@ -7,8 +7,8 @@ summary: 'Original Medicare has never paid for the yearly eye exam that ends wit
 category: Coverage
 publishedAt: 2026-09-25
 readMinutes: 11
-image: /blog/medicare-eye-exams-arizona-peoria-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover eye exams?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-eye-exams-arizona-photo.jpg
+imageAlt: 'A white phoropter, the lens instrument used to measure a glasses prescription, hangs from its arm in an eye exam room.'
 faqs:
   - q: Does Medicare pay for eye exams for seniors?
     a: Original Medicare does not pay for routine eye exams, meaning the yearly visit whose purpose is a glasses or contact lens prescription. Medicare.gov's wording is that you pay all costs for those. It does pay, under Part B, for eye exams with a medical reason behind them, including a yearly diabetic eye exam, a yearly glaucoma test if you are at higher risk, and tests and treatment for age-related macular degeneration. Many Medicare Advantage plans add a routine exam as an extra benefit.

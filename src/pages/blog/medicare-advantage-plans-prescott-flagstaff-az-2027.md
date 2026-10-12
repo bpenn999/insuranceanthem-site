@@ -7,8 +7,8 @@ summary: 'Northern Arizona is where the 2027 plan exits actually bite. Yavapai C
 category: Medicare Advantage
 publishedAt: 2026-10-11
 readMinutes: 9
-image: /blog/medicare-advantage-prescott-flagstaff-az-2027.png
-imageAlt: '602Medicare article card reading "Medicare Advantage in Prescott and Flagstaff for 2027", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/medicare-advantage-plans-prescott-flagstaff-az-2027-photo.jpg
+imageAlt: 'Rounded granite boulders rise above a calm lake that reflects a cloudy sky in northern Arizona.'
 faqs:
   - q: What Medicare Advantage plans are available in Prescott, AZ for 2027?
     a: Prescott is in Yavapai County, which has 16 general Medicare Advantage plans with drug coverage for 2027 from three carriers — seven from Humana, six from Devoted Health and three from UnitedHealthcare. Eleven of the sixteen have a $0 monthly plan premium, and in-network annual caps run from $4,150 to $9,450. That is one fewer plan and two fewer carriers than 2026, because Aetna and Wellcare no longer sell a general plan in the county. You still pay the Part B premium on any of them.

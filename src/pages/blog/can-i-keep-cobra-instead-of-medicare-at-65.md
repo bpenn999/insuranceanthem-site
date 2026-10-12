@@ -7,8 +7,8 @@ summary: "A lot of the households arriving in north Peoria retired early, took t
 category: Enrollment
 publishedAt: 2026-10-08
 readMinutes: 9
-image: /blog/cobra-vs-medicare-at-65-peoria.png
-imageAlt: '602Medicare article card reading "Can I keep COBRA instead of Medicare at 65?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/can-i-keep-cobra-instead-of-medicare-at-65-photo.jpg
+imageAlt: 'An open spiral notebook with a pen sits beside a cup of black coffee and a laptop on a wooden desk.'
 faqs:
   - q: Do I have to enroll in Medicare at 65 if I have COBRA?
     a: Nobody will force you, but you should. COBRA is not coverage based on current employment, so it does not let you delay Part B without penalty, and once you are 65 Medicare is the primary payer whether you enrolled or not. A COBRA plan can pay as though Medicare had already covered its share, which leaves you with the bills Medicare would have paid. Enroll in Part A and Part B during your seven-month Initial Enrollment Period and treat COBRA as secondary coverage, if you keep it at all.

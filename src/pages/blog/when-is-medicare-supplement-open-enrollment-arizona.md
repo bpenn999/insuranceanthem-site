@@ -7,8 +7,8 @@ summary: 'Medicare Supplement open enrollment is not the fall enrollment period.
 category: Medicare Supplement
 publishedAt: 2026-10-10
 readMinutes: 9
-image: /blog/medicare-supplement-open-enrollment-arizona-peoria-2027.png
-imageAlt: '602Medicare article card reading "When is open enrollment for Medicare Supplement plans?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/when-is-medicare-supplement-open-enrollment-arizona-photo.jpg
+imageAlt: 'A dirt hiking trail with stone steps winds between saguaro cactuses toward sunlit desert hills.'
 faqs:
   - q: When is open enrollment for Medicare Supplement plans?
     a: It is different for every person. Medicare Supplement open enrollment is a one-time six-month period that starts the first day of the month you are both 65 or older and enrolled in Medicare Part B. Someone whose Part B starts March 1, 2027 has until August 31, 2027. It is not the October 15 to December 7 period, which applies to Medicare Advantage and Part D drug plans, and it does not repeat each year.

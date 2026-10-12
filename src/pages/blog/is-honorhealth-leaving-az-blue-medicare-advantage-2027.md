@@ -7,8 +7,8 @@ summary: 'HonorHealth says that as of January 1, 2027 its employed physicians, s
 category: Medicare Advantage
 publishedAt: 2026-10-08
 readMinutes: 11
-image: /blog/honorhealth-az-blue-medicare-advantage-2027.png
-imageAlt: '602Medicare article card reading "Is HonorHealth leaving AZ Blue Medicare Advantage?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/is-honorhealth-leaving-az-blue-medicare-advantage-2027-photo.jpg
+imageAlt: 'A black stethoscope and a pen rest on a green notebook on a white desk.'
 faqs:
   - q: Is HonorHealth leaving AZ Blue Medicare Advantage?
     a: Yes, for one family of plans. HonorHealth's notice says that as of January 1, 2027, HonorHealth, including all employed physicians, specialists and facilities, will no longer be in network with the AZ Blue Best Life (HMO) Medicare Advantage network. Its primary care providers came out of that network earlier, on July 1, 2026. HonorHealth says the change applies only to AZ Blue Best Life (HMO) plans and that it continues to be in network with all other Blue Cross Blue Shield of Arizona plans.

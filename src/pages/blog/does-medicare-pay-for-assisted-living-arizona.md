@@ -7,8 +7,8 @@ summary: 'It is the single most expensive misunderstanding in Medicare, and I he
 category: Long-Term Care
 publishedAt: 2026-08-10
 readMinutes: 9
-image: /blog/medicare-assisted-living-arizona-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare pay for assisted living?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-pay-for-assisted-living-arizona-photo.jpg
+imageAlt: 'An older woman in a red top sits in a wicker chair on a covered patio, talking with two family members.'
 faqs:
   - q: Does Medicare pay for assisted living?
     a: No. Medicare does not pay for room, board or custodial care in an assisted living community — that is help with bathing, dressing, eating and moving around, which is the reason most people move in. This is true of Original Medicare, of Medicare Advantage plans and of Medicare Supplements alike; none of them cover the monthly bill. Medicare keeps paying for your medical care while you live there, which is a different thing entirely.

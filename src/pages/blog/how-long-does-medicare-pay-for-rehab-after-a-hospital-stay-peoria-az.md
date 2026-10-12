@@ -7,8 +7,8 @@ summary: 'The honest answer is "up to 100 days," and every word in that phrase i
 category: Coverage
 publishedAt: 2026-09-14
 readMinutes: 11
-image: /blog/medicare-rehab-after-hospital-stay-peoria-2026.png
-imageAlt: '602Medicare article card reading "How long does Medicare pay for rehab?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/how-long-does-medicare-pay-for-rehab-after-a-hospital-stay-peoria-az-photo.jpg
+imageAlt: 'A smiling older woman in a white shirt sits on the floor of a bright room and stretches her arms forward.'
 faqs:
   - q: How many days will Medicare pay for rehab?
     a: Up to 100 days per benefit period in a skilled nursing facility, after a qualifying inpatient hospital stay of at least three days in a row. Days 1 through 20 are covered in full once the Part A deductible is met, days 21 through 100 carry a daily coinsurance, and from day 101 you pay the full rate. The 100 is a ceiling, not an entitlement. Coverage runs only as long as you need daily skilled nursing or therapy, and most stays end well before the ceiling.

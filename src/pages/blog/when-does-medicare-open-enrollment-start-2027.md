@@ -7,8 +7,8 @@ summary: 'The window itself is the easy part: October 15 to December 7, same as 
 category: Enrollment
 publishedAt: 2026-08-17
 readMinutes: 8
-image: /blog/medicare-open-enrollment-2027-peoria.png
-imageAlt: '602Medicare article card reading "When does Medicare open enrollment start for 2027?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/when-does-medicare-open-enrollment-start-2027-photo.jpg
+imageAlt: 'Two gray-haired women hug and smile on a green sofa with an open laptop on a small table nearby.'
 faqs:
   - q: When does Medicare open enrollment start for 2027?
     a: Medicare's annual open enrollment period runs October 15 through December 7, 2026, and anything you change in that window takes effect January 1, 2027. The dates are the same every year and they are national — there is no separate Arizona window, and no early start for Maricopa County. December 7 is a hard deadline, not a soft one.

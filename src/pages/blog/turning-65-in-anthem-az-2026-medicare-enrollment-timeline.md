@@ -7,8 +7,8 @@ summary: 'Your enrollment window is set by your own birthday, not by the dates i
 category: Enrollment
 publishedAt: 2026-08-07
 readMinutes: 8
-image: /blog/turning-65-anthem-az-2026-timeline.png
-imageAlt: '602Medicare article card reading "Turning 65 in Anthem: your 2026 Medicare timeline", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/turning-65-in-anthem-az-2026-medicare-enrollment-timeline-photo.jpg
+imageAlt: 'A close view of a silver ballpoint pen resting on a wooden desk next to a spiral notebook.'
 faqs:
   - q: When exactly does my Medicare enrollment window open if I turn 65 in Anthem, AZ?
     a: Three months before the month of your 65th birthday, and it runs for seven months total — the three months before, your birthday month, and the three months after. Arizona does not change this; it is federal and it is keyed to your own birthday, not to the fall dates you see advertised.

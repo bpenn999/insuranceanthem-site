@@ -7,8 +7,8 @@ summary: 'TRICARE For Life is the one Medicare arrangement where the answer is n
 category: Enrollment
 publishedAt: 2026-09-24
 readMinutes: 9
-image: /blog/tricare-for-life-medicare-part-b-glendale-2026.png
-imageAlt: '602Medicare article card reading "Do I need Medicare Part B if I have TRICARE For Life?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/do-i-need-medicare-part-b-if-i-have-tricare-for-life-photo.jpg
+imageAlt: 'An American flag flies from a white flagpole against a blue sky streaked with thin clouds.'
 faqs:
   - q: Do I need Medicare Part B if I have TRICARE For Life?
     a: Yes. If you are a military retiree, the family member of a retiree or a survivor, TRICARE requires you to have Medicare Part A and Part B once you are eligible for Part A. TRICARE For Life has no enrollment and no fee of its own, but you pay the Part B premium, and you lose TRICARE coverage if you decline Part B, drop it later or stop paying for it. The only people who do not need Part B to keep TRICARE are active-duty service members and their family members, and that exception ends when the sponsor retires.

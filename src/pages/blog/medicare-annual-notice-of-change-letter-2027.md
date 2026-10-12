@@ -7,8 +7,8 @@ summary: 'It is the letter your plan is legally required to put in your hands by
 category: Enrollment
 publishedAt: 2026-08-26
 readMinutes: 10
-image: /blog/medicare-annual-notice-of-change-2027-peoria.png
-imageAlt: '602Medicare article card reading "What is the Annual Notice of Change letter?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/medicare-annual-notice-of-change-letter-2027-photo.jpg
+imageAlt: 'A woman in glasses and a bearded man sit on a sofa talking over an open notebook and a tablet.'
 faqs:
   - q: What is the Medicare Annual Notice of Change?
     a: It is the notice your Medicare Advantage or Part D plan sends every fall setting out how that plan will change on January 1. Medicare describes it as including any changes in coverage, costs and more that will be effective in January. Federal rules make it a standardized document with a hard delivery deadline, which is why it arrives looking much the same from every plan — the format is set by CMS, not by the carrier.

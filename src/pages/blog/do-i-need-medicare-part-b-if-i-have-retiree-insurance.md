@@ -7,8 +7,8 @@ summary: "A good share of the households settling in north Peoria brought a reti
 category: Enrollment
 publishedAt: 2026-10-12
 readMinutes: 9
-image: /blog/retiree-insurance-medicare-part-b-peoria-2027.png
-imageAlt: '602Medicare article card reading "Do I need Medicare Part B if I have retiree insurance?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/do-i-need-medicare-part-b-if-i-have-retiree-insurance-photo.jpg
+imageAlt: 'A gray-haired couple sits on a sofa with a laptop, looking at each other as they talk something over.'
 faqs:
   - q: Do I need Medicare Part B if I have retiree insurance?
     a: In nearly every case, yes. Retiree coverage is a benefit from a job that has ended, so it does not let you delay Part B without a penalty the way coverage from a current employer does. Once you are 65, Medicare pays first and the retiree plan pays second, and Medicare.gov warns that retiree coverage might not pay your medical costs for any period when you were eligible for Medicare and did not sign up. The main exception is a federal retiree keeping a Federal Employees Health Benefits plan, for whom Part B is a choice.

@@ -7,8 +7,8 @@ summary: 'Arizona gained plans overall for 2027 — 148 against 133 — and stil
 category: Medicare Advantage
 publishedAt: 2026-10-03
 readMinutes: 11
-image: /blog/medicare-advantage-plans-ending-arizona-2027-peoria.png
-imageAlt: '602Medicare article card reading "Which Medicare Advantage plans are ending in Arizona for 2027?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/medicare-advantage-plans-ending-arizona-2027-photo.jpg
+imageAlt: 'Tall saguaro cactuses stand across the Sonoran desert under a golden sunset sky filled with soft clouds.'
 faqs:
   - q: Are Medicare Advantage plans going away in Arizona in 2027?
     a: Not as a category. CMS's Arizona fact sheet counts 148 Medicare Advantage plans available in 2027 against 133 in 2026, and every Arizonan with Medicare has access to a $0-premium plan. What is true is that specific plans are ending. Comparing the CMS 2026 and 2027 landscape files by plan number, 21 plans sold in Arizona in 2026 do not appear anywhere in the 2027 file, and their members have to choose something else for January 1.

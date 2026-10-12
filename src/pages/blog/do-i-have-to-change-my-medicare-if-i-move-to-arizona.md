@@ -7,8 +7,8 @@ summary: 'Half the people I meet in north Peoria moved here from somewhere else,
 category: Enrollment
 publishedAt: 2026-08-16
 readMinutes: 9
-image: /blog/medicare-moving-to-arizona-2026.png
-imageAlt: '602Medicare article card reading "Moving to Arizona with Medicare", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/do-i-have-to-change-my-medicare-if-i-move-to-arizona-photo.jpg
+imageAlt: 'Tall saguaro cacti rise above a desert hillside with tile-roofed homes and a wide valley and mountains beyond under a blue sky.'
 faqs:
   - q: What happens to my Medicare coverage if I move to another state?
     a: Original Medicare — Part A and Part B — is federal and does not change at all. What changes is whatever sits on top of it. A Medicare Advantage plan and a standalone Part D drug plan are both sold by service area, usually county by county, so a plan from your old state generally cannot follow you to Arizona and you get a Special Enrollment Period to pick a new one. A Medicare Supplement (Medigap) policy does travel with you, because Original Medicare underneath it has no network.

@@ -7,8 +7,8 @@ summary: 'Wellcare is staying in Arizona for 2027, but with a much smaller map: 
 category: Medicare Advantage
 publishedAt: 2026-10-06
 readMinutes: 9
-image: /blog/wellcare-medicare-advantage-arizona-2027.png
-imageAlt: '602Medicare article card reading "Is Wellcare leaving Medicare Advantage in Arizona?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/is-wellcare-leaving-medicare-advantage-in-arizona-2027-photo.jpg
+imageAlt: 'A dirt road curves through open desert lined with saguaro and prickly pear cactus under a clear sky.'
 faqs:
   - q: Is Wellcare leaving Medicare Advantage in 2027?
     a: Not nationally, and not in Arizona. Wellcare's parent, Centene, is making the largest county pullback of any insurer for 2027 — Healthcare Dive counts 344 counties — and is leaving Hawaii, Oklahoma and Tennessee entirely, with roughly 340,000 members affected. Arizona is not one of those states. Wellcare still sells a general Medicare Advantage plan in Maricopa, Pima, Pinal, Cochise, Gila, Santa Cruz and Yuma counties for 2027, plus its chronic-condition and dual-eligible plans and two stand-alone drug plans.

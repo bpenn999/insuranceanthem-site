@@ -7,8 +7,8 @@ summary: 'If the trip leaves the United States, almost certainly. Original Medic
 category: Coverage
 publishedAt: 2026-10-06
 readMinutes: 10
-image: /blog/travel-insurance-medicare-anthem-2027.png
-imageAlt: '602Medicare article card reading "Do I need travel insurance if I have Medicare?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/travel-insurance-for-medicare-beneficiaries-arizona-2027-photo.jpg
+imageAlt: 'Two older men lean on the railing of a ship deck watching the wake spread across deep blue water.'
 faqs:
   - q: Does Medicare cover me when I travel outside the United States?
     a: Almost never. Medicare.gov counts the 50 states, the District of Columbia, Puerto Rico, the U.S. Virgin Islands, Guam, the Northern Mariana Islands and American Samoa as "the U.S." Outside those, Original Medicare pays for hospital care in only three situations — an emergency that starts inside the U.S. when a foreign hospital is closer, an emergency while driving through Canada between Alaska and another state, or living closer to a foreign hospital than to a U.S. one. A vacation abroad is none of them.

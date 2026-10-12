@@ -7,8 +7,8 @@ summary: 'Almost never, and the exceptions are narrower than people assume. Orig
 category: Coverage
 publishedAt: 2026-09-16
 readMinutes: 9
-image: /blog/medicare-coverage-in-mexico-peoria-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover me in Mexico?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-me-in-mexico-photo.jpg
+imageAlt: 'A long straight two-lane highway runs through red desert toward distant sandstone buttes under a blue sky.'
 faqs:
   - q: Does Medicare cover you in Mexico?
     a: Almost never. Original Medicare only pays for care in a foreign hospital in three situations. You are in the U.S. when an emergency happens and the foreign hospital is closer than the nearest U.S. hospital that can treat you. You are driving through Canada between Alaska and another state when an emergency happens. Or you live in the U.S. and a foreign hospital is closer to your home than the nearest U.S. one. None of those describes a trip to Rocky Point or Los Algodones from Peoria, so for practical purposes the answer is no.

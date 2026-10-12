@@ -7,8 +7,8 @@ summary: 'The rule itself is one sentence. The part that costs people money is t
 category: Planning
 publishedAt: 2026-08-09
 readMinutes: 9
-image: /blog/hsa-contributions-and-medicare-2026.png
-imageAlt: '602Medicare article card reading "HSA contributions and Medicare", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/can-i-contribute-to-an-hsa-while-on-medicare-photo.jpg
+imageAlt: 'A person writes figures in a notebook with one hand while using a calculator with the other on a wooden desk.'
 faqs:
   - q: Can I contribute to an HSA while on Medicare?
     a: No. Enrollment in any part of Medicare — A, B, C or D — ends your eligibility to put new money into a Health Savings Account. The IRS is explicit about it — beginning with the first month you are enrolled in Medicare, your contribution limit is zero. What does not change is the account itself. The balance stays yours, it keeps growing tax-free, and you can spend it tax-free on qualified expenses for the rest of your life.

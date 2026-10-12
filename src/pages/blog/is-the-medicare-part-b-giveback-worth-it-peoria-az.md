@@ -7,8 +7,8 @@ summary: 'The giveback is the loudest thing in Medicare advertising and it is a 
 category: Medicare Advantage
 publishedAt: 2026-09-11
 readMinutes: 9
-image: /blog/medicare-part-b-giveback-worth-it-peoria-2027.png
-imageAlt: '602Medicare article card reading "Is the Part B giveback worth it?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/is-the-medicare-part-b-giveback-worth-it-peoria-az-photo.jpg
+imageAlt: 'Two hands count a stack of twenty dollar bills over a wooden desk covered with papers.'
 faqs:
   - q: What is the Medicare Part B giveback benefit?
     a: Its proper name is the Part B premium reduction benefit. Some Medicare Advantage plans take a smaller payment from Medicare and use the difference to pay part or all of your monthly Part B premium. It is a legitimate, CMS-approved benefit offered by certain plans, not a government program you apply for, and the amount ranges from a few cents a month up to the full standard premium. Original Medicare, Medicare Supplement plans and stand-alone Part D plans never include one.

@@ -7,8 +7,8 @@ summary: 'Almost every healthy 65-year-old asks this, and the arithmetic is the 
 category: Part D
 publishedAt: 2026-08-21
 readMinutes: 10
-image: /blog/do-i-need-part-d-if-i-take-no-prescriptions-peoria-2026.png
-imageAlt: '602Medicare article card reading "No prescriptions. Do you still need Part D?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/do-i-need-medicare-part-d-if-i-dont-take-prescriptions-photo.jpg
+imageAlt: 'A man in a sun hat and blue polo lines up a putt on a sunny golf course with trees and homes behind him.'
 faqs:
   - q: Is Medicare Part D mandatory?
     a: 'No. Medicare says plainly that drug coverage is optional and offered to everyone with Medicare by private companies approved by Medicare. Nobody makes you buy it. What is not optional is the consequence: if you go 63 days or more in a row without Medicare drug coverage or other creditable drug coverage after becoming eligible, a late enrollment penalty is added to your premium when you do sign up, and for most people that penalty lasts as long as they have drug coverage.'

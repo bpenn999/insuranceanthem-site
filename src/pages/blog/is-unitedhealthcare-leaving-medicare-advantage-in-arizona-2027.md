@@ -7,8 +7,8 @@ summary: 'UnitedHealthcare is sending non-renewal letters dated October 2 to abo
 category: Medicare Advantage
 publishedAt: 2026-10-06
 readMinutes: 9
-image: /blog/unitedhealthcare-medicare-advantage-arizona-2027.png
-imageAlt: '602Medicare article card reading "Is UnitedHealthcare leaving Medicare Advantage in Arizona?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/is-unitedhealthcare-leaving-medicare-advantage-in-arizona-2027-photo.jpg
+imageAlt: 'Golfers putt on a green lined with tall palm trees beside a pond, with low homes and a desert mountain behind.'
 faqs:
   - q: Is UnitedHealthcare leaving Medicare Advantage in 2027?
     a: No. UnitedHealthcare is discontinuing some plans and reducing some service areas effective January 1, 2027, with non-renewal notices dated October 2, 2026 going to roughly 390,000 members nationally, but it remains the largest Medicare Advantage carrier in the country. In Arizona it sells 21 plans for 2027, the same count as 2026, and every general AARP Medicare Advantage plan offered in Maricopa County this year continues next year.

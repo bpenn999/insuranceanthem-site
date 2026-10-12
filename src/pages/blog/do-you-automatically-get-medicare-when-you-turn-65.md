@@ -7,8 +7,8 @@ summary: "Most people turning 65 in Peoria in early 2027 will not be enrolled in
 category: Enrollment
 publishedAt: 2026-10-07
 readMinutes: 9
-image: /blog/medicare-automatic-enrollment-at-65-peoria-2027.png
-imageAlt: '602Medicare article card reading "Do you automatically get Medicare at 65?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/do-you-automatically-get-medicare-when-you-turn-65-photo.jpg
+imageAlt: 'A single-story ranch home with a white fence sits on open desert land below a rugged mountain and a blue sky with clouds.'
 faqs:
   - q: Do you automatically get Medicare when you turn 65?
     a: Only if you are already receiving Social Security or Railroad Retirement Board benefits at least four months before the month you turn 65. In that case Medicare enrolls you in Part A and Part B and mails a welcome package with your card about three months before your coverage starts. If you are not drawing those benefits yet, nobody enrolls you, and you have to sign up yourself through Social Security during your seven-month Initial Enrollment Period.

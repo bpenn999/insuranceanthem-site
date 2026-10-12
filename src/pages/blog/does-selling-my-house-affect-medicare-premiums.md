@@ -7,8 +7,8 @@ summary: 'Half the people moving into north Peoria sold a house to get here, and
 category: Planning
 publishedAt: 2026-08-12
 readMinutes: 9
-image: /blog/medicare-home-sale-irmaa-2026.png
-imageAlt: '602Medicare article card reading "Does selling my house raise my Medicare premium?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-selling-my-house-affect-medicare-premiums-photo.jpg
+imageAlt: 'Prickly pear cactus heavy with fruit grows along a wooden fence in front of a white stucco house with a tile roof.'
 faqs:
   - q: Does selling my house affect my Medicare premiums?
     a: It can, but only if the sale produces a taxable gain large enough to push your modified adjusted gross income past the first income-related threshold Social Security publishes for the plan year. Most home sales never get there, because you can generally exclude up to $250,000 of gain on a main home ($500,000 for a married couple filing jointly) if you owned and lived in it for at least two of the five years before the sale. Only the gain above that exclusion counts.

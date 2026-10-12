@@ -7,8 +7,8 @@ summary: 'It is one of the most common operations in the country and it is one o
 category: Coverage
 publishedAt: 2026-08-24
 readMinutes: 8
-image: /blog/medicare-cataract-surgery-arizona-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover cataract surgery?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-cataract-surgery-arizona-photo.jpg
+imageAlt: 'A smiling older woman with short hair and wire-rimmed eyeglasses stands outdoors with warm sunlight glowing behind her.'
 faqs:
   - q: Does Medicare cover cataract surgery?
     a: Yes. Medicare Part B covers cataract surgery that implants a conventional intraocular lens, whether it is done in a hospital outpatient department, an ambulatory surgery center or a doctor's office. It is covered as a medical procedure, not as a vision benefit, which is why it is paid for even though Medicare pays for almost no routine eye care. Medicare Advantage plans must cover it too, but they apply their own network and prior-authorization rules.

@@ -7,8 +7,8 @@ summary: 'Aetna is staying in Arizona for 2027, but smaller and leaning toward H
 category: Medicare Advantage
 publishedAt: 2026-10-05
 readMinutes: 9
-image: /blog/aetna-medicare-advantage-arizona-2027.png
-imageAlt: '602Medicare article card reading "Is Aetna leaving Medicare Advantage in Arizona?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/is-aetna-leaving-medicare-advantage-in-arizona-2027-photo.jpg
+imageAlt: 'Tall saguaro cactus stand against a soft sunrise sky with desert mountains on the horizon.'
 faqs:
   - q: Is Aetna leaving Medicare Advantage in 2027?
     a: No. Aetna will sell Medicare Advantage plans in 41 states plus Washington, D.C. for 2027, down from 43 states in 2026, and its October 3 announcement says it is giving "renewed focus to HMO products." It is a smaller, more HMO-shaped footprint, not an exit. Analysts quoted by Healthcare Dive estimate roughly 950,000 members nationwide are in Aetna plans that end or in areas Aetna is leaving.

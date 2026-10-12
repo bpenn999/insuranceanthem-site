@@ -7,8 +7,8 @@ summary: 'Medicare covers surgery, chemotherapy, radiation and cancer drugs, and
 category: Coverage
 publishedAt: 2026-09-29
 readMinutes: 12
-image: /blog/does-medicare-cover-cancer-treatment-peoria-az-2026.png
-imageAlt: '602Medicare article card reading "Does Medicare cover cancer treatment?", with the 602Medicare badge and a byline for Brian Penner, Licensed Independent Medicare Advisor.'
+image: /blog/does-medicare-cover-cancer-treatment-peoria-az-photo.jpg
+imageAlt: 'Close view of an older couple holding hands as they walk together outdoors, one in a pink shirt and one in cream.'
 faqs:
   - q: Does Medicare cover 100% of cancer treatment?
     a: No. Original Medicare pays 80 percent of the Medicare-approved amount for outpatient chemotherapy, radiation and doctor visits after the $283 Part B deductible in 2026, and you owe the other 20 percent with no annual limit. A hospital admission costs the $1,736 Part A deductible per benefit period. A Medicare Supplement such as Plan G pays nearly all of that, and a Medicare Advantage plan limits it with a yearly out-of-pocket maximum that may be set as high as $9,250 in network in 2026.
