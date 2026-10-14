@@ -216,7 +216,7 @@ export const site = {
   },
 
   /**
-   * The client intake form — SeniorSimple, hosted, opened in a new tab.
+   * The client intake form — RetireFlo, hosted, opened in a new tab.
    *
    * WHY IT IS NOT A PAGE HERE. It collects doctors, prescriptions and current
    * coverage — the answers that let Brian shop a plan accurately BEFORE the
@@ -225,13 +225,13 @@ export const site = {
    * which `leadEndpoint` below deliberately avoids (name, phone, email, free
    * text and nothing more).
    *
-   * The invite slug says `medicare-on-main` because all three of Brian's sites
+   * One link because all three of Brian's sites
    * — 602Medicare, Medicare On Main and New Mexico Medicare Help — and the
    * GoGuruX appointment reminders feed ONE intake queue. It is not a wrong
    * link. If it ever moves, it moves in all four places.
    */
   intake: {
-    url: 'https://app.seniorsimple.io/invite/medicare-on-main',
+    url: 'https://retireflo.com/brian-scott-penner',
     label: 'Medicare Intake Form',
     /**
      * Brian's own words for the ask (2026-08-26), lightly formalised for a
