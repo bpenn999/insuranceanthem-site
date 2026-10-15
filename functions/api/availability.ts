@@ -91,6 +91,7 @@ const GOGURUX_ANON =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJvaXlweGdncWxnYnpyc3BrZW9vIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYwNDY3NTUsImV4cCI6MjA2MTYyMjc1NX0.KBULK0GoGRIXOW0uRFya8kLuiXaxpTsA5RW2tUlDOPY';
 
 const LOCATION_SLUG = 'medicareonmain-com';
+const GX_CACHE = 'https://gx-availability-cache.brianinsuranceservices.workers.dev';
 const CALENDAR_SLUG = '602-medicare';
 const DEFAULT_CALENDAR_ID = 'brianinsuranceservices@gmail.com';
 
@@ -305,8 +306,10 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
         location_slug: LOCATION_SLUG,
         calendar_slug: CALENDAR_SLUG,
       });
-      const res = await fetch(`${GOGURUX}/functions/v1/get-availability?${q}`, {
-        headers: { Authorization: `Bearer ${GOGURUX_ANON}`, apikey: GOGURUX_ANON },
+      // Through gx-availability-cache (2026-10-15): GoGuruX's live call went
+      // to 17–32s, past TIMEOUT_MS, so every request here answered 502. The
+      // cache Worker keeps GoGuruX's own JSON in KV and answers in ms.
+      const res = await fetch(`${GX_CACHE}/availability?${q}`, {
         signal: AbortSignal.timeout(TIMEOUT_MS),
       });
       if (!res.ok) throw new Error(`get-availability ${res.status}`);

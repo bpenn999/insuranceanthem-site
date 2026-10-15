@@ -738,21 +738,76 @@ const weekdays = [
       };
 
       try {
-        const res = await fetch(`${cfg.url}/functions/v1/create-booking`, {
+        // ── Don't make them wait for GoGuruX's whole pipeline (2026-10-15) ──
+        //  create-booking now takes ~80s end to end (the appointment row lands
+        //  ~20s in; the rest is GoGuruX's own emails and Google sync), while
+        //  its rejections come back in a few seconds. Wait ACCEPT_MS for a
+        //  rejection; if none, show the confirmation and let the request
+        //  finish in the background. A late failure swaps the screen to an
+        //  error and — like a tab closed mid-flight — sends /api/lead a backup.
+        const slotStart = state.selectedSlot.startUtc;
+        const bookingCall: Promise<any> = fetch(`${cfg.url}/functions/v1/create-booking`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${cfg.key}` },
           body: JSON.stringify(payload),
+        }).then(async (res) => {
+          const b = await res.json().catch(() => ({}));
+          if (!res.ok || b?.error) throw new Error(b?.error || `booking ${res.status}`);
+          return b;
         });
-        const body = await res.json().catch(() => ({}));
-        if (!res.ok || body?.error) throw new Error(body?.error || `booking ${res.status}`);
+        const ACCEPT_MS = 7000;
+        const early = await Promise.race([
+          bookingCall,
+          new Promise<null>((r) => window.setTimeout(() => r(null), ACCEPT_MS)),
+        ]);
+        const body: any = early ?? { success: true, pending: true };
 
-        // Tell the lead scoreboard. The booking went browser → GoGuruX, so this
-        // is the only way the site's own record hears about it. Fire-and-forget.
-        (window as any).__track?.('booking', {
-          form: 'Phone call' + (t65 ? ' · Turning 65' : ''),
-          contact: { first: details.firstName, last: details.lastName, phone: details.phone, email: details.email },
-          appt: { start: state.selectedSlot.startUtc, kind: 'Phone call', ref: String(body?.id ?? body?.booking?.id ?? '') },
-        });
+        const onBooked = (b: any) => {
+          // Tell the lead scoreboard. The booking went browser → GoGuruX, so this
+          // is the only way the site's own record hears about it. Fire-and-forget.
+          (window as any).__track?.('booking', {
+            form: 'Phone call' + (t65 ? ' · Turning 65' : ''),
+            contact: { first: details.firstName, last: details.lastName, phone: details.phone, email: details.email },
+            appt: { start: slotStart, kind: 'Phone call', ref: String(b?.id ?? b?.booking?.id ?? '') },
+          });
+        };
+        const backupLead = (why: string) => {
+          const lead = JSON.stringify({
+            firstName: details.firstName,
+            lastName: details.lastName,
+            email: details.email,
+            phone: details.phone,
+            tool: 'booking-unconfirmed',
+            page: location.pathname,
+            message: `BOOKING REQUEST — phone call, ${new Date(slotStart).toLocaleString('en-US', { timeZone: 'America/Phoenix' })} Arizona. ${why} Check it is on the calendar; if not, call them to book it.`,
+          });
+          navigator.sendBeacon?.('/api/lead', new Blob([lead], { type: 'application/json' }));
+        };
+        if (early) {
+          onBooked(early);
+        } else {
+          let settled = false;
+          const onLeave = () => {
+            if (!settled) backupLead('The visitor left the page before GoGuruX finished saving it.');
+          };
+          window.addEventListener('pagehide', onLeave);
+          bookingCall.then(
+            (b) => {
+              settled = true;
+              window.removeEventListener('pagehide', onLeave);
+              onBooked(b);
+            },
+            (err) => {
+              settled = true;
+              window.removeEventListener('pagehide', onLeave);
+              console.info('[booking] late failure —', String(err));
+              backupLead(`GoGuruX rejected it after the visitor was shown a confirmation (${String(err).slice(0, 120)}).`);
+              const h = doneEl.querySelector('.bk__h--done');
+              if (h) h.textContent = 'We could not lock in that time.';
+              doneWhen.textContent = `Something went wrong saving your appointment. We have your details and will call you to set it up — or call ${cfg.phone} now.`;
+            },
+          );
+        }
 
         // ── Let them put it in their own calendar ───────────────────────────
         //  Built here rather than trusting the confirmation email, which
