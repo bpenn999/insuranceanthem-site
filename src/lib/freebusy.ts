@@ -136,3 +136,43 @@ export function dayWindow(day: string, padHours = 24): { timeMin: string; timeMa
     timeMax: new Date(base + 86_400_000 + pad).toISOString(),
   };
 }
+
+/**
+ * Keep only the start times whose WHOLE appointment fits in free time.
+ *
+ * ── WHY (2026-10-16)
+ * GHL's free-slots feed answers "is this 30-minute grid cell open?". Every
+ * GoGuruX calendar books 45 minutes (phone, Moab, Monticello: slot_duration 45),
+ * so a 9:30 start that GHL called open ran to 10:15 — straight into a 10:00
+ * appointment GHL had correctly called busy. Three double-bookings came in
+ * this way on 10/15–16 (Griego, Krantz, Rittgers). A start is offered only if
+ * every grid cell the appointment touches is also in the feed.
+ *
+ * `step` is the feed's grid (the smallest gap between two offered times;
+ * 30 when the feed is too thin to tell). The one exception is the day's final
+ * grid cell: a start at the last time the calendar ever opens (`lastStart`,
+ * "HH:MM" wall time as written in the ISO string) is kept, because nothing can
+ * be booked after it. Pass no `lastStart` to drop it too.
+ */
+export function fitFullLength(slots: string[], minutes: number, lastStart?: string): string[] {
+  const times = slots.map((iso) => ({ iso, t: Date.parse(iso) })).filter((s) => Number.isFinite(s.t));
+  const sorted = [...times].sort((a, b) => a.t - b.t);
+  let step = Infinity;
+  for (let i = 1; i < sorted.length; i++) {
+    const gap = sorted[i].t - sorted[i - 1].t;
+    if (gap > 0 && gap < step) step = gap;
+  }
+  if (!Number.isFinite(step)) step = 30 * 60_000;
+  const need = Math.ceil((minutes * 60_000) / step);
+  const open = new Set(sorted.map((s) => s.t));
+  return times
+    .filter(({ iso, t }) => {
+      for (let k = 1; k < need; k++) {
+        if (!open.has(t + k * step)) return lastStart !== undefined && iso.slice(11, 16) >= lastStart;
+      }
+      return true;
+    })
+    .map((s) => s.iso);
+}
+
+

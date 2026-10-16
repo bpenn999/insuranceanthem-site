@@ -57,6 +57,7 @@ import {
   filterSlots,
   mergeIntervals,
   type Interval,
+  fitFullLength,
 } from '../../src/lib/freebusy.ts';
 import { parseFreeSlots } from '../../src/lib/booking.ts';
 
@@ -313,11 +314,13 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
         signal: AbortSignal.timeout(TIMEOUT_MS),
       });
       if (!res.ok) throw new Error(`get-availability ${res.status}`);
-      const body = (await res.json()) as { calendar?: { slot_duration?: number } };
-      // NOTE: body.slots is deliberately IGNORED. It is the list that offered a
-      // day Brian had blocked out, and nothing here reads it again.
+      const body = (await res.json()) as {
+        calendar?: { slot_duration?: number };
+        slots?: Array<{ start?: string; startUtc?: string; available?: boolean }>;
+      };
       if (!body?.calendar) throw new Error('get-availability returned no calendar');
-      return body.calendar;
+      if (!Array.isArray(body.slots)) throw new Error('get-availability returned no slots');
+      return { calendar: body.calendar, gxSlots: body.slots };
     })(),
   ]);
 
@@ -331,8 +334,23 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
     return json(502, { success: false, error: 'scheduler unavailable' });
   }
 
-  const minutes = Number(calendarResult.value?.slot_duration) || DEFAULT_MINUTES;
-  const raw = slotsResult.value
+  const minutes = Number(calendarResult.value.calendar?.slot_duration) || DEFAULT_MINUTES;
+  // ── BOTH feeds must call a time open (2026-10-16) ──────────────────────────
+  //  GHL's free-slots is the primary read, but on MOM/NM it was shown to miss
+  //  GoGuruX bookings outright (10/22 2:30 and 4:00 listed free while booked
+  //  in GoGuruX), and a start is only sound if the WHOLE appointment fits in
+  //  GHL's free cells. So: full-length starts from GHL, kept only where
+  //  GoGuruX (via gx-availability-cache) also offers that start. GoGuruX's
+  //  list on its own is still never used — it once offered a day Brian had
+  //  blocked out, which is why the intersection, not the union.
+  const gxOpen = new Set<number>();
+  for (const s of calendarResult.value.gxSlots) {
+    if (s?.available === false) continue;
+    const t = Date.parse(s?.startUtc ?? s?.start ?? '');
+    if (Number.isFinite(t)) gxOpen.add(t);
+  }
+  const raw = fitFullLength(slotsResult.value, minutes)
+    .filter((iso) => gxOpen.has(Date.parse(iso)))
     .map((iso) => {
       const start = Date.parse(iso);
       if (!Number.isFinite(start)) return null;
@@ -368,7 +386,7 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
 
   return json(200, {
     success: true,
-    calendar: calendarResult.value,
+    calendar: calendarResult.value.calendar,
     slots,
     filtered: { offered: raw.length, withheld: dropped },
   });
