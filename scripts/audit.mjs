@@ -348,6 +348,7 @@ for (const f of htmls) {
   const TOOL_SLUGS = [
     'plan-type-finder', 'enrollment-timeline', 'medicare-cost-estimator', 'irmaa-estimator',
     'plan-g-vs-plan-n', 'part-b-giveback', 'part-a-premium', 'cost-of-care',
+    'late-enrollment-penalty-calculator',
   ];
   const PRODUCT_SLUGS = ['medicare-advantage', 'medicare-supplement', 'part-d', 'long-term-care'];
   const COMPANY_LINKS = ['/about/', '/contact/', '/accessibility/', '/privacy/', '/terms/'];
@@ -446,6 +447,7 @@ for (const f of htmls) {
   const TOOLS = [
     'plan-type-finder', 'enrollment-timeline', 'medicare-cost-estimator', 'irmaa-estimator',
     'plan-g-vs-plan-n', 'part-b-giveback', 'part-a-premium', 'cost-of-care',
+    'late-enrollment-penalty-calculator',
   ];
   console.log(`Tools expected: ${TOOLS.length}`);
 

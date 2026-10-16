@@ -77,6 +77,15 @@ export const tools: Tool[] = [
     icon: 'calendar',
   },
   {
+    slug: 'late-enrollment-penalty-calculator',
+    name: 'Late Enrollment Penalty Calculator',
+    blurb:
+      'Signed up for Part B or Part D late? Enter the months you went without and see the penalty in dollars a month — and whether an exception applies.',
+    cta: 'Calculate my penalty',
+    minutes: 1,
+    icon: 'calculator',
+  },
+  {
     slug: 'cost-of-care',
     name: 'Cost of Care Estimator',
     blurb:

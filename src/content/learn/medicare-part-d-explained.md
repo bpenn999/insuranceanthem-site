@@ -13,7 +13,7 @@ faqs:
   - q: "What is the Part D out-of-pocket cap in 2026?"
     a: "It is $2,100. Once your out-of-pocket spending on covered drugs reaches that amount, your plan pays 100% of covered drugs for the rest of the calendar year. Premiums do not count toward the cap, and the amount resets every 1 January."
   - q: "Do I need Part D if I take no medication?"
-    a: "Usually yes. If you go more than 63 days after your Initial Enrollment Period without creditable drug coverage, Medicare adds a permanent penalty to your premium — for life, not for a year. A low-cost plan now is almost always cheaper than the penalty later, and it covers you if something changes."
+    a: "Usually yes. If you go 63 or more days after your Initial Enrollment Period without creditable drug coverage, Medicare adds a permanent penalty to your premium — for life, not for a year. A low-cost plan now is almost always cheaper than the penalty later, and it covers you if something changes."
   - q: "Why is my drug more expensive than my neighbor's on the same medication?"
     a: "Because you are almost certainly on different plans. Every Part D plan sets its own formulary and tier structure, so the same drug at the same dose can sit on tier 1 for one plan and tier 3 for another. Preferred pharmacy status adds a second layer of difference on top."
   - q: "Can I change my Part D plan mid-year?"
@@ -83,7 +83,7 @@ But it does not make plan choice less important — it makes it more important. 
 
 This one deserves plain language because it is permanent and widely misunderstood.
 
-If you go **more than 63 consecutive days** after your Initial Enrollment Period without creditable prescription drug coverage, Medicare adds a penalty to your Part D premium. It is calculated as 1% of the national base beneficiary premium for every month you went without, and it is added for **as long as you have Part D**. Not for a year. Permanently, and it is recalculated upward each year as the base premium rises.
+If you go **63 or more consecutive days** after your Initial Enrollment Period without creditable prescription drug coverage, Medicare adds a penalty to your Part D premium. It is calculated as 1% of the national base beneficiary premium for every month you went without, and it is added for **as long as you have Part D**. Not for a year. Permanently, and it is recalculated upward each year as the base premium rises.
 
 "Creditable coverage" means drug coverage at least as good as Part D — typically employer or union coverage. Your plan administrator can confirm in writing whether yours qualifies, and it is worth getting that in writing rather than assuming.
 

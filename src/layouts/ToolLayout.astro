@@ -6,6 +6,7 @@ import ToolsPreview from '../components/ToolsPreview.astro';
 import SectionHead from '../components/SectionHead.astro';
 import { toolBySlug } from '../data/tools';
 import { abs } from '../config/site';
+import type { Faq } from '../data/faqs';
 
 interface Props {
   slug: string;
@@ -13,9 +14,11 @@ interface Props {
   description: string;
   h1: string;
   lede: string;
+  /** Optional FAQs — emitted as FAQPage JSON-LD. The page renders them itself. */
+  faqs?: Faq[];
 }
 
-const { slug, title, description, h1, lede } = Astro.props;
+const { slug, title, description, h1, lede, faqs = [] } = Astro.props;
 const tool = toolBySlug(slug);
 
 const breadcrumbs = [
@@ -36,6 +39,16 @@ const schemaNodes = [
     offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
     isAccessibleForFree: true,
   },
+  ...(faqs.length
+    ? [{
+        '@type': 'FAQPage',
+        mainEntity: faqs.map((f) => ({
+          '@type': 'Question',
+          name: f.q,
+          acceptedAnswer: { '@type': 'Answer', text: f.a },
+        })),
+      }]
+    : []),
 ];
 ---
 

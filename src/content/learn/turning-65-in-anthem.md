@@ -68,7 +68,7 @@ These get waved around as scare tactics, which is a shame, because they are real
 
 **Part B.** If you could have enrolled and did not, you pay an extra 10% on your Part B premium for every full twelve months you delayed — for as long as you have Medicare. Not for a year. Permanently.
 
-**Part D.** If you go more than 63 days without creditable drug coverage after your Initial Enrollment Period, a surcharge is added to your Part D premium based on how many months you went without. Also permanent.
+**Part D.** If you go 63 or more days without creditable drug coverage after your Initial Enrollment Period, a surcharge is added to your Part D premium based on how many months you went without. Also permanent.
 
 **Both are waived if you had employer coverage through active employment.** This is the important exception. If you or your spouse are still working and covered by that employer's group plan, you can generally delay Part B without penalty, and you get an eight-month Special Enrollment Period once that employment ends.
 

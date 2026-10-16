@@ -7,7 +7,7 @@ category: "Enrollment"
 publishedAt: 2026-08-02
 readMinutes: 9
 relatedProducts: [part-d, medicare-supplement]
-relatedTools: [enrollment-timeline, irmaa-estimator]
+relatedTools: [late-enrollment-penalty-calculator, enrollment-timeline, irmaa-estimator]
 faqs:
   - q: "How much is the Part B late enrollment penalty?"
     a: "10% of the standard Part B premium for every full 12-month period you could have had Part B and did not, added to your premium for as long as you have Medicare. On the 2026 standard premium of $202.90, each full year of delay adds about $20.29 a month permanently."
@@ -42,7 +42,7 @@ Two details that make it worse than it first sounds.
 
 ## Part D: 1% a month, also for life
 
-If you go **more than 63 consecutive days** after your Initial Enrollment Period without creditable prescription drug coverage, Medicare adds **1% of the national base beneficiary premium for every month you went without**, rounded to the nearest ten cents.
+If you go **63 or more consecutive days** after your Initial Enrollment Period without creditable prescription drug coverage, Medicare adds **1% of the national base beneficiary premium for every month you went without**, rounded to the nearest ten cents.
 
 Go three years without and you have added 36% of the base premium to your monthly cost, permanently. And like the Part B penalty, the dollar figure is recalculated each year against the current national base premium, so it rises over time even though the percentage does not.
 
@@ -80,7 +80,7 @@ If you are approaching 65 and still working, ask your benefits administrator one
 
 ## The arithmetic, worked through
 
-Abstract percentages do not convey this well, so here is what it actually looks like.
+Abstract percentages do not convey this well, so here is what it actually looks like. Run your own numbers in our [late enrollment penalty calculator](/tools/late-enrollment-penalty-calculator/).
 
 **Someone who delays Part B by three years** with no qualifying coverage adds 30% to their premium. On the {{year}} standard premium of {{partB.premium}}, that is about $61 a month, or roughly $730 a year. If they live another 20 years on Medicare, and the standard premium rises as it historically has, the cumulative cost runs well into five figures — for three years of coverage they chose not to buy.
 

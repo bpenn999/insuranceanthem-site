@@ -123,6 +123,17 @@ export const partD = {
   outOfPocketCap: 2100,
   /** Maximum deductible a plan may charge */
   maxDeductible: 615,
+  /**
+   * National base beneficiary premium — the figure the Part D late enrollment
+   * penalty is calculated against (NOT what any plan charges).
+   * Source: CMS, "2026 Medicare Part D Bid Information and Part D Premium
+   * Stabilization Demonstration Parameters" (released 2025-07-28):
+   * https://www.cms.gov/newsroom/fact-sheets/2026-medicare-part-d-bid-information-and-part-d-premium-stabilization-demonstration-parameters
+   * — "For 2026, the base beneficiary premium will be $38.99." Also the figure
+   * in Medicare.gov's own worked example (avoid-penalties page). Verified
+   * 2026-10-16. CY2027 is $41.33 (CMS, 2026-07-28) — swap in at the annual update.
+   */
+  baseBeneficiaryPremium: 38.99,
 };
 
 /**
@@ -272,7 +283,68 @@ export const penalties = {
   partBPerYear: 0.1,
   /** Part D: +1% of the national base beneficiary premium per month, for life */
   partDPerMonth: 0.01,
+  /**
+   * A break in creditable drug coverage only counts once it reaches 63 days
+   * in a row. Medicare.gov: "Go 63 days or more without creditable drug
+   * coverage" (42 CFR 423.46: "a continuous period of 63 days or longer").
+   */
+  partDGapDays: 63,
 };
+
+export interface PartBPenalty {
+  /** Full 12-month periods — a partial year does not count */
+  periods: number;
+  /** Penalty as a fraction of the standard premium, e.g. 0.2 */
+  rate: number;
+  /** Monthly penalty in dollars on this plan year's standard premium */
+  monthly: number;
+  yearly: number;
+}
+
+/**
+ * Part B late enrollment penalty. `months` = months you could have had Part B
+ * but did not, and were not covered through current employment (yours or a
+ * spouse's). 10% per FULL 12-month period, on the current standard premium.
+ */
+export function partBLatePenalty(months: number, premium = partB.standardPremium): PartBPenalty {
+  const m = Math.max(0, Math.floor(Number.isFinite(months) ? months : 0));
+  const periods = Math.floor(m / 12);
+  const rate = Math.round(periods * penalties.partBPerYear * 100) / 100;
+  const monthly = Math.round(rate * premium * 100) / 100;
+  return { periods, rate, monthly, yearly: Math.round(monthly * 12 * 100) / 100 };
+}
+
+export interface PartDPenalty {
+  /** Months that count toward the penalty (0 if no gap reached 63 days) */
+  months: number;
+  /** Penalty as a fraction of the base beneficiary premium, e.g. 0.24 */
+  rate: number;
+  /** Monthly penalty, rounded to the nearest $0.10 as Medicare does */
+  monthly: number;
+  yearly: number;
+}
+
+/**
+ * Part D late enrollment penalty. `months` = full months without creditable
+ * drug coverage after the Initial Enrollment Period; `longestGapDays` = the
+ * longest unbroken stretch without it. Under 63 days in a row → no penalty.
+ * 1% per month × national base beneficiary premium, rounded to $0.10.
+ */
+export function partDLatePenalty(
+  months: number,
+  longestGapDays: number,
+  base = partD.baseBeneficiaryPremium,
+): PartDPenalty {
+  const m = Math.max(0, Math.floor(Number.isFinite(months) ? months : 0));
+  const counts = longestGapDays >= penalties.partDGapDays ? m : 0;
+  const rate = Math.round(counts * penalties.partDPerMonth * 100) / 100;
+  // The epsilon keeps a value like 9.35 from rounding down on float error.
+  const monthly = Math.round(rate * base * 10 + 1e-9) / 10;
+  return { months: counts, rate, monthly, yearly: Math.round(monthly * 12 * 100) / 100 };
+}
+
+/** Medicare rounds a premium to the nearest $0.10. */
+export const roundToDime = (n: number) => Math.round(n * 10 + 1e-9) / 10;
 
 export const usd = (n: number, decimals = 0) =>
   n.toLocaleString('en-US', {

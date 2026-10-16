@@ -1,0 +1,341 @@
+---
+import ToolLayout from '../../layouts/ToolLayout.astro';
+import Faq from '../../components/Faq.astro';
+import type { Faq as FaqItem } from '../../data/faqs';
+import {
+  PLAN_YEAR,
+  partB,
+  partD,
+  penalties,
+  partBLatePenalty,
+  partDLatePenalty,
+  roundToDime,
+  usd,
+} from '../../data/medicare-figures';
+
+// Turning-65 booking — the same tagged link TurningSixtyFive.astro uses, so a
+// booking from here lands with the T65 notes prefix and scoreboard label.
+const BOOK_T65 = '/book/?topic=t65';
+
+// Worked examples for the explainer, computed from the same functions the
+// calculator runs — so the page can never show an example the tool disagrees with.
+const exB = partBLatePenalty(26);
+const exD = partDLatePenalty(24, 90);
+
+const premiumB = usd(partB.standardPremium, 2);
+const baseD = usd(partD.baseBeneficiaryPremium, 2);
+
+const faqs: FaqItem[] = [
+  {
+    q: 'Does a partial year count toward the Part B penalty?',
+    a: `No. Only full 12-month periods count. Twenty-three months without Part B is one full period, so a 10% penalty; it takes 24 months to reach 20%. On the ${PLAN_YEAR} standard premium of ${premiumB}, each full period adds ${usd(partBLatePenalty(12).monthly, 2)} a month.`,
+  },
+  {
+    q: 'Why would my Part D penalty change from one year to the next?',
+    a: `The percentage you carry is fixed, but it is applied to the national base beneficiary premium, which CMS resets every year. For ${PLAN_YEAR} that base is ${baseD}. When it moves, the dollar amount of your penalty moves with it.`,
+  },
+  {
+    q: 'I went without drug coverage for a few weeks. Is there a penalty?',
+    a: `Not if the break was shorter than ${penalties.partDGapDays} days in a row. Medicare only counts a gap in creditable drug coverage once it reaches ${penalties.partDGapDays} consecutive days. A short break between an employer plan and a Medicare drug plan does not create a penalty.`,
+  },
+  {
+    q: 'Does the penalty go away if I join a Medicare Advantage plan?',
+    a: 'No. A Part B penalty is added to your Part B premium for as long as you have Part B, and you keep paying the Part B premium on an Advantage plan. A Part D penalty is added to the premium of whatever Medicare drug coverage you have, including drug coverage built into an Advantage plan.',
+  },
+];
+---
+
+<ToolLayout
+  slug="late-enrollment-penalty-calculator"
+  title={`Medicare Late Enrollment Penalty Calculator ${PLAN_YEAR} — Part B & D`}
+  description={`Estimate your Part B and Part D late enrollment penalty in ${PLAN_YEAR} dollars: 10% of the ${premiumB} Part B premium per full year, 1% of ${baseD} per Part D month.`}
+  h1="What would a late enrollment penalty cost me?"
+  lede={`Enter the months you went without Part B or drug coverage and see the penalty in ${PLAN_YEAR} dollars — monthly and yearly — plus the exceptions that mean you may owe nothing at all.`}
+  faqs={faqs}
+>
+  <form id="lep" novalidate>
+    <div class="t-field">
+      <label for="lep-b-months">Part B: months you went without Part B</label>
+      <input type="number" id="lep-b-months" name="bMonths" min="0" max="600" step="1"
+             inputmode="numeric" value="0" aria-describedby="lep-b-hint" />
+      <span class="t-hint" id="lep-b-hint">
+        Count the months you could have had Part B but did not. <strong>Leave out</strong> months
+        you were covered by a group health plan through your own or your spouse's current job.
+        <strong>Include</strong> months on COBRA or retiree coverage — those do not count as
+        employment coverage. Enter 0 if you signed up on time.
+      </span>
+    </div>
+
+    <div class="t-field">
+      <label for="lep-d-months">Part D: months without creditable drug coverage</label>
+      <input type="number" id="lep-d-months" name="dMonths" min="0" max="600" step="1"
+             inputmode="numeric" value="0" aria-describedby="lep-d-hint" />
+      <span class="t-hint" id="lep-d-hint">
+        Months after your Initial Enrollment Period with no Medicare drug plan and no other
+        creditable drug coverage (coverage at least as good as Medicare's — your plan sends a
+        yearly notice saying whether it is). Enter 0 if you never had a gap.
+      </span>
+    </div>
+
+    <fieldset class="t-fieldset">
+      <legend>Did any single break in drug coverage last {penalties.partDGapDays} days or longer?</legend>
+      <div class="t-options">
+        <label class="t-option"><input type="radio" name="gap" value="yes" checked /><span><strong>Yes</strong><em>{penalties.partDGapDays} or more days in a row</em></span></label>
+        <label class="t-option"><input type="radio" name="gap" value="no" /><span><strong>No</strong><em>Every break was shorter than {penalties.partDGapDays} days</em></span></label>
+      </div>
+    </fieldset>
+
+    <div class="t-actions">
+      <button type="submit" class="btn btn--lg" data-magnetic="0.24">Calculate my penalty</button>
+      <button type="reset" class="btn btn--ghost">Clear</button>
+    </div>
+    <p class="t-error" id="lep-error" role="alert"></p>
+  </form>
+
+  <div class="t-result" id="lep-result" hidden role="region" aria-live="polite" aria-label="Your estimated late enrollment penalty">
+    <p class="t-result__eyebrow">{PLAN_YEAR} estimate</p>
+    <h2 class="t-result__head" id="lep-head"></h2>
+    <div class="t-stats" id="lep-stats"></div>
+    <div class="t-result__body" id="lep-body"></div>
+
+    <aside class="lep-cta" aria-label="Turning 65 planning call">
+      <p class="lep-cta__h">Turning 65 or just retiring? Let's make sure you never pay this.</p>
+      <p class="lep-cta__body">
+        Most penalties come from timing that looked reasonable at the time — COBRA, a retiree plan,
+        a small employer. A short call puts your exact dates on a calendar and checks whether your
+        current coverage counts. No cost, no obligation.
+      </p>
+      <div class="t-actions">
+        <a href={BOOK_T65} class="btn btn--lg" data-magnetic="0.24" data-cta="tool-penalty-t65">
+          Book a Turning-65 planning call
+        </a>
+        <a href="/tools/enrollment-timeline/" class="btn btn--ghost">See my enrollment dates</a>
+      </div>
+    </aside>
+  </div>
+
+  <div slot="disclaimer">
+    <p>
+      Calculated in your browser from {PLAN_YEAR} figures: the {premiumB} standard Part B premium
+      and the {baseD} national base beneficiary premium for Part D. Nothing you enter is sent
+      anywhere or stored.
+    </p>
+    <p>
+      This is an estimate from what you enter. Social Security sets any Part B penalty and Medicare
+      sets any Part D penalty, and either can be reconsidered if your records show creditable
+      coverage you were not credited for. It is not a determination and not a recommendation of
+      any plan.
+    </p>
+  </div>
+
+  <div slot="explainer">
+    <h2>How this is calculated</h2>
+    <div class="prose">
+      <h3>Part B</h3>
+      <p>
+        <strong>Penalty = 10% × full 12-month periods without Part B × the current standard
+        premium.</strong> Partial years are dropped, not rounded up. The percentage is set when you
+        enroll; the dollar amount is recalculated every January on that year's standard premium,
+        and it lasts for as long as you have Part B.
+      </p>
+      <p>
+        Worked example: 26 months without Part B is {exB.periods} full periods, so
+        {' '}{Math.round(exB.rate * 100)}%. On the {PLAN_YEAR} standard premium of {premiumB}, that is
+        {' '}{usd(exB.monthly, 2)} a month on top of the premium — {usd(roundToDime(partB.standardPremium + exB.monthly), 2)}
+        {' '}in total once Medicare rounds to the nearest 10 cents, or {usd(exB.yearly, 2)} a year in
+        penalty alone.
+      </p>
+      <p><strong>What stops the Part B clock:</strong></p>
+      <ul>
+        <li>
+          A group health plan through <strong>current employment</strong> — yours or your spouse's —
+          at an employer with <strong>20 or more employees</strong>. Below 20 employees Medicare
+          usually pays first at 65, so delaying Part B can leave real gaps in coverage.
+        </li>
+        <li>
+          When that job or coverage ends, you have an <strong>8-month Special Enrollment
+          Period</strong> to take Part B with no penalty.
+        </li>
+        <li>
+          <strong>COBRA and retiree coverage do not count</strong>, however good the coverage is.
+          Months on either add to the penalty, and the end of COBRA does not open the 8-month window.
+        </li>
+      </ul>
+
+      <h3>Part D</h3>
+      <p>
+        <strong>Penalty = 1% × months without creditable drug coverage × the national base
+        beneficiary premium, rounded to the nearest $0.10.</strong> Months only count when a break
+        reaches {penalties.partDGapDays} days in a row. The penalty is added to your drug plan's
+        premium for as long as you have Medicare drug coverage.
+      </p>
+      <p>
+        Worked example: 24 months without creditable coverage is {Math.round(exD.rate * 100)}% of the
+        {' '}{PLAN_YEAR} base beneficiary premium of {baseD}, which rounds to
+        {' '}{usd(exD.monthly, 2)} a month — {usd(exD.yearly, 2)} a year. A break of fewer than
+        {' '}{penalties.partDGapDays} days creates no penalty at all.
+      </p>
+      <p>
+        <strong>Extra Help removes the Part D penalty.</strong> If you qualify for Extra Help with
+        drug costs, you do not pay a Part D late enrollment penalty. The income limits are higher
+        than many people expect, and applying costs nothing.
+      </p>
+      <p>
+        The longer explanation, including the traps that catch people at 65, is in
+        <a href="/learn/late-enrollment-penalties/">Part B &amp; Part D late enrollment penalties</a>.
+      </p>
+
+      <h3>Questions people ask about the numbers</h3>
+    </div>
+    <Faq items={faqs} />
+
+    <div class="prose lep-sources">
+      <h3>Sources</h3>
+      <ul>
+        <li>
+          <a href="https://www.medicare.gov/basics/costs/medicare-costs/avoid-penalties" rel="noopener">Medicare.gov — Avoid late enrollment penalties</a>
+          {' '}(penalty rules, {PLAN_YEAR} worked examples)
+        </li>
+        <li>
+          <a href="https://www.cms.gov/newsroom/fact-sheets/2026-medicare-part-d-bid-information-and-part-d-premium-stabilization-demonstration-parameters" rel="noopener">CMS — 2026 Medicare Part D bid information</a>
+          {' '}(the {PLAN_YEAR} base beneficiary premium of {baseD}, released July 28, 2025)
+        </li>
+        <li>
+          <a href="https://www.cms.gov/newsroom/fact-sheets/2026-medicare-parts-b-premiums-deductibles" rel="noopener">CMS — 2026 Medicare Parts A &amp; B premiums and deductibles</a>
+          {' '}(the {PLAN_YEAR} standard Part B premium of {premiumB})
+        </li>
+      </ul>
+    </div>
+  </div>
+</ToolLayout>
+
+<script>
+  import {
+    PLAN_YEAR,
+    partB,
+    partD,
+    penalties,
+    partBLatePenalty,
+    partDLatePenalty,
+    roundToDime,
+    usd,
+  } from '../../data/medicare-figures';
+
+  const form = document.getElementById('lep') as HTMLFormElement | null;
+  if (form) {
+    const err = document.getElementById('lep-error')!;
+    const result = document.getElementById('lep-result')!;
+    const head = document.getElementById('lep-head')!;
+    const stats = document.getElementById('lep-stats')!;
+    const body = document.getElementById('lep-body')!;
+
+    const readMonths = (id: string): number | null => {
+      const raw = (document.getElementById(id) as HTMLInputElement).value.trim();
+      if (raw === '') return 0;
+      const n = Number(raw);
+      if (!Number.isFinite(n) || n < 0 || n > 600) return null;
+      return Math.floor(n);
+    };
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const bMonths = readMonths('lep-b-months');
+      const dMonths = readMonths('lep-d-months');
+      if (bMonths === null || dMonths === null) {
+        err.textContent = 'Please enter a whole number of months, 0 or more.';
+        return;
+      }
+      err.textContent = '';
+
+      const longGap = (form.elements.namedItem('gap') as RadioNodeList).value === 'yes';
+      const b = partBLatePenalty(bMonths);
+      // The radio stands in for the longest gap: yes = at least the threshold.
+      const d = partDLatePenalty(dMonths, longGap ? penalties.partDGapDays : 0);
+      const totalMonthly = b.monthly + d.monthly;
+
+      head.textContent =
+        totalMonthly > 0
+          ? `About ${usd(totalMonthly, 2)} a month in ${PLAN_YEAR}.`
+          : 'No late enrollment penalty on these numbers.';
+
+      const pct = (r: number) => `${Math.round(r * 100)}%`;
+      stats.innerHTML = `
+        <div class="t-stat">
+          <span class="t-stat__value">${usd(b.monthly, 2)}</span>
+          <span class="t-stat__label">Part B penalty / month (${pct(b.rate)})</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${usd(d.monthly, 2)}</span>
+          <span class="t-stat__label">Part D penalty / month (${pct(d.rate)})</span>
+        </div>
+        <div class="t-stat">
+          <span class="t-stat__value">${usd(b.yearly + d.yearly, 2)}</span>
+          <span class="t-stat__label">Combined per year</span>
+        </div>
+      `;
+
+      const paras: string[] = [];
+
+      if (bMonths === 0) {
+        paras.push(`<p><strong>Part B:</strong> no months entered, so no Part B penalty.</p>`);
+      } else if (b.periods === 0) {
+        paras.push(
+          `<p><strong>Part B:</strong> ${bMonths} ${bMonths === 1 ? 'month is' : 'months are'} less than one full 12-month period, so there is no Part B penalty. Only complete years count.</p>`
+        );
+      } else {
+        paras.push(
+          `<p><strong>Part B:</strong> ${bMonths} months is ${b.periods} full ${b.periods === 1 ? 'year' : 'years'}, so a ${pct(b.rate)} penalty. On the ${PLAN_YEAR} standard premium of ${usd(partB.standardPremium, 2)} that adds <strong>${usd(b.monthly, 2)} a month</strong> (${usd(b.yearly, 2)} a year), for a Part B premium of about ${usd(roundToDime(partB.standardPremium + b.monthly), 2)}. The ${pct(b.rate)} stays with you for as long as you have Part B, and the dollar amount is recalculated each year on that year's standard premium.</p>`
+        );
+        paras.push(
+          `<p>Before accepting that: if any of those months were covered by a group plan through your own or your spouse's <em>current</em> job at an employer with 20 or more employees, they should not be counted — and if that coverage ended within the last 8 months, you may still be inside a penalty-free Special Enrollment Period. COBRA and retiree months do count.</p>`
+        );
+      }
+
+      if (dMonths === 0) {
+        paras.push(`<p><strong>Part D:</strong> no months entered, so no Part D penalty.</p>`);
+      } else if (!longGap) {
+        paras.push(
+          `<p><strong>Part D:</strong> no single break reached ${penalties.partDGapDays} days in a row, so there is no Part D penalty.</p>`
+        );
+      } else {
+        paras.push(
+          `<p><strong>Part D:</strong> ${dMonths} ${dMonths === 1 ? 'month' : 'months'} without creditable coverage is ${pct(d.rate)} of the ${PLAN_YEAR} national base beneficiary premium of ${usd(partD.baseBeneficiaryPremium, 2)}, rounded to <strong>${usd(d.monthly, 2)} a month</strong> (${usd(d.yearly, 2)} a year). It is added to whatever your drug plan charges, for as long as you have Medicare drug coverage, and moves each year with the base premium. If you qualify for Extra Help, it does not apply at all.</p>`
+        );
+      }
+
+      paras.push(
+        `<p class="t-fineprint">Estimate based on published ${PLAN_YEAR} figures. Social Security and Medicare make the actual determination.</p>`
+      );
+
+      body.innerHTML = paras.join('');
+      result.hidden = false;
+      result.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    });
+
+    form.addEventListener('reset', () => {
+      result.hidden = true;
+      err.textContent = '';
+    });
+  }
+</script>
+
+<style is:global>
+  .t-fineprint { font-size: var(--t-xs); color: var(--ink-faint); }
+  .lep-cta {
+    margin-top: var(--s-6);
+    padding: var(--s-5);
+    border: 1px solid var(--navy);
+    border-radius: var(--radius-lg);
+    background: var(--navy-wash);
+  }
+  .lep-cta__h {
+    font-family: var(--font-display);
+    font-size: var(--t-lg);
+    color: var(--ink);
+    line-height: 1.3;
+    margin-bottom: var(--s-3);
+  }
+  .lep-cta__body { color: var(--ink-body); line-height: 1.6; }
+  .lep-cta .t-actions { margin-top: var(--s-4); }
+  .lep-sources { margin-top: var(--s-6); }
+</style>

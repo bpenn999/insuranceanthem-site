@@ -13,6 +13,9 @@ import { enrollmentWindows, nextAep, nextMaOep, utc } from '../src/data/enrollme
 import {
   lookupIrmaa,
   irmaaBrackets,
+  partBLatePenalty,
+  partDLatePenalty,
+  roundToDime,
   partB,
   partA,
   partD,
@@ -367,5 +370,37 @@ describe('published figures match the CY2026 CMS fact sheet', () => {
     // them in tier 4. Worth pinning so a future edit cannot quietly "fix" it.
     assert.equal(lookupIrmaa(900_000, 'joint').tier, 5);
     assert.equal(lookupIrmaa(700_000, 'joint').tier, 4);
+  });
+});
+
+describe('late enrollment penalties', () => {
+  test('Part B: 26 months = 2 full periods = 20% of the standard premium', () => {
+    const r = partBLatePenalty(26);
+    assert.equal(r.periods, 2);
+    assert.equal(r.rate, 0.2);
+    assert.equal(r.monthly, Math.round(0.2 * partB.standardPremium * 100) / 100);
+  });
+  test('Part B: 11 months is no full period, 12 is one, 23 is still one', () => {
+    assert.equal(partBLatePenalty(11).monthly, 0);
+    assert.equal(partBLatePenalty(12).periods, 1);
+    assert.equal(partBLatePenalty(23).periods, 1);
+  });
+  test('Part B: Medicare.gov 2026 example — 24 months → $243.50 total premium', () => {
+    const r = partBLatePenalty(24, 202.9);
+    assert.equal(r.monthly, 40.58);
+    assert.equal(roundToDime(202.9 + r.monthly), 243.5);
+  });
+  test('Part D: 24 months = 24% of the base premium, rounded to $0.10', () => {
+    const r = partDLatePenalty(24, 90);
+    assert.equal(r.rate, 0.24);
+    assert.equal(r.monthly, Math.round(0.24 * partD.baseBeneficiaryPremium * 10) / 10);
+  });
+  test('Part D: Medicare.gov 2026 example — 14 months of $38.99 → $5.50', () => {
+    assert.equal(partDLatePenalty(14, 400, 38.99).monthly, 5.5);
+  });
+  test('Part D: a break under 63 days in a row is no penalty', () => {
+    assert.equal(partDLatePenalty(2, 62).monthly, 0);
+    assert.equal(partDLatePenalty(24, 0).monthly, 0);
+    assert.ok(partDLatePenalty(3, 63).monthly > 0);
   });
 });
