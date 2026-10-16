@@ -285,7 +285,10 @@ const weekdays = [
     formatSlotTime,
     isoDayIn,
     monthGrid,
+    monthGridFromFeed,
+    monthWindow,
     nextBookableDays,
+    parseFreeSlots,
     notesWithSurvey,
     parseDay,
     readSurvey,
@@ -397,6 +400,8 @@ const weekdays = [
       bookableWeekdays: [1, 2, 3, 4, 5] as number[],
       /** Days a lookup has proven empty. Greyed out without a second request. */
       soldOut: new Set<string>(),
+      /** "YYYY-M" → the days the free-slots feed lists as open that month. */
+      openDays: new Map<string, Map<string, string[]>>(),
       /** date → slots, so re-tapping a day is instant. */
       cache: new Map<string, Slot[]>(),
     };
@@ -491,14 +496,68 @@ const weekdays = [
 
     /* ── the month grid ────────────────────────────────────────────────── */
 
+    /* ── which days are open, a month at a time (2026-10-16) ────────────
+       Brian: "if there are no times available then don't show it as white".
+       The grid used to enable every weekday and grey a day out only after a
+       per-day lookup proved it empty, so empty days past the first ten looked
+       bookable. Now one request to the same free-slots feed /api/availability
+       reads from (phone calendar, Arizona days) lists the open days, and only
+       those are drawn as available. Until it answers, nothing is. */
+    const FREE_SLOTS = 'https://backend.leadconnectorhq.com/calendars/8CcYJMIVgaxb2XBKcKtk/free-slots';
+    const FEED_TZ = 'America/Phoenix';
+    const mKey = (y: number, m: number) => `${y}-${m}`;
+    const monthInflight = new Map<string, Promise<void>>();
+
+    function loadOpenDays(y: number, m: number) {
+      const k = mKey(y, m);
+      if (state.openDays.has(k)) return Promise.resolve();
+      let p = monthInflight.get(k);
+      if (!p) {
+        const { startMs, endMs } = monthWindow(y, m, today);
+        p = fetch(`${FREE_SLOTS}?startDate=${startMs}&endDate=${endMs}&timezone=${encodeURIComponent(FEED_TZ)}`)
+          .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`free-slots ${r.status}`))))
+          .then((body) => {
+            state.openDays.set(k, parseFreeSlots(body));
+          })
+          .finally(() => monthInflight.delete(k));
+        monthInflight.set(k, p);
+      }
+      return p;
+    }
+
+    function showMonth(y: number, m: number) {
+      state.year = y;
+      state.month = m;
+      drawMonth();
+      loadOpenDays(y, m)
+        .then(() => {
+          if (state.year === y && state.month === m) drawMonth();
+        })
+        .catch(() => {
+          // Feed unreachable: fall back to the old weekday rule rather than an
+          // all-grey calendar; per-day lookups still grey out empty days.
+          state.openDays.set(mKey(y, m), null as any);
+          if (state.year === y && state.month === m) drawMonth();
+        });
+    }
+
     function drawMonth() {
       calLabel.textContent = formatMonthLong(state.year, state.month);
 
-      const cells = monthGrid(state.year, state.month, {
-        today,
-        bookableWeekdays: state.bookableWeekdays,
-        soldOut: state.soldOut,
-      });
+      const k = mKey(state.year, state.month);
+      const open = state.openDays.get(k);
+      const cells = open
+        ? monthGridFromFeed(state.year, state.month, {
+            today,
+            days: new Map([...open].filter(([d]) => !state.soldOut.has(d))),
+          })
+        : state.openDays.has(k)
+          ? monthGrid(state.year, state.month, {
+              today,
+              bookableWeekdays: state.bookableWeekdays,
+              soldOut: state.soldOut,
+            })
+          : monthGridFromFeed(state.year, state.month, { today, days: new Map() });
 
       grid.replaceChildren(
         ...cells.map((c) => {
@@ -649,15 +708,11 @@ const weekdays = [
 
     $('[data-cal-prev]').addEventListener('click', () => {
       const m = shiftMonth(state.year, state.month, -1);
-      state.year = m.y;
-      state.month = m.m;
-      drawMonth();
+      showMonth(m.y, m.m);
     });
     $('[data-cal-next]').addEventListener('click', () => {
       const m = shiftMonth(state.year, state.month, 1);
-      state.year = m.y;
-      state.month = m.m;
-      drawMonth();
+      showMonth(m.y, m.m);
     });
 
     continueBtn.addEventListener('click', () => {
@@ -920,7 +975,7 @@ const weekdays = [
       return;
     }
 
-    drawMonth(); // draw immediately from the defaults so nothing pops in
+    showMonth(start.y, start.m);
 
     (async () => {
       try {
@@ -1116,12 +1171,19 @@ const weekdays = [
     color: #fff;
   }
   .bk :global(.bk__day--on:hover) { background: var(--navy); }
+  /* Available = a white box with a solid navy outline. Not available = no box
+     at all: grey, struck through, on the page background. Brian 2026-10-16:
+     "if there are no times available then don't show it as white". */
+  .bk :global(.bk__day:not(.bk__day--shut):not(.bk__day--outside):not(.bk__day--on)) {
+    border: 2px solid var(--navy);
+    font-weight: 700;
+  }
   .bk :global(.bk__day--shut) {
-    background: var(--tint);
+    background: transparent;
+    border-color: transparent;
     color: var(--ink-faint);
-    /* 4.6:1 on the tint — greyed out, but still legible enough to read the
-       date you are being told you cannot have. */
-    opacity: 0.65;
+    font-weight: 400;
+    text-decoration: line-through;
     cursor: default;
   }
   .bk :global(.bk__day--outside) { visibility: hidden; }
@@ -1143,8 +1205,8 @@ const weekdays = [
     border: 1px solid var(--rule);
     flex: none;
   }
-  .bk__swatch--open { background: var(--surface); }
-  .bk__swatch--shut { background: var(--tint); opacity: 0.65; }
+  .bk__swatch--open { background: var(--surface); border: 2px solid var(--navy); }
+  .bk__swatch--shut { background: transparent; border: 1px dashed var(--ink-faint); }
 
   /* ── the time buttons ──────────────────────────────────────────────── */
   .bk__slots {
