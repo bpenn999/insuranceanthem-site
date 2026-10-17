@@ -4,511 +4,1016 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Formal Benefit Recommendation — Medicare Supplement | 602Medicare</title>
+<title>Medicare Coverage Survey | 602Medicare</title>
+<link rel="icon" href="/logo/favicon-32-v2.png" sizes="32x32">
 <style>
+  /* Self-hosted: this site's CSP is font-src 'self' — Google Fonts are blocked. */
   @font-face{font-family:'Fraunces';font-style:normal;font-weight:300 700;font-display:swap;src:url('/fonts/fraunces-37b801f0.woff2') format('woff2');}
   @font-face{font-family:'Inter';font-style:normal;font-weight:400 700;font-display:swap;src:url('/fonts/inter-2a0604d4.woff2') format('woff2');}
   :root{
-    --ink:#1A1F2E; --primary:#D10A0F; --primary-dark:#011459;
-    --accent:#011459; --accent-dark:#2E3F8F; --cta:#D10A0F; --teal:#011459;
-    --paper:#ffffff; --soft:#EEF1F9; --line:#DCE2F0; --muted:#4A5268;
-    --field:#F5F7FE; --field-line:#B9C4E6;
+    --navy:#011459; --navy-2:#1B2C78; --red:#D10A0F; --red-dark:#A3080C; --red-lift:#FF5A5F;
+    --tint:#EEF1F9; --tint-2:#F6F8FC; --ink:#1A1F2E; --muted:#4A5268; --line:#DCE2F0;
+    --paper:#ffffff; --bg:#F3F5FA; --good:#1D6B4F; --good-tint:#E7F3EE;
   }
   *{box-sizing:border-box; margin:0; padding:0;}
   html{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
-  body{font-family:'Inter',-apple-system,'Segoe UI',sans-serif;
-    background:#E4E9F4; color:var(--ink); font-size:13px; line-height:1.45;}
-  .disp{font-family:'Fraunces','Iowan Old Style',Georgia,serif;}
-
-  /* ---------- toolbar (screen only) ---------- */
-  .toolbar{position:sticky; top:0; z-index:50; background:var(--primary-dark); color:#fff;
-    display:flex; align-items:center; gap:12px; padding:10px 18px; box-shadow:0 2px 8px rgba(11,31,58,.3);}
-  .toolbar .tb-title{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-weight:600; font-size:13px;}
-  .toolbar .tb-hint{font-size:11.5px; opacity:.75; margin-right:auto;}
-  .toolbar button{border:0; border-radius:8px; padding:8px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:'Fraunces','Iowan Old Style',Georgia,serif;}
-  .btn-print{background:var(--cta); color:#fff;}
-  .btn-reset{background:rgba(255,255,255,.14); color:#fff;}
-  .toolbar button:hover{filter:brightness(1.1);}
-
-  /* ---------- page ---------- */
-  .page{max-width:850px; margin:22px auto 60px; background:var(--paper);
-    box-shadow:0 4px 24px rgba(11,31,58,.16); padding:34px 44px 0; border-top:6px solid var(--primary);}
+  body{font-family:'Inter',system-ui,sans-serif; background:var(--bg); color:var(--ink);
+    font-size:19px; line-height:1.55; min-height:100vh;}
+  h1,h2,h3,.serif{font-family:'Fraunces',Georgia,serif; font-weight:600; letter-spacing:-.01em;}
+  button{cursor:pointer; font-family:inherit;}
+  :focus-visible{outline:3px solid var(--red); outline-offset:3px;}
+  h1:focus,h2.q:focus{outline:none;}
+  svg.ico{width:26px; height:26px; fill:none; stroke:currentColor; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; flex:0 0 auto;}
 
   /* ---------- header ---------- */
-  .hdr{display:flex; justify-content:space-between; align-items:flex-start; gap:20px;}
-  .hdr h1{font-size:26px; line-height:1.14; color:var(--primary-dark); font-weight:700;}
-  .hdr .tagline{font-size:12px; color:var(--muted); margin-top:5px; font-style:italic;}
-  /* logo sits BESIDE the meta block, not above it — stacking them made the
-     header as tall as both, which cost the sheet ~40px for no information */
-  .hdr-right{display:flex; align-items:center; gap:14px; flex:0 0 auto;}
-  .hdr-right img{width:118px; display:block; margin:0; flex:0 0 auto;}
-  .hdr-meta{flex:0 1 auto; min-width:0;}
-  .meta-row{display:flex; gap:6px; font-size:11.5px; margin-top:2px; align-items:baseline;}
-  .meta-row b{color:var(--ink); white-space:nowrap;}
-  .rule{height:4px; background:linear-gradient(90deg,var(--primary) 0 60%,var(--accent) 60% 100%); margin:16px 0 0; border-radius:2px;}
+  .top{background:var(--paper); border-top:4px solid var(--red); border-bottom:1px solid var(--line);}
+  .top-in{max-width:1120px; margin:0 auto; display:flex; align-items:center; gap:14px; padding:10px 16px; flex-wrap:wrap;}
+  .brand{display:flex; align-items:center; gap:10px; text-decoration:none; margin-right:auto;}
+  .brand img{width:48px; height:48px;}
+  .brand .wm{font-family:'Fraunces',serif; font-weight:700; font-size:24px; line-height:1; color:var(--navy);}
+  .brand .wm span{color:var(--red);}
+  .brand .sub{display:block; font-family:'Inter',sans-serif; font-size:12.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-top:4px;}
+  a.call{display:inline-flex; align-items:center; gap:8px; color:var(--navy); font-weight:700; text-decoration:none; font-size:18px; white-space:nowrap;
+    border:2px solid var(--line); border-radius:999px; padding:8px 16px;}
+  a.call:hover{border-color:var(--navy);}
+  a.call svg.ico{width:20px; height:20px; color:var(--red);}
+  .adv{display:none; align-items:center; gap:8px; flex-wrap:wrap; width:100%; justify-content:flex-end;}
+  body.agent .adv{display:flex;}
+  .adv .chip{background:var(--navy); color:#fff; font-weight:700; font-size:12.5px; letter-spacing:.06em; text-transform:uppercase; border-radius:999px; padding:5px 12px; margin-right:auto;}
+  .adv button{border:1.5px solid var(--line); background:#fff; color:var(--navy); border-radius:8px; padding:7px 14px; font-size:14px; font-weight:600;}
+  .adv button:hover{border-color:var(--navy);}
+  .adv .b-x{background:var(--red); border-color:var(--red); color:#fff;}
+  .adv .b-x:hover{background:var(--navy); border-color:var(--navy);}
 
-  /* ---------- editable fields ---------- */
-  [contenteditable="true"], input.fld{
-    background:var(--field); border:1px dashed var(--field-line); border-radius:6px;
-    padding:2px 7px; min-width:60px; outline:none;
-    font-family:'Inter',-apple-system,'Segoe UI',sans-serif; font-size:14.5px; font-weight:600;
-    line-height:1.35; color:var(--primary-dark);}
-  [contenteditable="true"]:focus, input.fld:focus{border-style:solid; border-color:var(--accent-dark); background:#EDF1FF;}
-  [contenteditable="true"]:empty::before{content:attr(data-ph); color:#6B76A0; font-weight:500;}
-  input.fld{width:100%; text-align:center;}
-  input.fld.money{font-weight:700;}
-  .meta-row [contenteditable="true"]{font-size:13px;}
+  /* ---------- survey card ---------- */
+  .wrap{max-width:820px; margin:30px auto 56px; padding:0 16px;}
+  .card{background:var(--paper); border-radius:20px; border:1px solid var(--line);
+    box-shadow:0 1px 2px rgba(1,20,89,.04), 0 12px 32px rgba(1,20,89,.07); padding:36px 40px 32px;}
+  .prog{display:flex; align-items:center; gap:14px; margin-bottom:24px;}
+  .prog .lbl{font-size:14px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted); white-space:nowrap;}
+  .bar{flex:1; height:8px; background:var(--tint); border-radius:8px; overflow:hidden;}
+  .bar i{display:block; height:100%; background:var(--navy); border-radius:8px; transition:width .35s;}
+  .eyebrow{font-size:14px; font-weight:700; letter-spacing:.1em; text-transform:uppercase; color:var(--red);}
+  h1{font-size:40px; line-height:1.15; color:var(--navy); margin-top:6px;}
+  h2.q{font-size:32px; line-height:1.22; color:var(--navy);}
+  .help{color:var(--muted); font-size:18.5px; margin-top:8px;}
+  .opts{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:26px;}
+  .opts.one-col{grid-template-columns:1fr;}
+  .opt{display:flex; align-items:center; gap:16px; text-align:left; min-height:84px;
+    background:#fff; border:2px solid var(--line); border-radius:14px; padding:14px 18px;
+    font-size:20px; font-weight:600; color:var(--navy); transition:border-color .15s, background .15s, box-shadow .15s;}
+  .opt:hover{border-color:var(--navy-2); box-shadow:0 4px 14px rgba(1,20,89,.08);}
+  .opt .ic{width:50px; height:50px; border-radius:50%; background:var(--tint); color:var(--navy);
+    display:flex; align-items:center; justify-content:center; flex:0 0 auto;}
+  .opt .ic .txt{font-family:'Fraunces',serif; font-weight:700; font-size:16px; letter-spacing:-.02em;}
+  .opt small{display:block; font-weight:500; font-size:16px; color:var(--muted); margin-top:2px;}
+  .opt[aria-pressed="true"]{border-color:var(--navy); background:var(--tint-2); box-shadow:inset 0 0 0 1px var(--navy);}
+  .opt[aria-pressed="true"] .ic{background:var(--navy); color:#fff;}
+  .opt .tick{margin-left:auto; width:30px; height:30px; border-radius:50%; border:2px solid var(--line);
+    flex:0 0 auto; display:flex; align-items:center; justify-content:center; color:#fff;}
+  .opt[aria-pressed="true"] .tick{background:var(--red); border-color:var(--red);}
+  .opt[aria-pressed="true"] .tick::after{content:""; width:12px; height:7px; border-left:2.5px solid #fff; border-bottom:2.5px solid #fff; transform:rotate(-45deg) translate(1px,-1px);}
 
-  /* ---------- section titles ---------- */
-  .sec{margin-top:20px;}
-  .sec-t{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:14px; font-weight:700; letter-spacing:.04em; color:var(--primary-dark);
-    text-transform:uppercase; display:flex; align-items:center; gap:10px;}
-  .sec-t.hot{color:var(--cta);}
-  .sec-t::after{content:""; flex:1; height:1px; background:var(--line);}
+  .field{display:flex; flex-direction:column; gap:6px; margin-top:16px;}
+  .field label{font-weight:700; font-size:17px; color:var(--navy);}
+  .field label .opt-l{font-weight:500; color:var(--muted);}
+  .field input{font-size:22px; padding:14px 16px; border:2px solid var(--line); border-radius:12px; font-family:inherit; color:var(--navy); width:100%; background:#fff;}
+  .field input:focus{border-color:var(--navy); outline:none; box-shadow:0 0 0 4px rgba(1,20,89,.08);}
+  .zipbox input{max-width:240px; font-size:32px; letter-spacing:.14em; text-align:center; font-family:'Fraunces',serif; font-weight:600;}
+  .grid2{display:grid; grid-template-columns:1fr 1fr; gap:0 16px;}
+  .consent{display:flex; gap:14px; align-items:flex-start; margin-top:20px; font-size:15px; line-height:1.5; color:var(--muted);}
+  .consent input{width:28px; height:28px; flex:0 0 auto; margin-top:2px; accent-color:var(--navy);}
+  .hp{position:absolute; left:-5000px; width:1px; height:1px; overflow:hidden;}
+  .err{color:var(--red-dark); font-weight:600; margin-top:12px; font-size:17px;}
+  .looking{margin-top:14px; color:var(--muted); font-size:17px;}
 
-  /* ---------- need section ---------- */
-  .need{display:grid; grid-template-columns:1.15fr .85fr; gap:14px; margin-top:10px;}
-  .layers{display:flex; flex-direction:column; gap:5px;}
-  .layer{display:flex; align-items:center; gap:9px; border:1px solid var(--line);
-    border-left:4px solid var(--primary); border-radius:8px; padding:6px 9px; background:#F7F9FD;}
-  .layer .ico{font-size:15px; width:20px; text-align:center;}
-  .layer .l-name{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-weight:600; font-size:11.5px; color:var(--primary-dark);}
-  .layer .l-desc{font-size:10.5px; color:var(--muted); line-height:1.3;}
-  .layer .pill{margin-left:auto; flex:0 0 auto; font-size:9.5px; font-weight:700; letter-spacing:.03em;
-    padding:2px 8px; border-radius:20px; white-space:nowrap;}
-  .pill.active{background:var(--soft); color:var(--primary);}
-  .pill.rec{background:#E1E7F7; color:#011459;}
-  .layer.rec-b{border-left-color:var(--accent); background:#FBFCFF;}
+  .nav{display:flex; align-items:center; gap:14px; margin-top:30px;}
+  .btn{border:0; border-radius:12px; padding:16px 30px; font-size:20px; font-weight:700; min-height:60px; display:inline-flex; align-items:center; gap:10px;}
+  .btn-go{background:var(--red); color:#fff; margin-left:auto;}
+  .btn-go:hover{background:var(--navy);}
+  .btn-go[disabled]{opacity:.4; cursor:not-allowed; background:var(--red);}
+  .btn-back{background:#fff; color:var(--navy); border:2px solid var(--line); padding:14px 22px; font-size:17px;}
+  .btn-back:hover{border-color:var(--navy);}
+  .btn-skip{background:none; border:0; color:var(--navy); text-decoration:underline; font-size:16px; font-weight:600; display:none;}
+  body.agent .btn-skip{display:inline;}
 
-  .exposure{border:1px solid var(--line); border-radius:8px; padding:10px 12px; background:var(--soft);}
-  .exposure h4{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:10px; letter-spacing:.05em; color:var(--cta); text-transform:uppercase; margin-bottom:8px;}
-  .bar-row{display:grid; grid-template-columns:86px 1fr 74px; gap:8px; align-items:center; margin-bottom:7px;}
-  .bar-row .b-label{font-size:10.5px; font-weight:600;}
-  .bar-row .b-amt{font-size:11px; font-weight:700; text-align:right; white-space:nowrap;}
-  .track{height:7px; border-radius:4px; background:#CBD4E8; overflow:hidden;}
-  .fill{height:100%; border-radius:4px;}
-  .verdicts{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:9px;}
-  .verdict{border-radius:8px; padding:7px 9px;}
-  .verdict small{display:block; font-size:8.5px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;}
-  .verdict .big{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:16px; font-weight:700; line-height:1.25;}
-  .verdict span{display:block; font-size:9px; line-height:1.25;}
-  .v-bad{background:#FBE0E1; color:#A00B0F;}
-  .v-good{background:#E1E7F7; color:var(--teal);}
-  .stat-note{margin-top:9px; background:#fff; border:1px solid var(--field-line); border-left:4px solid var(--accent);
-    border-radius:8px; padding:8px 10px; font-size:10.5px; line-height:1.4; color:var(--ink);}
-  .stat-note b{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:12px; color:var(--cta);}
-  .stat-note .src{display:block; margin-top:3px; font-size:8.5px; color:var(--muted);}
+  .intro-list{margin:24px 0 0; list-style:none; display:grid; gap:12px;}
+  .intro-list li{display:flex; gap:14px; align-items:center; font-size:19px; color:var(--ink);}
+  .intro-list li .ic{width:44px; height:44px; border-radius:50%; background:var(--tint); color:var(--navy); display:flex; align-items:center; justify-content:center; flex:0 0 auto;}
+  .lede{font-size:20px; color:var(--muted); margin-top:12px;}
+  .umb-strip{display:flex; gap:10px; margin-top:22px; flex-wrap:wrap;}
+  .umb-strip span{display:inline-flex; align-items:center; gap:7px; font-weight:700; font-size:15px; color:var(--navy); background:var(--tint); border-radius:999px; padding:6px 13px;}
+  .umb-strip svg.ico{width:18px; height:18px; color:var(--red);}
 
-  /* ---------- tables ---------- */
-  table{width:100%; border-collapse:collapse; margin-top:9px;}
-  th{background:var(--primary-dark); color:#fff; font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:11.5px; font-weight:600; padding:7px 10px; text-align:center;}
-  th:first-child{border-radius:6px 0 0 0;} th:last-child{border-radius:0 6px 0 0; background:var(--soft); color:var(--primary-dark);}
-  td{border:1px solid var(--line); padding:6px 10px; font-size:12.5px; vertical-align:middle;}
-  td.c{text-align:center;}
-  td:first-child{font-weight:600; width:34%;}
-  td.prem{width:22%;}
-  .total-band{display:flex; align-items:baseline; gap:12px; margin-top:14px;
-    background:var(--primary); color:#fff; border-radius:8px; padding:10px 16px;}
-  .total-band .t-label{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:13px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;}
-  .total-band .t-amt{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:24px; font-weight:700; margin-left:auto;}
-  .total-band .t-note{font-size:10px; opacity:.75;}
+  /* ---------- results ---------- */
+  .res-head h2.q{font-size:34px;}
+  .path{margin-top:20px; border-radius:14px; background:var(--tint-2); border:1px solid var(--line); border-left:5px solid var(--red); padding:18px 22px;}
+  .path b.k{display:block; font-size:13px; letter-spacing:.1em; text-transform:uppercase; color:var(--red);}
+  .path .pn{font-family:'Fraunces',serif; font-size:26px; font-weight:600; color:var(--navy); margin-top:3px;}
+  .path ul{margin:8px 0 0 20px; font-size:17px;}
+  .answers{display:flex; flex-wrap:wrap; gap:7px; margin-top:14px;}
+  .answers span{background:#fff; border:1px solid var(--line); border-radius:999px; padding:4px 12px; font-size:14px; color:var(--muted);}
+  .answers span b{color:var(--navy); font-weight:600;}
 
-  /* ---------- IRMAA calculator ---------- */
-  .irmaa-bar{display:flex; align-items:flex-end; gap:14px; margin-top:10px; background:var(--soft);
-    border:1px solid var(--line); border-radius:8px; padding:9px 12px; flex-wrap:wrap;}
-  .irmaa-bar label{display:flex; flex-direction:column; gap:3px; font-size:10px; font-weight:700;
-    letter-spacing:.04em; text-transform:uppercase; color:var(--muted);}
-  .fld.sel{width:auto; min-width:172px; text-align:left; padding:4px 7px; font-size:14.5px; cursor:pointer;}
-  .irmaa-bar input{font-size:14.5px; padding:4px 7px;}
-  .ir-result{margin-left:auto; font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:11.5px; font-weight:600;
-    color:var(--primary-dark); background:#fff; border:1px solid var(--line); border-radius:20px;
-    padding:5px 13px; text-align:center;}
-  .ir-result.hit{background:#FBE0E1; color:#A00B0F; border-color:#F0BFC1;}
-  .ir-result.clear{background:#E1E7F7; color:var(--teal); border-color:#BFCBEA;}
-  .ir-fine{font-size:9.5px; color:var(--muted); margin-top:6px; line-height:1.4;}
-  .ir-tiers-t{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:10.5px; font-weight:700; letter-spacing:.04em;
-    text-transform:uppercase; color:var(--muted); margin-top:13px;}
-  table.ir-tiers{margin-top:6px;}
-  .ir-tiers th{font-size:10.5px; padding:5px 8px;}
-  .ir-tiers th:last-child{background:var(--primary-dark); color:#fff;}
-  .ir-tiers td{font-size:11px; padding:4px 8px; text-align:center; font-weight:500; width:auto;}
-  .ir-tiers td:first-child{width:auto; font-weight:500; text-align:left;}
-  .ir-tiers td:nth-child(2){text-align:left;}
-  .ir-tiers tr.tier-none td{background:#EDF1FB; font-weight:700; color:var(--teal);}
-  .ir-mfs{font-size:9.5px; color:var(--muted); margin-top:5px; line-height:1.4;}
-  .ir-mfs b{color:var(--ink);}
+  .bundles{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:26px; align-items:start;}
+  .bundle{border:1px solid var(--line); border-radius:18px; background:#fff; overflow:hidden; display:flex; flex-direction:column;
+    box-shadow:0 1px 2px rgba(1,20,89,.04), 0 8px 24px rgba(1,20,89,.06);}
+  .bundle.star{border:2px solid var(--navy);}
+  .bundle.chosen{box-shadow:0 0 0 4px rgba(209,10,15,.25);}
+  .b-top{padding:18px 18px 14px; background:var(--tint-2); border-bottom:1px solid var(--line); position:relative;}
+  .bundle.star .b-top{background:var(--navy); color:#fff; border-bottom:0;}
+  .b-umb{width:42px; height:42px; border-radius:50%; background:#fff; color:var(--red); display:flex; align-items:center; justify-content:center; border:1px solid var(--line);}
+  .b-umb svg.ico{width:24px; height:24px;}
+  .b-flag{position:absolute; top:18px; right:16px; font-size:11.5px; font-weight:800; letter-spacing:.08em; text-transform:uppercase;
+    border-radius:999px; padding:4px 10px; background:#fff; color:var(--navy); border:1px solid var(--line);}
+  .bundle.star .b-flag{background:var(--red); color:#fff; border-color:var(--red);}
+  .b-name{font-family:'Fraunces',serif; font-size:28px; font-weight:700; color:var(--navy); margin-top:10px; line-height:1.1;}
+  .bundle.star .b-name{color:#fff;}
+  .b-best{font-size:15.5px; color:var(--muted); margin-top:5px; line-height:1.4;}
+  .bundle.star .b-best{color:#D5DBEF;}
+  .meter{display:flex; gap:5px; margin-top:12px; align-items:center; font-size:12.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted);}
+  .bundle.star .meter{color:#D5DBEF;}
+  .meter i{width:24px; height:7px; border-radius:4px; background:var(--line);}
+  .meter i.on{background:var(--red);}
+  .bundle.star .meter i{background:rgba(255,255,255,.25);} .bundle.star .meter i.on{background:var(--red-lift);}
+  .stack{list-style:none; padding:12px 12px 4px; display:flex; flex-direction:column; gap:8px;}
+  .layer{border:1px solid var(--line); border-radius:12px; padding:10px 12px; background:#fff;}
+  .layer.base{background:var(--tint-2);}
+  .layer.add{border-left:3px solid var(--red);}
+  .layer.plan{border-left:3px solid var(--navy);}
+  .layer .ln{display:flex; gap:10px; align-items:flex-start; font-size:16px; font-weight:700; color:var(--navy); line-height:1.3;}
+  .layer .ln .i{width:32px; height:32px; border-radius:50%; background:var(--tint); color:var(--navy); display:flex; align-items:center; justify-content:center; flex:0 0 auto; margin-top:-3px;}
+  .layer .ln .i svg.ico{width:18px; height:18px;}
+  .layer .lw{font-size:14.5px; color:var(--muted); margin-top:5px; line-height:1.45;}
+  .layer .lp{display:none; gap:6px; margin-top:8px;}
+  body.agent .layer .lp{display:flex;}
+  .lp input{font-family:inherit; font-size:14px; border:1.5px dashed #B9C4E6; background:var(--tint-2); border-radius:6px; padding:5px 7px; color:var(--navy); min-width:0;}
+  .lp input.car{flex:1;}
+  .lp input.prem{width:96px; text-align:right; font-weight:700;}
+  .pf{display:grid; grid-template-columns:1fr 1fr; gap:6px 10px; margin-top:8px;}
+  .pf div{font-size:13px; line-height:1.25; color:var(--muted);}
+  .pf div b{display:block; font-family:'Fraunces',serif; font-size:19px; font-weight:700; color:var(--navy);}
+  .pid{font-size:12px; color:var(--muted); margin-top:4px;}
+  .stars{color:var(--red);}
+  .layer select{display:none; width:100%; margin-top:8px; font-size:14px; padding:6px; border:1.5px dashed #B9C4E6; background:var(--tint-2); border-radius:6px; font-family:inherit; color:var(--navy);}
+  body.agent .layer select{display:block;}
+  .b-foot{margin-top:auto; padding:10px 14px 18px;}
+  .worst{border-radius:12px; padding:11px 13px; background:#FDEEEE; border:1px solid #F5C9CA; font-size:14.5px; line-height:1.4; color:var(--ink);}
+  .worst b{display:block; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--red-dark);}
+  .worst .wa{font-family:'Fraunces',serif; font-size:28px; font-weight:700; color:var(--red-dark);}
+  .b-pay{font-size:14.5px; background:var(--tint-2); border:1px solid var(--line); border-radius:12px; padding:11px 13px; line-height:1.45;}
+  .b-pay b{display:block; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted);}
+  .b-total{display:none; margin-top:10px; background:var(--navy); color:#fff; border-radius:12px; padding:11px 13px;}
+  body.agent .b-total{display:block;}
+  .b-total .tl{font-size:12px; letter-spacing:.08em; text-transform:uppercase; opacity:.8;}
+  .b-total .ta{font-family:'Fraunces',serif; font-size:28px; font-weight:700;}
+  .b-total .th{font-size:13.5px; opacity:.85;}
+  .b-price{font-size:14px; color:var(--muted); margin-top:10px;}
+  body.agent .b-price{display:none;}
+  .b-pick{width:100%; margin-top:12px; border:2px solid var(--navy); background:#fff; color:var(--navy);
+    border-radius:12px; padding:12px; font-size:17px; font-weight:700; min-height:54px;}
+  .b-pick:hover{background:var(--tint);}
+  .bundle.chosen .b-pick{background:var(--red); border-color:var(--red); color:#fff;}
 
-  .addrow{margin-top:6px; background:none; border:1px dashed var(--line); color:var(--muted);
-    border-radius:6px; padding:4px 12px; font-size:11px; cursor:pointer;}
-  .addrow:hover{color:var(--primary); border-color:var(--primary);}
-  td .rm{float:right; border:0; background:none; color:#B9C1D6; cursor:pointer; font-size:12px; padding:0 2px;}
-  td .rm:hover{color:var(--cta);}
+  .alt{margin-top:20px; border:1px solid var(--line); background:var(--tint-2); border-radius:14px; padding:14px 18px; font-size:17px;}
+  .alt b{color:var(--navy);}
+  .irmaa{margin-top:14px; border-radius:12px; background:#FDEEEE; border:1px solid #F5C9CA; padding:12px 16px; font-size:16px;}
+  .ir-row{display:none; margin-top:10px; gap:10px; align-items:center; font-size:14.5px; flex-wrap:wrap;}
+  body.agent .ir-row{display:flex;}
+  .ir-row input{width:100px; font-family:inherit; font-size:14.5px; border:1.5px dashed #B9C4E6; background:#fff; border-radius:6px; padding:5px 7px; text-align:right; font-weight:700;}
 
-  /* ---------- footer ---------- */
-  .foot{margin:22px -44px 0; background:var(--primary-dark); color:#fff; padding:14px 44px 16px;}
-  .foot .f-contact{font-size:11.5px; font-weight:600; text-align:center; letter-spacing:.02em;}
-  .foot .f-contact span.d{color:var(--accent); margin:0 8px;}
-  .foot .f-legal{font-size:8.5px; line-height:1.45; color:#AFBBDA; margin-top:9px;}
-  .foot .f-legal p{margin-top:4px;}
+  details.all{margin-top:18px; border:1px solid var(--line); border-radius:14px; padding:14px 18px; background:#fff;}
+  details.all summary{cursor:pointer; font-family:'Fraunces',serif; font-weight:600; font-size:20px; color:var(--navy);}
+  .tblw{overflow-x:auto; margin-top:10px;}
+  table.pl{width:100%; border-collapse:collapse; font-size:14.5px; min-width:640px;}
+  .pl th{background:var(--navy); color:#fff; font-weight:600; font-size:12.5px; letter-spacing:.03em; padding:8px; text-align:left; white-space:nowrap;}
+  .pl td{border-bottom:1px solid var(--line); padding:8px; vertical-align:top;}
+  .pl td.n{font-weight:600; color:var(--navy);}
+  .pl td.r{text-align:right; white-space:nowrap;}
+  .pl tr.inb td{background:var(--tint);}
+  .src{font-size:12.5px; color:var(--muted); margin-top:8px;}
 
-  /* ---------- print: tight 2-sheet recommendation ---------- */
+  .next{margin-top:26px; background:var(--navy); color:#fff; border-radius:18px; padding:26px 28px;}
+  .next h3{font-size:26px; color:#fff;}
+  .next p{font-size:17.5px; color:#D5DBEF; margin-top:6px;}
+  .next .acts{display:flex; gap:12px; flex-wrap:wrap; margin-top:18px;}
+  /* On navy the red button is only 3.0:1 against its ground — white fill instead (see 602medicare brand rules). */
+  .next a{display:inline-flex; align-items:center; justify-content:center; gap:9px; text-decoration:none; border-radius:12px;
+    padding:15px 24px; font-weight:700; font-size:19px; min-height:58px;}
+  .next a svg.ico{width:22px; height:22px;}
+  .next a.book{background:#fff; color:var(--navy);}
+  .next a.book svg.ico{color:var(--red);}
+  .next a.ph{background:transparent; color:#fff; border:2px solid rgba(255,255,255,.55);}
+  .next a.ph:hover{border-color:#fff;}
+  .sent{margin-top:14px; font-size:17px; font-weight:600; border-radius:12px; padding:12px 16px;}
+  .sent.ok{background:var(--good-tint); color:var(--good);}
+  .sent.bad{background:#FDEEEE; color:var(--red-dark);}
+  .res-tools{display:flex; gap:10px; flex-wrap:wrap; margin-top:16px;}
+  .res-tools button{background:#fff; border:2px solid var(--line); border-radius:10px; padding:10px 16px; font-size:15px; font-weight:600; color:var(--navy);}
+  .res-tools button:hover{border-color:var(--navy);}
+
+  .legal{max-width:820px; margin:0 auto 40px; padding:0 16px; font-size:13px; color:var(--muted); line-height:1.55;}
+  .legal p{margin-top:6px;}
+  .legal a{color:var(--muted);}
+  .wide .wrap, .wide .legal{max-width:1120px;}
   .print-only{display:none;}
-  @page{size:letter; margin:0.45in 0.5in 0.55in;}
-  @media print{
-    body{background:#fff; font-size:11.5px; line-height:1.42;}
-    .toolbar,.addrow,.rm,.no-print{display:none !important;}
-    .print-only{display:block;}
-    .page{max-width:none; width:100%; margin:0; box-shadow:none; padding:0 0 20px; border-top:0;}
-    /* fill-ins stay large & dark — this is what the client reads */
-    [contenteditable="true"], input.fld{background:transparent; border-color:transparent; min-width:0;
-      padding:0 3px; font-size:13.5px; font-weight:600; color:var(--ink);}
-    .meta-row [contenteditable="true"]{font-size:12.5px;}
-    [contenteditable="true"]:empty::before{color:#8890A8; font-weight:500;}
-    .irmaa-bar input, .fld.sel{background:transparent; border:1px solid var(--line); border-style:solid; font-size:13px;}
 
-    /* header */
-    .hdr h1{font-size:24px;}
-    .hdr .tagline{font-size:11.5px; margin-top:3px;}
-    .hdr-right{gap:12px;}
-    .hdr-right img{width:88px;}
-    .rule{margin-top:9px;}
-    .p-intro{font-size:11.5px; color:var(--muted); margin:8px 0 0; line-height:1.5; max-width:none;}
-
-    /* sections — keep each one whole, but no forced page breaks */
-    .sec{margin-top:9px; break-inside:avoid; page-break-inside:avoid;}
-    .sec-t{font-size:12.5px;}
-    /* the need block is the tallest thing on the sheet — let it split if it must */
-    .sec-need{break-inside:auto; page-break-inside:auto;}
-    .need{grid-template-columns:1.08fr .92fr; gap:11px; margin-top:8px;}
-    .layers{gap:3px;}
-    .layer{padding:4px 9px; gap:9px; break-inside:avoid;}
-    .layer .ico{font-size:15px; width:21px;}
-    .layer .l-name{font-size:12px;}
-    .layer .l-desc{font-size:10.5px; line-height:1.3;}
-    .layer .pill{font-size:9px; padding:3px 9px;}
-    .exposure{padding:9px 11px; break-inside:avoid;}
-    .exposure h4{font-size:10px; margin-bottom:7px;}
-    .bar-row{grid-template-columns:92px 1fr 82px; gap:9px; margin-bottom:4px;}
-    .bar-row .b-label{font-size:10.5px;}
-    .bar-row .b-amt{font-size:11px;}
-    .track{height:8px;}
-    .verdicts{gap:9px; margin-top:6px;}
-    .verdict{padding:7px 10px;}
-    .verdict small{font-size:8.5px;}
-    .verdict .big{font-size:17px;}
-    .verdict span{font-size:9.5px;}
-    .stat-note{margin-top:6px; padding:6px 10px; font-size:10px;}
-    .stat-note b{font-size:11.5px;}
-    .stat-note .src{font-size:8.5px;}
-
-    /* the quote */
-    th{font-size:12px; padding:7px 10px;}
-    td{font-size:12.5px; padding:6px 10px;}
-    table{margin-top:7px;}
-    .moop-line{font-size:10.5px; padding:5px 10px; margin-top:6px;}
-    .total-band{margin-top:9px; padding:11px 16px;}
-    .total-band .t-label{font-size:12.5px;}
-    .total-band .t-amt{font-size:22px;}
-    .total-band .t-annual{font-size:10.5px;}
-
-    /* sheet 2 — IRMAA, next steps, signatures. No forced break: sections keep
-       themselves whole, so the sheet 1/2 split lands wherever the content ends. */
-    .sec-irmaa{margin-top:16px;}
-    .sec-irmaa .sec-t{font-size:14px;}
-    .sec-irmaa th{font-size:12.5px; padding:8px 10px;}
-    .sec-irmaa td{font-size:13px; padding:8px 10px;}
-    .irmaa-bar{padding:12px 14px; gap:16px; margin-top:11px;}
-    .irmaa-bar label{font-size:11px;}
-    .ir-result{font-size:13px; padding:8px 16px;}
-    .ir-fine{font-size:10.5px; margin-top:9px;}
-    .ir-tiers-t{font-size:11px; margin-top:15px;}
-    .ir-tiers th{font-size:11px; padding:5px 8px;}
-    .ir-tiers td{font-size:11.5px; padding:5px 8px;}
-    .ir-mfs{font-size:10px; margin-top:6px;}
-    .p-next{margin-top:28px; break-inside:avoid;}
-    .p-next .pn-label{font-size:11.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted);}
-    .p-next .steps{display:grid; grid-template-columns:1fr 1fr 1fr; gap:13px; margin-top:11px;}
-    .p-next .step{border:1px solid var(--line); border-radius:9px; padding:13px 15px;}
-    .p-next .step span.num{display:inline-flex; width:20px; height:20px; border-radius:50%; background:var(--primary);
-      color:#fff; font-size:12px; font-weight:700; align-items:center; justify-content:center; margin-bottom:6px;}
-    .p-next .step b{display:block; font-size:13px; margin-bottom:4px;}
-    .p-next .step span{font-size:11.5px; color:var(--muted); line-height:1.45;}
-    .p-sign{display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-top:32px; break-inside:avoid;}
-    .p-sign .line{border-top:1.5px solid var(--ink); padding-top:7px; font-size:11.5px; color:var(--muted);}
-    .foot{margin:22px 0 0; border-radius:9px; padding:15px 22px; break-inside:avoid;}
-    .foot .f-contact{font-size:12.5px;}
-    .foot .f-legal{font-size:9.5px;}
+  @media (max-width:900px){ .bundles{grid-template-columns:1fr;} }
+  @media (max-width:620px){
+    body{font-size:17.5px;}
+    .wrap{margin-top:16px;}
+    .card{padding:24px 18px 22px; border-radius:16px;}
+    h1{font-size:31px;} h2.q{font-size:26px;} .res-head h2.q{font-size:28px;}
+    .opts{grid-template-columns:1fr;}
+    .opt{min-height:74px; font-size:18.5px;}
+    .opt .ic{width:44px; height:44px;}
+    .grid2{grid-template-columns:1fr;}
+    .btn{padding:14px 22px; font-size:18px;}
+    .brand .sub{display:none;}
+    .brand .wm{font-size:21px;} .brand img{width:40px; height:40px;}
+    a.call{font-size:15px; padding:7px 12px;}
   }
 
-  .hdr-right img{width:84px;}
+  /* ---------- print: the advisor's illustration ---------- */
+  @page{size:letter; margin:0.45in 0.45in 0.5in;}
   @media print{
-    .hdr-right img{width:56px;}
-    .sec{margin-top:8px;}
-    .p-intro{margin-top:6px;}
-    .layer{padding:3px 9px;}
-    .layer .l-desc{line-height:1.25;}
-    td{padding:5px 10px;}
-    .total-band{margin-top:7px; padding:9px 16px;}
+    body{background:#fff; font-size:12px;}
+    .top,.nav,.res-tools,.b-pick,.next .acts,.sent,.adv,.no-print{display:none !important;}
+    .print-only{display:block;}
+    .wrap{max-width:none; margin:0; padding:0;}
+    .card{box-shadow:none; border:0; padding:0; border-radius:0;}
+    .p-hdr{display:flex; justify-content:space-between; align-items:center; gap:16px; border-bottom:3px solid var(--red); padding-bottom:8px;}
+    .p-hdr img{height:58px;}
+    .p-hdr h1{font-size:22px; margin:0;}
+    .p-hdr .pm{font-size:11px; text-align:right; margin-left:auto;}
+    .res-head{display:none;}
+    .path{margin-top:10px; padding:9px 12px;}
+    .path .pn{font-size:16px;} .path ul{font-size:11px; margin-top:4px;}
+    .answers{margin-top:7px; gap:4px;} .answers span{font-size:9.5px; padding:2px 8px;}
+    .bundles{grid-template-columns:repeat(3,1fr); gap:9px; margin-top:12px;}
+    .bundle{break-inside:avoid; box-shadow:none;}
+    .b-top{padding:8px 10px;} .b-umb{width:26px; height:26px;} .b-umb svg.ico{width:15px; height:15px;}
+    .b-flag{top:8px; right:8px; font-size:8px; padding:2px 7px;}
+    .b-name{font-size:16px; margin-top:5px;} .b-best{font-size:9.5px;}
+    .meter{margin-top:5px; font-size:8.5px;} .meter i{width:16px; height:6px;}
+    .stack{padding:7px 7px 2px; gap:5px;}
+    .layer{padding:5px 7px;} .layer .ln{font-size:10.5px;} .layer .ln .i{width:20px; height:20px;} .layer .ln .i svg.ico{width:12px; height:12px;}
+    .layer .lw{font-size:9px; margin-top:2px;}
+    .lp input{border-color:transparent; background:transparent; font-size:10.5px; padding:1px 2px;}
+    .pf{gap:2px 6px; margin-top:3px;} .pf div{font-size:8.5px;} .pf div b{font-size:11px;}
+    .pid{font-size:8px;} .layer select{display:none !important;}
+    .b-foot{padding:6px 8px 9px;}
+    .worst,.b-pay{font-size:9px; padding:5px 8px;} .worst b,.b-pay b{font-size:8px;} .worst .wa{font-size:14px;}
+    .b-total{padding:6px 9px; margin-top:6px;} .b-total .ta{font-size:16px;} .b-total .tl,.b-total .th{font-size:8.5px;}
+    .b-price{font-size:9.5px;}
+    .alt,.irmaa{font-size:10.5px; padding:7px 10px; margin-top:9px;}
+    .ir-row{font-size:10px;} .ir-row input{border-color:transparent; background:transparent; font-size:10.5px;}
+    details.all{display:none;}
+    .next{margin-top:10px; padding:10px 14px; break-inside:avoid;} .next h3{font-size:14px;} .next p{font-size:10.5px;}
+    .p-sign{display:grid; grid-template-columns:1fr 1fr; gap:40px; margin-top:26px;}
+    .p-sign div{border-top:1.5px solid var(--ink); padding-top:5px; font-size:10px; color:var(--muted);}
+    .legal{max-width:none; padding:0; margin:12px 0 0; font-size:8px;}
   }
 </style>
 </head>
 <body>
 
-<div class="toolbar">
-  <span class="tb-title">602Medicare — Formal Benefit Recommendation · Med Supp</span>
-  <span class="tb-hint">Click any yellow field to edit &middot; totals update automatically &middot; printing? turn OFF &ldquo;Headers and footers&rdquo;</span>
-  <button class="btn-reset" onclick="location.reload()">Reset</button>
-  <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
-</div>
-
-<div class="page">
-
-  <!-- HEADER -->
-  <div class="hdr">
-    <div>
-      <h1 class="disp">Formal Benefit Recommendation</h1>
-      <div class="tagline">Original Medicare + Medicare Supplement pathway</div>
-    </div>
-    <div class="hdr-right">
-      <img src="/logo/602medicare-logo-transparent.png" alt="602Medicare">
-      <div class="hdr-meta">
-        <div class="meta-row"><b>Date:</b><span contenteditable="true" data-ph="mm/dd/yyyy" id="fDate"></span></div>
-        <div class="meta-row"><b>Prepared for:</b><span contenteditable="true" data-ph="Client name"></span></div>
-        <div class="meta-row"><b>Your Advisor:</b><span>Brian Penner</span></div>
-      </div>
+<header class="top">
+  <div class="top-in">
+    <a class="brand" href="/" aria-label="602Medicare home">
+      <img src="/logo/602medicare-logo-transparent.png" alt="" width="48" height="48">
+      <span><span class="wm"><span>602</span>Medicare</span><span class="sub">Medicare Coverage Survey</span></span>
+    </a>
+    <a class="call" href="tel:+16028446002"><svg class="ico" viewBox="0 0 24 24"><path d="M5 3.5h3.2l1.6 4.2-2.1 1.4a11 11 0 0 0 7.2 7.2l1.4-2.1 4.2 1.6V19a1.5 1.5 0 0 1-1.5 1.5C10.4 20.5 3.5 13.6 3.5 5A1.5 1.5 0 0 1 5 3.5Z"/></svg>(602) 844-6002</a>
+    <div class="adv">
+      <span class="chip">Advisor mode</span>
+      <button type="button" onclick="startOver()">Start over</button>
+      <button type="button" onclick="window.print()">Print / PDF</button>
+      <button class="b-x" type="button" onclick="saveToX()">Save to X</button>
     </div>
   </div>
-  <div class="rule"></div>
-  <p class="print-only p-intro">Prepared personally for you. This formal benefit recommendation maps each layer of your Medicare coverage &mdash; what Original Medicare pays, what your selected plans add, and where the remaining risks sit &mdash; so every dollar of protection is intentional.</p>
+</header>
 
-  <!-- THE NEED -->
-  <div class="sec sec-need">
-    <div class="sec-t hot">Why This Plan Design &mdash; Where Medicare Leaves You Exposed</div>
-    <div class="need">
-      <div class="layers">
-        <div class="layer">
-          <span class="ico">&#127963;&#65039;</span>
-          <div><div class="l-name">Original Medicare &mdash; Parts A &amp; B</div>
-          <div class="l-desc">Covers 80% of approved hospital &amp; outpatient costs after deductibles.</div></div>
-          <span class="pill active">Layer 1</span>
-        </div>
-        <div class="layer">
-          <span class="ico">&#128737;&#65039;</span>
-          <div><div class="l-name">Medicare Supplement + Drug Plan</div>
-          <div class="l-desc">Picks up deductibles &amp; the 20% coinsurance; Part D caps drug costs at $2,100/yr (2026).</div></div>
-          <span class="pill active">Layer 2</span>
-        </div>
-        <div class="layer rec-b">
-          <span class="ico">&#127872;</span>
-          <div><div class="l-name">Cancer / Heart / Stroke Protection</div>
-          <div class="l-desc">Lump-sum cash at diagnosis &mdash; oral chemo, drug costs, travel, lost income.</div></div>
-          <span class="pill rec">Formal Recommendation</span>
-        </div>
-        <div class="layer rec-b">
-          <span class="ico">&#127969;</span>
-          <div><div class="l-name">Long-Term Care Planning</div>
-          <div class="l-desc">About <b>70% of people turning 65 today will need some form of long-term care</b> &mdash; and Medicare pays $0 for custodial care, ever.</div></div>
-          <span class="pill rec">Formal Recommendation</span>
-        </div>
-      </div>
-      <div class="exposure">
-        <h4>Potential Annual Exposure Without Supplemental Coverage</h4>
-        <div class="bar-row"><span class="b-label">Long-term care</span><div class="track"><div class="fill" style="width:100%;background:var(--cta)"></div></div><span class="b-amt" style="color:var(--cta)">$126,000/yr</span></div>
-        <div class="bar-row"><span class="b-label">Cancer event</span><div class="track"><div class="fill" style="width:40%;background:var(--accent-dark)"></div></div><span class="b-amt" style="color:var(--accent-dark)">$50,000</span></div>
-        <div class="bar-row"><span class="b-label">Rx drugs (Part D)</span><div class="track"><div class="fill" style="width:4%;background:var(--primary)"></div></div><span class="b-amt" style="color:var(--primary)">$2,100/yr</span></div>
-        <div class="bar-row"><span class="b-label">Hospital / outpt.</span><div class="track"><div class="fill" style="width:2%;background:var(--teal)"></div></div><span class="b-amt" style="color:var(--teal)">$0 w/ Supp</span></div>
-        <div class="verdicts">
-          <div class="verdict v-bad"><small>Without layers 3 &amp; 4</small><div class="big">$156,000+</div><span>potential exposure in a worst-case year</span></div>
-          <div class="verdict v-good"><small>With all four layers</small><div class="big">Protected</div><span>coverage across every major risk</span></div>
-        </div>
-        <div class="stat-note"><b>7 in 10</b> people turning 65 today will need some type of long-term care service in their lifetime &mdash; and Medicare does not cover custodial long-term care.
-          <span class="src">U.S. Dept. of Health &amp; Human Services (ACL), LongTermCare.gov</span></div>
-      </div>
-    </div>
-  </div>
+<main class="wrap">
+  <div class="card" id="card" aria-live="polite"></div>
+</main>
 
-  <!-- CORE COVERAGE -->
-  <div class="sec">
-    <div class="sec-t">Core Coverage Summary</div>
-    <table id="coreTbl">
-      <tr><th>Coverage Type</th><th>Carrier / Plan</th><th>Monthly Premium</th></tr>
-      <tr><td>Medicare A &amp; B *</td><td class="c" contenteditable="true">Medicare</td><td class="prem"><input class="fld money prem-in" value="$202.90"></td></tr>
-      <tr><td>Medicare Supplement Plan</td><td class="c" contenteditable="true" data-ph="Carrier &amp; plan"></td><td class="prem"><input class="fld money prem-in" value="$0.00"></td></tr>
-      <tr><td>Prescription Drug Plan</td><td class="c" contenteditable="true" data-ph="Carrier &amp; plan"></td><td class="prem"><input class="fld money prem-in" value="$0.00"></td></tr>
-    </table>
-  </div>
-
-  <!-- ADDITIONAL COVERAGE -->
-  <div class="sec">
-    <div class="sec-t">Additional Coverage</div>
-    <table id="addTbl">
-      <tr><th>Coverage Type</th><th>Carrier / Plan</th><th>Monthly Premium</th></tr>
-      <tr><td>Dental, Vision &amp; Hearing</td><td class="c" contenteditable="true" data-ph="Carrier &amp; plan"></td><td class="prem"><input class="fld money prem-in" value="$0.00"></td></tr>
-      <tr><td>Cancer-Heart-Stroke Protection</td><td class="c" contenteditable="true" data-ph="Carrier / benefit amount"></td><td class="prem"><input class="fld money prem-in" value="$0.00"></td></tr>
-      <tr><td>Short Term Recovery Care</td><td class="c" contenteditable="true" data-ph="Carrier &amp; plan"></td><td class="prem"><input class="fld money prem-in" value="$0.00"></td></tr>
-      <tr><td>Long Term Care Planning</td><td class="c" contenteditable="true" data-ph="Carrier / advisor"></td><td class="c"><span contenteditable="true" data-ph="Appt:"></span></td></tr>
-    </table>
-    <button class="addrow" onclick="addRow()">+ Add coverage row</button>
-  </div>
-
-  <!-- TOTAL -->
-  <div class="total-band">
-    <span class="t-label">Estimated Monthly Premium Total</span>
-    <span class="t-note">auto-calculated</span>
-    <span class="t-amt" id="grandTotal">$202.90</span><span class="t-annual" id="grandAnnual"></span>
-  </div>
-
-  <!-- IRMAA CALCULATOR -->
-  <div class="sec sec-irmaa">
-    <div class="sec-t">*IRMAA Calculator &mdash; Income-Based Surcharge (2026)</div>
-    <div class="irmaa-bar">
-      <label>Tax filing status
-        <select id="irFiling" class="fld sel">
-          <option value="single">Single</option>
-          <option value="joint">Married filing jointly</option>
-          <option value="mfs">Married filing separately</option>
-        </select>
-      </label>
-      <label>2024 MAGI (income)
-        <input id="irMagi" class="fld money" placeholder="$0" style="text-align:left; max-width:130px">
-      </label>
-      <div class="ir-result" id="irBracket">Enter income to estimate IRMAA</div>
-    </div>
-    <table>
-      <tr><th>Adjustment</th><th>Monthly Estimate</th><th>Notes</th></tr>
-      <tr><td>Part B IRMAA</td><td class="c"><input id="irB" class="fld money prem-in" value="$0.00" style="max-width:110px"></td><td class="c" id="irBNote">Added to the $202.90 standard Part B premium</td></tr>
-      <tr><td>Part D IRMAA</td><td class="c"><input id="irD" class="fld money prem-in" value="$0.00" style="max-width:110px"></td><td class="c" id="irDNote">Paid to Medicare on top of your drug plan premium</td></tr>
-    </table>
-    <div class="ir-tiers-t">The 2026 brackets &mdash; what Medicare charges at each income level</div>
-    <table class="ir-tiers">
-      <tr><th>Your 2024 income &mdash; single</th><th>&mdash; married filing jointly</th><th>Part B / mo</th><th>Part D / mo</th></tr>
-      <tr class="tier-none"><td>$109,000 or less</td><td>$218,000 or less</td><td>standard $202.90</td><td>no surcharge</td></tr>
-      <tr><td>$109,001 &ndash; $137,000</td><td>$218,001 &ndash; $274,000</td><td>+ $81.20</td><td>+ $14.50</td></tr>
-      <tr><td>$137,001 &ndash; $171,000</td><td>$274,001 &ndash; $342,000</td><td>+ $202.90</td><td>+ $37.50</td></tr>
-      <tr><td>$171,001 &ndash; $205,000</td><td>$342,001 &ndash; $410,000</td><td>+ $324.60</td><td>+ $60.40</td></tr>
-      <tr><td>$205,001 &ndash; $500,000</td><td>$410,001 &ndash; $750,000</td><td>+ $446.30</td><td>+ $83.30</td></tr>
-      <tr><td>Above $500,000</td><td>Above $750,000</td><td>+ $487.00</td><td>+ $91.00</td></tr>
-    </table>
-    <div class="ir-mfs"><b>Married filing separately:</b> $109,000 or less &mdash; no surcharge &middot; $109,001&ndash;$391,000 &mdash; add $446.30 (Part B) and $83.30 (Part D) &middot; above $391,000 &mdash; add $487.00 and $91.00.</div>
-    <div class="ir-fine">2026 amounts per CMS, based on your 2024 tax return (MAGI). IRMAA applies per person and is billed by Medicare &mdash; usually deducted from Social Security &mdash; not by your insurance carrier. Amounts flow into the total above.</div>
-  </div>
-
-  <div class="print-only p-next">
-    <div class="pn-label">Your Next Steps</div>
-    <div class="steps">
-      <div class="step"><span class="num">1</span><b>Review together</b><span>We walk through this recommendation line by line, on your schedule &mdash; no pressure, no jargon.</span></div>
-      <div class="step"><span class="num">2</span><b>Confirm the fit</b><span>We verify your doctors, prescriptions, and carrier availability in your county before anything is final.</span></div>
-      <div class="step"><span class="num">3</span><b>We handle enrollment</b><span>Paperwork, deadlines, and carrier follow-up are handled for you, at no cost to you.</span></div>
-    </div>
-  </div>
-
-  <div class="print-only p-sign">
-    <div class="line">Client acknowledgment &mdash; signature &amp; date</div>
-    <div class="line">Advisor &mdash; signature &amp; date</div>
-  </div>
-
-  <!-- FOOTER -->
-  <div class="foot">
-    <div class="f-contact">Anthem, AZ 85086 <span class="d">&#9670;</span> (602) 844-6002 <span class="d">&#9670;</span> 602Medicare.com</div>
-    <div class="f-legal">
-      <p>We do not offer every plan available in your area. Any information we provide is limited to those plans we do offer in your area. Please contact Medicare.gov or 1-800-MEDICARE to get information on all of your options. 602Medicare is a licensed independent insurance agency (NPN 8206556). Not connected with or endorsed by the United States government or the federal Medicare program.</p>
-      <p>Based on 2026 Medicare rates. Figures are estimates for illustration purposes only. Individual costs vary by health status, geographic location, and plan selection. This material is educational and is not a guarantee of benefits or coverage.</p>
-    </div>
-  </div>
-
-</div>
+<footer class="legal">
+  <p>We do not offer every plan available in your area. Any information we provide is limited to those plans we do offer in your area. Please contact Medicare.gov or 1-800-MEDICARE to get information on all of your options. 602Medicare is a licensed independent insurance agency (NPN 8206556). Not connected with or endorsed by the United States government or the federal Medicare program.</p>
+  <p>This survey is educational. Umbrella suggestions are based only on your answers and are not a guarantee of benefits, eligibility or price. Plan availability, premiums and health questions vary by carrier, county and enrollment period. Medicare figures shown are 2026 federal amounts unless marked otherwise.</p>
+  <p class="no-print">Anthem, AZ 85086 &middot; (602) 844-6002 &middot; help@602medicare.com &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/tools/digital-quote-supplement/">Fillable Med Supp sheet</a> &middot; <a href="/tools/digital-quote-advantage/">Fillable Advantage sheet</a></p>
+</footer>
 
 <script>
-  function money(v){
-    var n = parseFloat(String(v).replace(/[^0-9.\-]/g,''));
-    return isNaN(n) ? 0 : n;
-  }
-  function fmt(n){
-    return '$' + n.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
-  }
-  function recalc(){
-    var t = 0;
-    document.querySelectorAll('.prem-in').forEach(function(i){ t += money(i.value); });
-    document.getElementById('grandTotal').textContent = fmt(t);
-    document.getElementById('grandAnnual').textContent = '\u2248 ' + fmt(t*12) + ' / year';
-  }
-  document.addEventListener('input', function(e){
-    if (e.target.classList && e.target.classList.contains('prem-in')) recalc();
-  });
-  document.addEventListener('focusout', function(e){
-    if (e.target.classList && e.target.classList.contains('prem-in')){
-      var n = money(e.target.value);
-      e.target.value = fmt(n);
-      recalc();
-    }
-  });
-  function addRow(){
-    var tbl = document.getElementById('addTbl');
-    var r = tbl.insertRow(-1);
-    r.innerHTML = '<td contenteditable="true" data-ph="Coverage type"><button class="rm" title="Remove row" onclick="this.closest(\'tr\').remove();recalc()">&#10005;</button></td>' +
-      '<td class="c" contenteditable="true" data-ph="Carrier &amp; plan"></td>' +
-      '<td class="prem"><input class="fld money prem-in" value="$0.00"></td>';
-    recalc();
-  }
-  // ---- IRMAA calculator (2026 CMS figures; MAGI from 2024 return) ----
-  // Each tier: [upper MAGI bound, Part B surcharge, Part D surcharge, label]
-  var IRMAA = {
-    single: [
-      [109000, 0,      0,     'No IRMAA — MAGI $109,000 or less'],
-      [137000, 81.20,  14.50, 'Tier 1 of 5 — $109,001–$137,000'],
-      [171000, 202.90, 37.50, 'Tier 2 of 5 — $137,001–$171,000'],
-      [205000, 324.60, 60.40, 'Tier 3 of 5 — $171,001–$205,000'],
-      [500000, 446.30, 83.30, 'Tier 4 of 5 — $205,001–$499,999'],
-      [Infinity,487.00,91.00, 'Tier 5 of 5 — $500,000+']
-    ],
-    joint: [
-      [218000, 0,      0,     'No IRMAA — MAGI $218,000 or less'],
-      [274000, 81.20,  14.50, 'Tier 1 of 5 — $218,001–$274,000'],
-      [342000, 202.90, 37.50, 'Tier 2 of 5 — $274,001–$342,000'],
-      [410000, 324.60, 60.40, 'Tier 3 of 5 — $342,001–$410,000'],
-      [750000, 446.30, 83.30, 'Tier 4 of 5 — $410,001–$749,999'],
-      [Infinity,487.00,91.00, 'Tier 5 of 5 — $750,000+']
-    ],
-    mfs: [
-      [109000, 0,      0,     'No IRMAA — MAGI $109,000 or less'],
-      [391000, 446.30, 83.30, 'High tier — $109,001–$390,999'],
-      [Infinity,487.00,91.00, 'Top tier — $391,000+']
-    ]
+(function(){
+  var AGENT = /[?&]agent=1\b/.test(location.search);
+  if (AGENT) document.body.classList.add('agent');
+
+  // Line icons, drawn to match src/components/ProductIcon.astro (24px grid, round caps).
+  var ICONS = {
+    pin:'<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/>',
+    user:'<circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.2-3.8 4-5.5 7.5-5.5s6.3 1.7 7.5 5.5"/>',
+    users:'<circle cx="9" cy="8.5" r="3.5"/><path d="M2.8 20c1-3.4 3.3-5 6.2-5s5.2 1.6 6.2 5"/><circle cx="17" cy="9" r="2.8"/><path d="M16.6 14.6c2.3.2 4 1.6 4.7 4.4"/>',
+    cake:'<path d="M4 21h16M5 21v-7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v7"/><path d="M5 16c1.2 1 2.3 1 3.5 0s2.3-1 3.5 0 2.3 1 3.5 0 2.3-1 3.5 0"/><path d="M12 12V8.5M12 6c-.8-.8-.8-1.8 0-2.6.8.8.8 1.8 0 2.6Z"/>',
+    card:'<rect x="2.5" y="5" width="19" height="14" rx="2"/><path d="M2.5 9.5h19M6 15h5"/>',
+    briefcase:'<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8.5 7V5.2a1.7 1.7 0 0 1 1.7-1.7h3.6a1.7 1.7 0 0 1 1.7 1.7V7M3 12.5h18"/>',
+    heart:'<path d="M12 20.5s-8-4.6-8-10.2A4.3 4.3 0 0 1 12 8a4.3 4.3 0 0 1 8 2.3c0 5.6-8 10.2-8 10.2Z"/>',
+    thumb:'<path d="M7 10v10H4V10h3Zm0 0 4-6.5a1.8 1.8 0 0 1 3.3 1.3L13.5 9H19a2 2 0 0 1 2 2.3l-1.2 7A2 2 0 0 1 17.8 20H7"/>',
+    swap:'<path d="M4 8h14l-3.5-3.5M20 16H6l3.5 3.5"/>',
+    plane:'<path d="M3 13.5 21 7l-2-2-6.5 2.4L7 3.8l-1.6.8 3.3 4.3-4.1 1.6-2-1.2-1.2.6 1.6 3.6Z" transform="translate(1 3)"/><path d="M4 21h16"/>',
+    home:'<path d="M3.5 10.5 12 3.8l8.5 6.7V20a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1Z"/><path d="M9.5 21v-6h5v6"/>',
+    wallet:'<path d="M17.5 8.5v-2a1.5 1.5 0 0 0-1.5-1.5H5.5a2 2 0 0 0 0 4"/><path d="M3.5 7v11a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-8a1.5 1.5 0 0 0-1.5-1.5H5.5"/><circle cx="16.5" cy="14.5" r="1.2"/>',
+    shield:'<path d="M12 2.5 3.5 6v6.4c0 5 3.4 8.3 8.5 10.1 5.1-1.8 8.5-5.1 8.5-10.1V6Z"/><path d="m8.6 12.2 2.4 2.4 4.5-4.6"/>',
+    tooth:'<path d="M7.5 3.5c-2.4 0-4 1.8-4 4.4 0 3 1.4 4.3 2 7.3.5 2.6 1 5.3 2.4 5.3 1.6 0 1.4-4.6 4.1-4.6s2.5 4.6 4.1 4.6c1.4 0 1.9-2.7 2.4-5.3.6-3 2-4.3 2-7.3 0-2.6-1.6-4.4-4-4.4-1.8 0-2.8 1-4.5 1s-2.7-1-4.5-1Z"/>',
+    glasses:'<circle cx="6.5" cy="15" r="3.5"/><circle cx="17.5" cy="15" r="3.5"/><path d="M10 15h4M3 15 5 8.5h2M21 15l-2-6.5h-2"/>',
+    ear:'<path d="M6.5 9a5.5 5.5 0 0 1 11 0c0 3.8-3.8 4.6-3.8 7.8a3.2 3.2 0 0 1-6 1.5"/><path d="M9.7 9.3a2.3 2.3 0 0 1 4.6 0c0 1.6-1.7 2.1-1.7 3.4"/>',
+    ribbon:'<path d="M12 13c-2.1-2.6-3.6-4.8-3.6-7a3.6 3.6 0 0 1 7.2 0c0 2.2-1.5 4.4-3.6 7Z"/><path d="M12 13 7.2 20.5M12 13l4.8 7.5"/>',
+    hospital:'<path d="M4 21V5a1.5 1.5 0 0 1 1.5-1.5h13A1.5 1.5 0 0 1 20 5v16M2.5 21h19"/><path d="M12 7.2v5.2M9.4 9.8h5.2M10 21v-4h4v4"/>',
+    homecare:'<path d="M3.5 10.5 12 3.8l8.5 6.7V20a1 1 0 0 1-1 1h-15a1 1 0 0 1-1-1Z"/><path d="M12 17.6c-1.8-1.1-3.3-2.2-3.3-3.7a1.7 1.7 0 0 1 3.3-.7 1.7 1.7 0 0 1 3.3.7c0 1.5-1.5 2.6-3.3 3.7Z"/>',
+    bed:'<path d="M3 19V6M3 15h18v4M21 15v-2.5a3 3 0 0 0-3-3h-7V15"/><circle cx="7" cy="11.5" r="2"/>',
+    landmark:'<path d="M3 21h18M4.5 18h15M6 18v-7M10 18v-7M14 18v-7M18 18v-7M3 9l9-5.5L21 9Z"/>',
+    pill:'<rect x="2.6" y="8.4" width="18.8" height="7.2" rx="3.6" transform="rotate(-38 12 12)"/><path d="M9 9 15 15"/>',
+    stetho:'<path d="M5.5 3H4.5v5a4.5 4.5 0 0 0 9 0V3h-1"/><path d="M9 12.5v2a5 5 0 0 0 10 0v-2.5"/><circle cx="19" cy="10" r="2"/>',
+    dollar:'<circle cx="12" cy="12" r="9"/><path d="M14.8 9.2a3 3 0 0 0-2.8-1.7c-1.5 0-2.6.8-2.6 2s1 1.7 2.6 2.1c1.9.4 3 1 3 2.3 0 1.3-1.2 2.2-2.8 2.2a3.1 3.1 0 0 1-3-1.9M12 6.2v1.3M12 16.5v1.3"/>',
+    list:'<path d="M9 6.4h11M9 12h11M9 17.6h11M4.4 6.4h.01M4.4 12h.01M4.4 17.6h.01"/>',
+    check:'<circle cx="12" cy="12" r="9"/><path d="m8 12.3 2.7 2.7 5.5-5.5"/>',
+    trend:'<path d="M3 17l6-6 4 4 8-8M15 7h6v6"/>',
+    lock:'<rect x="4.5" y="10.5" width="15" height="10" rx="2"/><path d="M8 10.5v-3a4 4 0 0 1 8 0v3"/>',
+    none:'<circle cx="12" cy="12" r="9"/><path d="M8 12h8"/>',
+    question:'<circle cx="12" cy="12" r="9"/><path d="M9.6 9.3a2.5 2.5 0 0 1 4.8.9c0 1.8-2.4 2.2-2.4 3.8M12 17.2h.01"/>',
+    clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.2 2"/>',
+    tap:'<path d="M9 11V5.5a1.5 1.5 0 0 1 3 0V11m0-1.5a1.5 1.5 0 0 1 3 0V11m0-.5a1.5 1.5 0 0 1 3 0V15a6 6 0 0 1-6 6h-.6a6 6 0 0 1-4.6-2.2L4.6 15.6a1.5 1.5 0 0 1 2.3-1.9L9 16"/>',
+    umbrella:'<path d="M2.5 12a9.5 9.5 0 0 1 19 0Z"/><path d="M12 12v6.5a2 2 0 0 1-4 0M12 2.5v.5"/>',
+    calendar:'<rect x="3.2" y="5" width="17.6" height="16" rx="2"/><path d="M3.2 9.8h17.6M8 3v4M16 3v4"/>',
+    phone:'<path d="M5 3.5h3.2l1.6 4.2-2.1 1.4a11 11 0 0 0 7.2 7.2l1.4-2.1 4.2 1.6V19a1.5 1.5 0 0 1-1.5 1.5C10.4 20.5 3.5 13.6 3.5 5A1.5 1.5 0 0 1 5 3.5Z"/>'
   };
-  function irmaaCalc(){
-    var magiRaw = document.getElementById('irMagi').value;
-    var badge = document.getElementById('irBracket');
-    var bIn = document.getElementById('irB'), dIn = document.getElementById('irD');
-    if (String(magiRaw).replace(/[^0-9]/g,'') === ''){
-      badge.textContent = 'Enter income to estimate IRMAA';
-      badge.className = 'ir-result';
+  // A name draws its icon; "$", "$$"… draws a text badge (the budget options).
+  function icon(n){
+    if (/^\$/.test(n) || n === '?') return '<span class="txt">' + n + '</span>';
+    return '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[n] || ICONS.check) + '</svg>';
+  }
+
+  var PART_B = 202.90;       // 2026 standard Part B premium (CMS); 2027 amount not yet announced
+  var PART_B_DED = 283;      // 2026 Part B deductible (CMS)
+  var RX_CAP = 2400;         // 2027 Part D out-of-pocket threshold (CMS CY2027 landscape file)
+  var DATA_BASE = '/data/plans-2027/';
+  var STATE_NAMES = {AZ:'Arizona',CA:'California',CO:'Colorado',FL:'Florida',GA:'Georgia',IA:'Iowa',IN:'Indiana',LA:'Louisiana',MI:'Michigan',NC:'North Carolina',NJ:'New Jersey',NM:'New Mexico',NV:'Nevada',OH:'Ohio',OR:'Oregon',TX:'Texas',UT:'Utah',VA:'Virginia'};
+
+  // ---------------------------------------------------------------- questions
+  var STEPS = [
+    {id:'zip', type:'zip', q:'What ZIP code do you live in?', help:'Plans are sold by county, so this tells us which ones you can actually get.'},
+    {id:'county', type:'county', q:'Which county do you live in?', help:'Your ZIP code crosses a county line, and plans differ by county.',
+      skip:function(){ return !GEO.counties || GEO.counties.length < 2; }},
+    {id:'who', q:'Who are we planning for?', opts:[
+      ['me','Just me','user'], ['couple','Me and my spouse','users']]},
+    {id:'stage', q:'Where are you with Medicare?', opts:[
+      ['t65','Turning 65 soon','cake'], ['on','Already on Medicare','card'],
+      ['work','Leaving coverage from work','briefcase'], ['helping','Helping a parent or loved one','heart']]},
+    {id:'doctors', q:'How important is keeping the doctors you see now?', opts:[
+      ['very','Very important','stetho','I don’t want to change doctors'],
+      ['some','Somewhat important','thumb','I’d prefer to keep them'],
+      ['no','Not very important','swap','I’m open to new doctors']], cols:1},
+    {id:'travel', q:'Do you travel, or spend part of the year in another state?', opts:[
+      ['yes','Yes','plane'], ['no','No, I stay close to home','home']]},
+    {id:'priority', q:'Which sounds more like you?', opts:[
+      ['low','Keep my monthly bill low','wallet','I’m OK paying copays when I use care'],
+      ['predict','Know my costs up front','shield','I’d rather pay more each month and very little when I’m sick']], cols:1},
+    {id:'extras', type:'many', q:'What else would you like covered?', help:'Tap all that fit, then press Continue.', opts:[
+      ['dental','Dental','tooth'], ['vision','Vision / glasses','glasses'],
+      ['hearing','Hearing aids','ear'], ['chs','Cash if I get cancer, a heart attack or a stroke','ribbon'],
+      ['hosp','Cash if I\u2019m in the hospital','hospital'], ['ltc','Care at home or in a facility later on','homecare'],
+      ['none','None of these','none']]},
+    {id:'rx', q:'How many prescriptions do you take?', opts:[
+      ['0','None right now','check'], ['few','1 to 3','pill'],
+      ['many','4 or more','list'], ['brand','Some are expensive brand names','dollar']]},
+    {id:'budget', q:'What feels comfortable each month for your plans?', help:'Per person, not counting the Part B premium Medicare already charges.', opts:[
+      ['50','Under $50','$'], ['150','$50 to $150','$$'],
+      ['300','$150 to $300','$$$'], ['300+','Over $300','$$$$'],
+      ['unsure','Not sure yet','?']]},
+    {id:'income', q:'Is your yearly income over $109,000 (single) or $218,000 (married)?', help:'Medicare charges higher-income people more for Part B and drug coverage. It uses your tax return from two years ago.', opts:[
+      ['no','No','check'], ['yes','Yes','trend'], ['skip','I\u2019d rather not say','lock']]},
+    {id:'contact', type:'contact', q:'Where should we send your bundle options?', help:'Brian will confirm your doctors and prescriptions and finish the pricing. No cost, and no pressure.'}
+  ];
+
+  var LABELS = {
+    who:{me:'Just me', couple:'Me + spouse'},
+    stage:{t65:'Turning 65', on:'On Medicare', work:'Leaving work coverage', helping:'Helping a loved one'},
+    doctors:{very:'Keep doctors: very', some:'Keep doctors: somewhat', no:'Keep doctors: flexible'},
+    travel:{yes:'Travels', no:'Stays local'},
+    priority:{low:'Low monthly bill', predict:'Predictable costs'},
+    rx:{'0':'No prescriptions', few:'1–3 prescriptions', many:'4+ prescriptions', brand:'Brand-name drugs'},
+    budget:{'50':'Budget under $50', '150':'Budget $50–150', '300':'Budget $150–300', '300+':'Budget $300+', unsure:'Budget not sure'},
+    income:{no:'Under IRMAA line', yes:'Over IRMAA line', skip:'Income: not given'},
+    extras:{dental:'Dental', vision:'Vision', hearing:'Hearing', chs:'Cancer/heart/stroke', hosp:'Hospital cash', ltc:'Long-term care', none:'No extras'}
+  };
+
+  // ---------------------------------------------------------------- generic coverage layers
+  var L = {
+    om:   {i:'landmark', n:'Original Medicare (Parts A & B)', w:'The government base for hospital and doctor care. Everyone pays the Part B premium: $202.90/month in 2026 (the 2027 amount comes out in November).', base:true, fixed:PART_B},
+    suppG:{i:'shield', n:'Medicare Supplement Plan G', w:'Pays nearly everything Medicare leaves. You pay the $' + PART_B_DED + ' Part B deductible (2026), then $0 for covered care. Any doctor in the U.S. who takes Medicare. Same benefits from every carrier — only the price differs.'},
+    suppN:{i:'shield', n:'Medicare Supplement Plan N', w:'Lower premium than Plan G. You pay the $' + PART_B_DED + ' Part B deductible (2026), up to $20 per office visit and up to $50 per ER visit. Any doctor who takes Medicare.'},
+    pdp:  {i:'pill', n:'Prescription Drug Plan (Part D)', w:'Covers your medicines. Drug costs are capped at $' + RX_CAP.toLocaleString() + ' a year in 2027.'},
+    mapd: {i:'stetho', n:'Medicare Advantage plan with drug coverage', w:'One plan for hospital, doctor and drugs, often with a low or $0 premium. Uses a network. You pay copays as you go, up to the plan’s yearly limit.'},
+    dvh:  {i:'tooth', n:'Dental, Vision & Hearing plan', w:'Cleanings, fillings, crowns, eye exams, glasses and hearing aids — things Original Medicare mostly does not cover.', add:true},
+    chs:  {i:'ribbon', n:'Cancer, Heart Attack & Stroke protection', w:'A lump-sum cash payment at diagnosis. Use it for anything: travel to treatment, bills, lost income.', add:true},
+    hip:  {i:'hospital', n:'Hospital & recovery cash plan', w:'Pays you cash for each day in the hospital or recovering at a facility — money toward your plan’s copays.', add:true},
+    hhc:  {i:'homecare', n:'Home Health Care plan', w:'Medicare does not pay for a home health aide when personal care is all you need \u2014 help bathing, dressing or getting around the house. This plan pays you cash toward care at home.', add:true},
+    ltc:  {i:'bed', n:'Long-term care planning', w:'Medicare does not pay for long-term custodial care. About 7 in 10 people turning 65 will need some. We review your options together.', add:true, noPrem:true}
+  };
+
+  // ---------------------------------------------------------------- state
+  var A = {extras:[]};
+  var GEO = {};          // {state, counties:[key], county:key, doc}
+  var OV = {};           // advisor plan overrides: 'recommended.ma' -> plan id
+  var PR = {}, CAR = {}; // advisor-entered premiums / carriers by layer key
+  var at = -1;           // -1 = intro, STEPS.length = results
+  var leadSent = false, leadSending = false, chosen = '', RESTORED = '';
+  var card = document.getElementById('card');
+  var cache = {};
+
+  function esc(s){ return String(s == null ? '' : s).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function money(v){ var n = parseFloat(String(v).replace(/[^0-9.\-]/g,'')); return isNaN(n) ? 0 : n; }
+  function fmt(n){ return '$' + n.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2}); }
+  function whole(n){ return '$' + Math.round(n).toLocaleString('en-US'); }
+  function prem(n){ return n == null ? '—' : (n === 0 ? '$0' : fmt(n)); }
+  function starTxt(s){ return s ? '<span class="stars">★</span> ' + s + ' of 5' : 'Not yet rated'; }
+
+  // ---------------------------------------------------------------- plan data (CMS CY2027 landscape)
+  function getJSON(u){
+    if (!cache[u]) cache[u] = fetch(u).then(function(r){ if (!r.ok) throw new Error(r.status); return r.json(); });
+    return cache[u];
+  }
+  function lookupZip(zip){
+    GEO = {};
+    return getJSON(DATA_BASE + 'index.json').then(function(ix){
+      var states = ix[zip.slice(0,3)] || [];
+      return states.reduce(function(p, st){
+        return p.then(function(found){
+          if (found) return found;
+          return getJSON(DATA_BASE + st + '.json').then(function(doc){ return doc.zips[zip] ? {st:st, doc:doc} : null; });
+        });
+      }, Promise.resolve(null));
+    }).then(function(hit){
+      if (!hit) return;
+      GEO = {state:hit.st, doc:hit.doc, counties:hit.doc.zips[zip], county:hit.doc.zips[zip][0]};
+    }).catch(function(){ GEO = {}; });
+  }
+  function countyName(){ return GEO.doc && GEO.county ? GEO.doc.counties[GEO.county].name : ''; }
+  function areaLabel(){ return countyName() ? countyName() + ' County, ' + GEO.state : ''; }
+  function maPlans(){
+    if (!GEO.doc || !GEO.county) return [];
+    return (GEO.doc.counties[GEO.county].plans || []).map(function(id){ return GEO.doc.plans[id]; });
+  }
+  function pdps(){ return GEO.doc ? GEO.doc.pdp : []; }
+  function isPPO(p){ return /PPO/.test(p.t); }
+  function worst(p){ return (p.p || 0) * 12 + (p.m || 0); }
+  function rxHeavy(){ return A.rx === 'many' || A.rx === 'brand'; }
+  function wantsPPO(){ return A.travel === 'yes' || A.doctors === 'very'; }
+
+  // kind: 'low' = lowest premium, 'fit' = lowest bad-year cost for these answers, 'top' = highest rated
+  function pickMA(kind, avoid){
+    var list = maPlans();
+    if (!list.length) return null;
+    if (wantsPPO() && list.some(isPPO)) list = list.filter(isPPO);
+    var score = {
+      low: function(p){ return (p.p || 0) * 100000 + (p.m || 0) - (p.s || 0); },
+      fit: function(p){ return worst(p) + (rxHeavy() ? (p.dd || 0) : 0) + ((p.s || 0) >= 4 ? 0 : 1500); },
+      top: function(p){ return -(p.s || 0) * 100000 + worst(p); }
+    }[kind];
+    var sorted = list.slice().sort(function(a,b){ return score(a) - score(b); });
+    var fresh = sorted.filter(function(p){ return (avoid || []).indexOf(p.id) < 0; });
+    return fresh[0] || sorted[0];
+  }
+  function pickPDP(kind){
+    var list = pdps();
+    if (!list.length) return null;
+    var score = kind === 'low'
+      ? function(p){ return (p.p || 0) * 1000 + (p.dd || 0); }
+      : function(p){ return (p.p || 0) * 12 + (rxHeavy() ? (p.dd || 0) : 0) - (p.s || 0) * 60; };
+    return list.slice().sort(function(a,b){ return score(a) - score(b); })[0];
+  }
+  function planById(id){
+    if (!GEO.doc) return null;
+    if (GEO.doc.plans[id]) return GEO.doc.plans[id];
+    return pdps().filter(function(p){ return p.id === id; })[0] || null;
+  }
+
+  // ---------------------------------------------------------------- recommendation
+  function recommend(){
+    if (GEO.doc && !maPlans().length) return 'supp';   // no general MA-PD plans in this county
+    var s = 0, m = 0;
+    if (A.doctors === 'very') s += 2; else if (A.doctors === 'some') s += 1; else if (A.doctors === 'no') m += 1;
+    if (A.travel === 'yes') s += 2;
+    if (A.priority === 'predict') s += 2; else if (A.priority === 'low') m += 2;
+    if (A.budget === '50') m += 2; else if (A.budget === '150') m += 1;
+    else if (A.budget === '300') s += 1; else if (A.budget === '300+') s += 2;
+    if (wantsDvh()) m += 1;
+    return s >= m ? 'supp' : 'ma';
+  }
+  function picked(k){ return A.extras.indexOf(k) > -1; }
+  function wantsDvh(){ return picked('dental') || picked('vision') || picked('hearing'); }
+  function extrasFor(){
+    var x = [];
+    if (wantsDvh()) x.push('dvh');
+    if (picked('chs')) x.push('chs');
+    if (picked('hosp')) x.push('hip');
+    if (picked('ltc')) x.push('ltc');
+    return x;
+  }
+
+  // A bundle = ordered layers. A layer is a generic key ('suppG') or a real plan {slot, plan, why}.
+  function buildBundles(path){
+    var b = [];
+    if (path === 'ma'){
+      var ess = OV['essential.ma'] ? planById(OV['essential.ma']) : pickMA('low');
+      var fit = OV['recommended.ma'] ? planById(OV['recommended.ma']) : pickMA('fit');
+      var top = OV['complete.ma'] ? planById(OV['complete.ma']) : pickMA('top', [ess && ess.id, fit && fit.id]);
+      var ppoNote = wantsPPO() && maPlans().some(isPPO) ? ' PPO (can see out-of-network doctors).' : '';
+      var recX = extrasFor(); if (recX.indexOf('hip') < 0) recX.unshift('hip'); recX.unshift('hhc');
+      b.push({id:'essential', name:'Umbrella 1', best:'The lowest monthly premium in your county' + (ppoNote ? ' among PPOs' : '') + '.', meter:1,
+        layers:['om', ess ? {slot:'ma', plan:ess, why:'Lowest premium' + (ppoNote ? ' PPO' : '')} : 'mapd', 'hhc']});
+      b.push({id:'recommended', name:'Umbrella 2', best:'The lowest bad-year cost for your answers, plus a cash cushion for copays.', meter:2,
+        layers:['om', fit ? {slot:'ma', plan:fit, why:'Lowest bad-year cost' + (rxHeavy() ? ' incl. drug deductible' : '') + (ppoNote ? ', PPO' : '')} : 'mapd'].concat(recX)});
+      b.push({id:'complete', name:'Umbrella 3', best:'A second, well-rated plan to compare, plus cash benefits for the big health events.', meter:3,
+        layers:['om', top ? {slot:'ma', plan:top, why:(top.s ? top.s + '-star plan' : 'Not yet rated') + ' \u00B7 a second plan to compare'} : 'mapd', 'hhc', 'hip', 'chs', 'dvh', 'ltc']});
+    } else {
+      var pLow = OV['essential.pdp'] ? planById(OV['essential.pdp']) : pickPDP('low');
+      var pFit = OV['recommended.pdp'] ? planById(OV['recommended.pdp']) : pickPDP('fit');
+      var pTop = OV['complete.pdp'] ? planById(OV['complete.pdp']) : pFit;
+      var recS = extrasFor(); if (!recS.length) recS.push('dvh'); recS.unshift('hhc');
+      b.push({id:'essential', name:'Umbrella 1', best:'Any doctor who takes Medicare, at a lower monthly cost.', meter:1,
+        layers:['om','suppN', pLow ? {slot:'pdp', plan:pLow, why:'Lowest-premium drug plan'} : 'pdp', 'hhc'],
+        pay:'The $' + PART_B_DED + ' Part B deductible, plus up to $20 per office visit and $50 per ER visit.'});
+      b.push({id:'recommended', name:'Umbrella 2', best:'Any doctor, almost nothing to pay when you’re sick.', meter:2,
+        layers:['om','suppG', pFit ? {slot:'pdp', plan:pFit, why: (rxHeavy() ? 'Lowest premium + deductible for several prescriptions' : 'Low yearly premium') + (pFit.s >= 4 ? ', ' + pFit.s + ' stars' : '')} : 'pdp'].concat(recS),
+        pay:'About $' + PART_B_DED + ' a year (the Part B deductible), then $0 for covered medical care.'});
+      b.push({id:'complete', name:'Umbrella 3', best:'Plan G plus cash benefits for the big risks Medicare leaves open.', meter:3,
+        layers:['om','suppG', pTop ? {slot:'pdp', plan:pTop, why: OV['complete.pdp'] ? 'Chosen by your advisor' : 'Same drug plan as Umbrella 2'} : 'pdp','hhc','dvh','chs','hip','ltc'],
+        pay:'About $' + PART_B_DED + ' a year for medical care, plus cash paid to YOU for cancer, a heart attack, a stroke or a hospital stay.'});
+    }
+    return b;
+  }
+
+  // ---------------------------------------------------------------- step navigation
+  function visible(i){ var s = STEPS[i]; return !(s && s.skip && s.skip()); }
+  function next(){ do { at++; } while (at < STEPS.length && !visible(at)); render(); }
+  function prev(){ do { at--; } while (at >= 0 && !visible(at)); render(); }
+  function stepNumber(){
+    var n = 0, total = 0;
+    for (var i = 0; i < STEPS.length; i++){ if (!visible(i)) continue; total++; if (i <= at) n++; }
+    return [n, total];
+  }
+
+  // ---------------------------------------------------------------- rendering
+  function progress(){
+    var p = stepNumber(), pct = Math.round(p[0] / p[1] * 100);
+    return '<div class="prog"><span class="lbl">Question ' + p[0] + ' of ' + p[1] + '</span><div class="bar"><i style="width:' + pct + '%"></i></div></div>';
+  }
+
+  function render(){
+    document.body.classList.toggle('wide', at >= STEPS.length);
+    if (at < 0) return renderIntro();
+    if (at >= STEPS.length) return renderResults();
+    var st = STEPS[at], h = progress();
+    h += '<h2 class="q" tabindex="-1">' + esc(st.q) + '</h2>' + (st.help ? '<p class="help">' + esc(st.help) + '</p>' : '');
+    if (st.type === 'zip'){
+      h += '<div class="field zipbox"><label for="zip">ZIP code</label><input id="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" value="' + esc(A.zip || '') + '"></div><p class="looking" id="looking"></p>';
+      h += nav(true, !(A.zip && /^\d{5}$/.test(A.zip)));
+    } else if (st.type === 'county'){
+      h += '<div class="opts one-col" role="group">';
+      GEO.counties.forEach(function(k){
+        h += '<button type="button" class="opt" aria-pressed="' + (GEO.county === k) + '" data-v="' + esc(k) + '"><span class="ic" aria-hidden="true">' + icon('pin') + '</span><span>' + esc(GEO.doc.counties[k].name) + ' County<small>' + esc(STATE_NAMES[GEO.state] || GEO.state) + '</small></span><span class="tick" aria-hidden="true"></span></button>';
+      });
+      h += '</div>' + nav(false);
+    } else if (st.type === 'contact'){
+      h += contactForm();
+    } else {
+      var many = st.type === 'many';
+      h += '<div class="opts' + (st.cols === 1 ? ' one-col' : '') + '" role="group">';
+      st.opts.forEach(function(o){
+        var on = many ? A.extras.indexOf(o[0]) > -1 : A[st.id] === o[0];
+        h += '<button type="button" class="opt" aria-pressed="' + on + '" data-v="' + esc(o[0]) + '"><span class="ic" aria-hidden="true">' + icon(o[2]) + '</span><span>' + esc(o[1]) + (o[3] ? '<small>' + esc(o[3]) + '</small>' : '') + '</span><span class="tick" aria-hidden="true"></span></button>';
+      });
+      h += '</div>' + nav(many, many && !A.extras.length);
+    }
+    card.innerHTML = h;
+    wire(st);
+    var q = card.querySelector('h2.q'); if (q) q.focus({preventScroll:true});
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+
+  function nav(showGo, disabled){
+    return '<div class="nav"><button type="button" class="btn btn-back" data-act="back">← Back</button>' +
+      (showGo ? '<button type="button" class="btn btn-go" data-act="go"' + (disabled ? ' disabled' : '') + '>Continue →</button>' : '') + '</div>';
+  }
+
+  function renderIntro(){
+    card.innerHTML =
+      '<div class="eyebrow">Free coverage survey</div><h1 tabindex="-1">Which Medicare umbrella fits you?</h1>' +
+      '<p class="lede">Answer about 10 quick questions. We\u2019ll show you three coverage umbrellas side by side — built from the real 2027 plans in your county, in plain English.</p>' +
+      '<ul class="intro-list">' +
+        '<li><span class="ic">' + icon('clock') + '</span> About 2 minutes, one question at a time</li>' +
+        '<li><span class="ic">' + icon('tap') + '</span> Just tap the answer that fits — you can always go back</li>' +
+        '<li><span class="ic">' + icon('dollar') + '</span> Free, with no obligation to buy anything</li>' +
+      '</ul>' +
+      '<div class="umb-strip"><span>' + icon('umbrella') + 'Umbrella 1</span><span>' + icon('umbrella') + 'Umbrella 2</span><span>' + icon('umbrella') + 'Umbrella 3</span></div>' +
+      '<div class="nav"><button type="button" class="btn btn-go" data-act="start" style="margin-left:0">Start the survey →</button></div>';
+    card.querySelector('[data-act="start"]').onclick = function(){ at = -1; next(); };
+    card.querySelector('h1').focus({preventScroll:true});
+  }
+
+  function contactForm(){
+    var c = A.contact || {};
+    return '<form id="cf" novalidate>' +
+      '<div class="grid2">' +
+        '<div class="field"><label for="cf-first">First name</label><input id="cf-first" autocomplete="given-name" value="' + esc(c.first) + '"></div>' +
+        '<div class="field"><label for="cf-last">Last name</label><input id="cf-last" autocomplete="family-name" value="' + esc(c.last) + '"></div>' +
+      '</div>' +
+      '<div class="field"><label for="cf-phone">Phone</label><input id="cf-phone" type="tel" inputmode="tel" autocomplete="tel" value="' + esc(c.phone) + '"></div>' +
+      '<div class="field"><label for="cf-email">Email <span class="opt-l">(optional)</span></label><input id="cf-email" type="email" autocomplete="email" value="' + esc(c.email) + '"></div>' +
+      '<div class="hp" aria-hidden="true"><label>Leave blank<input id="cf-xtr" tabindex="-1" autocomplete="off"></label></div>' +
+      '<label class="consent"><input type="checkbox" id="cf-ok"' + (c.consent ? ' checked' : '') + '><span>Yes, 602Medicare may call, text or email me about my Medicare options, including by automated means. Consent is not required to buy anything. Message and data rates may apply; reply STOP to opt out.</span></label>' +
+      '<p class="err" id="cf-err" role="alert"></p>' +
+      '<div class="nav"><button type="button" class="btn btn-back" data-act="back">← Back</button>' +
+      '<button type="button" class="btn-skip" data-act="skip">Skip (advisor)</button>' +
+      '<button type="submit" class="btn btn-go">Show my bundles →</button></div>' +
+    '</form>';
+  }
+
+  function wire(st){
+    var back = card.querySelector('[data-act="back"]');
+    if (back) back.onclick = prev;
+    var go = card.querySelector('[data-act="go"]');
+
+    if (st.type === 'zip'){
+      var z = card.querySelector('#zip');
+      var submit = function(){
+        if (go.disabled) return;
+        go.disabled = true;
+        card.querySelector('#looking').textContent = 'Looking up the plans in your area…';
+        lookupZip(A.zip).then(next);
+      };
+      z.addEventListener('input', function(){ z.value = z.value.replace(/\D/g,'').slice(0,5); A.zip = z.value; go.disabled = !/^\d{5}$/.test(z.value); });
+      z.addEventListener('keydown', function(e){ if (e.key === 'Enter') submit(); });
+      go.onclick = submit;
+      setTimeout(function(){ z.focus(); }, 50);
       return;
     }
-    var magi = money(magiRaw);
-    var tiers = IRMAA[document.getElementById('irFiling').value];
-    var t = tiers[tiers.length-1];
-    for (var i=0; i<tiers.length; i++){ if (magi <= tiers[i][0]){ t = tiers[i]; break; } }
-    bIn.value = fmt(t[1]);
-    dIn.value = fmt(t[2]);
-    badge.textContent = t[3];
-    badge.className = 'ir-result ' + (t[1] > 0 ? 'hit' : 'clear');
-    document.getElementById('irBNote').textContent = t[1] > 0
-      ? 'Total Part B: ' + fmt(202.90 + t[1]) + '/mo per person'
-      : 'Added to the $202.90 standard Part B premium';
-    recalc();
+    if (st.type === 'contact'){
+      card.querySelector('#cf').addEventListener('submit', function(e){ e.preventDefault(); submitContact(); });
+      card.querySelector('[data-act="skip"]').onclick = function(){ readContact(); next(); };
+      return;
+    }
+    card.querySelectorAll('.opt').forEach(function(b){
+      b.onclick = function(){
+        var v = b.getAttribute('data-v');
+        if (st.type === 'many'){
+          if (v === 'none') A.extras = A.extras.indexOf('none') > -1 ? [] : ['none'];
+          else {
+            A.extras = A.extras.filter(function(x){ return x !== 'none'; });
+            var i = A.extras.indexOf(v); if (i > -1) A.extras.splice(i,1); else A.extras.push(v);
+          }
+          card.querySelectorAll('.opt').forEach(function(o){ o.setAttribute('aria-pressed', A.extras.indexOf(o.getAttribute('data-v')) > -1); });
+          go.disabled = !A.extras.length;
+        } else {
+          if (st.type === 'county') GEO.county = v; else A[st.id] = v;
+          card.querySelectorAll('.opt').forEach(function(o){ o.setAttribute('aria-pressed', o === b); });
+          setTimeout(next, 280);   // auto-advance after the tap registers
+        }
+      };
+    });
+    if (go) go.onclick = next;
   }
-  document.getElementById('irMagi').addEventListener('input', irmaaCalc);
-  document.getElementById('irFiling').addEventListener('change', irmaaCalc);
-  document.getElementById('irMagi').addEventListener('blur', function(){
-    var raw = String(this.value).replace(/[^0-9]/g,'');
-    if (raw !== '') this.value = '$' + Number(raw).toLocaleString('en-US');
+
+  function readContact(){
+    var g = function(id){ var el = card.querySelector('#' + id); return el ? el.value.trim() : ''; };
+    A.contact = {first:g('cf-first'), last:g('cf-last'), phone:g('cf-phone'), email:g('cf-email'),
+      consent: !!(card.querySelector('#cf-ok') || {}).checked, hp:g('cf-xtr')};
+    return A.contact;
+  }
+
+  function submitContact(){
+    var c = readContact(), err = card.querySelector('#cf-err');
+    var digits = c.phone.replace(/\D/g,'');
+    if (!c.first){ err.textContent = 'Please enter your first name.'; card.querySelector('#cf-first').focus(); return; }
+    if (digits.length < 10 && !/\S+@\S+\.\S+/.test(c.email)){ err.textContent = 'Please enter a phone number (or an email) so Brian can reach you.'; card.querySelector('#cf-phone').focus(); return; }
+    if (!c.consent){ err.textContent = 'Please check the box so we’re allowed to contact you.'; card.querySelector('#cf-ok').focus(); return; }
+    next();
+    sendLead('coverage-survey');
+  }
+
+  // ---------------------------------------------------------------- results
+  function answerChips(){
+    var out = [];
+    if (A.zip) out.push('ZIP <b>' + esc(A.zip) + '</b>' + (countyName() ? ' · ' + esc(countyName()) + ' County' : ''));
+    ['who','stage','doctors','travel','priority','rx','budget','income'].forEach(function(k){
+      if (A[k] && LABELS[k][A[k]]) out.push(esc(LABELS[k][A[k]]));
+    });
+    if (A.extras.length) out.push('Wants: <b>' + A.extras.map(function(x){ return LABELS.extras[x]; }).join(', ') + '</b>');
+    return out.map(function(s){ return '<span>' + s + '</span>'; }).join('');
+  }
+
+  function whyLines(path){
+    var w = [], ma = maPlans();
+    if (path === 'supp'){
+      if (GEO.doc && !ma.length) w.push('CMS lists no general Medicare Advantage plans in ' + areaLabel() + ' for 2027, so Original Medicare + a Supplement is the way to go.');
+      if (A.doctors === 'very' || A.doctors === 'some') w.push('You want to keep your doctors — a Supplement works with any doctor who takes Medicare.');
+      if (A.travel === 'yes') w.push('You travel — a Supplement goes with you anywhere in the U.S.');
+      if (A.priority === 'predict') w.push('You prefer knowing your costs up front over paying copays as you go.');
+      if (A.stage === 'on') w.push('Already on Medicare? A Supplement may ask health questions outside your first enrollment window — we check that first.');
+    } else {
+      if (A.priority === 'low') w.push('You’d rather keep the monthly bill low and pay copays when you use care.');
+      if (A.budget === '50' || A.budget === '150') w.push('Your budget points to a low or $0-premium plan.');
+      if (wantsPPO() && ma.some(isPPO)) w.push('You travel or want to keep your doctors, so we only picked PPO plans — they also pay for out-of-network care.');
+      if (A.doctors !== 'no') w.push('We’ll confirm your doctors are in the plan’s network before anything is final.');
+    }
+    if (rxHeavy()) w.push('With several prescriptions, we’ll run your exact drug list against each plan.');
+    if (!w.length) w.push('Based on your answers, this is a good balance of cost and protection.');
+    return w;
+  }
+
+  function planLayer(bid, l){
+    var p = l.plan, k = l.slot + '-' + bid, h = '';
+    if (OV[bid + '.' + l.slot]) l.why = 'Chosen by your advisor';
+    var list = l.slot === 'ma' ? maPlans() : pdps();
+    var opts = list.slice().sort(function(a,b){ return (a.p||0) - (b.p||0); }).map(function(x){
+      return '<option value="' + esc(x.id) + '"' + (x.id === p.id ? ' selected' : '') + '>' + esc(x.n) + ' — ' + prem(x.p) + (l.slot === 'ma' ? ' / max ' + whole(x.m || 0) : '') + '</option>';
+    }).join('');
+    h += '<li class="layer plan"><div class="ln"><span class="i" aria-hidden="true">' + icon(l.slot === 'ma' ? 'stetho' : 'pill') + '</span><span>' + esc(p.n) + '</span></div>';
+    h += '<div class="pid">' + esc(p.c) + (p.t ? ' · ' + esc(p.t) : '') + ' · ' + esc(p.id) + ' · <i>' + esc(l.why) + '</i></div>';
+    h += '<div class="pf"><div><b>' + prem(p.p) + '</b>premium / month</div>';
+    if (l.slot === 'ma') h += '<div><b>' + whole(p.m || 0) + '</b>max out-of-pocket / yr (in network)</div>';
+    h += '<div><b>' + whole(p.dd || 0) + '</b>drug deductible</div><div><b>' + starTxt(p.s) + '</b>2027 Medicare stars</div></div>';
+    h += '<select data-slot="' + l.slot + '" data-b="' + bid + '" aria-label="Swap plan">' + opts + '</select>';
+    h += '<div class="lp"><input class="prem" data-k="' + k + '" value="' + fmt(PR[k] != null ? PR[k] : (p.p || 0)) + '" aria-label="Monthly premium"></div>';
+    return h + '</li>';
+  }
+
+  function genericLayer(key){
+    var l = L[key], h = '';
+    h += '<li class="layer' + (l.base ? ' base' : l.add ? ' add' : '') + '"><div class="ln"><span class="i" aria-hidden="true">' + icon(l.i) + '</span><span>' + esc(l.n) + '</span></div>' +
+         '<div class="lw">' + esc(l.w) + '</div>';
+    if (l.noPrem) h += '<div class="lp"><input class="car" data-k="' + key + '" placeholder="Appt / notes" value="' + esc(CAR[key] || '') + '"></div>';
+    else h += '<div class="lp"><input class="car" data-k="' + key + '" placeholder="' + (l.base ? 'Medicare' : 'Carrier / plan') + '" value="' + esc(CAR[key] != null ? CAR[key] : (l.base ? 'Part B premium (2026)' : '')) + '">' +
+              '<input class="prem" data-k="' + key + '" value="' + fmt(PR[key] != null ? PR[key] : (l.fixed || 0)) + '" aria-label="Monthly premium"></div>';
+    return h + '</li>';
+  }
+
+  function payBox(b){
+    var ma = null;
+    b.layers.forEach(function(l){ if (l && l.slot === 'ma') ma = l.plan; });
+    if (ma){
+      return '<div class="worst"><b>Most you’d pay in a bad year</b><span class="wa">' + whole(worst(ma)) + '</span><br>' +
+        whole((ma.p || 0) * 12) + ' in premiums + ' + whole(ma.m || 0) + ' out-of-pocket max for covered in-network care. Drug costs are capped separately at ' + whole(RX_CAP) + '.' +
+        (b.layers.indexOf('hip') > -1 ? ' The hospital cash plan pays you back toward this.' : '') + '</div>';
+    }
+    return '<div class="b-pay"><b>What you pay when you need care</b>' + esc(b.pay || 'Copays as you use care, up to the plan’s yearly limit. Drug costs capped.') + '</div>';
+  }
+
+  function plansTable(path){
+    var ma = maPlans(), area = areaLabel();
+    if (!GEO.doc) return '';
+    var h = '<details class="all"' + (AGENT ? ' open' : '') + '><summary>See every 2027 plan in ' + esc(area) + '</summary>';
+    var inB = {};
+    buildBundles(path).forEach(function(b){ b.layers.forEach(function(l){ if (l && l.plan) inB[l.plan.id] = 1; }); });
+    if (ma.length){
+      h += '<p class="help" style="font-size:16px">Medicare Advantage plans with drug coverage (' + ma.length + '), lowest bad-year cost first. Highlighted = in a bundle above.</p><div class="tblw"><table class="pl"><tr><th>Plan</th><th>Type</th><th>Premium/mo</th><th>Max out-of-pocket</th><th>Drug deductible</th><th>Stars</th><th>Bad-year cost</th></tr>';
+      ma.slice().sort(function(a,b){ return worst(a) - worst(b); }).forEach(function(p){
+        h += '<tr' + (inB[p.id] ? ' class="inb"' : '') + '><td class="n">' + esc(p.n) + '<div class="pid">' + esc(p.c) + ' · ' + esc(p.id) + '</div></td><td>' + esc(p.t) + '</td><td class="r">' + prem(p.p) + '</td><td class="r">' + whole(p.m || 0) + '</td><td class="r">' + whole(p.dd || 0) + '</td><td class="r">' + (p.s ? p.s + ' ★' : 'new') + '</td><td class="r"><b>' + whole(worst(p)) + '</b></td></tr>';
+      });
+      h += '</table></div>';
+    } else {
+      h += '<p class="help" style="font-size:16px">CMS lists no general Medicare Advantage plans with drug coverage in ' + esc(area) + ' for 2027.</p>';
+    }
+    h += '<p class="help" style="font-size:16px; margin-top:14px">Stand-alone drug plans (Part D) sold in ' + esc(STATE_NAMES[GEO.state] || GEO.state) + ' (' + pdps().length + '), for use with a Medicare Supplement:</p><div class="tblw"><table class="pl"><tr><th>Plan</th><th>Premium/mo</th><th>Drug deductible</th><th>Stars</th></tr>';
+    pdps().forEach(function(p){
+      h += '<tr' + (inB[p.id] ? ' class="inb"' : '') + '><td class="n">' + esc(p.n) + '<div class="pid">' + esc(p.c) + ' · ' + esc(p.id) + '</div></td><td class="r">' + prem(p.p) + '</td><td class="r">' + whole(p.dd || 0) + '</td><td class="r">' + (p.s ? p.s + ' ★' : 'new') + '</td></tr>';
+    });
+    h += '</table></div><p class="src">Source: CMS CY2027 Medicare Advantage &amp; Part D Landscape file (September 2026 release) and CMS 2027 Star Ratings (October 8, 2026). Premiums shown are the plan premium only; you also pay the Part B premium. Special Needs Plans are not listed. Copays, networks and drug lists are not in the CMS file — we check those with you.</p></details>';
+    return h;
+  }
+
+  function renderResults(){
+    var path = recommend(), bundles = buildBundles(path);
+    var name = (A.contact && A.contact.first) ? A.contact.first : '';
+    var full = A.contact ? (A.contact.first + ' ' + A.contact.last).trim() : '';
+    var pathName = path === 'supp' ? 'Original Medicare + a Medicare Supplement' : 'A Medicare Advantage plan';
+    var area = areaLabel();
+    var h = '';
+    h += '<div class="print-only p-hdr"><img src="/logo/602medicare-logo-transparent.png" alt="602Medicare"><div><h1>Your Medicare Umbrella Options</h1></div>' +
+         '<div class="pm"><b>Prepared for:</b> ' + esc(full || '________________') + '<br><b>Date:</b> ' + new Date().toLocaleDateString('en-US') + '<br><b>Advisor:</b> Brian Penner</div></div>';
+    if (RESTORED) h += '<div class="sent ok no-print" style="margin:0 0 14px">Saved survey results from ' + esc(RESTORED) + (A.zip ? ' \u00B7 ZIP ' + esc(A.zip) : '') + '</div>';
+    h += '<div class="res-head"><div><h2 class="q" tabindex="-1">' + (name ? esc(name) + ', here' : 'Here') + ' are your umbrella options</h2>' +
+         '<p class="help">Three ways to put your coverage together, from basic to full protection' + (area ? ' — using the real 2027 plans in ' + esc(area) : '') + '.</p></div></div>';
+    h += '<div class="path"><b class="k">Suggested starting point</b><div class="pn">' + pathName + '</div><ul>' +
+         whyLines(path).map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' +
+         '<div class="answers">' + answerChips() + '</div></div>';
+
+    h += '<div class="bundles">';
+    bundles.forEach(function(b){
+      var star = b.id === 'recommended';
+      h += '<section class="bundle' + (star ? ' star' : '') + (chosen === b.id ? ' chosen' : '') + '" data-b="' + b.id + '">' +
+        '<div class="b-top"><div class="b-umb">' + icon('umbrella') + '</div><span class="b-flag">' + (star ? '★ Our pick' : b.id === 'essential' ? 'Good' : 'Most protection') + '</span>' +
+        '<div class="b-name">' + esc(b.name) + '</div><div class="b-best">' + esc(b.best) + '</div>' +
+        '<div class="meter" aria-label="Protection level ' + b.meter + ' of 3">Protection ' +
+          [1,2,3].map(function(n){ return '<i class="' + (n <= b.meter ? 'on' : '') + '"></i>'; }).join('') + '</div></div><ul class="stack">';
+      b.layers.forEach(function(l){ h += typeof l === 'string' ? genericLayer(l) : planLayer(b.id, l); });
+      h += '</ul><div class="b-foot">' + payBox(b) +
+        '<div class="b-price">' + (path === 'supp' ? 'Supplement and add-on prices depend on your age and carrier — Brian quotes them for ZIP ' + esc(A.zip || '') + '.' : 'Add-on prices depend on your age — Brian quotes them for ZIP ' + esc(A.zip || '') + '.') + '</div>' +
+        '<div class="b-total"><div class="tl">Monthly total, per person</div><div class="ta">$0.00</div><div class="th"></div></div>' +
+        '<button type="button" class="b-pick" data-pick="' + b.id + '">' + (chosen === b.id ? '✓ I want this umbrella' : 'I want this umbrella') + '</button></div></section>';
+    });
+    h += '</div>';
+
+    var ma = maPlans(), zero = ma.filter(function(p){ return !p.p; }).length;
+    if (path === 'supp' && ma.length){
+      var lowM = pickMA('fit');
+      h += '<div class="alt"><b>Also worth comparing:</b> ' + ma.length + ' Medicare Advantage plans are sold in ' + esc(area) + ' for 2027' + (zero ? ', ' + zero + ' with a $0 premium' : '') + '. ' +
+        (lowM ? 'The lowest bad-year cost is ' + esc(lowM.n) + ': ' + prem(lowM.p) + '/month premium, ' + whole(lowM.m || 0) + ' out-of-pocket max. ' : '') + 'Lower premiums, but a network and copays.</div>';
+    } else if (path === 'ma'){
+      h += '<div class="alt"><b>Also worth comparing:</b> a Medicare Supplement. Higher premium, but any doctor in the U.S. who takes Medicare and about $' + PART_B_DED + ' a year to pay when you’re sick (Plan G).</div>';
+    } else if (!GEO.doc){
+      h += '<div class="alt"><b>Your area:</b> we don’t have plan data loaded for ZIP ' + esc(A.zip || '') + ' yet. Brian will pull the real plans for your address.</div>';
+    }
+
+    if (A.income === 'yes'){
+      h += '<div class="irmaa"><b>Income surcharge (IRMAA):</b> because your income is over the line, Medicare adds an extra charge to Part B (starting at +$81.20/month in 2026) and to drug coverage (starting at +$14.50/month). It’s billed by Medicare, not the insurance company.' +
+        '<div class="ir-row">IRMAA per person / mo: Part B <input id="irB" value="' + fmt(PR.irB || 0) + '"> Part D <input id="irD" value="' + fmt(PR.irD || 0) + '"> <span>(added to every bundle total)</span></div></div>';
+    }
+
+    h += plansTable(path);
+
+    h += '<div class="next"><h3>Next step: a free review with Brian</h3>' +
+      '<p>We’ll check your doctors and prescriptions against these plans and finish the pricing. Nothing is final until you say so.</p>' +
+      '<div class="acts"><a class="book" href="/book/">' + icon('calendar') + 'Book a time</a><a class="ph" href="tel:+16028446002">' + icon('phone') + 'Call (602) 844-6002</a></div>' +
+      '<div id="sentMsg"></div></div>';
+    h += '<div class="res-tools"><button type="button" data-act="back">← Change my answers</button><button type="button" onclick="window.print()">Print my results</button></div>';
+    h += '<div class="print-only p-sign"><div>Client acknowledgment &mdash; signature &amp; date</div><div>Advisor &mdash; signature &amp; date</div></div>';
+
+    var y = window.scrollY, rerender = card.querySelector('.bundles');
+    card.innerHTML = h;
+    card.querySelector('[data-act="back"]').onclick = function(){ at = STEPS.length; prev(); };
+    card.querySelectorAll('[data-pick]').forEach(function(btn){
+      btn.onclick = function(){
+        chosen = btn.getAttribute('data-pick');
+        card.querySelectorAll('.bundle').forEach(function(s){
+          var on = s.getAttribute('data-b') === chosen;
+          s.classList.toggle('chosen', on);
+          s.querySelector('.b-pick').textContent = on ? '✓ I want this umbrella' : 'I want this umbrella';
+        });
+        if (!AGENT) card.querySelector('.next').scrollIntoView({behavior:'smooth', block:'center'});
+      };
+    });
+    card.querySelectorAll('select[data-slot]').forEach(function(sel){
+      sel.onchange = function(){
+        var bid = sel.getAttribute('data-b'), slot = sel.getAttribute('data-slot');
+        OV[bid + '.' + slot] = sel.value;
+        delete PR[slot + '-' + bid];
+        renderResults();
+      };
+    });
+    totals();
+    showSent();
+    if (rerender) window.scrollTo(0, y);
+    else { card.querySelector('h2.q').focus({preventScroll:true}); window.scrollTo({top:0, behavior:'smooth'}); }
+  }
+
+  // Advisor totals: every premium in a bundle + IRMAA, per person and household.
+  function totals(){
+    var ir = money((document.getElementById('irB') || {}).value) + money((document.getElementById('irD') || {}).value);
+    card.querySelectorAll('.bundle').forEach(function(s){
+      var t = ir;
+      s.querySelectorAll('input.prem').forEach(function(i){ t += money(i.value); });
+      s.querySelector('.ta').textContent = fmt(t);
+      s.querySelector('.th').textContent = A.who === 'couple' ? 'Household (2 people): ' + fmt(t * 2) + ' · ' + fmt(t * 24) + '/yr' : fmt(t * 12) + ' / year';
+    });
+  }
+  function syncSame(el, cls, store){
+    var k = el.getAttribute('data-k');
+    store[k] = cls === 'prem' ? money(el.value) : el.value;
+    card.querySelectorAll('input.' + cls + '[data-k="' + k + '"]').forEach(function(o){ if (o !== el) o.value = el.value; });
+  }
+  card.addEventListener('input', function(e){
+    var el = e.target;
+    if (el.classList.contains('prem')){ syncSame(el, 'prem', PR); totals(); }
+    else if (el.id === 'irB' || el.id === 'irD'){ PR[el.id] = money(el.value); totals(); }
+    else if (el.classList.contains('car')) syncSame(el, 'car', CAR);
+  });
+  card.addEventListener('focusout', function(e){
+    var el = e.target;
+    if (el.classList && (el.classList.contains('prem') || el.id === 'irB' || el.id === 'irD')){
+      el.value = fmt(money(el.value));
+      if (el.classList.contains('prem')) syncSame(el, 'prem', PR);
+      totals();
+    }
   });
 
-  (function(){
-    var d = new Date();
-    document.getElementById('fDate').textContent = (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
-  })();
-  recalc();
+  // ---------------------------------------------------------------- shareable results link
+  // Everything needed to redraw the results page rides in the URL #hash (never
+  // sent to the server). The link goes first in the X note, so one click from the
+  // contact opens these exact bundles in advisor mode. No phone or email in it.
+  function b64e(o){ return btoa(unescape(encodeURIComponent(JSON.stringify(o)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); }
+  function b64d(t){ t = t.replace(/-/g,'+').replace(/_/g,'/'); while (t.length % 4) t += '='; return JSON.parse(decodeURIComponent(escape(atob(t)))); }
+  function resultsLink(){
+    var c = A.contact || {};
+    var st = {v:1, d:new Date().toISOString().slice(0,10), a:{zip:A.zip, who:A.who, stage:A.stage, doctors:A.doctors, travel:A.travel, priority:A.priority, extras:A.extras, rx:A.rx, budget:A.budget, income:A.income},
+      c:GEO.county || '', n:[c.first || '', c.last || ''], o:OV, p:PR, k:CAR, ch:chosen};
+    return location.origin + '/tools/digital-quote/?agent=1#r=' + b64e(st);
+  }
+  function restore(){
+    var m = /[#&]r=([A-Za-z0-9_-]+)/.exec(location.hash);
+    if (!m) return false;
+    var st; try { st = b64d(m[1]); } catch (e) { return false; }
+    A = st.a || {extras:[]}; A.extras = A.extras || [];
+    A.contact = {first:(st.n || [])[0] || '', last:(st.n || [])[1] || ''};
+    OV = st.o || {}; PR = st.p || {}; CAR = st.k || {}; chosen = st.ch || '';
+    RESTORED = st.d || '';
+    card.innerHTML = '<p class="looking">Loading saved results\u2026</p>';
+    lookupZip(A.zip || '').then(function(){
+      if (st.c && GEO.counties && GEO.counties.indexOf(st.c) > -1) GEO.county = st.c;
+      at = STEPS.length; render();
+    });
+    return true;
+  }
+
+  // ---------------------------------------------------------------- send to X
+  // X (GoGuruX) has no API. /api/lead (functions/api/lead.ts) relays the lead to
+  // X's inbound-webhook workflow, the same route as every other form on this
+  // site; the survey answers and the three umbrellas ride in the contact note.
+  function summary(withPrices){
+    var path = recommend(), bundles = buildBundles(path), lines = [];
+    lines.push('VIEW RESULTS: ' + resultsLink());
+    if (chosen) lines.push('CLIENT PICKED: ' + {essential:'UMBRELLA 1', recommended:'UMBRELLA 2', complete:'UMBRELLA 3'}[chosen]);
+    lines.push('Coverage survey — suggested path: ' + (path === 'supp' ? 'Original Medicare + Medicare Supplement' : 'Medicare Advantage') + (areaLabel() ? ' (' + areaLabel() + ')' : ''));
+    lines.push('Answers: ' + ['who','stage','doctors','travel','priority','rx','budget','income'].map(function(k){ return A[k] ? LABELS[k][A[k]] : null; }).filter(Boolean).join('; '));
+    lines.push('Extras wanted: ' + (A.extras.length ? A.extras.map(function(x){ return LABELS.extras[x]; }).join(', ') : 'none given'));
+    bundles.forEach(function(b){
+      var s = card.querySelector('.bundle[data-b="' + b.id + '"]');
+      var parts = b.layers.map(function(l){
+        if (typeof l !== 'string'){
+          var t = l.plan.n + ' ' + l.plan.id + ' (' + prem(l.plan.p) + '/mo' + (l.slot === 'ma' ? ', MOOP ' + whole(l.plan.m || 0) : '') + ')';
+          if (withPrices && s){ var pr = s.querySelector('input.prem[data-k="' + l.slot + '-' + b.id + '"]'); if (pr && money(pr.value) !== (l.plan.p || 0)) t += ' quoted ' + fmt(money(pr.value)); }
+          return t;
+        }
+        var n = L[l].n;
+        if (withPrices && s){
+          var car = s.querySelector('input.car[data-k="' + l + '"]'), p2 = s.querySelector('input.prem[data-k="' + l + '"]');
+          if (car && car.value && !L[l].base) n += ' [' + car.value + ']';
+          if (p2 && money(p2.value)) n += ' ' + fmt(money(p2.value));
+        }
+        return n;
+      });
+      var tot = withPrices && s ? ' = ' + s.querySelector('.ta').textContent + '/mo per person' : '';
+      lines.push(b.name + (chosen === b.id ? ' (CHOSEN)' : '') + ': ' + parts.join(' + ') + tot);
+    });
+    return lines.join('\n');
+  }
+
+  function sendLead(tool){
+    var c = A.contact || {};
+    if (leadSending) return Promise.resolve(false);
+    leadSending = true;
+    var body = {
+      first: c.first, last: c.last, phone: c.phone, email: c.email, zip: A.zip,
+      county: countyName() || undefined, state: GEO.state || undefined,
+      consent: !!c.consent, hp: c.hp || '',
+      tool: tool, site: '602medicare.com', page: location.pathname,
+      source: '602medicare.com coverage survey',
+      tags: ['coverage-survey', 'path-' + recommend()].concat(A.stage === 't65' ? ['t65'] : []),
+      survey: summary(tool !== 'coverage-survey')
+    };
+    return fetch('/api/lead', {method:'POST', headers:{'content-type':'application/json'}, body:JSON.stringify(body)})
+      .then(function(r){ leadSent = r.ok ? 'ok' : 'bad'; return r.ok; })
+      .catch(function(){ leadSent = 'bad'; return false; })
+      .then(function(ok){ leadSending = false; showSent(); return ok; });
+  }
+
+  function showSent(){
+    var m = document.getElementById('sentMsg');
+    if (!m || !leadSent) return;
+    m.innerHTML = leadSent === 'ok'
+      ? '<div class="sent ok">✓ Sent to Brian. He’ll reach out within one business day.</div>'
+      : '<div class="sent bad">We couldn’t send your answers. Please call (602) 844-6002 and we’ll take it from there.</div>';
+  }
+
+  window.saveToX = function(){
+    if (at < STEPS.length){ alert('Finish the survey first — X gets the answers and the bundles.'); return; }
+    var c = A.contact || {};
+    if (!(c.phone && c.phone.replace(/\D/g,'').length >= 10) && !/\S+@\S+\.\S+/.test(c.email || '')){
+      var p = prompt('Client phone or email for X:');
+      if (!p) return;
+      if (/@/.test(p)) c.email = p.trim(); else c.phone = p.trim();
+      if (!c.first){ var n = prompt('Client name:') || ''; var parts = n.trim().split(/\s+/); c.first = parts.shift() || ''; c.last = parts.join(' '); }
+      A.contact = c;
+    }
+    sendLead('coverage-survey-advisor').then(function(ok){
+      alert(ok ? 'Saved to X — the answers, plans and prices are in the contact note.' : 'X did not accept it. Try again, or copy the summary by hand.');
+    });
+  };
+  window.startOver = function(){ if (confirm('Clear every answer and start over?')) location.href = location.pathname + (AGENT ? '?agent=1' : ''); };
+
+  if (!restore()) render();
+})();
 </script>
 </body>
 </html>

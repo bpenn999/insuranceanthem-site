@@ -135,6 +135,14 @@ function buildNotes(f: Record<string, string>, sourceLines: string[] = []): stri
   const interest = clean(f.coverage_interest || f.situation || f.intent);
   const lines: string[] = [];
 
+  // The coverage survey (/tools/digital-quote/) sends its results as `survey`:
+  // a View Results link, then the answers and the three umbrellas, one per line.
+  // It goes first and keeps its line breaks so it reads in X at a glance —
+  // `clean()` would flatten it into one long run-on line.
+  const survey = (typeof f.survey === 'string' ? f.survey : '')
+    .split('\n').map(clean).filter(Boolean).slice(0, 40);
+  lines.push(...survey);
+
   if (interest) lines.push(`Situation: ${INTEREST_LABELS[interest] || interest}`);
   if (clean(f.age)) lines.push(`Age: ${clean(f.age)}`);
   if (clean(f.rx)) lines.push(`Prescriptions: ${clean(f.rx)}`);

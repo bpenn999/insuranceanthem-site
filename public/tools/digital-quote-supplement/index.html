@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Formal Benefit Recommendation — Medicare Supplement | 602Medicare</title>
+<style>
+  @font-face{font-family:'Fraunces';font-style:normal;font-weight:300 700;font-display:swap;src:url('/fonts/fraunces-37b801f0.woff2') format('woff2');}
+  @font-face{font-family:'Inter';font-style:normal;font-weight:400 700;font-display:swap;src:url('/fonts/inter-2a0604d4.woff2') format('woff2');}
+  :root{
+    --ink:#1A1F2E; --primary:#D10A0F; --primary-dark:#011459;
+    --accent:#011459; --accent-dark:#2E3F8F; --cta:#D10A0F; --teal:#011459;
+    --paper:#ffffff; --soft:#EEF1F9; --line:#DCE2F0; --muted:#4A5268;
+    --field:#F5F7FE; --field-line:#B9C4E6;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{-webkit-print-color-adjust:exact; print-color-adjust:exact;}
+  body{font-family:'Inter',-apple-system,'Segoe UI',sans-serif;
+    background:#E4E9F4; color:var(--ink); font-size:13px; line-height:1.45;}
+  .disp{font-family:'Fraunces','Iowan Old Style',Georgia,serif;}
+
+  /* ---------- toolbar (screen only) ---------- */
+  .toolbar{position:sticky; top:0; z-index:50; background:var(--primary-dark); color:#fff;
+    display:flex; align-items:center; gap:12px; padding:10px 18px; box-shadow:0 2px 8px rgba(11,31,58,.3);}
+  .toolbar .tb-title{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-weight:600; font-size:13px;}
+  .toolbar .tb-hint{font-size:11.5px; opacity:.75; margin-right:auto;}
+  .toolbar button{border:0; border-radius:8px; padding:8px 16px; font-size:13px; font-weight:600; cursor:pointer; font-family:'Fraunces','Iowan Old Style',Georgia,serif;}
+  .btn-print{background:var(--cta); color:#fff;}
+  .btn-reset{background:rgba(255,255,255,.14); color:#fff;}
+  .toolbar button:hover{filter:brightness(1.1);}
+
+  /* ---------- page ---------- */
+  .page{max-width:850px; margin:22px auto 60px; background:var(--paper);
+    box-shadow:0 4px 24px rgba(11,31,58,.16); padding:34px 44px 0; border-top:6px solid var(--primary);}
+
+  /* ---------- header ---------- */
+  .hdr{display:flex; justify-content:space-between; align-items:flex-start; gap:20px;}
+  .hdr h1{font-size:26px; line-height:1.14; color:var(--primary-dark); font-weight:700;}
+  .hdr .tagline{font-size:12px; color:var(--muted); margin-top:5px; font-style:italic;}
+  /* logo sits BESIDE the meta block, not above it — stacking them made the
+     header as tall as both, which cost the sheet ~40px for no information */
+  .hdr-right{display:flex; align-items:center; gap:14px; flex:0 0 auto;}
+  .hdr-right img{width:118px; display:block; margin:0; flex:0 0 auto;}
+  .hdr-meta{flex:0 1 auto; min-width:0;}
+  .meta-row{display:flex; gap:6px; font-size:11.5px; margin-top:2px; align-items:baseline;}
+  .meta-row b{color:var(--ink); white-space:nowrap;}
+  .rule{height:4px; background:linear-gradient(90deg,var(--primary) 0 60%,var(--accent) 60% 100%); margin:16px 0 0; border-radius:2px;}
+
+  /* ---------- editable fields ---------- */
+  [contenteditable="true"], input.fld{
+    background:var(--field); border:1px dashed var(--field-line); border-radius:6px;
+    padding:2px 7px; min-width:60px; outline:none;
+    font-family:'Inter',-apple-system,'Segoe UI',sans-serif; font-size:14.5px; font-weight:600;
+    line-height:1.35; color:var(--primary-dark);}
+  [contenteditable="true"]:focus, input.fld:focus{border-style:solid; border-color:var(--accent-dark); background:#EDF1FF;}
+  [contenteditable="true"]:empty::before{content:attr(data-ph); color:#6B76A0; font-weight:500;}
+  input.fld{width:100%; text-align:center;}
+  input.fld.money{font-weight:700;}
+  .meta-row [contenteditable="true"]{font-size:13px;}
+
+  /* ---------- section titles ---------- */
+  .sec{margin-top:20px;}
+  .sec-t{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:14px; font-weight:700; letter-spacing:.04em; color:var(--primary-dark);
+    text-transform:uppercase; display:flex; align-items:center; gap:10px;}
+  .sec-t.hot{color:var(--cta);}
+  .sec-t::after{content:""; flex:1; height:1px; background:var(--line);}
+
+  /* ---------- need section ---------- */
+  .need{display:grid; grid-template-columns:1.15fr .85fr; gap:14px; margin-top:10px;}
+  .layers{display:flex; flex-direction:column; gap:5px;}
+  .layer{display:flex; align-items:center; gap:9px; border:1px solid var(--line);
+    border-left:4px solid var(--primary); border-radius:8px; padding:6px 9px; background:#F7F9FD;}
+  .layer .ico{font-size:15px; width:20px; text-align:center;}
+  .layer .l-name{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-weight:600; font-size:11.5px; color:var(--primary-dark);}
+  .layer .l-desc{font-size:10.5px; color:var(--muted); line-height:1.3;}
+  .layer .pill{margin-left:auto; flex:0 0 auto; font-size:9.5px; font-weight:700; letter-spacing:.03em;
+    padding:2px 8px; border-radius:20px; white-space:nowrap;}
+  .pill.active{background:var(--soft); color:var(--primary);}
+  .pill.rec{background:#E1E7F7; color:#011459;}
+  .layer.rec-b{border-left-color:var(--accent); background:#FBFCFF;}
+
+  .exposure{border:1px solid var(--line); border-radius:8px; padding:10px 12px; background:var(--soft);}
+  .exposure h4{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:10px; letter-spacing:.05em; color:var(--cta); text-transform:uppercase; margin-bottom:8px;}
+  .bar-row{display:grid; grid-template-columns:86px 1fr 74px; gap:8px; align-items:center; margin-bottom:7px;}
+  .bar-row .b-label{font-size:10.5px; font-weight:600;}
+  .bar-row .b-amt{font-size:11px; font-weight:700; text-align:right; white-space:nowrap;}
+  .track{height:7px; border-radius:4px; background:#CBD4E8; overflow:hidden;}
+  .fill{height:100%; border-radius:4px;}
+  .verdicts{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:9px;}
+  .verdict{border-radius:8px; padding:7px 9px;}
+  .verdict small{display:block; font-size:8.5px; font-weight:800; letter-spacing:.05em; text-transform:uppercase;}
+  .verdict .big{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:16px; font-weight:700; line-height:1.25;}
+  .verdict span{display:block; font-size:9px; line-height:1.25;}
+  .v-bad{background:#FBE0E1; color:#A00B0F;}
+  .v-good{background:#E1E7F7; color:var(--teal);}
+  .stat-note{margin-top:9px; background:#fff; border:1px solid var(--field-line); border-left:4px solid var(--accent);
+    border-radius:8px; padding:8px 10px; font-size:10.5px; line-height:1.4; color:var(--ink);}
+  .stat-note b{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:12px; color:var(--cta);}
+  .stat-note .src{display:block; margin-top:3px; font-size:8.5px; color:var(--muted);}
+
+  /* ---------- tables ---------- */
+  table{width:100%; border-collapse:collapse; margin-top:9px;}
+  th{background:var(--primary-dark); color:#fff; font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:11.5px; font-weight:600; padding:7px 10px; text-align:center;}
+  th:first-child{border-radius:6px 0 0 0;} th:last-child{border-radius:0 6px 0 0; background:var(--soft); color:var(--primary-dark);}
+  td{border:1px solid var(--line); padding:6px 10px; font-size:12.5px; vertical-align:middle;}
+  td.c{text-align:center;}
+  td:first-child{font-weight:600; width:34%;}
+  td.prem{width:22%;}
+  .total-band{display:flex; align-items:baseline; gap:12px; margin-top:14px;
+    background:var(--primary); color:#fff; border-radius:8px; padding:10px 16px;}
+  .total-band .t-label{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:13px; font-weight:700; letter-spacing:.03em; text-transform:uppercase;}
+  .total-band .t-amt{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:24px; font-weight:700; margin-left:auto;}
+  .total-band .t-note{font-size:10px; opacity:.75;}
+
+  /* ---------- IRMAA calculator ---------- */
+  .irmaa-bar{display:flex; align-items:flex-end; gap:14px; margin-top:10px; background:var(--soft);
+    border:1px solid var(--line); border-radius:8px; padding:9px 12px; flex-wrap:wrap;}
+  .irmaa-bar label{display:flex; flex-direction:column; gap:3px; font-size:10px; font-weight:700;
+    letter-spacing:.04em; text-transform:uppercase; color:var(--muted);}
+  .fld.sel{width:auto; min-width:172px; text-align:left; padding:4px 7px; font-size:14.5px; cursor:pointer;}
+  .irmaa-bar input{font-size:14.5px; padding:4px 7px;}
+  .ir-result{margin-left:auto; font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:11.5px; font-weight:600;
+    color:var(--primary-dark); background:#fff; border:1px solid var(--line); border-radius:20px;
+    padding:5px 13px; text-align:center;}
+  .ir-result.hit{background:#FBE0E1; color:#A00B0F; border-color:#F0BFC1;}
+  .ir-result.clear{background:#E1E7F7; color:var(--teal); border-color:#BFCBEA;}
+  .ir-fine{font-size:9.5px; color:var(--muted); margin-top:6px; line-height:1.4;}
+  .ir-tiers-t{font-family:'Fraunces','Iowan Old Style',Georgia,serif; font-size:10.5px; font-weight:700; letter-spacing:.04em;
+    text-transform:uppercase; color:var(--muted); margin-top:13px;}
+  table.ir-tiers{margin-top:6px;}
+  .ir-tiers th{font-size:10.5px; padding:5px 8px;}
+  .ir-tiers th:last-child{background:var(--primary-dark); color:#fff;}
+  .ir-tiers td{font-size:11px; padding:4px 8px; text-align:center; font-weight:500; width:auto;}
+  .ir-tiers td:first-child{width:auto; font-weight:500; text-align:left;}
+  .ir-tiers td:nth-child(2){text-align:left;}
+  .ir-tiers tr.tier-none td{background:#EDF1FB; font-weight:700; color:var(--teal);}
+  .ir-mfs{font-size:9.5px; color:var(--muted); margin-top:5px; line-height:1.4;}
+  .ir-mfs b{color:var(--ink);}
+
+  .addrow{margin-top:6px; background:none; border:1px dashed var(--line); color:var(--muted);
+    border-radius:6px; padding:4px 12px; font-size:11px; cursor:pointer;}
+  .addrow:hover{color:var(--primary); border-color:var(--primary);}
+  td .rm{float:right; border:0; background:none; color:#B9C1D6; cursor:pointer; font-size:12px; padding:0 2px;}
+  td .rm:hover{color:var(--cta);}
+
+  /* ---------- footer ---------- */
+  .foot{margin:22px -44px 0; background:var(--primary-dark); color:#fff; padding:14px 44px 16px;}
+  .foot .f-contact{font-size:11.5px; font-weight:600; text-align:center; letter-spacing:.02em;}
+  .foot .f-contact span.d{color:var(--accent); margin:0 8px;}
+  .foot .f-legal{font-size:8.5px; line-height:1.45; color:#AFBBDA; margin-top:9px;}
+  .foot .f-legal p{margin-top:4px;}
+
+  /* ---------- print: tight 2-sheet recommendation ---------- */
+  .print-only{display:none;}
+  @page{size:letter; margin:0.45in 0.5in 0.55in;}
+  @media print{
+    body{background:#fff; font-size:11.5px; line-height:1.42;}
+    .toolbar,.addrow,.rm,.no-print{display:none !important;}
+    .print-only{display:block;}
+    .page{max-width:none; width:100%; margin:0; box-shadow:none; padding:0 0 20px; border-top:0;}
+    /* fill-ins stay large & dark — this is what the client reads */
+    [contenteditable="true"], input.fld{background:transparent; border-color:transparent; min-width:0;
+      padding:0 3px; font-size:13.5px; font-weight:600; color:var(--ink);}
+    .meta-row [contenteditable="true"]{font-size:12.5px;}
+    [contenteditable="true"]:empty::before{color:#8890A8; font-weight:500;}
+    .irmaa-bar input, .fld.sel{background:transparent; border:1px solid var(--line); border-style:solid; font-size:13px;}
+
+    /* header */
+    .hdr h1{font-size:24px;}
+    .hdr .tagline{font-size:11.5px; margin-top:3px;}
+    .hdr-right{gap:12px;}
+    .hdr-right img{width:88px;}
+    .rule{margin-top:9px;}
+    .p-intro{font-size:11.5px; color:var(--muted); margin:8px 0 0; line-height:1.5; max-width:none;}
+
+    /* sections — keep each one whole, but no forced page breaks */
+    .sec{margin-top:9px; break-inside:avoid; page-break-inside:avoid;}
+    .sec-t{font-size:12.5px;}
+    /* the need block is the tallest thing on the sheet — let it split if it must */
+    .sec-need{break-inside:auto; page-break-inside:auto;}
+    .need{grid-template-columns:1.08fr .92fr; gap:11px; margin-top:8px;}
+    .layers{gap:3px;}
+    .layer{padding:4px 9px; gap:9px; break-inside:avoid;}
+    .layer .ico{font-size:15px; width:21px;}
+    .layer .l-name{font-size:12px;}
+    .layer .l-desc{font-size:10.5px; line-height:1.3;}
+    .layer .pill{font-size:9px; padding:3px 9px;}
+    .exposure{padding:9px 11px; break-inside:avoid;}
+    .exposure h4{font-size:10px; margin-bottom:7px;}
+    .bar-row{grid-template-columns:92px 1fr 82px; gap:9px; margin-bottom:4px;}
+    .bar-row .b-label{font-size:10.5px;}
+    .bar-row .b-amt{font-size:11px;}
+    .track{height:8px;}
+    .verdicts{gap:9px; margin-top:6px;}
+    .verdict{padding:7px 10px;}
+    .verdict small{font-size:8.5px;}
+    .verdict .big{font-size:17px;}
+    .verdict span{font-size:9.5px;}
+    .stat-note{margin-top:6px; padding:6px 10px; font-size:10px;}
+    .stat-note b{font-size:11.5px;}
+    .stat-note .src{font-size:8.5px;}
+
+    /* the quote */
+    th{font-size:12px; padding:7px 10px;}
+    td{font-size:12.5px; padding:6px 10px;}
+    table{margin-top:7px;}
+    .moop-line{font-size:10.5px; padding:5px 10px; margin-top:6px;}
+    .total-band{margin-top:9px; padding:11px 16px;}
+    .total-band .t-label{font-size:12.5px;}
+    .total-band .t-amt{font-size:22px;}
+    .total-band .t-annual{font-size:10.5px;}
+
+    /* sheet 2 — IRMAA, next steps, signatures. No forced break: sections keep
+       themselves whole, so the sheet 1/2 split lands wherever the content ends. */
+    .sec-irmaa{margin-top:16px;}
+    .sec-irmaa .sec-t{font-size:14px;}
+    .sec-irmaa th{font-size:12.5px; padding:8px 10px;}
+    .sec-irmaa td{font-size:13px; padding:8px 10px;}
+    .irmaa-bar{padding:12px 14px; gap:16px; margin-top:11px;}
+    .irmaa-bar label{font-size:11px;}
+    .ir-result{font-size:13px; padding:8px 16px;}
+    .ir-fine{font-size:10.5px; margin-top:9px;}
+    .ir-tiers-t{font-size:11px; margin-top:15px;}
+    .ir-tiers th{font-size:11px; padding:5px 8px;}
+    .ir-tiers td{font-size:11.5px; padding:5px 8px;}
+    .ir-mfs{font-size:10px; margin-top:6px;}
+    .p-next{margin-top:28px; break-inside:avoid;}
+    .p-next .pn-label{font-size:11.5px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--muted);}
+    .p-next .steps{display:grid; grid-template-columns:1fr 1fr 1fr; gap:13px; margin-top:11px;}
+    .p-next .step{border:1px solid var(--line); border-radius:9px; padding:13px 15px;}
+    .p-next .step span.num{display:inline-flex; width:20px; height:20px; border-radius:50%; background:var(--primary);
+      color:#fff; font-size:12px; font-weight:700; align-items:center; justify-content:center; margin-bottom:6px;}
+    .p-next .step b{display:block; font-size:13px; margin-bottom:4px;}
+    .p-next .step span{font-size:11.5px; color:var(--muted); line-height:1.45;}
+    .p-sign{display:grid; grid-template-columns:1fr 1fr; gap:48px; margin-top:32px; break-inside:avoid;}
+    .p-sign .line{border-top:1.5px solid var(--ink); padding-top:7px; font-size:11.5px; color:var(--muted);}
+    .foot{margin:22px 0 0; border-radius:9px; padding:15px 22px; break-inside:avoid;}
+    .foot .f-contact{font-size:12.5px;}
+    .foot .f-legal{font-size:9.5px;}
+  }
+
+  .hdr-right img{width:84px;}
+  @media print{
+    .hdr-right img{width:56px;}
+    .sec{margin-top:8px;}
+    .p-intro{margin-top:6px;}
+    .layer{padding:3px 9px;}
+    .layer .l-desc{line-height:1.25;}
+    td{padding:5px 10px;}
+    .total-band{margin-top:7px; padding:9px 16px;}
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <span class="tb-title">602Medicare — Formal Benefit Recommendation · Med Supp</span>
+  <span class="tb-hint">Click any yellow field to edit &middot; totals update automatically &middot; printing? turn OFF &ldquo;Headers and footers&rdquo;</span>
+  <button class="btn-reset" onclick="location.reload()">Reset</button>
+  <button class="btn-print" onclick="window.print()">Print / Save PDF</button>
+</div>
+
+<div class="page">
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div>
+      <h1 class="disp">Formal Benefit Recommendation</h1>
+      <div class="tagline">Original Medicare + Medicare Supplement pathway</div>
+    </div>
+    <div class="hdr-right">
+      <img src="/logo/602medicare-logo-transparent.png" alt="602Medicare">
+      <div class="hdr-meta">
+        <div class="meta-row"><b>Date:</b><span contenteditable="true" data-ph="mm/dd/yyyy" id="fDate"></span></div>
+        <div class="meta-row"><b>Prepared for:</b><span contenteditable="true" data-ph="Client name"></span></div>
+        <div class="meta-row"><b>Your Advisor:</b><span>Brian Penner</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="rule"></div>
+  <p class="print-only p-intro">Prepared personally for you. This formal benefit recommendation maps each layer of your Medicare coverage &mdash; what Original Medicare pays, what your selected plans add, and where the remaining risks sit &mdash; so every dollar of protection is intentional.</p>
+
+  <!-- THE NEED -->
+  <div class="sec sec-need">
+    <div class="sec-t hot">Why This Plan Design &mdash; Where Medicare Leaves You Exposed</div>
+    <div class="need">
+      <div class="layers">
+        <div class="layer">
+          <span class="ico">&#127963;&#65039;</span>
+          <div><div class="l-name">Original Medicare &mdash; Parts A &amp; B</div>
+          <div class="l-desc">Covers 80% of approved hospital &amp; outpatient costs after deductibles.</div></div>
+          <span class="pill active">Layer 1</span>
+        </div>
+        <div class="layer">
+          <span class="ico">&#128737;&#65039;</span>
+          <div><div class="l-name">Medicare Supplement + Drug Plan</div>
+          <div class="l-desc">Picks up deductibles &amp; the 20% coinsurance; Part D caps drug costs at $2,100/yr (2026).</div></div>
+          <span class="pill active">Layer 2</span>
+        </div>
+        <div class="layer rec-b">
+          <span class="ico">&#127872;</span>
+          <div><div class="l-name">Cancer / Heart / Stroke Protection</div>
+          <div class="l-desc">Lump-sum cash at diagnosis &mdash; oral chemo, drug costs, travel, lost income.</div></div>
+          <span class="pill rec">Formal Recommendation</span>
+        </div>
+        <div class="layer rec-b">
+          <span class="ico">&#127969;</span>
+          <div><div class="l-name">Long-Term Care Planning</div>
+          <div class="l-desc">About <b>70% of people turning 65 today will need some form of long-term care</b> &mdash; and Medicare pays $0 for custodial care, ever.</div></div>
+          <span class="pill rec">Formal Recommendation</span>
+        </div>
+      </div>
+      <div class="exposure">
+        <h4>Potential Annual Exposure Without Supplemental Coverage</h4>
+        <div class="bar-row"><span class="b-label">Long-term care</span><div class="track"><div class="fill" style="width:100%;background:var(--cta)"></div></div><span class="b-amt" style="color:var(--cta)">$126,000/yr</span></div>
+        <div class="bar-row"><span class="b-label">Cancer event</span><div class="track"><div class="fill" style="width:40%;background:var(--accent-dark)"></div></div><span class="b-amt" style="color:var(--accent-dark)">$50,000</span></div>
+        <div class="bar-row"><span class="b-label">Rx drugs (Part D)</span><div class="track"><div class="fill" style="width:4%;background:var(--primary)"></div></div><span class="b-amt" style="color:var(--primary)">$2,100/yr</span></div>
+        <div class="bar-row"><span class="b-label">Hospital / outpt.</span><div class="track"><div class="fill" style="width:2%;background:var(--teal)"></div></div><span class="b-amt" style="color:var(--teal)">$0 w/ Supp</span></div>
+        <div class="verdicts">
+          <div class="verdict v-bad"><small>Without layers 3 &amp; 4</small><div class="big">$156,000+</div><span>potential exposure in a worst-case year</span></div>
+          <div class="verdict v-good"><small>With all four layers</small><div class="big">Protected</div><span>coverage across every major risk</span></div>
+        </div>
+        <div class="stat-note"><b>7 in 10</b> people turning 65 today will need some type of long-term care service in their lifetime &mdash; and Medicare does not cover custodial long-term care.
+          <span class="src">U.S. Dept. of Health &amp; Human Services (ACL), LongTermCare.gov</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CORE COVERAGE -->
+  <div class="sec">
+    <div class="sec-t">Core Coverage Summary</div>
+    <table id="coreTbl">
+      <tr><th>Coverage Type</th><th>Carrier / Plan</th><th>Monthly Premium</th></tr>
+      <tr><td>Medicare A &amp; B *</td><td class="c" contenteditable="true">Medicare</td><td class="prem"><input class="fld money prem-in" value="$202.90"></td></tr>
+      <tr><td>Medicare Supplement Plan</td><td class="c" contenteditable="true" data-ph="Carrier &amp; plan"></td><td class="prem"><input class="fld money prem-in" value="$0.00"></td></tr>
+      <tr><td>Prescription Drug Plan</td><td class="c" contenteditable="true" data-ph="Carrier &amp; plan"></td><td class="prem"><input class="fld money prem-in" value="$0.00"></td></tr>
+    </table>
+  </div>
+
+  <!-- ADDITIONAL COVERAGE -->
+  <div class="sec">
+    <div class="sec-t">Additional Coverage</div>
+    <table id="addTbl">
+      <tr><th>Coverage Type</th><th>Carrier / Plan</th><th>Monthly Premium</th></tr>
+      <tr><td>Dental, Vision &amp; Hearing</td><td class="c" contenteditable="true" data-ph="Carrier &amp; plan"></td><td class="prem"><input class="fld money prem-in" value="$0.00"></td></tr>
+      <tr><td>Cancer-Heart-Stroke Protection</td><td class="c" contenteditable="true" data-ph="Carrier / benefit amount"></td><td class="prem"><input class="fld money prem-in" value="$0.00"></td></tr>
+      <tr><td>Short Term Recovery Care</td><td class="c" contenteditable="true" data-ph="Carrier &amp; plan"></td><td class="prem"><input class="fld money prem-in" value="$0.00"></td></tr>
+      <tr><td>Long Term Care Planning</td><td class="c" contenteditable="true" data-ph="Carrier / advisor"></td><td class="c"><span contenteditable="true" data-ph="Appt:"></span></td></tr>
+    </table>
+    <button class="addrow" onclick="addRow()">+ Add coverage row</button>
+  </div>
+
+  <!-- TOTAL -->
+  <div class="total-band">
+    <span class="t-label">Estimated Monthly Premium Total</span>
+    <span class="t-note">auto-calculated</span>
+    <span class="t-amt" id="grandTotal">$202.90</span><span class="t-annual" id="grandAnnual"></span>
+  </div>
+
+  <!-- IRMAA CALCULATOR -->
+  <div class="sec sec-irmaa">
+    <div class="sec-t">*IRMAA Calculator &mdash; Income-Based Surcharge (2026)</div>
+    <div class="irmaa-bar">
+      <label>Tax filing status
+        <select id="irFiling" class="fld sel">
+          <option value="single">Single</option>
+          <option value="joint">Married filing jointly</option>
+          <option value="mfs">Married filing separately</option>
+        </select>
+      </label>
+      <label>2024 MAGI (income)
+        <input id="irMagi" class="fld money" placeholder="$0" style="text-align:left; max-width:130px">
+      </label>
+      <div class="ir-result" id="irBracket">Enter income to estimate IRMAA</div>
+    </div>
+    <table>
+      <tr><th>Adjustment</th><th>Monthly Estimate</th><th>Notes</th></tr>
+      <tr><td>Part B IRMAA</td><td class="c"><input id="irB" class="fld money prem-in" value="$0.00" style="max-width:110px"></td><td class="c" id="irBNote">Added to the $202.90 standard Part B premium</td></tr>
+      <tr><td>Part D IRMAA</td><td class="c"><input id="irD" class="fld money prem-in" value="$0.00" style="max-width:110px"></td><td class="c" id="irDNote">Paid to Medicare on top of your drug plan premium</td></tr>
+    </table>
+    <div class="ir-tiers-t">The 2026 brackets &mdash; what Medicare charges at each income level</div>
+    <table class="ir-tiers">
+      <tr><th>Your 2024 income &mdash; single</th><th>&mdash; married filing jointly</th><th>Part B / mo</th><th>Part D / mo</th></tr>
+      <tr class="tier-none"><td>$109,000 or less</td><td>$218,000 or less</td><td>standard $202.90</td><td>no surcharge</td></tr>
+      <tr><td>$109,001 &ndash; $137,000</td><td>$218,001 &ndash; $274,000</td><td>+ $81.20</td><td>+ $14.50</td></tr>
+      <tr><td>$137,001 &ndash; $171,000</td><td>$274,001 &ndash; $342,000</td><td>+ $202.90</td><td>+ $37.50</td></tr>
+      <tr><td>$171,001 &ndash; $205,000</td><td>$342,001 &ndash; $410,000</td><td>+ $324.60</td><td>+ $60.40</td></tr>
+      <tr><td>$205,001 &ndash; $500,000</td><td>$410,001 &ndash; $750,000</td><td>+ $446.30</td><td>+ $83.30</td></tr>
+      <tr><td>Above $500,000</td><td>Above $750,000</td><td>+ $487.00</td><td>+ $91.00</td></tr>
+    </table>
+    <div class="ir-mfs"><b>Married filing separately:</b> $109,000 or less &mdash; no surcharge &middot; $109,001&ndash;$391,000 &mdash; add $446.30 (Part B) and $83.30 (Part D) &middot; above $391,000 &mdash; add $487.00 and $91.00.</div>
+    <div class="ir-fine">2026 amounts per CMS, based on your 2024 tax return (MAGI). IRMAA applies per person and is billed by Medicare &mdash; usually deducted from Social Security &mdash; not by your insurance carrier. Amounts flow into the total above.</div>
+  </div>
+
+  <div class="print-only p-next">
+    <div class="pn-label">Your Next Steps</div>
+    <div class="steps">
+      <div class="step"><span class="num">1</span><b>Review together</b><span>We walk through this recommendation line by line, on your schedule &mdash; no pressure, no jargon.</span></div>
+      <div class="step"><span class="num">2</span><b>Confirm the fit</b><span>We verify your doctors, prescriptions, and carrier availability in your county before anything is final.</span></div>
+      <div class="step"><span class="num">3</span><b>We handle enrollment</b><span>Paperwork, deadlines, and carrier follow-up are handled for you, at no cost to you.</span></div>
+    </div>
+  </div>
+
+  <div class="print-only p-sign">
+    <div class="line">Client acknowledgment &mdash; signature &amp; date</div>
+    <div class="line">Advisor &mdash; signature &amp; date</div>
+  </div>
+
+  <!-- FOOTER -->
+  <div class="foot">
+    <div class="f-contact">Anthem, AZ 85086 <span class="d">&#9670;</span> (602) 844-6002 <span class="d">&#9670;</span> 602Medicare.com</div>
+    <div class="f-legal">
+      <p>We do not offer every plan available in your area. Any information we provide is limited to those plans we do offer in your area. Please contact Medicare.gov or 1-800-MEDICARE to get information on all of your options. 602Medicare is a licensed independent insurance agency (NPN 8206556). Not connected with or endorsed by the United States government or the federal Medicare program.</p>
+      <p>Based on 2026 Medicare rates. Figures are estimates for illustration purposes only. Individual costs vary by health status, geographic location, and plan selection. This material is educational and is not a guarantee of benefits or coverage.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function money(v){
+    var n = parseFloat(String(v).replace(/[^0-9.\-]/g,''));
+    return isNaN(n) ? 0 : n;
+  }
+  function fmt(n){
+    return '$' + n.toLocaleString('en-US',{minimumFractionDigits:2, maximumFractionDigits:2});
+  }
+  function recalc(){
+    var t = 0;
+    document.querySelectorAll('.prem-in').forEach(function(i){ t += money(i.value); });
+    document.getElementById('grandTotal').textContent = fmt(t);
+    document.getElementById('grandAnnual').textContent = '\u2248 ' + fmt(t*12) + ' / year';
+  }
+  document.addEventListener('input', function(e){
+    if (e.target.classList && e.target.classList.contains('prem-in')) recalc();
+  });
+  document.addEventListener('focusout', function(e){
+    if (e.target.classList && e.target.classList.contains('prem-in')){
+      var n = money(e.target.value);
+      e.target.value = fmt(n);
+      recalc();
+    }
+  });
+  function addRow(){
+    var tbl = document.getElementById('addTbl');
+    var r = tbl.insertRow(-1);
+    r.innerHTML = '<td contenteditable="true" data-ph="Coverage type"><button class="rm" title="Remove row" onclick="this.closest(\'tr\').remove();recalc()">&#10005;</button></td>' +
+      '<td class="c" contenteditable="true" data-ph="Carrier &amp; plan"></td>' +
+      '<td class="prem"><input class="fld money prem-in" value="$0.00"></td>';
+    recalc();
+  }
+  // ---- IRMAA calculator (2026 CMS figures; MAGI from 2024 return) ----
+  // Each tier: [upper MAGI bound, Part B surcharge, Part D surcharge, label]
+  var IRMAA = {
+    single: [
+      [109000, 0,      0,     'No IRMAA — MAGI $109,000 or less'],
+      [137000, 81.20,  14.50, 'Tier 1 of 5 — $109,001–$137,000'],
+      [171000, 202.90, 37.50, 'Tier 2 of 5 — $137,001–$171,000'],
+      [205000, 324.60, 60.40, 'Tier 3 of 5 — $171,001–$205,000'],
+      [500000, 446.30, 83.30, 'Tier 4 of 5 — $205,001–$499,999'],
+      [Infinity,487.00,91.00, 'Tier 5 of 5 — $500,000+']
+    ],
+    joint: [
+      [218000, 0,      0,     'No IRMAA — MAGI $218,000 or less'],
+      [274000, 81.20,  14.50, 'Tier 1 of 5 — $218,001–$274,000'],
+      [342000, 202.90, 37.50, 'Tier 2 of 5 — $274,001–$342,000'],
+      [410000, 324.60, 60.40, 'Tier 3 of 5 — $342,001–$410,000'],
+      [750000, 446.30, 83.30, 'Tier 4 of 5 — $410,001–$749,999'],
+      [Infinity,487.00,91.00, 'Tier 5 of 5 — $750,000+']
+    ],
+    mfs: [
+      [109000, 0,      0,     'No IRMAA — MAGI $109,000 or less'],
+      [391000, 446.30, 83.30, 'High tier — $109,001–$390,999'],
+      [Infinity,487.00,91.00, 'Top tier — $391,000+']
+    ]
+  };
+  function irmaaCalc(){
+    var magiRaw = document.getElementById('irMagi').value;
+    var badge = document.getElementById('irBracket');
+    var bIn = document.getElementById('irB'), dIn = document.getElementById('irD');
+    if (String(magiRaw).replace(/[^0-9]/g,'') === ''){
+      badge.textContent = 'Enter income to estimate IRMAA';
+      badge.className = 'ir-result';
+      return;
+    }
+    var magi = money(magiRaw);
+    var tiers = IRMAA[document.getElementById('irFiling').value];
+    var t = tiers[tiers.length-1];
+    for (var i=0; i<tiers.length; i++){ if (magi <= tiers[i][0]){ t = tiers[i]; break; } }
+    bIn.value = fmt(t[1]);
+    dIn.value = fmt(t[2]);
+    badge.textContent = t[3];
+    badge.className = 'ir-result ' + (t[1] > 0 ? 'hit' : 'clear');
+    document.getElementById('irBNote').textContent = t[1] > 0
+      ? 'Total Part B: ' + fmt(202.90 + t[1]) + '/mo per person'
+      : 'Added to the $202.90 standard Part B premium';
+    recalc();
+  }
+  document.getElementById('irMagi').addEventListener('input', irmaaCalc);
+  document.getElementById('irFiling').addEventListener('change', irmaaCalc);
+  document.getElementById('irMagi').addEventListener('blur', function(){
+    var raw = String(this.value).replace(/[^0-9]/g,'');
+    if (raw !== '') this.value = '$' + Number(raw).toLocaleString('en-US');
+  });
+
+  (function(){
+    var d = new Date();
+    document.getElementById('fDate').textContent = (d.getMonth()+1) + '/' + d.getDate() + '/' + d.getFullYear();
+  })();
+  recalc();
+</script>
+</body>
+</html>

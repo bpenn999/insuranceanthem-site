@@ -41,7 +41,8 @@ const assets = new Set(files.map(f => '/' + relative(DIST, f).replace(/\\/g,'/')
  * what actually matters for a document a client walks away holding.
  */
 const STANDALONE_DOCS = new Set([
-  '/tools/digital-quote/',
+  '/tools/digital-quote/',            // the coverage survey (umbrellas 1–3)
+  '/tools/digital-quote-supplement/', // fillable Med Supp sheet (moved here 2026-10-17)
   '/tools/digital-quote-advantage/',
 ]);
 const isStandaloneDoc = (f) =>
