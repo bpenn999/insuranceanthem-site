@@ -522,6 +522,28 @@
   }
 
   // A bundle = ordered layers. A layer is a generic key ('suppG') or a real plan {slot, plan, why}.
+  // Clients never see specific plans (names, premiums, stars, counts) — Brian
+  // presents those himself (2026-10-17). Advisor mode and the View Results
+  // link from X show the real plans; the X note always lists them.
+  var SHOW_PLANS = AGENT;
+  var CLIENT_BEST = {
+    essential:'A Medicare Advantage plan with drug coverage, plus Home Health Care.',
+    recommended:'An Advantage plan plus a cash cushion for copays and the extras you picked.',
+    complete:'An Advantage plan plus cash benefits for the big health events.'
+  };
+  function clientBundles(bundles, path){
+    return bundles.map(function(b){
+      var c = {}; for (var k in b) c[k] = b[k];
+      c.layers = b.layers.map(function(l){ return typeof l === 'string' ? l : (l.slot === 'ma' ? 'mapd' : 'pdp'); });
+      if (path === 'ma'){
+        c.best = CLIENT_BEST[b.id];
+        c.pay = 'Copays as you use care, up to the plan\u2019s yearly out-of-pocket limit. Drug costs are capped at $' + RX_CAP.toLocaleString() + ' a year (2027).' +
+          (c.layers.indexOf('hip') > -1 ? ' The hospital cash plan pays you back toward copays.' : '');
+      }
+      return c;
+    });
+  }
+
   function buildBundles(path){
     var b = [];
     if (path === 'ma'){
@@ -610,7 +632,7 @@
   function renderIntro(){
     card.innerHTML =
       '<div class="eyebrow">Free coverage survey</div><h1 tabindex="-1">Which Medicare umbrella fits you?</h1>' +
-      '<p class="lede">Answer about 10 quick questions. We\u2019ll show you three coverage umbrellas side by side — built from the real 2027 plans in your county, in plain English.</p>' +
+      '<p class="lede">Answer about 10 quick questions. We\u2019ll show you three coverage umbrellas side by side — built around your answers, in plain English.</p>' +
       '<ul class="intro-list">' +
         '<li><span class="ic">' + icon('clock') + '</span> About 2 minutes, one question at a time</li>' +
         '<li><span class="ic">' + icon('tap') + '</span> Just tap the answer that fits — you can always go back</li>' +
@@ -724,7 +746,7 @@
     } else {
       if (A.priority === 'low') w.push('You’d rather keep the monthly bill low and pay copays when you use care.');
       if (A.budget === '50' || A.budget === '150') w.push('Your budget points to a low or $0-premium plan.');
-      if (wantsPPO() && ma.some(isPPO)) w.push('You travel or want to keep your doctors, so we only picked PPO plans — they also pay for out-of-network care.');
+      if (wantsPPO() && ma.some(isPPO)) w.push('You travel or want to keep your doctors, so PPO plans are the ones to look at — they also pay for out-of-network care.');
       if (A.doctors !== 'no') w.push('We’ll confirm your doctors are in the plan’s network before anything is final.');
     }
     if (rxHeavy()) w.push('With several prescriptions, we’ll run your exact drug list against each plan.');
@@ -794,7 +816,7 @@
   }
 
   function renderResults(){
-    var path = recommend(), bundles = buildBundles(path);
+    var path = recommend(), bundles = SHOW_PLANS ? buildBundles(path) : clientBundles(buildBundles(path), path);
     var name = (A.contact && A.contact.first) ? A.contact.first : '';
     var full = A.contact ? (A.contact.first + ' ' + A.contact.last).trim() : '';
     var pathName = path === 'supp' ? 'Original Medicare + a Medicare Supplement' : 'A Medicare Advantage plan';
@@ -804,7 +826,7 @@
          '<div class="pm"><b>Prepared for:</b> ' + esc(full || '________________') + '<br><b>Date:</b> ' + new Date().toLocaleDateString('en-US') + '<br><b>Advisor:</b> Brian Penner</div></div>';
     if (RESTORED) h += '<div class="sent ok no-print" style="margin:0 0 14px">Saved survey results from ' + esc(RESTORED) + (A.zip ? ' \u00B7 ZIP ' + esc(A.zip) : '') + '</div>';
     h += '<div class="res-head"><div><h2 class="q" tabindex="-1">' + (name ? esc(name) + ', here' : 'Here') + ' are your umbrella options</h2>' +
-         '<p class="help">Three ways to put your coverage together, from basic to full protection' + (area ? ' — using the real 2027 plans in ' + esc(area) : '') + '.</p></div></div>';
+         '<p class="help">Three ways to put your coverage together, from basic to full protection' + (area && SHOW_PLANS ? ' — using the real 2027 plans in ' + esc(area) : '') + '.</p></div></div>';
     h += '<div class="path"><b class="k">Suggested starting point</b><div class="pn">' + pathName + '</div><ul>' +
          whyLines(path).map(function(l){ return '<li>' + esc(l) + '</li>'; }).join('') + '</ul>' +
          '<div class="answers">' + answerChips() + '</div></div>';
@@ -819,14 +841,16 @@
           [1,2,3].map(function(n){ return '<i class="' + (n <= b.meter ? 'on' : '') + '"></i>'; }).join('') + '</div></div><ul class="stack">';
       b.layers.forEach(function(l){ h += typeof l === 'string' ? genericLayer(l) : planLayer(b.id, l); });
       h += '</ul><div class="b-foot">' + payBox(b) +
-        '<div class="b-price">' + (path === 'supp' ? 'Supplement and add-on prices depend on your age and carrier — Brian quotes them for ZIP ' + esc(A.zip || '') + '.' : 'Add-on prices depend on your age — Brian quotes them for ZIP ' + esc(A.zip || '') + '.') + '</div>' +
+        '<div class="b-price">' + 'Brian prices this umbrella with the plans and rates available in ZIP ' + esc(A.zip || '') + '.' + '</div>' +
         '<div class="b-total"><div class="tl">Monthly total, per person</div><div class="ta">$0.00</div><div class="th"></div></div>' +
         '<button type="button" class="b-pick" data-pick="' + b.id + '">' + (chosen === b.id ? '✓ I want this umbrella' : 'I want this umbrella') + '</button></div></section>';
     });
     h += '</div>';
 
     var ma = maPlans(), zero = ma.filter(function(p){ return !p.p; }).length;
-    if (path === 'supp' && ma.length){
+    if (path === 'supp' && ma.length && !SHOW_PLANS){
+      h += '<div class="alt"><b>Also worth comparing:</b> a Medicare Advantage plan. Lower premiums and often extra benefits, but a network and copays. Brian can show you the plans sold in your county side by side.</div>';
+    } else if (path === 'supp' && ma.length){
       var lowM = pickMA('fit');
       h += '<div class="alt"><b>Also worth comparing:</b> ' + ma.length + ' Medicare Advantage plans are sold in ' + esc(area) + ' for 2027' + (zero ? ', ' + zero + ' with a $0 premium' : '') + '. ' +
         (lowM ? 'The lowest bad-year cost is ' + esc(lowM.n) + ': ' + prem(lowM.p) + '/month premium, ' + whole(lowM.m || 0) + ' out-of-pocket max. ' : '') + 'Lower premiums, but a network and copays.</div>';
@@ -841,10 +865,10 @@
         '<div class="ir-row">IRMAA per person / mo: Part B <input id="irB" value="' + fmt(PR.irB || 0) + '"> Part D <input id="irD" value="' + fmt(PR.irD || 0) + '"> <span>(added to every bundle total)</span></div></div>';
     }
 
-    h += plansTable(path);
+    if (SHOW_PLANS) h += plansTable(path);
 
     h += '<div class="next"><h3>Next step: a free review with Brian</h3>' +
-      '<p>We’ll check your doctors and prescriptions against these plans and finish the pricing. Nothing is final until you say so.</p>' +
+      '<p>We’ll check your doctors and prescriptions against the plans in your county and price each umbrella. Nothing is final until you say so.</p>' +
       '<div class="acts"><a class="book" href="/book/">' + icon('calendar') + 'Book a time</a><a class="ph" href="tel:+16028446002">' + icon('phone') + 'Call (602) 844-6002</a></div>' +
       '<div id="sentMsg"></div></div>';
     h += '<div class="res-tools"><button type="button" data-act="back">← Change my answers</button><button type="button" onclick="window.print()">Print my results</button></div>';
