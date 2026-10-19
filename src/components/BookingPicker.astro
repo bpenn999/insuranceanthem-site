@@ -516,8 +516,10 @@ const weekdays = [
         const { startMs, endMs } = monthWindow(y, m, today);
         p = fetch(`${FREE_SLOTS}?startDate=${startMs}&endDate=${endMs}&timezone=${encodeURIComponent(FEED_TZ)}`)
           .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`free-slots ${r.status}`))))
-          .then((body) => {
-            state.openDays.set(k, parseFreeSlots(body));
+          .then(async (body) => {
+            const days = parseFreeSlots(body);
+            await confirmDays(days);
+            state.openDays.set(k, days);
           })
           .finally(() => monthInflight.delete(k));
         monthInflight.set(k, p);
@@ -525,11 +527,41 @@ const weekdays = [
       return p;
     }
 
+    /**
+     * Check every day the feed calls open against /api/availability BEFORE the
+     * month is drawn, and drop the days with no bookable time.
+     *
+     * ── WHY (Brian, 2026-10-18)
+     * Days were outlined from the free-slots feed alone and only checked when
+     * tapped, so fully booked days looked open and then said "No times left".
+     * An outlined day must be a day with a time in it. Fails closed: a day that
+     * cannot be confirmed within a few seconds is shown as shut.
+     */
+    async function confirmDays(days: Map<string, string[]>) {
+      await Promise.all(
+        [...days.keys()].map(async (d) => {
+          try {
+            const slots = state.cache.get(d) ?? (await Promise.race([
+              availability(d),
+              new Promise<never>((_, no) => setTimeout(() => no(new Error('timeout')), 12000)),
+            ]));
+            if (!slots.length) days.delete(d);
+          } catch {
+            days.delete(d);
+          }
+        }),
+      );
+    }
+
+    /** The first day of a loaded month with a bookable time, if any. */
+    const firstOpenDay = (y: number, m: number) =>
+      [...(state.openDays.get(mKey(y, m))?.keys() ?? [])].filter((d) => !state.soldOut.has(d)).sort()[0];
+
     function showMonth(y: number, m: number) {
       state.year = y;
       state.month = m;
       drawMonth();
-      loadOpenDays(y, m)
+      return loadOpenDays(y, m)
         .then(() => {
           if (state.year === y && state.month === m) drawMonth();
         })
@@ -661,7 +693,7 @@ const weekdays = [
       });
     }
 
-    async function pickDay(day: string) {
+    async function pickDay(day: string, scroll = true) {
       state.selectedDay = day;
       drawMonth();
 
@@ -670,7 +702,7 @@ const weekdays = [
       slotNote.textContent = 'Looking up available times…';
       slotGrid.replaceChildren();
       timeSub.textContent = formatDayLong(day);
-      reveal(timeStep);
+      if (scroll) reveal(timeStep);
 
       try {
         const slots = state.cache.get(day) ?? (await availability(day));
@@ -975,7 +1007,7 @@ const weekdays = [
       return;
     }
 
-    showMonth(start.y, start.m);
+    drawMonth(); // the empty grid at once, so nothing jumps in
 
     (async () => {
       try {
@@ -983,24 +1015,20 @@ const weekdays = [
         // weekdays it takes bookings on. Everything else follows from it.
         const first = nextBookableDays(today, state.bookableWeekdays, 1)[0] ?? today;
         await availability(first);
-        drawMonth();
-
-        // Then warm a fortnight of lookups, gently, so fully-booked days are
-        // greyed out before anyone taps them. Sequential on purpose: this is a
-        // background nicety and should not race the visitor's own tap for a
-        // connection.
-        for (const day of nextBookableDays(today, state.bookableWeekdays, cfg.warmDays)) {
-          if (state.cache.has(day)) continue;
-          try {
-            await availability(day);
-          } catch {
-            break; // one failure is enough to stop warming; the picker still works
-          }
-          if (state.soldOut.has(day)) drawMonth();
-        }
       } catch (err) {
         fallback(String(err));
+        return;
       }
+      // Open on the first day that really has a time (Brian, 2026-10-18) —
+      // next month if this one is full — with that day already selected.
+      await showMonth(start.y, start.m);
+      let y = start.y, m = start.m;
+      if (!firstOpenDay(y, m)) {
+        ({ y, m } = m === 11 ? { y: y + 1, m: 0 } : { y, m: m + 1 });
+        await showMonth(y, m);
+      }
+      const day = firstOpenDay(y, m);
+      if (day && !state.selectedDay) pickDay(day, false);
     })();
   }
 </script>
@@ -1162,7 +1190,7 @@ const weekdays = [
   }
   /* Today gets a ring, not a fill — a fill here would read as "selected" before
      anything has been chosen. */
-  .bk :global(.bk__day--today:not(.bk__day--on)) {
+  .bk :global(.bk__day--today:not(.bk__day--on):not(.bk__day--shut)) {
     box-shadow: inset 0 0 0 2px var(--navy);
   }
   .bk :global(.bk__day--on) {
