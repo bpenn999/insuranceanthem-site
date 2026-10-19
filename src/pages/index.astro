@@ -188,6 +188,14 @@ const faqSchema = {
         </div>
       </div>
 
+      <div class="advisor__side">
+      {/* Brian, 2026-10-18: his headshot on the Arizona-dusk background (option B).
+          Below the fold, so it is lazy, ~17KB max, and sized up front (no layout shift). */}
+      <img class="advisor__photo" src="/img/brian-penner-az-640.webp"
+           srcset="/img/brian-penner-az-400.webp 400w, /img/brian-penner-az-640.webp 640w"
+           sizes="(min-width: 900px) 360px, 80vw" width="640" height="800"
+           alt="Brian Penner, independent Medicare advisor in Anthem, Arizona"
+           loading="lazy" decoding="async" />
       <ul class="advisor__facts" data-rise data-armed style="--rise-delay:200ms">
         <li>
           <span class="advisor__fact-value tabular" data-countup={site.agent.experienceYears}
@@ -210,6 +218,7 @@ const faqSchema = {
           <span class="advisor__fact-label">Cost to work with me</span>
         </li>
       </ul>
+      </div>
     </div>
   </section>
 
@@ -448,6 +457,17 @@ const faqSchema = {
   .advisor__lede { margin-top: var(--s-4); }
   .advisor__body { margin-top: var(--s-5); max-width: 58ch; color: var(--ink-body); }
   .advisor__actions { margin-top: var(--s-6); }
+  .advisor__side { display: grid; gap: var(--s-5); }
+  .advisor__photo {
+    display: block;
+    width: 100%;
+    max-width: 360px;
+    height: auto;
+    aspect-ratio: 4 / 5;
+    border-radius: var(--radius-lg);
+    border-bottom: 4px solid var(--red);
+    box-shadow: 0 18px 40px -24px rgba(1, 13, 60, 0.55);
+  }
 
   .advisor__facts {
     list-style: none;
