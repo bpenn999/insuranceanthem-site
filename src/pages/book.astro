@@ -116,6 +116,17 @@ const schemaNodes = [
           appointment — or we will do it together on the call.
         </p>
       </aside>
+
+      {/* Self-serve path for people who already know their plan. Second, after
+          the intake card: a call is still the recommended route. */}
+      <aside class="intake intake--enroll">
+        <p class="intake__eyebrow">Prefer to do it yourself?</p>
+        <h2 class="intake__h">Compare plans and enroll online</h2>
+        <p class="intake__copy">{site.enroll.blurb}</p>
+        <a class="btn btn--lg btn--ghost" href={site.enroll.url} target="_blank" rel="noopener nofollow" data-cta="book-enroll">
+          {site.enroll.label} →
+        </a>
+      </aside>
     </div>
   </section>
 </BaseLayout>
@@ -165,6 +176,10 @@ const schemaNodes = [
     border-radius: var(--radius-lg);
     background: var(--navy-wash);
     text-align: center;
+  }
+  .intake--enroll {
+    margin-top: var(--s-5);
+    background: transparent;
   }
   .intake__eyebrow {
     font-size: var(--t-sm);

@@ -244,6 +244,18 @@ export const site = {
   },
 
   /**
+   * Self-serve online enrollment — Brian's Sunfire PURL (2026-10-21). Compares
+   * every plan in the visitor's ZIP and enrolls them with Brian as agent of
+   * record. Offered as the alternative to booking, never in place of it.
+   */
+  enroll: {
+    url: 'https://www.sunfirematrix.com/app/consumer/brock/8206556/',
+    label: 'Enroll Online',
+    blurb:
+      "Already know the plan you want? Compare every plan in your ZIP code and enroll yourself, securely, on Sunfire. Brian stays your agent of record, so you still have a local person to call.",
+  },
+
+  /**
    * Lead endpoint — the Pages Function at `functions/api/lead.ts`.
    *
    * Same-origin on purpose. The function holds the GoGuruX inbound webhook in
