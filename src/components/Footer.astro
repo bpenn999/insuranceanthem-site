@@ -137,6 +137,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
               one is invisible to it; keep it last so the tool list it does
               check stays contiguous. */}
           <li><a href={site.intake.url} target="_blank" rel="noopener">{site.intake.label}</a></li>
+          <li><a href={site.partDIntake.url} target="_blank" rel="noopener">{site.partDIntake.label}</a></li>
           <li><a href={site.enroll.url} target="_blank" rel="noopener nofollow">{site.enroll.label}</a></li>
         </ul>
       </div>
