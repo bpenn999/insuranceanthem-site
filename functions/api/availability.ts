@@ -364,7 +364,13 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
     const t = Date.parse(s?.startUtc ?? s?.start ?? '');
     if (Number.isFinite(t)) gxStarts.push(new Date(t).toISOString());
   }
-  const gxOpen = new Set<number>(fitFullLength(gxStarts, minutes).map((iso) => Date.parse(iso)));
+  // Only when GoGuruX answered for a SHORTER appointment (a cache entry from
+  // before the calendar moved to 45): a 45-minute answer already accounts for
+  // the full length, and its starts stand on their own.
+  const gxMinutes = Number(calendarResult.value.calendar?.slot_duration) || 30;
+  const gxOpen = new Set<number>(
+    (gxMinutes < minutes ? fitFullLength(gxStarts, minutes) : gxStarts).map((iso) => Date.parse(iso)),
+  );
   const raw = fitFullLength(slotsResult.value, minutes)
     .filter((iso) => gxOpen.has(Date.parse(iso)))
     .map((iso) => {
