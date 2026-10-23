@@ -353,12 +353,18 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
   //  GoGuruX (via gx-availability-cache) also offers that start. GoGuruX's
   //  list on its own is still never used — it once offered a day Brian had
   //  blocked out, which is why the intersection, not the union.
-  const gxOpen = new Set<number>();
+  // A 45-minute call must fit in GoGuruX's list too, not just start there
+  // (2026-10-23): GHL's feed missed Sandy Wallace 15:30 MDT on 10/28 and listed
+  // 15:00, while the cached GoGuruX list was still computed for 30 minutes and
+  // offered 15:00 as a start. Requiring the following half-hour open in
+  // GoGuruX's own list is what GoGuruX itself would check at 45 minutes.
+  const gxStarts: string[] = [];
   for (const s of calendarResult.value.gxSlots) {
     if (s?.available === false) continue;
     const t = Date.parse(s?.startUtc ?? s?.start ?? '');
-    if (Number.isFinite(t)) gxOpen.add(t);
+    if (Number.isFinite(t)) gxStarts.push(new Date(t).toISOString());
   }
+  const gxOpen = new Set<number>(fitFullLength(gxStarts, minutes).map((iso) => Date.parse(iso)));
   const raw = fitFullLength(slotsResult.value, minutes)
     .filter((iso) => gxOpen.has(Date.parse(iso)))
     .map((iso) => {
