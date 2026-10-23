@@ -257,11 +257,11 @@ export const site = {
 
   /**
    * Part D-only intake (2026-10-22) — the same RetireFlo form with the doctors
-   * step switched off (?noProviders=true), for drug-plan-only clients. Footer only.
+   * step switched off (?noProviders=true), for Medigap and drug-plan-only clients. Footer only.
    */
   partDIntake: {
     url: 'https://app.retireflo.com/brian-scott-penner?noProviders=true',
-    label: 'Part D Intake Form',
+    label: 'Medigap & Part D Intake Form',
   },
 
   /**
