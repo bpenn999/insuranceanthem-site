@@ -917,6 +917,8 @@ const weekdays = [
         const onBooked = (b: any) => {
           // Landing pages and /book/ listen for this to record a Google Ads conversion.
           document.dispatchEvent(new CustomEvent('ia:booked', { detail: { t65 } }));
+          // Booked: the "Calendar not loading?" fallback line no longer applies.
+          document.querySelectorAll<HTMLElement>('.bk__phone').forEach((el) => { el.hidden = true; el.style.display = 'none'; });
           // Tell the lead scoreboard. The booking went browser → GoGuruX, so this
           // is the only way the site's own record hears about it. Fire-and-forget.
           (window as any).__track?.('booking', {

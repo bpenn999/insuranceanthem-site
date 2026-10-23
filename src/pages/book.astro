@@ -151,6 +151,15 @@ const schemaNodes = [
   `javascript:` payload from a compromised allowed origin still cannot execute.
 -->
 <script is:inline>
+  // After a booking (2026-10-23, Brian: "confirmation page has the Medicare
+  // intake form twice"): the picker's confirmation panel already carries the
+  // intake ask, so the page's own intake card, the self-enroll card and the
+  // "Calendar not loading?" line go away and the confirmation stands alone.
+  document.addEventListener('ia:booked', function () {
+    document.querySelectorAll('aside.intake, .bk__phone').forEach(function (el) { el.hidden = true; el.style.display = 'none'; });
+  });
+</script>
+<script is:inline>
   (function () {
     var MSG = 'ggx-booking-confirmation-redirect';
     var ALLOWED = ['https://my.gogurux.com'];
