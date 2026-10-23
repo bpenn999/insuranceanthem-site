@@ -21,6 +21,9 @@ interface Props {
   breadcrumbs?: { name: string; path: string }[];
   /** Article pages run a lighter motion density. */
   density?: 'full' | 'light';
+  /** Paid-search landing page: noindex, no header/footer/call bar/help bubble.
+      The page renders its own slim header and compliance footer. */
+  landing?: boolean;
 }
 
 const {
@@ -35,6 +38,7 @@ const {
   schemaNodes = [],
   breadcrumbs = [],
   density = 'full',
+  landing = false,
 } = Astro.props;
 ---
 
@@ -47,7 +51,7 @@ const {
       path={path}
       image={image}
       type={type}
-      noindex={noindex}
+      noindex={noindex || landing}
       publishedAt={publishedAt}
       modifiedAt={modifiedAt}
     />
@@ -70,19 +74,19 @@ const {
     <canvas class="caustics" aria-hidden="true"></canvas>
 
     <div class="page-shell">
-      <Header />
+      {!landing && <Header />}
       <main id="main">
         <slot />
       </main>
-      <Footer />
+      {!landing && <Footer />}
     </div>
 
     <!-- Sticky call bar, under 900px only. Outside .page-shell because it is
          fixed to the viewport rather than positioned in the document flow. -->
-    <MobileCallBar />
+    {!landing && <MobileCallBar />}
 
     <!-- Desktop-only Book / Call / Text bubble (≥1000px); the call bar covers phones. -->
-    <HelpLauncher />
+    {!landing && <HelpLauncher />}
 
     <script>
       import '../scripts/motion.ts';

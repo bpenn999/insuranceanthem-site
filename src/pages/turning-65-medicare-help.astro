@@ -1,0 +1,265 @@
+---
+/**
+ * /turning-65-medicare-help/ — paid-search landing page (built 2026-10-23).
+ *
+ * Google Ads traffic (Maricopa County) for two audiences lands here: people
+ * turning 65, and people retiring or leaving employer coverage after 65. One
+ * page, one offer — we help you sign up for Medicare and choose coverage at no
+ * cost — and two actions: call, or pick a time. `landing` on BaseLayout drops
+ * the site header, footer, sticky call bar and help bubble and forces noindex;
+ * the page is also out of the sitemap (astro.config.mjs) and listed in
+ * scripts/audit.mjs STANDALONE_DOCS, whose check 10 still asserts the TPMO,
+ * 1-800-MEDICARE, non-affiliation and NPN lines below.
+ *
+ * Facts here are the ones already published on 602's own posts (linked at the
+ * bottom): the 7-month IEP, the 20-employee rule, the 8-month SEP, CMS-40B +
+ * CMS-L564, COBRA not counting, the 10%-a-year Part B penalty, and the 6-month
+ * Medigap open enrollment that starts with Part B. No dollar figures, no plans.
+ *
+ * Conversions: Google Ads AW-1004695098 loads ONLY after the visitor accepts the
+ * tracking bar (localStorage ia_ads_consent). tel: clicks → "Click to call";
+ * BookingPicker's `ia:booked` event → "Book appointment". /book/ honours the
+ * same stored consent. CSP for both paths is widened in public/_headers.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BookingPicker from '../components/BookingPicker.astro';
+import site from '../config/site';
+import { tpmoText, nonAffiliation } from '../data/compliance';
+
+const title = 'Turning 65 or Retiring? Free Medicare Sign-Up Help';
+const description =
+  'Turning 65 or leaving employer coverage? A licensed Phoenix-area agent helps you sign up for Medicare and choose coverage, at no cost to you.';
+
+const ADS = {
+  tagId: 'AW-1004695098',
+  callSendTo: 'AW-1004695098/z5ZBCKCavPEcELrcid8D',    // "Click to call"
+  bookingSendTo: 'AW-1004695098/BUXeCJ2avPEcELrcid8D', // "Book appointment"
+};
+
+const tel = site.phone.href;
+const phone = site.phone.display;
+
+const faqs = [
+  { q: 'What does your help cost?', a: 'Nothing. We are paid by the insurance company when you enroll in a plan, not by you, and there is no obligation to enroll in anything. Signing up for Part A and Part B through Social Security is free, and we will walk you through it either way.' },
+  { q: 'I am still working at 65. Do I have to sign up?', a: 'Usually not for Part B, if you are actively working and covered by a group plan through an employer with 20 or more employees. Under 20 employees, Medicare generally pays first and you should enroll at 65. Part A and an HSA have their own rules — we check both with you before you decide.' },
+  { q: 'Does COBRA let me put off Part B?', a: 'No. COBRA is not coverage based on current employment, so your 8-month window starts when the job ends, not when COBRA does. Waiting for COBRA to run out is the most common way people end up with a gap and a Part B penalty of 10% for every full year late, for life.' },
+  { q: 'What are the CMS-40B and CMS-L564 forms?', a: 'The CMS-40B is your application for Part B. The CMS-L564 is completed by your employer and proves you had group coverage while you worked, so you are not charged a late penalty. We help you fill in both and get them to Social Security.' },
+  { q: 'When should I pick a Medicare Supplement or Advantage plan?', a: 'Your six-month Medicare Supplement open enrollment starts the month your Part B starts — during it you cannot be turned down or charged more for your health. Medicare Advantage and Part D have their own enrollment windows tied to the same dates. We line those up so nothing lapses.' },
+];
+---
+
+<BaseLayout {title} {description} path="/turning-65-medicare-help/" density="light" landing>
+  <header class="lp-head">
+    <div class="wrap lp-head__row">
+      <a class="lp-brand" href="/" aria-label={`${site.name} home`}>
+        <img src="/logo/badge-128.webp" width="52" height="52" alt="" />
+        <span class="lp-word"><span class="lp-word__mark">{site.wordmark.mark}</span>{site.wordmark.product}</span>
+      </a>
+      <a class="lp-head__call" href={tel} data-conv="call">📞 {phone}</a>
+    </div>
+  </header>
+
+  <section class="lp-hero">
+    <div class="wrap lp-hero__grid">
+      <div>
+        <p class="eyebrow">Turning 65 · Retiring · Leaving employer coverage</p>
+        <h1>We help you sign up for Medicare — <span class="lp-hl">at no cost to you.</span></h1>
+        <p class="lp-lede">Part A, Part B (including the CMS-40B and CMS-L564 employer forms) and choosing the right coverage — done with a licensed local agent in the Phoenix area, not a call center.</p>
+        <div class="lp-cta">
+          <a class="lp-call" href={tel} data-conv="call">
+            <span class="lp-call__top">📞 Call now — {phone}</span>
+            <span class="lp-call__sub">Talk to a licensed agent in Arizona</span>
+          </a>
+          <a class="lp-book-link" href="#book">Or pick a time and Brian calls you ↓</a>
+        </div>
+        <ul class="lp-proof">
+          <li>Licensed, independent local agent — {site.agent.experience} helping people with Medicare</li>
+          <li>Free. No obligation. No pressure.</li>
+          <li>Your doctors, prescriptions and dates checked before anything is filed</li>
+        </ul>
+        <p class="lp-hours">{site.hours.display}. Outside those hours, book below and you will get a call back.</p>
+      </div>
+      <aside class="lp-advisor">
+        <img src="/img/brian-penner-az-400.webp" alt={`${site.agent.name}, ${site.agent.title}`} width="160" height="160" loading="eager" />
+        <div class="lp-advisor__name">{site.agent.name}</div>
+        <div class="lp-advisor__title">{site.agent.title}</div>
+        <div class="lp-advisor__npn">Licensed in Arizona · NPN {site.agent.npn}</div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="lp-sec">
+    <div class="wrap">
+      <h2>Which one are you?</h2>
+      <div class="lp-two">
+        <div class="lp-card">
+          <p class="lp-card__tag">Turning 65</p>
+          <h3>Your 7-month window</h3>
+          <p>Your Initial Enrollment Period runs <strong>three months before your birthday month, your birthday month, and three months after</strong>. Sign up in the months before and coverage can start the first day of your birthday month.</p>
+          <p>Miss it with no qualifying employer coverage and the Part B penalty is 10% for every full year late — for life.</p>
+        </div>
+        <div class="lp-card">
+          <p class="lp-card__tag">Retiring or leaving employer coverage</p>
+          <h3>Your 8-month window</h3>
+          <p>If you delayed Part B while working for an employer with <strong>20 or more employees</strong>, you get a Special Enrollment Period of <strong>eight months after the month the job or the coverage ends</strong>, whichever comes first.</p>
+          <p>You file the CMS-40B; your employer completes the CMS-L564. <strong>COBRA does not extend the window.</strong></p>
+        </div>
+      </div>
+      <p class="lp-note"><strong>Either way:</strong> your six-month Medicare Supplement open enrollment starts the month your Part B starts. During it you cannot be turned down or charged more for your health — a door that closes afterward.</p>
+    </div>
+  </section>
+
+  <section class="lp-sec lp-sec--soft">
+    <div class="wrap">
+      <h2>What we do for you</h2>
+      <ol class="lp-steps">
+        <li><strong>Check your dates.</strong> Your birthday, your job or coverage end date and your employer's size decide which window you are in and when Part B should start.</li>
+        <li><strong>Get Part A and Part B filed.</strong> We walk you through Social Security's application — and the CMS-40B and CMS-L564 if you are coming off employer coverage — so nothing is rejected or late.</li>
+        <li><strong>Compare your coverage.</strong> Medicare Supplement, Medicare Advantage and Part D side by side, checked against your doctors and prescriptions.</li>
+        <li><strong>Line up the start dates.</strong> So your employer plan, Part B and your new coverage meet with no gap and no penalty.</li>
+      </ol>
+      <div class="lp-cta lp-cta--center">
+        <a class="lp-call" href={tel} data-conv="call">
+          <span class="lp-call__top">📞 Call now — {phone}</span>
+          <span class="lp-call__sub">Licensed agent · Phoenix area · no cost</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-sec" id="book">
+    <div class="wrap lp-narrow">
+      <h2>Pick a time — Brian calls you</h2>
+      <p class="lp-note lp-note--top">No cost, no obligation. Times are shown in Arizona time. Choose a slot and you will get a call at that number.</p>
+      <BookingPicker topic="t65" />
+    </div>
+  </section>
+
+  <section class="lp-sec lp-sec--soft">
+    <div class="wrap lp-narrow">
+      <h2>Common questions</h2>
+      <div class="lp-faq">
+        {faqs.map((f) => (<details><summary>{f.q}</summary><p>{f.a}</p></details>))}
+      </div>
+      <p class="lp-note">Want the long version? Read <a href="/blog/how-do-i-sign-up-for-medicare-part-b-when-i-retire-after-65/">how to sign up for Part B when you retire after 65</a>, <a href="/blog/do-i-need-medicare-at-65-if-still-working/">do I need Medicare at 65 if I'm still working?</a> or <a href="/blog/can-i-keep-cobra-instead-of-medicare-at-65/">can I keep COBRA instead of Medicare?</a></p>
+    </div>
+  </section>
+
+  <footer class="lp-foot">
+    <div class="wrap">
+      <p class="lp-foot__call"><a class="lp-call lp-call--small" href={tel} data-conv="call"><span class="lp-call__top">📞 Call now — {phone}</span></a></p>
+      <p>{tpmoText()} {nonAffiliation} {site.agent.name} · NPN {site.agent.npn} · licensed independent insurance agent. This page is education and an offer of help with enrollment, not a description of any specific plan. By calling us you agree we may contact you about Medicare options; you can opt out at any time.</p>
+      <p>© {new Date().getFullYear()} {site.legalName}, a DBA of {site.parentCompany} · {site.address.display} · <a href={`mailto:${site.email}`}>{site.email}</a></p>
+      <p class="lp-foot__links"><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/">602medicare.com</a></p>
+    </div>
+  </footer>
+
+  <div class="lp-consent" data-consent hidden>
+    <p>We use a Google Ads tag to measure which ads bring people here. It loads only if you allow it. <a href="/privacy/">Privacy</a></p>
+    <div class="lp-consent__btns">
+      <button type="button" data-consent-accept>Allow</button>
+      <button type="button" data-consent-decline class="lp-consent__no">No thanks</button>
+    </div>
+  </div>
+
+  <script is:inline define:vars={{ ADS }}>
+    (function () {
+      var KEY = 'ia_ads_consent';
+      var get = function () { try { return localStorage.getItem(KEY); } catch (e) { return null; } };
+      var set = function (v) { try { localStorage.setItem(KEY, v); } catch (e) {} };
+      window.dataLayer = window.dataLayer || [];
+      window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+      var loaded = false;
+      function load() {
+        if (loaded) return; loaded = true;
+        var s = document.createElement('script'); s.async = true;
+        s.src = 'https://www.googletagmanager.com/gtag/js?id=' + ADS.tagId;
+        document.head.appendChild(s);
+        window.gtag('js', new Date());
+        window.gtag('config', ADS.tagId, { allow_enhanced_conversions: false });
+      }
+      var bar = document.querySelector('[data-consent]');
+      var state = get();
+      if (state === 'accept') load();
+      else if (state !== 'decline' && bar) bar.hidden = false;
+      bar && bar.querySelector('[data-consent-accept]').addEventListener('click', function () { set('accept'); bar.hidden = true; load(); });
+      bar && bar.querySelector('[data-consent-decline]').addEventListener('click', function () { set('decline'); bar.hidden = true; });
+      function fire(name, sendTo) {
+        window.dataLayer.push({ event: name });
+        if (get() === 'accept') window.gtag('event', 'conversion', { send_to: sendTo, value: 1.0, currency: 'USD' });
+      }
+      document.querySelectorAll('a[data-conv="call"]').forEach(function (a) {
+        a.addEventListener('click', function () { fire('call_click', ADS.callSendTo); });
+      });
+      document.addEventListener('ia:booked', function () { fire('booking_complete', ADS.bookingSendTo); });
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .lp-head { background: #fff; border-bottom: 1px solid var(--rule); position: relative; z-index: 2; }
+  .lp-head__row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 0.6rem; }
+  .lp-brand { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+  .lp-brand img { width: 52px; height: 52px; display: block; }
+  .lp-word { font-family: var(--font-display, inherit); font-weight: 800; font-size: 1.45rem; color: var(--navy); letter-spacing: -0.01em; }
+  .lp-word__mark { color: var(--red); }
+  .lp-head__call { font-weight: 800; font-size: 1.05rem; white-space: nowrap; color: var(--navy); text-decoration: none; }
+  .lp-hero, .lp-sec, .lp-foot { position: relative; z-index: 1; }
+  .lp-hero { padding: clamp(2rem, 5vw, 4rem) 0 clamp(1.5rem, 4vw, 3rem); background: #fff; }
+  .lp-hero__grid { display: grid; grid-template-columns: minmax(0, 1fr) 220px; gap: 2.5rem; align-items: start; }
+  .lp-hero h1 { font-size: clamp(1.85rem, 4.6vw, 3.1rem); margin: 0.3em 0 0.5em; color: var(--ink); }
+  .lp-hl { color: var(--red); }
+  .lp-lede { font-size: clamp(1.05rem, 1.3vw, 1.2rem); max-width: 60ch; margin: 0 0 1.2rem; color: var(--ink-body); }
+  .lp-proof { list-style: none; margin: 1.1rem 0; padding: 0; display: grid; gap: 0.35rem; font-weight: 600; font-size: 1rem; color: var(--ink-body); }
+  .lp-proof li::before { content: '✓'; color: var(--red); font-weight: 800; margin-right: 0.55rem; }
+  .lp-hours { font-size: 0.92rem; color: var(--ink-muted); margin: 0.8rem 0 0; }
+  .lp-advisor { text-align: center; padding: 1.2rem 1rem; border: 1px solid var(--rule); border-radius: 14px; background: #fff; }
+  .lp-advisor img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; }
+  .lp-advisor__name { font-weight: 800; font-size: 1.2rem; margin-top: 0.7rem; color: var(--ink); }
+  .lp-advisor__title { font-size: 0.9rem; color: var(--ink-muted); margin-top: 0.15rem; }
+  .lp-advisor__npn { font-size: 0.82rem; color: var(--ink-muted); margin-top: 0.5rem; }
+  .lp-cta { display: grid; gap: 0.7rem; max-width: 520px; }
+  .lp-cta--center { margin: 1.6rem auto 0; justify-items: center; }
+  .lp-call, .lp-call:visited, .lp-call:hover, .lp-call:focus { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2rem; width: 100%; min-height: 68px; padding: 0.95rem 1.2rem; border-radius: 10px; background: var(--red); color: #fff; text-decoration: none; text-align: center; animation: lp-pulse 1.6s ease-out infinite; }
+  .lp-call:hover { background: var(--red-deep); }
+  .lp-call--small { min-height: 52px; max-width: 420px; margin: 0 auto; }
+  .lp-call__top { font-weight: 800; font-size: 1.3rem; line-height: 1.2; }
+  .lp-call__sub { font-weight: 600; font-size: 0.92rem; line-height: 1.3; }
+  .lp-book-link { display: flex; align-items: center; justify-content: center; min-height: 52px; border: 2px solid var(--navy); border-radius: 10px; color: var(--navy); font-weight: 700; text-decoration: none; font-size: 1.05rem; }
+  @keyframes lp-pulse { 0% { box-shadow: 0 0 0 0 rgba(209, 10, 15, 0.5); } 70% { box-shadow: 0 0 0 16px rgba(0, 0, 0, 0); } 100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); } }
+  @media (prefers-reduced-motion: reduce) { .lp-call { animation: none; } }
+  .lp-sec { padding: clamp(2rem, 5vw, 3.5rem) 0; background: #fff; overflow-x: clip; }
+  .lp-sec--soft { background: var(--navy-wash); }
+  .lp-sec h2 { font-size: clamp(1.6rem, 3vw, 2.3rem); margin: 0 0 0.8em; color: var(--ink); }
+  .lp-narrow { max-width: 860px; }
+  .lp-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .lp-card { border: 1px solid var(--rule); border-radius: 14px; padding: 1.3rem; background: #fff; }
+  .lp-card__tag { margin: 0 0 0.3rem; font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--red); }
+  .lp-card h3 { font-size: 1.3rem; margin: 0 0 0.4rem; color: var(--ink); }
+  .lp-card p { margin: 0 0 0.6rem; font-size: 1.02rem; color: var(--ink-body); }
+  .lp-note { margin: 1.2rem 0 0; max-width: 70ch; font-size: 1.05rem; color: var(--ink-body); }
+  .lp-note--top { margin: 0 0 1rem; }
+  .lp-steps { max-width: 70ch; padding-left: 1.3rem; display: grid; gap: 0.8rem; font-size: 1.08rem; color: var(--ink-body); }
+  .lp-faq details { border-bottom: 1px solid var(--rule); padding: 0.9rem 0; }
+  .lp-faq summary { font-weight: 700; font-size: 1.1rem; cursor: pointer; color: var(--ink); }
+  .lp-faq p { margin: 0.6rem 0 0; font-size: 1.02rem; color: var(--ink-body); }
+  .lp-foot { padding: 2rem 0 6rem; border-top: 1px solid var(--rule); font-size: 0.85rem; color: var(--ink-muted); line-height: 1.6; background: #fff; }
+  .lp-foot__call { margin: 0 0 1.4rem; }
+  .lp-foot a { color: inherit; }
+  .lp-consent { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 0.6rem 1rem; padding: 0.7rem 1rem; background: var(--navy); color: #fff; font-size: 0.92rem; }
+  .lp-consent[hidden] { display: none; }
+  .lp-consent p { margin: 0; max-width: 60ch; }
+  .lp-consent a { color: #fff; }
+  .lp-consent__btns { display: flex; gap: 0.5rem; }
+  .lp-consent button { min-height: 44px; padding: 0 1.1rem; border-radius: 8px; border: 2px solid #fff; background: #fff; color: var(--navy); font-weight: 800; font-size: 0.95rem; cursor: pointer; }
+  .lp-consent .lp-consent__no { background: transparent; color: #fff; }
+  @media (max-width: 820px) {
+    .lp-hero__grid, .lp-two { grid-template-columns: 1fr; }
+    .lp-advisor { display: flex; align-items: center; gap: 1rem; text-align: left; padding: 0.9rem 1rem; }
+    .lp-advisor img { width: 72px; height: 72px; }
+    .lp-advisor__name { margin-top: 0; }
+    .lp-word { font-size: 1.2rem; }
+    .lp-brand img { width: 42px; height: 42px; }
+    .lp-head__call { font-size: 0.95rem; }
+  }
+</style>

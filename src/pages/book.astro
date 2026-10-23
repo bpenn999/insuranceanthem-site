@@ -168,6 +168,31 @@ const schemaNodes = [
   })();
 </script>
 
+<!--
+  Google Ads (2026-10-23). /book/ shows no consent bar of its own: the tag loads
+  ONLY if the visitor already allowed it on the ad landing page
+  (/turning-65-medicare-help/, localStorage ia_ads_consent=accept). A confirmed
+  booking then records the "Book appointment" conversion. CSP: public/_headers.
+-->
+<script is:inline>
+  (function () {
+    var ok = false;
+    try { ok = localStorage.getItem('ia_ads_consent') === 'accept'; } catch (e) {}
+    if (!ok) return;
+    var TAG = 'AW-1004695098';
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = window.gtag || function () { window.dataLayer.push(arguments); };
+    var s = document.createElement('script'); s.async = true;
+    s.src = 'https://www.googletagmanager.com/gtag/js?id=' + TAG;
+    document.head.appendChild(s);
+    window.gtag('js', new Date());
+    window.gtag('config', TAG, { allow_enhanced_conversions: false });
+    document.addEventListener('ia:booked', function () {
+      window.gtag('event', 'conversion', { send_to: 'AW-1004695098/BUXeCJ2avPEcELrcid8D', value: 1.0, currency: 'USD' });
+    });
+  })();
+</script>
+
 <style>
   .intake {
     max-width: 40rem;

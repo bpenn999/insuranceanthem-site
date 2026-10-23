@@ -44,6 +44,7 @@ const STANDALONE_DOCS = new Set([
   '/tools/digital-quote/',            // the coverage survey (umbrellas 1–3)
   '/tools/digital-quote-supplement/', // fillable Med Supp sheet (moved here 2026-10-17)
   '/tools/digital-quote-advantage/',
+  '/turning-65-medicare-help/',       // Google Ads landing page (2026-10-23): noindex, own slim chrome
 ]);
 const isStandaloneDoc = (f) =>
   STANDALONE_DOCS.has(routeOf(f)) && /<meta name="robots" content="noindex/.test(readFileSync(f, 'utf8'));

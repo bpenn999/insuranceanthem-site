@@ -14,6 +14,19 @@
   Strict-Transport-Security: max-age=31536000; includeSubDomains; preload
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://roiypxggqlgbzrspkeoo.supabase.co https://backend.leadconnectorhq.com; form-action 'self'; frame-src https://my.gogurux.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
 
+# Google Ads (2026-10-23). The two pages below may load the Google Ads tag
+# AW-1004695098 — but ONLY after the visitor accepts the landing page's tracking
+# bar (localStorage ia_ads_consent=accept). The rest of the site keeps the strict
+# policy above. `! Content-Security-Policy` detaches the site-wide header first;
+# without it Pages sends both and the browser enforces the stricter of the two.
+/turning-65-medicare-help/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://www.google.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.googletagmanager.com; connect-src 'self' https://roiypxggqlgbzrspkeoo.supabase.co https://backend.leadconnectorhq.com https://www.google.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.googletagmanager.com; form-action 'self'; frame-src https://my.gogurux.com https://td.doubleclick.net https://www.googletagmanager.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
+
+/book/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.googleadservices.com https://googleads.g.doubleclick.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://www.google.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.googletagmanager.com; connect-src 'self' https://roiypxggqlgbzrspkeoo.supabase.co https://backend.leadconnectorhq.com https://www.google.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.googletagmanager.com; form-action 'self'; frame-src https://my.gogurux.com https://td.doubleclick.net https://www.googletagmanager.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
+
 # Astro fingerprints these filenames, so they can be cached indefinitely.
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable
