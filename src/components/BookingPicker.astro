@@ -694,6 +694,29 @@ const weekdays = [
       });
     }
 
+    /**
+     * Last look before writing (2026-10-22). GoGuruX does not refuse an
+     * overlapping start, and the times on screen can be minutes old (MOM/NM:
+     * Kenneth Jackson got 8:00 on Sat 10/24 fifteen minutes after Jim Bleakley
+     * took 8:30). /api/availability?fresh=1 asks GoGuruX live. A check that is
+     * slow or fails does not block the booking.
+     */
+    async function stillOpenLive(date: string, startUtc: string): Promise<boolean> {
+      try {
+        const res = await fetch(`/api/availability?date=${encodeURIComponent(date)}&fresh=1`, {
+          signal: AbortSignal.timeout(20_000),
+        });
+        if (!res.ok) return true;
+        const body = await res.json();
+        if (!body?.success || !Array.isArray(body.slots)) return true;
+        const t = new Date(startUtc).getTime();
+        return body.slots.some((s: Slot) => s.available !== false && new Date(s.startUtc).getTime() === t);
+      } catch (err) {
+        console.info('[booking] live re-check skipped —', String(err));
+        return true;
+      }
+    }
+
     async function pickDay(day: string, scroll = true) {
       state.selectedDay = day;
       drawMonth();
@@ -826,6 +849,15 @@ const weekdays = [
       };
 
       try {
+        if (!(await stillOpenLive(state.selectedDay!, state.selectedSlot.startUtc))) {
+          // Taken since the times were drawn: redraw that day; the catch below
+          // tells them it may have just been taken.
+          const day = state.selectedDay!;
+          state.cache.delete(day);
+          state.soldOut.delete(day);
+          void pickDay(day, false);
+          throw new Error('slot_taken (live re-check)');
+        }
         // ── Don't make them wait for GoGuruX's whole pipeline (2026-10-15) ──
         //  create-booking now takes ~80s end to end (the appointment row lands
         //  ~20s in; the rest is GoGuruX's own emails and Google sync), while

@@ -292,6 +292,10 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
   }
 
   const day = new URL(request.url).searchParams.get('date') ?? '';
+  // fresh=1: the picker's last look right before create-booking (2026-10-22).
+  // Skips the GoGuruX cache, because GoGuruX accepts an overlapping start and
+  // the times on screen can be minutes old.
+  const fresh = new URL(request.url).searchParams.get('fresh') === '1';
   if (!/^\d{4}-\d{2}-\d{2}$/.test(day)) {
     return json(400, { success: false, error: 'date must be YYYY-MM-DD' });
   }
@@ -306,12 +310,13 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
         duration: String(DEFAULT_MINUTES),
         location_slug: LOCATION_SLUG,
         calendar_slug: CALENDAR_SLUG,
+        ...(fresh ? { fresh: '1' } : {}),
       });
       // Through gx-availability-cache (2026-10-15): GoGuruX's live call went
       // to 17–32s, past TIMEOUT_MS, so every request here answered 502. The
       // cache Worker keeps GoGuruX's own JSON in KV and answers in ms.
       const res = await fetch(`${GX_CACHE}/availability?${q}`, {
-        signal: AbortSignal.timeout(TIMEOUT_MS),
+        signal: AbortSignal.timeout(fresh ? 15_000 : TIMEOUT_MS),
       });
       if (!res.ok) throw new Error(`get-availability ${res.status}`);
       const body = (await res.json()) as {
