@@ -264,11 +264,7 @@ const weekdays = [
   </div>
 
   <noscript>
-    <iframe
-      src={booking.embedUrl}
-      title="602Medicare — booking calendar"
-      class="bk__frame"
-    ></iframe>
+    <p class="bk__fallback-note">Online booking needs JavaScript. Call {site.phone.display} and we will book you in.</p>
   </noscript>
 </div>
 
@@ -485,11 +481,20 @@ const weekdays = [
       const note = $('[data-fallback-note]');
       if (!box.hidden) return;
       const chosen = cfg.mode === 'embed';
+      // 2026-10-23 (Brian: "it's showing times available when I am not"): a
+      // FAILED lookup no longer loads the GoGuruX embed. The embed is
+      // unguarded — 30-minute slots in Mountain time with no check against his
+      // diary — so it was offering times that ran into real appointments. A
+      // closed calendar plus the phone number is the safe failure.
       note.textContent = chosen
         ? ''
-        : 'Loading the calendar the long way round — it may take a moment.';
+        : `Online booking can't check Brian's calendar right now, so it is switched off rather than risk a double booking. Call ${root.dataset.phone || "(602) 844-6002"} and we will book you in, or send your details and Brian will call you.`;
       note.hidden = chosen;
-      if (!frame.src) frame.src = cfg.embedUrl;
+      if (chosen) {
+        if (!frame.src) frame.src = cfg.embedUrl;
+      } else {
+        frame.hidden = true;
+      }
       box.hidden = false;
       root.querySelectorAll<HTMLElement>('.bk__step').forEach((s) => (s.hidden = true));
       // The embed is somebody else's form in a frame: the survey's answers

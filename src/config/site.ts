@@ -208,11 +208,11 @@ export const site = {
    * public/_headers; the CSP is otherwise still `default-src 'self'`.
    */
   consult: {
-    minutes: 30,
+    minutes: 45,
     url: '/book/',
-    label: 'Book a free 30-minute call',
-    /** Used in body copy, e.g. "a free 30-minute call" */
-    phrase: 'free 30-minute call',
+    label: 'Book a free 45-minute call',
+    /** Used in body copy, e.g. "a free 45-minute call" */
+    phrase: 'free 45-minute call',
   },
 
   /**

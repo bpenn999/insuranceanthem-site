@@ -251,7 +251,7 @@ for (const sf of smFiles) {
     if (toolLinks.length === 0) note(`NO TOOL LINKS on ${route}`);
 
     // 7. the booking CTA
-    if (!html.includes('30-minute')) note(`NO 30-MINUTE CALL CTA on ${route}`);
+    if (!html.includes('45-minute')) note(`NO 45-MINUTE CALL CTA on ${route}`);
 
     // 8. year-stamped figures, and no unresolved figure tokens
     if (/\{\{[a-zA-Z]/.test(html)) note(`UNRESOLVED FIGURE TOKEN on ${route}`);
@@ -320,7 +320,7 @@ for (const sf of smFiles) {
     if (!html.includes('Brian Penner')) note(`NO BYLINE on ${route}`);
     if (!/id="post-sources-h"/.test(html)) note(`NO SOURCES LIST on ${route}`);
     if (/\{\{[a-zA-Z]/.test(html)) note(`UNRESOLVED FIGURE TOKEN on ${route}`);
-    if (!html.includes('30-minute')) note(`NO 30-MINUTE CALL CTA on ${route}`);
+    if (!html.includes('45-minute')) note(`NO 45-MINUTE CALL CTA on ${route}`);
     if (!/\b2026\b/.test(html)) note(`NOT YEAR-STAMPED on ${route}`);
   }
 
@@ -414,7 +414,7 @@ for (const f of htmls) {
     }
 
     // CTA row
-    if (!footer.includes('30-minute')) note(`FOOTER: no 30-minute call CTA on ${r}`);
+    if (!footer.includes('45-minute')) note(`FOOTER: no 45-minute call CTA on ${r}`);
 
     // Compliance block
     if (!footer.includes('Licensed in 18 states')) note(`FOOTER: no licensing line on ${r}`);
@@ -473,7 +473,7 @@ for (const f of htmls) {
     if (desc.length < 50) note(`WEAK META DESCRIPTION on ${route}`);
 
     // Bottom CTA to the booking link
-    if (!html.includes('30-minute')) note(`NO 30-MINUTE CALL CTA on ${route}`);
+    if (!html.includes('45-minute')) note(`NO 45-MINUTE CALL CTA on ${route}`);
 
     // Year-stamped and estimate-framed — these are the compliance guardrails
     if (!/\b2026\b/.test(html)) note(`NOT YEAR-STAMPED on ${route}`);

@@ -432,6 +432,13 @@ console.log('\nAPI — /api/availability (the free-slots feed, mocked upstreams)
   /** And for the Thursday he is off: the day is simply not there. */
   const THURSDAY_FEED = { traceId: 'stub' };
 
+  /** GoGuruX's half-hours 07:00–16:30 for any day (the intersection needs it to agree). */
+  const gxDay = (day) => Array.from({ length: 20 }, (_, i) => {
+    const t = `${String(7 + Math.floor(i / 2)).padStart(2, '0')}:${i % 2 ? '30' : '00'}`;
+    const startUtc = new Date(az(day || '2026-08-20', t)).toISOString();
+    return { startUtc, endUtc: new Date(Date.parse(startUtc) + 30 * 60000).toISOString(), available: true };
+  });
+
   /** The eight slots GoGuruX offered that Thursday — which must never surface. */
   const GOGURUX_SLOTS = ['07:00','07:30','08:00','08:30','09:00','09:30','10:00','10:30'].map((t) => {
     const startUtc = new Date(az('2026-08-20', t)).toISOString();
@@ -445,7 +452,7 @@ console.log('\nAPI — /api/availability (the free-slots feed, mocked upstreams)
       env = {},
       feed = THURSDAY_FEED,
       feedStatus = 200,
-      goguruxSlots = GOGURUX_SLOTS,
+      goguruxSlots = null,
       goguruxCalendar = { id: 'gogurux-cal', slot_duration: 30, time_zone: 'America/Denver' },
       goguruxStatus = 200,
       busy = [],
@@ -472,8 +479,9 @@ console.log('\nAPI — /api/availability (the free-slots feed, mocked upstreams)
       if (u.includes('free-slots')) {
         return new Response(JSON.stringify(feed), { status: feedStatus });
       }
-      if (u.includes('get-availability')) {
-        return new Response(JSON.stringify({ success: goguruxStatus === 200, calendar: goguruxCalendar, slots: goguruxSlots }),
+      // 602 reaches GoGuruX through gx-availability-cache since 2026-10-15.
+      if (u.includes('get-availability') || u.includes('gx-availability-cache')) {
+        return new Response(JSON.stringify({ success: goguruxStatus === 200, calendar: goguruxCalendar, slots: goguruxSlots ?? gxDay(date) }),
           { status: goguruxStatus });
       }
       return realFetch(url, init);
@@ -510,16 +518,19 @@ console.log('\nAPI — /api/availability (the free-slots feed, mocked upstreams)
   /* ── a working day ────────────────────────────────────────────────────── */
   {
     const r = await call({ date: '2026-08-25', feed: TUESDAY_FEED });
-    check('a day the feed lists is offered in full', r.json.slots.length === 3);
+    // 45-minute appointments on the feed's 30-minute grid (2026-10-23): a start
+    // needs the next cell free too, so 09:30 (10:00 not listed) is not offered.
+    check('a day the feed lists offers every start a 45-minute call fits', r.json.slots.length === 2,
+      String(r.json.slots?.length));
     check('the feed\'s start times survive the round trip',
       r.json.slots[0].startUtc === new Date(az('2026-08-25', '08:30')).toISOString(),
       r.json.slots[0]?.startUtc);
-    check('an end time is derived from the calendar\'s slot length',
-      Date.parse(r.json.slots[0].endUtc) - Date.parse(r.json.slots[0].startUtc) === 30 * 60000);
-    check('a different slot length is honoured',
-      (await call({ date: '2026-08-25', feed: TUESDAY_FEED,
-        goguruxCalendar: { id: 'c', slot_duration: 45 } }))
-        .json.slots[0].endUtc === new Date(Date.parse(az('2026-08-25', '08:30')) + 45 * 60000).toISOString());
+    check('every appointment is 45 minutes even when the calendar says 30',
+      Date.parse(r.json.slots[0].endUtc) - Date.parse(r.json.slots[0].startUtc) === 45 * 60000);
+    check('and the calendar object handed to the picker says 45',
+      r.json.calendar.slot_duration === 45);
+    check('no offered start runs into the next busy cell (the 10/27 spill-over)',
+      !r.json.slots.some((sl) => sl.startUtc === new Date(az('2026-08-25', '09:30')).toISOString()));
   }
 
   /* ── failing closed ───────────────────────────────────────────────────── */
@@ -539,7 +550,7 @@ console.log('\nAPI — /api/availability (the free-slots feed, mocked upstreams)
   {
     const r = await call({ date: '2026-08-25', feed: TUESDAY_FEED });
     check('with no credential set the feed is trusted on its own',
-      r.status === 200 && r.json.slots.length === 3);
+      r.status === 200 && r.json.slots.length === 2);
     check('and Google is not called at all', !r.seen.some((u) => u.includes('freeBusy')));
   }
   {
@@ -547,11 +558,10 @@ console.log('\nAPI — /api/availability (the free-slots feed, mocked upstreams)
       date: '2026-08-25', feed: TUESDAY_FEED, env: { GOOGLE_SERVICE_ACCOUNT_JSON: SA },
       busy: [{ start: az('2026-08-25', '09:00'), end: az('2026-08-25', '09:30') }],
     });
+    // Busy 09:00–09:30: the 08:30 call would run to 09:15, so both starts go.
     check('a configured diary check subtracts anything the feed still listed',
-      r.json.slots.length === 2
-        && !r.json.slots.some((s) => s.startUtc === new Date(az('2026-08-25', '09:00')).toISOString()),
-      String(r.json.slots.length));
-    check('and reports what it withheld', r.json.filtered.withheld === 1);
+      r.json.slots.length === 0, String(r.json.slots.length));
+    check('and reports what it withheld', r.json.filtered.withheld === 2);
   }
   {
     const r = await call({
@@ -559,7 +569,7 @@ console.log('\nAPI — /api/availability (the free-slots feed, mocked upstreams)
       env: { GOOGLE_SERVICE_ACCOUNT_JSON: SA }, tokenStatus: 401,
     });
     check('a broken optional check is skipped, not turned into an outage',
-      r.status === 200 && r.json.slots.length === 3);
+      r.status === 200 && r.json.slots.length === 2);
     check('but it is logged rather than passed over in silence',
       /optional diary check skipped/.test(r.logged));
   }
@@ -1193,7 +1203,7 @@ for (const slug of LEARN_SLUGS) {
   ok('breadcrumbs rendered', a.crumbs === 3, String(a.crumbs));
   ok('links to a product page', a.productLinks > 0, String(a.productLinks));
   ok('links to a tool', a.toolLinks > 0, String(a.toolLinks));
-  // The href is the booking page; the OFFER of a 30-minute call is in the
+  // The href is the booking page; the OFFER of a 45-minute call is in the
   // label. Asserting the offer against the href is what made this stale.
   ok('booking CTA points at the calendar', a.ctaHref === site.consult.url, a.ctaHref);
   ok('year-stamped 2026 figures', a.hasYear);
@@ -1281,7 +1291,7 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
   ok('Company column complete', f.company);
   // href = where it goes, label = what it offers. Checking the offer against
   // the href is what left this failing after the calendar page landed.
-  ok('booking CTA', f.ctaHref === site.consult.url && /30-minute/.test(f.ctaLabel),
+  ok('booking CTA', f.ctaHref === site.consult.url && /45-minute/.test(f.ctaLabel),
     `${f.ctaLabel} → ${f.ctaHref}`);
   ok('licensing line', f.license);
   ok('2026 copyright', f.copyright);
@@ -2049,7 +2059,7 @@ if (booking.mode !== 'native') {
       })();
     `);
     await sleep(900);
-    check('the survey banner is withdrawn when the picker falls back to the embed', await evaluate(q, `
+    check('the survey banner is withdrawn when the picker cannot load', await evaluate(q, `
       return document.querySelector('[data-fallback]').hidden === false
           && document.querySelector('[data-carry]').hidden === true;
     `));
@@ -2061,11 +2071,14 @@ if (booking.mode !== 'native') {
   await p.send('Page.reload');
   await sleep(2200);
 
-  check('a failed lookup falls back to the embed rather than an empty box',
+  // 2026-10-23: the embed is unguarded (30-min Mountain slots, no diary check),
+  // so a failed lookup shows a closed calendar and the phone, never the embed.
+  check('a failed lookup closes the calendar and never loads the unguarded embed',
     await evaluate(p, `
       const box = document.querySelector('[data-fallback]');
       const frame = document.querySelector('[data-fallback-frame]');
-      return box.hidden === false && !!frame.getAttribute('src');
+      return box.hidden === false && !frame.getAttribute('src')
+          && /switched off rather than risk a double booking/.test(box.innerText);
     `));
 
   check('the phone number is still on the page when everything else failed',

@@ -119,8 +119,13 @@ const FREE_SLOTS_CALENDAR = '8CcYJMIVgaxb2XBKcKtk';
 /** Arizona, which never observes DST — see src/lib/booking.ts. */
 const DISPLAY_TZ = 'America/Phoenix';
 
-/** Fallback slot length when the calendar object does not state one. */
-const DEFAULT_MINUTES = 30;
+/**
+ * Every 602 appointment is 45 minutes (Brian, 2026-10-23), matching MOM/NM.
+ * Enforced here rather than read off the calendar object: a 30-minute answer
+ * from GoGuruX offered 11:00, 12:30 and 2:30 on Tue 10/27, each of which ran
+ * into the next appointment at 45 minutes.
+ */
+const APPOINTMENT_MINUTES = 45;
 
 /** Both upstreams together must stay well under a visitor's patience. */
 const TIMEOUT_MS = 8_000;
@@ -307,7 +312,7 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
     (async () => {
       const q = new URLSearchParams({
         date: day,
-        duration: String(DEFAULT_MINUTES),
+        duration: String(APPOINTMENT_MINUTES),
         location_slug: LOCATION_SLUG,
         calendar_slug: CALENDAR_SLUG,
         ...(fresh ? { fresh: '1' } : {}),
@@ -339,7 +344,7 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
     return json(502, { success: false, error: 'scheduler unavailable' });
   }
 
-  const minutes = Number(calendarResult.value.calendar?.slot_duration) || DEFAULT_MINUTES;
+  const minutes = APPOINTMENT_MINUTES;
   // ── BOTH feeds must call a time open (2026-10-16) ──────────────────────────
   //  GHL's free-slots is the primary read, but on MOM/NM it was shown to miss
   //  GoGuruX bookings outright (10/22 2:30 and 4:00 listed free while booked
@@ -391,7 +396,8 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
 
   return json(200, {
     success: true,
-    calendar: calendarResult.value.calendar,
+    // The picker takes its booking length from slot_duration, so it says 45 too.
+    calendar: { ...calendarResult.value.calendar, slot_duration: APPOINTMENT_MINUTES },
     slots,
     filtered: { offered: raw.length, withheld: dropped },
   });
