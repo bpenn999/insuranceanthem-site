@@ -356,8 +356,11 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
 
   // The feed says what is free; GoGuruX is asked only for the calendar object,
   // because create-booking needs the id on it. Neither depends on the other.
-  const [slotsResult, calendarResult] = await Promise.allSettled([
-    freeSlots(day, fresh),
+  // ── X (GoGuruX) ONLY, 2026-10-23 ── Brian: "we are on X not GHL… use X
+  //  calendar for 602". GHL's free-slots is no longer read here at all; the
+  //  offered starts are X's own open 45-minute starts (X holds the Google-synced
+  //  appointments), read through gx-availability-cache.
+  const [calendarResult] = await Promise.allSettled([
     (async () => {
       const q = new URLSearchParams({
         date: day,
@@ -383,11 +386,6 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
     })(),
   ]);
 
-  // ⚠️ No feed, no slots. Never a fall-through to the list this route replaced.
-  if (slotsResult.status === 'rejected') {
-    console.error('availability: free-slots failed, withholding —', String(slotsResult.reason));
-    return json(502, { success: false, error: 'availability unavailable' });
-  }
   if (calendarResult.status === 'rejected') {
     console.error('availability: calendar lookup failed —', String(calendarResult.reason));
     return json(502, { success: false, error: 'scheduler unavailable' });
@@ -420,8 +418,11 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
   const gxOpen = new Set<number>(
     (gxMinutes < minutes ? fitFullLength(gxStarts, minutes) : gxStarts).map((iso) => Date.parse(iso)),
   );
-  const raw = fitFullLength(slotsResult.value, minutes)
-    .filter((iso) => gxOpen.has(Date.parse(iso)))
+  const nowMs = Date.now();
+  const raw = [...gxOpen]
+    .sort((a, b) => a - b)
+    .filter((t) => t > nowMs)
+    .map((t) => new Date(t).toISOString())
     .map((iso) => {
       const start = Date.parse(iso);
       if (!Number.isFinite(start)) return null;

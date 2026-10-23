@@ -292,7 +292,6 @@ const weekdays = [
     monthGridFromFeed,
     monthWindow,
     nextBookableDays,
-    parseFreeSlots,
     notesWithSurvey,
     parseDay,
     readSurvey,
@@ -401,7 +400,7 @@ const weekdays = [
       calendarTz: null as string | null,
       duration: cfg.duration,
       /** [1..5] until the calendar tells us otherwise. */
-      bookableWeekdays: [1, 2, 3, 4, 5] as number[],
+      bookableWeekdays: [1, 2, 3, 4, 5, 6] as number[],
       /** Days a lookup has proven empty. Greyed out without a second request. */
       soldOut: new Set<string>(),
       /** "YYYY-M" → the days the free-slots feed lists as open that month. */
@@ -529,8 +528,6 @@ const weekdays = [
        bookable. Now one request to the same free-slots feed /api/availability
        reads from (phone calendar, Arizona days) lists the open days, and only
        those are drawn as available. Until it answers, nothing is. */
-    const FREE_SLOTS = 'https://backend.leadconnectorhq.com/calendars/8CcYJMIVgaxb2XBKcKtk/free-slots';
-    const FEED_TZ = 'America/Phoenix';
     const mKey = (y: number, m: number) => `${y}-${m}`;
     const monthInflight = new Map<string, Promise<void>>();
 
@@ -540,10 +537,16 @@ const weekdays = [
       let p = monthInflight.get(k);
       if (!p) {
         const { startMs, endMs } = monthWindow(y, m, today);
-        p = fetch(`${FREE_SLOTS}?startDate=${startMs}&endDate=${endMs}&timezone=${encodeURIComponent(FEED_TZ)}`)
-          .then((r) => (r.ok ? r.json() : Promise.reject(new Error(`free-slots ${r.status}`))))
-          .then(async (body) => {
-            const days = parseFreeSlots(body);
+        // X only (2026-10-23): every bookable weekday in the window is a
+        // candidate, and /api/availability (X's own open times) decides.
+        p = Promise.resolve()
+          .then(async () => {
+            const days = new Map<string, string[]>();
+            for (let t = startMs; t <= endMs; t += 86_400_000) {
+              const dt = new Date(t);
+              if (!state.bookableWeekdays.includes(dt.getUTCDay())) continue;
+              days.set(dt.toISOString().slice(0, 10), []);
+            }
             await confirmDays(days);
             state.openDays.set(k, days);
           })
