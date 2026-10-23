@@ -80,10 +80,12 @@ const faqs = [
         <p class="lp-hours">{site.hours.display}. Outside those hours, book below and you will get a call back.</p>
       </div>
       <aside class="lp-advisor">
-        <img src="/img/brian-penner-az-400.webp" alt={`${site.agent.name}, ${site.agent.title}`} width="160" height="160" loading="eager" />
-        <div class="lp-advisor__name">{site.agent.name}</div>
-        <div class="lp-advisor__title">{site.agent.title}</div>
-        <div class="lp-advisor__npn">Licensed in Arizona · NPN {site.agent.npn}</div>
+        <div class="lp-advisor__photo"><img src="/img/brian-penner-az-640.webp" alt={`${site.agent.name}, ${site.agent.title}`} width="640" height="800" loading="eager" /></div>
+        <div class="lp-advisor__text">
+          <div class="lp-advisor__name">{site.agent.name}</div>
+          <div class="lp-advisor__title">{site.agent.title}</div>
+          <div class="lp-advisor__npn">Licensed in Arizona<br />NPN {site.agent.npn}</div>
+        </div>
       </aside>
     </div>
   </section>
@@ -214,7 +216,9 @@ const faqs = [
   .lp-proof li::before { content: '✓'; color: var(--red); font-weight: 800; margin-right: 0.55rem; }
   .lp-hours { font-size: 0.92rem; color: var(--ink-muted); margin: 0.8rem 0 0; }
   .lp-advisor { text-align: center; padding: 1.2rem 1rem; border: 1px solid var(--rule); border-radius: 14px; background: #fff; }
-  .lp-advisor img { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; }
+  /* Square headshot crop of the 4:5 portrait, centered on the face (face sits right of the photo's center) */
+  .lp-advisor__photo { position: relative; width: 120px; height: 120px; margin: 0 auto; border-radius: 50%; overflow: hidden; flex-shrink: 0; }
+  .lp-advisor__photo img { position: absolute; width: 153.8%; height: auto; max-width: none; left: -36.5%; top: -1.9%; }
   .lp-advisor__name { font-weight: 800; font-size: 1.2rem; margin-top: 0.7rem; color: var(--ink); }
   .lp-advisor__title { font-size: 0.9rem; color: var(--ink-muted); margin-top: 0.15rem; }
   .lp-advisor__npn { font-size: 0.82rem; color: var(--ink-muted); margin-top: 0.5rem; }
@@ -256,7 +260,7 @@ const faqs = [
   @media (max-width: 820px) {
     .lp-hero__grid, .lp-two { grid-template-columns: 1fr; }
     .lp-advisor { display: flex; align-items: center; gap: 1rem; text-align: left; padding: 0.9rem 1rem; }
-    .lp-advisor img { width: 72px; height: 72px; }
+    .lp-advisor__photo { width: 72px; height: 72px; margin: 0; }
     .lp-advisor__name { margin-top: 0; }
     .lp-word { font-size: 1.2rem; }
     .lp-brand img { width: 42px; height: 42px; }
