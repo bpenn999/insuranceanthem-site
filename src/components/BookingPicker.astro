@@ -426,9 +426,22 @@ const weekdays = [
      * party for the read, and the browser never sees an unfiltered slot.
      */
     async function availability(date: string) {
-      const res = await fetch(`/api/availability?date=${encodeURIComponent(date)}`);
-      if (!res.ok) throw new Error(`availability ${res.status}`);
-      const body = await res.json();
+      // ── retry (2026-10-23) ── Cloudflare answers a burst of these with an HTML
+      //  502 ("Bad gateway") for a third of the month, and a failed check shuts
+      //  the day — Brian saw November with four open days out of nineteen. A
+      //  transient failure is retried before it is believed.
+      let body: any;
+      for (let attempt = 0; ; attempt++) {
+        try {
+          const res = await fetch(`/api/availability?date=${encodeURIComponent(date)}`);
+          if (!res.ok) throw new Error(`availability ${res.status}`);
+          body = await res.json();
+          break;
+        } catch (err) {
+          if (attempt >= 3) throw err;
+          await new Promise((r) => setTimeout(r, 400 * 2 ** attempt + Math.random() * 300));
+        }
+      }
       if (!body?.success) throw new Error(body?.error || 'availability failed');
 
       // The calendar object rides along with every response. Take it once —
@@ -551,19 +564,23 @@ const weekdays = [
      * cannot be confirmed within a few seconds is shown as shut.
      */
     async function confirmDays(days: Map<string, string[]>) {
-      await Promise.all(
-        [...days.keys()].map(async (d) => {
+      // Four at a time, not the whole month at once — the burst is what 502s.
+      const queue = [...days.keys()];
+      const worker = async () => {
+        for (let d = queue.shift(); d; d = queue.shift()) await confirmOne(d);
+      };
+      const confirmOne = async (d: string) => {
           try {
             const slots = state.cache.get(d) ?? (await Promise.race([
               availability(d),
-              new Promise<never>((_, no) => setTimeout(() => no(new Error('timeout')), 12000)),
+              new Promise<never>((_, no) => setTimeout(() => no(new Error('timeout')), 20000)),
             ]));
             if (!slots.length) days.delete(d);
           } catch {
             days.delete(d);
           }
-        }),
-      );
+      };
+      await Promise.all([worker(), worker(), worker(), worker()]);
     }
 
     /** The first day of a loaded month with a bookable time, if any. */

@@ -266,24 +266,73 @@ async function googleBusy(env: Env, day: string): Promise<Interval[]> {
  * asked to answer in, so the keys come back as the same day string that was
  * asked for.
  */
-async function freeSlots(day: string): Promise<string[]> {
-  const startMs = Date.parse(`${day}T00:00:00-07:00`);
-  if (!Number.isFinite(startMs)) throw new Error(`bad day ${day}`);
-  const endMs = startMs + 86_400_000 - 1;
+async function freeSlots(day: string, fresh = false): Promise<string[]> {
+  // ── one feed call per MONTH, cached 60s (2026-10-23) ──────────────────────
+  //  The picker checks every open day of a month at once, and this used to ask
+  //  GHL once per day. GHL answers a burst like that with 429s, the 429 became
+  //  an error, and each failed day was drawn as shut — Brian's November showed
+  //  4 open days out of 19. Now the whole Arizona month is fetched once,
+  //  shared by every day in it (in-isolate + edge cache), and a 429 is retried.
+  //  fresh=1 (the last look before booking) always reads live.
+  const [y, m] = day.split('-').map(Number);
+  if (!y || !m) throw new Error(`bad day ${day}`);
+  const monthKey = `${y}-${String(m).padStart(2, '0')}`;
+  if (!fresh) {
+    const hit = monthMemo.get(monthKey);
+    if (hit && hit.until > Date.now()) return (await hit.days).get(day) ?? [];
+  }
+  const p = fetchMonth(y, m, fresh);
+  if (!fresh) {
+    monthMemo.set(monthKey, { until: Date.now() + 60_000, days: p });
+    p.catch(() => monthMemo.delete(monthKey));
+  }
+  return (await p).get(day) ?? [];
+}
 
+const monthMemo = new Map<string, { until: number; days: Promise<Map<string, string[]>> }>();
+
+async function fetchMonth(y: number, m: number, fresh: boolean): Promise<Map<string, string[]>> {
+  const mm = String(m).padStart(2, '0');
+  const startMs = Date.parse(`${y}-${mm}-01T00:00:00-07:00`);
+  const nextMs = Date.parse(
+    `${m === 12 ? y + 1 : y}-${String(m === 12 ? 1 : m + 1).padStart(2, '0')}-01T00:00:00-07:00`,
+  );
   const q = new URLSearchParams({
     startDate: String(startMs),
-    endDate: String(endMs),
+    endDate: String(nextMs - 1),
     timezone: DISPLAY_TZ,
   });
-  const res = await fetch(
-    `${FREE_SLOTS_API}/calendars/${FREE_SLOTS_CALENDAR}/free-slots?${q}`,
-    { headers: { accept: 'application/json' }, signal: AbortSignal.timeout(TIMEOUT_MS) },
-  );
-  if (!res.ok) throw new Error(`free-slots ${res.status}`);
+  const url = `${FREE_SLOTS_API}/calendars/${FREE_SLOTS_CALENDAR}/free-slots?${q}`;
 
-  const days = parseFreeSlots(await res.json());
-  return days.get(day) ?? [];
+  const cache = (globalThis as any).caches?.default as Cache | undefined;
+  const cacheKey = new Request(`https://cache.602medicare.internal/free-slots/${y}-${mm}`);
+  if (!fresh && cache) {
+    const hit = await cache.match(cacheKey).catch(() => undefined);
+    if (hit) return parseFreeSlots(await hit.json());
+  }
+
+  let body: unknown;
+  for (let attempt = 0; ; attempt++) {
+    const res = await fetch(url, {
+      headers: { accept: 'application/json' },
+      signal: AbortSignal.timeout(TIMEOUT_MS),
+    });
+    if (res.ok) {
+      body = await res.json();
+      break;
+    }
+    if (res.status !== 429 || attempt >= 3) throw new Error(`free-slots ${res.status}`);
+    await new Promise((r) => setTimeout(r, 500 * 2 ** attempt + Math.random() * 400));
+  }
+
+  if (cache) {
+    await cache
+      .put(cacheKey, new Response(JSON.stringify(body), {
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'max-age=60' },
+      }))
+      .catch(() => {});
+  }
+  return parseFreeSlots(body);
 }
 
 /* ── the route ──────────────────────────────────────────────────────────── */
@@ -308,7 +357,7 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
   // The feed says what is free; GoGuruX is asked only for the calendar object,
   // because create-booking needs the id on it. Neither depends on the other.
   const [slotsResult, calendarResult] = await Promise.allSettled([
-    freeSlots(day),
+    freeSlots(day, fresh),
     (async () => {
       const q = new URLSearchParams({
         date: day,
