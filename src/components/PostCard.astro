@@ -1,0 +1,121 @@
+---
+import { fmtPostDate, type Post } from '../data/posts';
+
+/**
+ * One blog card — the blog hub's grid and the home page's latest-three row
+ * both render this, so a post looks the same wherever it is linked from.
+ * `as` sets the title's heading level: h2 on the hub (the cards are the page's
+ * main list), h3 on the home page (they sit under a section h2).
+ */
+interface Props {
+  post: Post;
+  as?: 'h2' | 'h3';
+}
+
+const { post: p, as: Tag = 'h2' } = Astro.props;
+---
+
+<a href={p.href} class="card-link">
+  <article class="card card--hover post">
+    <img class="post__thumb" src={p.image} alt={p.imageAlt}
+         width="1200" height="630" loading="lazy" decoding="async" />
+    <div class="post__inner">
+      <header class="post__head">
+        <span class="post__cat">{p.category}</span>
+        <span class="post__time">{p.readMinutes} min</span>
+      </header>
+      <Tag class="post__title">{p.title}</Tag>
+      <p class="post__excerpt">{p.summary}</p>
+      <footer class="post__foot">
+        <time datetime={p.date.toISOString()}>{fmtPostDate(p.date)}</time>
+        <span class="post__more">
+          Read
+          <svg viewBox="0 0 14 10" aria-hidden="true">
+            <path d="M9 1l4 4-4 4M13 5H1" fill="none" stroke="currentColor"
+                  stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
+        </span>
+      </footer>
+    </div>
+  </article>
+</a>
+
+<style>
+  .card-link { display: flex; width: 100%; }
+
+  .post { display: flex; flex-direction: column; width: 100%; padding: 0; overflow: hidden; }
+  .post__thumb {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1200 / 630;
+    object-fit: cover;
+    border-bottom: 1px solid var(--rule);
+  }
+  .post__inner { display: flex; flex-direction: column; flex: 1; padding: var(--s-5); }
+
+  .post__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    margin-bottom: var(--s-4);
+  }
+  .post__cat {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--red);
+  }
+  .post__time {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    border: 1px solid var(--rule);
+    border-radius: 999px;
+    padding: 0.12rem 0.55rem;
+    flex: none;
+  }
+
+  .post__title {
+    font-size: var(--t-lg);
+    line-height: 1.25;
+    margin-bottom: var(--s-3);
+    transition: color 220ms ease;
+  }
+  .card-link:hover .post__title { color: var(--red); }
+
+  .post__excerpt {
+    font-size: var(--t-sm);
+    color: var(--ink-muted);
+    line-height: 1.6;
+    flex: 1;
+    margin-bottom: var(--s-5);
+  }
+
+  .post__foot {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--s-3);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--rule-soft);
+    font-size: var(--t-xs);
+    color: var(--ink-faint);
+  }
+  .post__more {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-weight: 600;
+    color: var(--red);
+  }
+  .post__more svg { width: 13px; height: 9px; transition: transform 340ms var(--ease); }
+  .card-link:hover .post__more svg { transform: translateX(4px); }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-link:hover .post__more svg { transform: none; }
+  }
+</style>

@@ -9,9 +9,11 @@ import ToolsPreview from '../components/ToolsPreview.astro';
 import Testimonials from '../components/Testimonials.astro';
 import Faq from '../components/Faq.astro';
 import CtaBand from '../components/CtaBand.astro';
+import PostCard from '../components/PostCard.astro';
 import site from '../config/site';
 import { homeFaqs } from '../data/faqs';
 import { serviceAreaRows, serviceAreaListText } from '../data/locations';
+import { posts } from '../data/posts';
 
 const title = `Phoenix-Metro Medicare Help | ${site.name}`;
 const description =
@@ -286,6 +288,31 @@ const faqSchema = {
     </div>
   </section>
 
+  <!-- ── Latest from the blog ────────────────────────────────────────── -->
+  {/* The three newest posts, same cards as /blog/ (Brian, 2026-10-24 — "like
+      MOM"). Gives the daily autoblogger's new posts a link from the home page
+      the day they publish, so Google finds them without waiting on the hub. */}
+  {posts.length > 0 && (
+    <section class="section band--tint" data-caustics="0.3">
+      <div class="wrap">
+        <SectionHead
+          eyebrow="From the blog"
+          title="What's new in Arizona Medicare."
+        />
+        <ul class="latest">
+          {posts.slice(0, 3).map((p, i) => (
+            <li data-rise data-armed style={`--rise-delay:${i * 90}ms`}>
+              <PostCard post={p} as="h3" />
+            </li>
+          ))}
+        </ul>
+        <p class="services__foot" data-rise data-armed>
+          <a href="/blog/" class="link">See all blog posts</a>
+        </p>
+      </div>
+    </section>
+  )}
+
   <CtaBand />
 </BaseLayout>
 
@@ -550,6 +577,16 @@ const faqSchema = {
   }
 
   /* ── shared ───────────────────────────────────────────────────────── */
+  /* ── latest posts ─────────────────────────────────────────────── */
+  .latest {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: var(--s-4);
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 19rem), 1fr));
+  }
+  .latest > li { display: flex; }
+
   .services__foot {
     margin-top: var(--s-6);
     font-size: var(--t-sm);
