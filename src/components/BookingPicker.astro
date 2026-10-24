@@ -539,7 +539,12 @@ const weekdays = [
         const { startMs, endMs } = monthWindow(y, m, today);
         // X only (2026-10-23): every bookable weekday in the window is a
         // candidate, and /api/availability (X's own open times) decides.
-        p = Promise.resolve()
+        // ── ONE request for the month (2026-10-24, Brian: "lightning fast") ──
+        //  /api/month returns every day's open X starts at once (~0.3s), and
+        //  each day lands in state.cache so tapping it is instant. If it
+        //  fails, slowMonth (one /api/availability call per day) still works.
+        const slowMonth = () =>
+          Promise.resolve()
           .then(async () => {
             const days = new Map<string, string[]>();
             for (let t = startMs; t <= endMs; t += 86_400_000) {
@@ -549,6 +554,30 @@ const weekdays = [
             }
             await confirmDays(days);
             state.openDays.set(k, days);
+          });
+        p = fetch(`/api/month?from=${new Date(startMs).toISOString().slice(0, 10)}&days=${Math.floor((endMs - startMs) / 86_400_000) + 1}`)
+          .then(async (res) => {
+            if (!res.ok) throw new Error(`month ${res.status}`);
+            const body = await res.json();
+            if (!body?.success || !body.days) throw new Error('month: unexpected shape');
+            const cal = body.calendar;
+            if (cal && !state.calendarId) {
+              state.calendarId = cal.id ?? null;
+              state.calendarTz = cal.time_zone ?? null;
+              if (cal.slot_duration) state.duration = cal.slot_duration;
+            }
+            if (!state.calendarId) throw new Error('month: no calendar id');
+            const days = new Map<string, string[]>();
+            for (const [d, list] of Object.entries(body.days as Record<string, Slot[]>)) {
+              state.cache.set(d, list);
+              if (list.length) days.set(d, []);
+              else state.soldOut.add(d);
+            }
+            state.openDays.set(k, days);
+          })
+          .catch((err) => {
+            console.info('[booking] month feed unavailable, checking day by day —', String(err));
+            return slowMonth();
           })
           .finally(() => monthInflight.delete(k));
         monthInflight.set(k, p);
