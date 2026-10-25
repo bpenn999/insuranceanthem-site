@@ -702,7 +702,7 @@ const weekdays = [
       // time while the market it serves is on Arizona time, which does not
       // change with the clocks. A bare "9:00 AM" would be ambiguous for exactly
       // the visitor least able to absorb the ambiguity.
-      timeSub.textContent = `${formatDayLong(day)} — all times in Arizona time.`;
+      timeSub.textContent = `${formatDayLong(day)} — all times in Arizona time (Mountain time shown underneath).`;
 
       if (!slots.length) {
         slotGrid.replaceChildren();
@@ -724,6 +724,16 @@ const weekdays = [
           const time = document.createElement('span');
           time.className = 'bk__slot-time';
           time.textContent = formatSlotTime(s.startUtc, cfg.tz);
+          // Brian's own time beside it (2026-10-24): he reads this calendar in
+          // Mountain time and took "5:00 PM" (Arizona) for his booked 5:00 PM
+          // Mountain. Shown only while the two clocks differ (Mountain DST).
+          const mountain = formatSlotTime(s.startUtc, 'America/Denver');
+          if (mountain !== time.textContent) {
+            const alt = document.createElement('small');
+            alt.className = 'bk__slot-alt';
+            alt.textContent = `${mountain} Mountain`;
+            time.append(alt);
+          }
 
           // The tick lives in the DOM from the start and is revealed by CSS on
           // the selected state, so choosing a time does not reflow the grid.
@@ -1132,6 +1142,13 @@ const weekdays = [
 </script>
 
 <style>
+
+  .bk :global(.bk__slot-alt) {
+    display: block;
+    font-size: 0.75em;
+    font-weight: 500;
+    opacity: 0.75;
+  }
   /* Every size in here is deliberate and most of them are floors, not
      preferences: 18px of type and a 48px target are the brief. Do not "tidy"
      these down to the site's usual --t-sm.
