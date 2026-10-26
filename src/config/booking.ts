@@ -92,14 +92,14 @@ export const booking = {
    * two agree. Brian chose to match the copy to the calendar rather than shorten
    * the calendar. If the GoGuruX calendar is ever changed to another length,
    * change `site.consult.minutes`, `.label` and `.phrase` with it — and note that
-   * scripts/audit.mjs and scripts/e2e.mjs both assert the string "45-minute".
+   * scripts/audit.mjs and scripts/e2e.mjs both assert the string "1-hour".
    *
    * CHANGED 2026-10-23 (Brian: "make appointment 45 minutes long"): calls are
    * 45 minutes, like MOM/NM. The GoGuruX "602 Medicare" calendar's slot_duration
    * was set to 45 the same day, and /api/availability enforces 45 regardless of
    * what the calendar object says.
    */
-  defaultDuration: 45,
+  defaultDuration: 60,
 
   /**
    * How many bookable days to look up in the background on load, so a

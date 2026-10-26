@@ -13,8 +13,8 @@
  */
 const GX_CACHE = 'https://gx-availability-cache.brianinsuranceservices.workers.dev';
 const CALENDAR_SLUG = '602-medicare';
-/** Every 602 appointment is 45 minutes — see functions/api/availability.ts. */
-const APPOINTMENT_MINUTES = 45;
+/** Every 602 appointment is 60 minutes (Brian, 2026-10-26; was 45 from 10/23) — see functions/api/availability.ts. */
+const APPOINTMENT_MINUTES = 60;
 
 const json = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), {
@@ -39,7 +39,7 @@ export const onRequest = async ({ request }: { request: Request }): Promise<Resp
     if (!body?.days || !body.calendar) throw new Error('month: unexpected shape');
     // X answers for its own length; a shorter answer would sell starts that run
     // into the next call, so it is refused rather than trusted.
-    if ((Number(body.calendar.slot_duration) || 0) < APPOINTMENT_MINUTES) throw new Error('calendar shorter than 45');
+    if ((Number(body.calendar.slot_duration) || 0) < APPOINTMENT_MINUTES) throw new Error('calendar shorter than 60');
     const now = Date.now();
     const out: Record<string, Array<{ startUtc: string; endUtc: string; available: true }>> = {};
     for (const [d, list] of Object.entries(body.days)) {

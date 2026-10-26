@@ -1291,7 +1291,7 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
   ok('Company column complete', f.company);
   // href = where it goes, label = what it offers. Checking the offer against
   // the href is what left this failing after the calendar page landed.
-  ok('booking CTA', f.ctaHref === site.consult.url && /45-minute/.test(f.ctaLabel),
+  ok('booking CTA', f.ctaHref === site.consult.url && /1-hour/.test(f.ctaLabel),
     `${f.ctaLabel} → ${f.ctaHref}`);
   ok('licensing line', f.license);
   ok('2026 copyright', f.copyright);

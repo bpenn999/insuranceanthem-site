@@ -120,12 +120,12 @@ const FREE_SLOTS_CALENDAR = '8CcYJMIVgaxb2XBKcKtk';
 const DISPLAY_TZ = 'America/Phoenix';
 
 /**
- * Every 602 appointment is 45 minutes (Brian, 2026-10-23), matching MOM/NM.
+ * Every 602 appointment is 60 minutes (Brian, 2026-10-26; was 45 from 10/23) (Brian, 2026-10-23), matching MOM/NM.
  * Enforced here rather than read off the calendar object: a 30-minute answer
  * from GoGuruX offered 11:00, 12:30 and 2:30 on Tue 10/27, each of which ran
  * into the next appointment at 45 minutes.
  */
-const APPOINTMENT_MINUTES = 45;
+const APPOINTMENT_MINUTES = 60;
 
 /** Both upstreams together must stay well under a visitor's patience. */
 const TIMEOUT_MS = 8_000;
@@ -458,7 +458,7 @@ export const onRequest = async ({ request, env }: Context): Promise<Response> =>
 
   return json(200, {
     success: true,
-    // The picker takes its booking length from slot_duration, so it says 45 too.
+    // The picker takes its booking length from slot_duration, so it says 60 too.
     calendar: { ...calendarResult.value.calendar, slot_duration: APPOINTMENT_MINUTES },
     slots,
     filtered: { offered: raw.length, withheld: dropped },
