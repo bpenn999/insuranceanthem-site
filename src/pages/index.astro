@@ -367,7 +367,7 @@ const faqSchema = {
   .hero__video { opacity: 0; transition: opacity 1.2s ease; }
   .hero__video.is-playing { opacity: 1; }
   .hero__pause {
-    position: absolute; z-index: 2; right: 18px; bottom: 16px;
+    position: absolute; z-index: 2; left: 18px; bottom: 16px; /* left: the help launcher owns bottom-right */
     display: inline-flex; align-items: center; gap: .4rem;
     background: rgba(1,13,60,.55); color: #fff; border: 1px solid rgba(255,255,255,.35);
     border-radius: 999px; padding: .45rem .9rem; font: 600 .8rem/1 var(--font-body); cursor: pointer;
