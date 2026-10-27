@@ -1,0 +1,50 @@
+---
+/**
+ * Cookie notice — a small card, easy to dismiss (Brian 10/27: "should have
+ * the pop up … but don't make it overwhelming to click out of").
+ *
+ * Bottom-right corner on desktop (the Questions? bubble steps aside while it
+ * is open); a slim strip above the call bar on phones. Same localStorage key
+ * as the paid landing page (ia_ads_consent = accept | decline), so one choice
+ * covers both, and /book/ only reports a booking to Google Ads after "accept".
+ * Nothing on the regular pages loads a tracker either way; the choice decides
+ * whether the ads tag may run where it exists.
+ */
+---
+<div class="ck" data-ck hidden role="region" aria-label="Cookie choice">
+  <p>We use cookies to see which ads help people find us. Nothing tracks you unless you allow it. <a href="/privacy/">Privacy</a></p>
+  <div class="ck__btns">
+    <button type="button" class="ck__yes" data-ck-yes>Allow</button>
+    <button type="button" class="ck__no" data-ck-no>No thanks</button>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var KEY = 'ia_ads_consent', el = document.querySelector('[data-ck]');
+    var v = null; try { v = localStorage.getItem(KEY); } catch (e) {}
+    if (v === 'accept' || v === 'decline' || !el) return;
+    el.hidden = false; document.documentElement.classList.add('ck-open');
+    function pick(x) { try { localStorage.setItem(KEY, x); } catch (e) {} el.hidden = true; document.documentElement.classList.remove('ck-open'); }
+    el.querySelector('[data-ck-yes]').addEventListener('click', function () { pick('accept'); });
+    el.querySelector('[data-ck-no]').addEventListener('click', function () { pick('decline'); });
+  })();
+</script>
+
+<style>
+  .ck { position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 85; width: min(330px, calc(100vw - 2rem)); background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; box-shadow: var(--shadow-lg); padding: 0.9rem 1rem; font-family: var(--font-body); }
+  .ck[hidden] { display: none; }
+  .ck p { margin: 0 0 0.7rem; font-size: 0.84rem; line-height: 1.45; color: var(--ink-muted); }
+  .ck p a { color: inherit; }
+  .ck__btns { display: flex; gap: 0.5rem; }
+  .ck button { font: 600 0.86rem var(--font-body); border-radius: 999px; padding: 0.45rem 1rem; min-height: 36px; cursor: pointer; }
+  .ck__yes { background: var(--navy); color: #fff; border: 1px solid var(--navy); }
+  .ck__no { background: #fff; color: var(--navy); border: 1px solid var(--rule); }
+  :global(html.ck-open .help) { display: none !important; }
+  @media (max-width: 899px) {
+    .ck { left: 0.6rem; right: 0.6rem; width: auto; bottom: calc(4.9rem + env(safe-area-inset-bottom, 0px)); display: flex; align-items: center; gap: 0.6rem; padding: 0.6rem 0.7rem; }
+    .ck p { flex: 1; margin: 0; font-size: 0.78rem; line-height: 1.35; }
+    .ck__btns { flex-direction: column; gap: 0.35rem; }
+    .ck button { min-height: 32px; padding: 0.3rem 0.8rem; font-size: 0.8rem; }
+  }
+</style>

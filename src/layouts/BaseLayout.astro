@@ -7,6 +7,8 @@ import Footer from '../components/Footer.astro';
 import MobileCallBar from '../components/MobileCallBar.astro';
 import HelpLauncher from '../components/HelpLauncher.astro';
 import Attribution from '../components/Attribution.astro';
+import Consent from '../components/Consent.astro';
+import Accessibility from '../components/Accessibility.astro';
 
 interface Props {
   title: string;
@@ -87,6 +89,10 @@ const {
 
     <!-- Desktop-only Book / Call / Text bubble (≥1000px); the call bar covers phones. -->
     {!landing && <HelpLauncher />}
+
+    <!-- Small cookie card + accessibility tools (2026-10-27). The landing page keeps its own consent bar. -->
+    {!landing && <Consent />}
+    <Accessibility />
 
     <script>
       import '../scripts/motion.ts';

@@ -1,0 +1,71 @@
+---
+/**
+ * Accessibility tools — our own, no third-party overlay (Brian 10/27: MOM and
+ * NM have one, 602 should too). Bigger text, high contrast, readable font,
+ * highlighted links, pause motion; saved in localStorage. The button is small
+ * and sits bottom-left (the Questions? bubble owns bottom-right on desktop,
+ * the call bar owns the bottom edge on phones). Rules live in the style block
+ * below so the whole feature is one file.
+ */
+---
+<button class="ax-btn" type="button" data-ax-btn aria-expanded="false" aria-controls="ax-panel" aria-label="Accessibility tools">
+  <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="4.5" r="1.8"/><path d="M4.5 8.5 12 10l7.5-1.5M12 10v4.5M12 14.5l-3.2 6.5M12 14.5l3.2 6.5"/></svg>
+</button>
+<div class="ax-panel" id="ax-panel" role="dialog" aria-label="Accessibility tools" hidden>
+  <div class="ax-head"><strong>Accessibility tools</strong><button type="button" class="ax-x" data-ax-close aria-label="Close">×</button></div>
+  <div class="ax-grid">
+    <button type="button" data-ax="text" aria-pressed="false">Bigger text</button>
+    <button type="button" data-ax="contrast" aria-pressed="false">High contrast</button>
+    <button type="button" data-ax="readable" aria-pressed="false">Readable font</button>
+    <button type="button" data-ax="links" aria-pressed="false">Highlight links</button>
+    <button type="button" data-ax="noanim" aria-pressed="false">Pause motion</button>
+    <button type="button" data-ax-reset>Reset</button>
+  </div>
+</div>
+
+<script is:inline>
+  (function () {
+    var root = document.documentElement, KEY = 'a11y-prefs', p = {};
+    try { p = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) {}
+    var btn = document.querySelector('[data-ax-btn]'), panel = document.getElementById('ax-panel');
+    function apply() {
+      root.classList.remove('ax-text-1', 'ax-text-2', 'ax-text-3');
+      if (p.text) root.classList.add('ax-text-' + p.text);
+      ['contrast', 'readable', 'links', 'noanim'].forEach(function (m) { root.classList.toggle('ax-' + m, !!p[m]); });
+      panel.querySelectorAll('[data-ax]').forEach(function (b) { var m = b.getAttribute('data-ax'); b.setAttribute('aria-pressed', String(m === 'text' ? !!p.text : !!p[m])); });
+    }
+    function save() { try { localStorage.setItem(KEY, JSON.stringify(p)); } catch (e) {} apply(); }
+    function open(o) { panel.hidden = !o; btn.setAttribute('aria-expanded', String(o)); }
+    btn.addEventListener('click', function () { open(panel.hidden); });
+    panel.querySelector('[data-ax-close]').addEventListener('click', function () { open(false); btn.focus(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !panel.hidden) { open(false); btn.focus(); } });
+    panel.querySelectorAll('[data-ax]').forEach(function (b) { b.addEventListener('click', function () {
+      var m = b.getAttribute('data-ax'); if (m === 'text') { p.text = ((p.text || 0) + 1) % 4; } else { p[m] = !p[m]; } save(); }); });
+    panel.querySelector('[data-ax-reset]').addEventListener('click', function () { p = {}; save(); });
+    apply();
+  })();
+</script>
+
+<style is:global>
+  .ax-btn { position: fixed; left: 1rem; bottom: 1.25rem; z-index: 84; width: 46px; height: 46px; border-radius: 50%; border: 0; background: var(--navy); color: #fff; display: grid; place-items: center; cursor: pointer; box-shadow: var(--shadow-md); }
+  .ax-btn:focus-visible { outline: 3px solid var(--red); outline-offset: 2px; }
+  .ax-panel { position: fixed; left: 1rem; bottom: 4.6rem; z-index: 84; width: 270px; max-width: calc(100vw - 2rem); background: var(--surface); border: 1px solid var(--rule); border-radius: 12px; box-shadow: var(--shadow-lg); padding: 0.8rem; font-family: var(--font-body); }
+  .ax-panel[hidden] { display: none; }
+  .ax-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; color: var(--ink); font-size: 0.95rem; }
+  .ax-x { border: 0; background: none; font-size: 1.4rem; line-height: 1; cursor: pointer; color: var(--ink-muted); padding: 0 0.25rem; }
+  .ax-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.4rem; }
+  .ax-grid button { font: 600 0.8rem var(--font-body); padding: 0.55rem 0.4rem; border: 1px solid var(--rule); border-radius: 8px; background: #fff; color: var(--ink); cursor: pointer; }
+  .ax-grid button[aria-pressed="true"] { border-color: var(--navy); background: var(--navy-wash); }
+  @media (max-width: 899px) {
+    .ax-btn { bottom: calc(5rem + env(safe-area-inset-bottom, 0px)); width: 42px; height: 42px; }
+    .ax-panel { bottom: calc(8.2rem + env(safe-area-inset-bottom, 0px)); }
+    html.ck-open .ax-btn { display: none; }
+  }
+  html.ax-text-1 body { font-size: 113%; } html.ax-text-2 body { font-size: 127%; } html.ax-text-3 body { font-size: 142%; }
+  html.ax-contrast body { background: #fff; }
+  html.ax-contrast :is(p, li, h1, h2, h3, span, a, summary) { color: #000 !important; }
+  html.ax-contrast .caustics { display: none; }
+  html.ax-readable body, html.ax-readable :is(h1, h2, h3, h4) { font-family: Verdana, Tahoma, sans-serif !important; letter-spacing: 0.01em; }
+  html.ax-links a { text-decoration: underline !important; text-underline-offset: 3px; }
+  html.ax-noanim *, html.ax-noanim *::before, html.ax-noanim *::after { animation: none !important; transition: none !important; }
+</style>
