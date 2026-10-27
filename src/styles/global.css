@@ -131,7 +131,7 @@ button { background: none; border: 0; cursor: pointer; }
 /* No f-ligatures anywhere (Brian 10/27: "the f's are off again"). Fraunces joins
    ff/fi/ffi into one glyph, and with the tight heading tracking "office" and
    "differences" read as a smudge. Set on html so every Fraunces use inherits it. */
-html { font-variant-ligatures: no-common-ligatures; }
+html { font-variant-ligatures: no-common-ligatures; font-feature-settings: "liga" 0, "clig" 0, "dlig" 0; }
 
 h1, h2, h3, h4 {
   font-family: var(--font-display);
