@@ -72,7 +72,7 @@ const UNICODE_LATIN =
   'U+2212, U+2215, U+FEFF, U+FFFD';
 
 const fontFaceCss = `
-@font-face{font-family:'Fraunces';font-style:normal;font-weight:300 600;font-display:swap;src:url('${fonts.fraunces}') format('woff2');unicode-range:${UNICODE_LATIN};}
+@font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url('${fonts.display}') format('woff2');unicode-range:${UNICODE_LATIN};}
 @font-face{font-family:'Inter';font-style:normal;font-weight:400 600;font-display:swap;src:url('${fonts.inter}') format('woff2');unicode-range:${UNICODE_LATIN};}
 `.trim();
 ---
@@ -138,7 +138,7 @@ const fontFaceCss = `
 <link rel="sitemap" href="/sitemap-index.xml" />
 
 <!--
-  Fonts: Fraunces (display) + Inter (body), both variable, latin subset, SELF
+  Fonts: Source Serif 4 (display, replaced Fraunces 10/28) + Inter (body), both variable, latin subset, SELF
   HOSTED from /fonts/.
 
   They used to come from Google Fonts, which cost two extra origins on the
@@ -164,7 +164,7 @@ const fontFaceCss = `
   for the largest text on the screen. Preload both, and keep them small; that is
   what scripts/build-fonts.py is for.
 -->
-<link rel="preload" as="font" type="font/woff2" href={fonts.fraunces} crossorigin />
+<link rel="preload" as="font" type="font/woff2" href={fonts.display} crossorigin />
 <link rel="preload" as="font" type="font/woff2" href={fonts.inter} crossorigin />
 {/* Home-page hero photo is the LCP element: preload the exact candidate the
     <picture> in index.astro will pick, phone and desktop each scoped by the

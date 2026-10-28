@@ -45,7 +45,7 @@
   --red-lift:   #FF5A5F;  /* red ON navy: footer hovers, eyebrows, stars */
 
   /* --- Type -------------------------------------------------------------- */
-  --font-display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+  --font-display: 'Source Serif 4', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
   --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
 
   /* Fluid scale — mobile first, clamps to desktop */
@@ -128,9 +128,10 @@ button { background: none; border: 0; cursor: pointer; }
 /* --------------------------------------------------------------------------
    Type
    -------------------------------------------------------------------------- */
-/* No f-ligatures anywhere (Brian 10/27: "the f's are off again"). Fraunces joins
+/* No f-ligatures anywhere (Brian 10/27: "the f's are off again"). Fraunces joined
    ff/fi/ffi into one glyph, and with the tight heading tracking "office" and
-   "differences" read as a smudge. Set on html so every Fraunces use inherits it. */
+   "differences" read as a smudge. 10/28 Fraunces was replaced by Source Serif 4
+   (its f still hooked into the next letter); kept as a guard. */
 html { font-variant-ligatures: no-common-ligatures; font-feature-settings: "liga" 0, "clig" 0, "dlig" 0; }
 
 h1, h2, h3, h4 {
