@@ -513,6 +513,8 @@ for (const f of htmls) {
     ['scottsdale-az', 'Scottsdale'],
     ['carefree-az', 'Carefree'],
     ['new-river-az', 'New River'],
+    ['sun-city-az', 'Sun City'],
+    ['sun-city-west-az', 'Sun City West'],
   ];
   console.log(`Service-area cities expected: ${CITIES.length}`);
 

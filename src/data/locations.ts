@@ -94,6 +94,31 @@ export interface Location {
    */
   sources: { label: string; url: string }[];
   primary?: boolean;
+  /**
+   * Optional <title> override (≤60 chars, asserted below). Defaults to
+   * "Medicare Help in {label}". Used where the search people actually type is
+   * "Medicare agent {place}" rather than the generic wording.
+   */
+  seoTitle?: string;
+  /**
+   * Optional booking topic. 't65' sends the hero's booking button to
+   * `/book/?topic=t65`, which relabels the picker and tags the booking as a
+   * Turning-65 planning call. Set it only where the copy makes the T65 case.
+   */
+  bookTopic?: 't65';
+  /**
+   * Non-government pages behind LOCAL facts on this page — a hospital's own
+   * page for its address and programs, a community association's own site for
+   * its rec centers. Kept separate from `sources`, which stay .gov/.mil-only
+   * because they back Medicare RULES. Rendered under their own heading so a
+   * reader can tell the two kinds of citation apart. https only.
+   */
+  localSources?: { label: string; url: string }[];
+  /**
+   * Neighboring pages to point at instead of restating them. Rendered as a
+   * short "next door" list under the local copy. Slugs must exist (asserted).
+   */
+  seeAlso?: { slug: string; note: string }[];
 }
 
 export const locations: Location[] = [
@@ -404,6 +429,135 @@ export const locations: Location[] = [
     reviewed: '2026-08-18',
     proximity: 'Immediately north and west of Anthem — often the same ZIP, always the same advisor.',
   },
+  /*
+   * ── Retirement communities (added 2026-11-04) ─────────────────────────────
+   * Every Maricopa ZIP gets the same CMS plan list, so these two pages are
+   * built on what is NOT shared: the hospital each community sits around, its
+   * Census age and household profile, and — for Sun City West — the federal
+   * six-month rule that collides with a long summer away. Every figure below
+   * was read off the cited page on 2026-11-04 (Census QuickFacts, Banner's own
+   * hospital pages, the two recreation-center associations). Peoria and
+   * Glendale are linked via `seeAlso` rather than restated.
+   */
+  {
+    slug: 'sun-city-az',
+    city: 'Sun City',
+    label: 'Sun City, AZ',
+    zips: ['85351', '85373'],
+    county: 'Maricopa County',
+    seoTitle: 'Medicare Agent in Sun City, AZ 85351',
+    bookTopic: 't65',
+    summary:
+      'Medicare help for Sun City, AZ — plans checked against Banner Boswell and the specialists who practice around it, with phone reviews a son or daughter can join from anywhere.',
+    seoDescription:
+      'Medicare agent for Sun City, AZ 85351 and 85373 — Advantage, Supplement and Part D checked against Banner Boswell and your own doctors. Phone or in person.',
+    local: [
+      'Sun City is not technically a city. The Census Bureau counts it as an unincorporated census-designated place: 39,931 people at the 2020 count, and 74.7% of residents aged 65 or older. The Recreation Centers of Sun City, which calls itself the original 55+ adult community, reports more than 33,000 members, eight recreation centers, eight golf courses and 124 chartered clubs. With no city hall, those rec centers and clubs are where Sun City trades information about everything, Medicare plans included.',
+      'The medical anchor is Banner Boswell Medical Center at 10401 W. Thunderbird Blvd., on the same boulevard as the rec-center association\'s own office. Banner says Boswell has served the northwest Valley since 1970 and describes it as a destination medical center specializing in the diseases of the elderly. It lists a heart center, Joint Commission certification as a primary stroke center, and a deep brain stimulation program for Parkinson\'s disease and essential tremor that it says is one of three in the Valley. A large share of Sun City\'s cardiology, neurology and orthopedic care happens on or near that campus, so Boswell, and the physicians who work out of it, is the first test any plan here has to pass.',
+      'That is where the HMO-versus-PPO choice stops being abstract. Medicare.gov describes an HMO as generally requiring you to use the plan\'s network except for emergencies, urgent care and out-of-area dialysis; most HMOs also have you pick a primary care doctor and get a referral before seeing a specialist. A PPO lets you go out of network for covered services and pay more for it. For a Sun City resident whose cardiologist and neurologist both admit at Boswell, the useful question is narrow: is each of those named physicians in this plan\'s network for the coming year, and in an HMO, will the primary care doctor you choose refer into that group? If the answer for either specialist is no, a PPO, or Original Medicare with a Supplement, earns a serious look whatever the premium difference.',
+      'The household numbers say something too. Census estimates put Sun City at 22,718 households averaging 1.63 people, which means a great many single-person homes, and a lot of Medicare help here comes from a son or daughter in another state. 1-800-MEDICARE will not discuss your record with that person until you authorize it in writing on Form CMS-10106, which can be filed through your Medicare.gov account. I am glad to run a review by phone with your family member on the line from wherever they live; it tends to settle questions that would otherwise take three separate calls.',
+      'Census also counts 6,029 veterans in Sun City. VA care and Medicare do not coordinate the way two insurance plans do: the VA says plainly that it does not bill Medicare, and it still encourages enrolled veterans to sign up for Medicare so they are covered at non-VA hospitals and doctors. A veteran who sees the VA for some things and a Boswell specialist for others needs Medicare built for the non-VA half, which is a different design problem from the TRICARE For Life households the Glendale page covers.',
+      'Not everyone here is retired yet. A quarter of Sun City residents are under 65, many of them people who bought in at 55 and will reach Medicare at an address where the neighbors have had it for twenty years. Your Initial Enrollment Period is seven months long, centered on your 65th birthday month, and your Medigap Open Enrollment Period is the six months starting when Part B begins at 65 or older. It is the one stretch when a Supplement company cannot turn you down or charge more for your health history. A neighbor\'s plan is a reasonable place to start that conversation and a poor place to finish it.',
+    ],
+    faqs: [
+      {
+        q: 'Do Medicare Advantage plans in Sun City include Banner Boswell?',
+        a: 'Some do and some do not, and the answer can change from one plan year to the next. Every plan sold in Sun City is drawn from the same Maricopa County list, so the question is never which plans exist here; it is which of them contract with Boswell and with the specific physicians you see there. I check the hospital and each of your doctors by name for the coming year before suggesting anything, and you can confirm them yourself in the plan\'s directory or by calling the plan.',
+      },
+      {
+        q: 'My daughter helps with my Medicare from out of state. Can she join the appointment?',
+        a: 'Yes, and it usually helps. Sun City reviews are usually done by phone, so she can be on the line from wherever she is. Separately, if you want her to be able to call 1-800-MEDICARE about your record on her own, you need to authorize that in writing with Form CMS-10106, either online through your Medicare.gov account or by mail. It takes a few minutes and saves a lot of frustration later.',
+      },
+      {
+        q: 'I get some care at the VA. Do I still need Medicare Part B?',
+        a: 'The VA itself recommends signing up for Medicare when you are eligible. It does not bill Medicare, so Medicare is what covers you at a non-VA hospital such as Boswell, and if you skip Part B and need it later you can face a late-enrollment penalty for as long as you have Part B. Which Medicare setup fits depends on how much of your care is VA and how much is local, and that split is what we would go through on a call.',
+      },
+      {
+        q: 'I moved to Sun City at 58 and turn 65 next year. When should I start?',
+        a: 'About three months before your birthday month, when your seven-month Initial Enrollment Period opens. If a Medicare Supplement is a possibility, the six months after your Part B start date matter most, because that is your one-time Medigap Open Enrollment Period, when insurers cannot use your health history against you. A planning call before that window opens is the most useful hour you can spend on this; the booking link on this page is set up for exactly that conversation.',
+      },
+      {
+        q: 'Is Medicare in Sun City any different from Peoria or Glendale?',
+        a: 'No. Medicare plan availability is set by county, and Sun City, Peoria and Glendale all sit inside Maricopa County, so the plan list is the same. What differs from one household to the next is which doctors you use, which pharmacy you fill at and how much of the year you are actually here. Those are the details a review in 85351 or 85373 turns on.',
+      },
+    ],
+    sources: [
+      { label: 'Census QuickFacts: Sun City and Sun City West, Arizona', url: 'https://www.census.gov/quickfacts/fact/table/suncitycdparizona,suncitywestcdparizona/PST045224' },
+      { label: 'How Medicare HMO plans use networks and referrals', url: 'https://www.medicare.gov/health-drug-plans/health-plans/your-health-plan-options/HMO' },
+      { label: 'Form CMS-10106: letting 1-800-MEDICARE talk to a family member', url: 'https://www.cms.gov/cms10106-authorization-disclose-personal-health-information' },
+      { label: 'VA health care and Medicare or other insurance', url: 'https://www.va.gov/resources/va-health-care-and-other-insurance/' },
+      { label: 'Your Medigap Open Enrollment Period', url: 'https://www.medicare.gov/health-drug-plans/medigap/ready-to-buy' },
+    ],
+    localSources: [
+      { label: 'Banner Boswell Medical Center (Banner Health)', url: 'https://www.bannerhealth.com/locations/sun-city/banner-boswell-medical-center' },
+      { label: 'Recreation Centers of Sun City', url: 'https://www.suncityaz.org/' },
+    ],
+    seeAlso: [
+      { slug: 'peoria-az', note: 'Peoria wraps around Sun City on three sides; its page covers Westbrook Village and the north Peoria corridor.' },
+      { slug: 'glendale-az', note: 'Just south and east, including the Arrowhead hospitals and TRICARE For Life for Luke AFB retirees.' },
+      { slug: 'sun-city-west-az', note: 'Sun City West, built around Banner Del E. Webb and a more seasonal population.' },
+    ],
+    reviewed: '2026-11-04',
+    proximity:
+      'About 29 miles by road from the Anthem office, so most Sun City reviews happen by phone. In person works too, in Anthem or by arrangement.',
+  },
+  {
+    slug: 'sun-city-west-az',
+    city: 'Sun City West',
+    label: 'Sun City West, AZ',
+    zips: ['85375'],
+    county: 'Maricopa County',
+    seoTitle: 'Medicare Agent in Sun City West, AZ 85375',
+    summary:
+      'Medicare help for Sun City West: plans weighed against Banner Del E. Webb, and against the months of the year you spend somewhere else.',
+    seoDescription:
+      'Medicare agent for Sun City West, AZ 85375. Advantage vs. Supplement for part-year residents, checked against Banner Del E. Webb and your doctors.',
+    local: [
+      'Sun City West is younger than Sun City as a place and older as a population. Census QuickFacts puts 85.0% of residents at 65 or older, against 74.7% in Sun City a few miles east, out of 25,806 people at the 2020 count. The community\'s own history says the Del Webb Corporation built its 16,900 homes between 1978 and 1997, and the Recreation Centers of Sun City West, which describes the community as for active adults 55 and older, runs four recreation centers (Beardsley, Kuentz, Palm Ridge and R.H. Johnson) and seven golf courses.',
+      'Banner Del E. Webb Medical Center sits inside the community on W. Meeker Blvd. Banner says it opened in 1988, has 404 licensed beds with room to add 92 more, serves as a BannerAir helicopter base, and lists cardiac care, robotic surgery, orthopedics, women\'s health and stroke care among its programs. For most households here it is simply the hospital; Banner Boswell in Sun City is about seven miles southeast. So the first thing to settle about any plan is how it treats Del Webb and the physicians who admit patients there.',
+      'The bigger Sun City West question is the calendar. A lot of households here spend a long summer somewhere cooler, and Medicare Advantage has a hard edge for that. Under the federal rule at 42 CFR 422.74, a Medicare Advantage plan must disenroll a member who has been outside its service area for more than six months. The exception is a plan with a visitor/traveler benefit, which may let you stay enrolled up to the start of the 13th month. Inside those six months, an HMO covers you away from Maricopa County only for emergencies, urgent care and out-of-area dialysis, so a routine specialist visit up north is on you.',
+      'That is why Original Medicare with a Medicare Supplement fits so many part-year residents here. Original Medicare lets you use any doctor or hospital that takes Medicare anywhere in the U.S., and a Supplement pays its share of the same claim without a network or a service area. The catch is timing. After your one-time Medigap Open Enrollment Period, an insurer can generally use medical underwriting, so moving from an Advantage plan to a Supplement at 74 is a health-questions conversation, not a form. Medicare does give a 12-month trial right to people who try an Advantage plan for the first time, and that window is worth knowing about before it closes.',
+      'The Census income figures run higher here than next door. Per-capita income in Sun City West is nearly 30% above Sun City\'s, and 34.7% of adults hold a bachelor\'s degree or more, against 26.0% in Sun City. In practice that shows up as a different set of questions: whether the Part B and Part D income surcharges (IRMAA) will apply after a large IRA withdrawal or a home sale, whether a Supplement\'s higher premium is the right trade for predictable costs, and how Medicare fits a broader retirement-income plan. I handle the Medicare side, the practice has a retirement-income and Social Security division for that conversation, and the tax questions belong with your tax advisor.',
+      'Sun City West is about 31 miles by road from the Anthem office, at the far west end of the area I cover, so reviews here are usually by phone. That suits part-year residents anyway: a fall review can happen from a cabin in Wisconsin as easily as from a kitchen in 85375. The Medicare Open Enrollment Period runs October 15 to December 7, and changes made then start January 1. If you are already in an Advantage plan, there is a second window from January 1 to March 31 to switch plans or go back to Original Medicare.',
+    ],
+    faqs: [
+      {
+        q: 'I spend summers out of state. Can my Medicare Advantage plan drop me?',
+        a: 'Yes, if you are gone long enough. Federal rules require a Medicare Advantage plan to disenroll a member who has been out of its service area for more than six months, unless the plan offers a visitor/traveler benefit that extends the limit. Even inside six months, an HMO generally covers you out of the area only for emergencies, urgent care and out-of-area dialysis. If your summers run long, ask the plan in writing how it treats your dates, or look at Original Medicare with a Supplement, which has no service area.',
+      },
+      {
+        q: 'Does my plan cover Banner Del E. Webb Medical Center?',
+        a: 'That depends on the plan and the year. Every plan offered in 85375 comes from the same Maricopa County list, but which ones contract with Del Webb, and with the physicians who admit there, varies and can change each January. I check the hospital and each of your doctors by name before recommending anything, and the Open Enrollment Period from October 15 to December 7 is the time to do it.',
+      },
+      {
+        q: 'Can I switch from Medicare Advantage to a Supplement at my age?',
+        a: 'Often, but it may not be automatic. Outside your one-time Medigap Open Enrollment Period, a Supplement insurer can generally ask health questions and decline or price based on the answers. There are exceptions: if you joined an Advantage plan for the first time within the last 12 months, Medicare gives you a trial right to go back. Before dropping an Advantage plan, find out whether a Supplement will actually accept you, because the order you do things in matters.',
+      },
+      {
+        q: 'Do you meet with clients in Sun City West?',
+        a: 'Sun City West reviews are usually done by phone, which works whether you are at home on Meeker Boulevard or away for the summer. The office is in Anthem, about 31 miles by road, and in-person meetings are by arrangement. The comparison itself is the same either way: your doctors, your prescriptions, your pharmacy and how many months a year you are actually here.',
+      },
+    ],
+    sources: [
+      { label: '42 CFR 422.74: Medicare Advantage disenrollment, including the six-month absence rule', url: 'https://www.ecfr.gov/current/title-42/chapter-IV/subchapter-B/part-422/subpart-B/section-422.74' },
+      { label: 'Compare Original Medicare and Medicare Advantage', url: 'https://www.medicare.gov/basics/get-started-with-medicare/get-more-coverage/your-coverage-options/compare-original-medicare-medicare-advantage' },
+      { label: 'How Medigap works, including the trial right', url: 'https://www.medicare.gov/health-drug-plans/medigap/basics/how-medigap-works' },
+      { label: 'Joining a plan: Open Enrollment dates', url: 'https://www.medicare.gov/basics/get-started-with-medicare/get-more-coverage/joining-a-plan' },
+      { label: 'Census QuickFacts: Sun City West and Sun City, Arizona', url: 'https://www.census.gov/quickfacts/fact/table/suncitywestcdparizona,suncitycdparizona/PST045224' },
+    ],
+    localSources: [
+      { label: 'Banner Del E. Webb Medical Center (Banner Health)', url: 'https://www.bannerhealth.com/locations/sun-city-west/banner-del-e-webb-medical-center' },
+      { label: 'Sun City West community history', url: 'https://suncitywest.com/history/' },
+      { label: 'Recreation Centers of Sun City West', url: 'https://suncitywest.com/' },
+    ],
+    seeAlso: [
+      { slug: 'sun-city-az', note: 'Sun City, built around Banner Boswell, with more households still approaching 65.' },
+      { slug: 'peoria-az', note: 'Peoria, including Westbrook Village and Trilogy at Vistancia.' },
+    ],
+    reviewed: '2026-11-04',
+    proximity:
+      'About 31 miles by road from the Anthem office, at the west end of the area I cover. Phone reviews are the norm here; in person by arrangement.',
+  },
 ];
 
 /**
@@ -414,6 +568,17 @@ export const locations: Location[] = [
  * without the limit being respected.
  */
 for (const l of locations) {
+  if (l.seoTitle && l.seoTitle.length > 60) {
+    throw new Error(`locations.ts: ${l.slug} seoTitle is ${l.seoTitle.length} chars (max 60)`);
+  }
+  for (const { url } of l.localSources ?? []) {
+    if (!/^https:\/\//.test(url)) throw new Error(`locations.ts: ${l.slug} localSource ${url} is not https`);
+  }
+  for (const { slug } of l.seeAlso ?? []) {
+    if (slug === l.slug || !locations.some((o) => o.slug === slug)) {
+      throw new Error(`locations.ts: ${l.slug} seeAlso points at unknown slug "${slug}"`);
+    }
+  }
   if (l.seoDescription.length > 155) {
     throw new Error(
       `locations.ts: ${l.slug} seoDescription is ${l.seoDescription.length} chars (max 155)`,

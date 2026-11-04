@@ -20,7 +20,11 @@ export const getStaticPaths = (() =>
 const { location } = Astro.props;
 const others = locations.filter((l) => l.slug !== location.slug);
 
-const title = `Medicare Help in ${location.label}`;
+const title = location.seoTitle ?? `Medicare Help in ${location.label}`;
+/** `/book/?topic=t65` relabels the picker and tags the booking (see book.astro). */
+const bookHref = location.bookTopic ? `${site.consult.url}?topic=${location.bookTopic}` : site.consult.url;
+const bookLabel = location.bookTopic === 't65' ? 'Book a Turning-65 call' : 'Book a free review';
+const seeAlso = (location.seeAlso ?? []).map((s) => ({ ...s, to: locations.find((l) => l.slug === s.slug)! }));
 /**
  * `seoDescription`, not `summary` + a name/NPN/phone tail. That composition read
  * well and ran 40–70 characters past the 155 Google will show, so every city
@@ -74,7 +78,7 @@ const schemaNodes = locationSchemaNodes(
     breadcrumbs={breadcrumbs}
   >
     <div class="btn-row">
-      <a href={site.consult.url} class="btn btn--lg" data-magnetic="0.3">Book a free review</a>
+      <a href={bookHref} class="btn btn--lg" data-magnetic="0.3">{bookLabel}</a>
       <a href={site.phone.href} class="btn btn--ghost btn--lg" data-magnetic="0.22">
         Call {site.phone.display}
       </a>
@@ -91,6 +95,18 @@ const schemaNodes = locationSchemaNodes(
             <p data-rise data-armed style={`--rise-delay:${i * 70}ms`}>{para}</p>
           ))}
         </div>
+        {seeAlso.length > 0 && (
+          <div class="next">
+            <h3 class="next__h">Next door</h3>
+            <ul class="next__list">
+              {seeAlso.map((s) => (
+                <li>
+                  <a href={`/service-area/${s.slug}/`}>{s.to.label}</a> — {s.note}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
       </div>
 
       <aside class="card loc__card" data-rise data-armed>
@@ -205,6 +221,19 @@ const schemaNodes = locationSchemaNodes(
           ))
         }
       </ul>
+      {location.localSources && location.localSources.length > 0 && (
+        <>
+          <h3 class="src__h3">Local facts on this page</h3>
+          <ul class="src">
+            {location.localSources.map((s) => (
+              <li>
+                <a href={s.url} target="_blank" rel="noopener">{s.label}</a>
+                <span class="src__host">{new URL(s.url).hostname.replace(/^www\./, '')}</span>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   </section>
 
@@ -235,6 +264,10 @@ const schemaNodes = locationSchemaNodes(
 
 <style>
   .src__h2 { font-size: var(--t-xl); margin-bottom: var(--s-2); }
+  .src__h3 { font-size: var(--t-lg); margin: var(--s-6) 0 var(--s-3); }
+  .next { margin-top: var(--s-6); padding-top: var(--s-5); border-top: 1px solid var(--rule-soft); max-width: 62ch; }
+  .next__h { font-size: var(--t-lg); margin-bottom: var(--s-3); }
+  .next__list { display: grid; gap: var(--s-2); padding-left: 1.1em; color: var(--ink-body); font-size: var(--t-base); line-height: 1.55; }
   .src__note { font-size: var(--t-sm); color: var(--ink-muted); line-height: 1.55; margin-bottom: var(--s-4); }
   .src { display: grid; gap: var(--s-3); list-style: none; padding: 0; margin: 0; }
   .src li { display: grid; gap: 0.1rem; padding-bottom: var(--s-3); border-bottom: 1px solid var(--rule-soft); }

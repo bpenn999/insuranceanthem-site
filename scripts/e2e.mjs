@@ -1319,6 +1319,8 @@ console.log('\nService area — city pages');
     { slug: 'scottsdale-az', city: 'Scottsdale', zip: '85260' },
     { slug: 'carefree-az', city: 'Carefree', zip: '85377' },
     { slug: 'new-river-az', city: 'New River', zip: '85087' },
+    { slug: 'sun-city-az', city: 'Sun City', zip: '85351' },
+    { slug: 'sun-city-west-az', city: 'Sun City West', zip: '85375' },
   ];
 
   // The hub first — every city has to be reachable from it.
