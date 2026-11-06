@@ -1336,7 +1336,7 @@ for (const path of ['/', '/medicare-advantage/', '/tools/cost-of-care/',
   ok('no wrong-brand offices', f.wrongBrand.length === 0, f.wrongBrand.join(', '));
   ok('Services column complete', f.services);
   ok('Learn column with articles', f.learnHub && f.learnArticles >= 3, `${f.learnArticles} articles`);
-  ok('Tools column with all 8', f.toolsHub && f.toolLinks === 8, `${f.toolLinks} tools`);
+  ok('Tools column with all 9', f.toolsHub && f.toolLinks === 9, `${f.toolLinks} tools`);
   ok('Company column complete', f.company);
   // href = where it goes, label = what it offers. Checking the offer against
   // the href is what left this failing after the calendar page landed.
@@ -1645,16 +1645,17 @@ console.log('\nTool — cost of care');
   await closePage(p);
 }
 
-// ── 7h. the tools hub lists all eight ────────────────────────────────────────
+// ── 7h. the tools hub lists all nine ─────────────────────────────────────────
 console.log('\nTools hub');
 {
   const p = await openPage('/tools/');
   const TOOL_SLUGS = ['plan-type-finder', 'enrollment-timeline', 'medicare-cost-estimator',
-    'irmaa-estimator', 'plan-g-vs-plan-n', 'part-b-giveback', 'part-a-premium', 'cost-of-care'];
+    'irmaa-estimator', 'plan-g-vs-plan-n', 'part-b-giveback', 'part-a-premium',
+    'late-enrollment-penalty-calculator', 'cost-of-care']; // f879e66 added the 9th
   const hub = await evaluate(p, `
     return [...document.querySelectorAll('.tools a.card-link')].map(a => a.getAttribute('href'));
   `);
-  check('hub grid lists all 8 tools', TOOL_SLUGS.every((s) => hub.includes(`/tools/${s}/`)),
+  check('hub grid lists all 9 tools', TOOL_SLUGS.every((s) => hub.includes(`/tools/${s}/`)),
     TOOL_SLUGS.filter((s) => !hub.includes(`/tools/${s}/`)).join(', '));
   check('no duplicate tiles', new Set(hub).size === hub.length, String(hub.length));
   await closePage(p);
@@ -1765,28 +1766,51 @@ if (booking.mode !== 'native') {
         return true;
       };
       const CAL = {
-        id: 'test-calendar-id', name: '602 Medicare', slot_duration: 30,
+        id: 'test-calendar-id', name: '602 Medicare', slot_duration: 60,
         time_zone: 'America/Denver', bookable_weekdays: [1,2,3,4,5],
       };
+      // A day's open starts the way /api/availability and /api/month answer
+      // since 15d1407: 60-minute appointments on X's half-hour grid. 14:00Z
+      // onward — 08:00 in the calendar's own timezone (UTC-6 in August), 07:00
+      // in Arizona — the one-hour gap the picker exists to present correctly.
+      const daySlots = (date) => [0,1,2,3,4,5].map((i) => {
+        const s = new Date(date + 'T14:00:00.000Z');
+        s.setUTCMinutes(s.getUTCMinutes() + i * 30);
+        const e = new Date(s.getTime() + 60 * 60000);
+        return { startUtc: s.toISOString(), endUtc: e.toISOString(), available: true };
+      });
       window.fetch = function (input, init) {
         const url = String(typeof input === 'string' ? input : input.url || '');
-        if (!url.includes('supabase.co') && !url.includes('/api/availability')) return real.apply(this, arguments);
+        if (!url.includes('supabase.co') && !url.includes('/api/availability') && !url.includes('/api/month')) {
+          return real.apply(this, arguments);
+        }
         window.__bookingCalls.push({ url, method: (init && init.method) || 'GET', body: init && init.body });
 
         if (url.includes('/api/availability')) {
           const date = new URL(url, location.origin).searchParams.get('date');
-          // 08:00–10:30 in the calendar's own timezone (UTC-6 in August), which
-          // is 07:00–09:30 in Arizona — the one-hour gap the picker exists to
-          // present correctly.
-          const slots = [0,1,2,3,4,5].map((i) => {
-            const s = new Date(date + 'T14:00:00.000Z');
-            s.setUTCMinutes(s.getUTCMinutes() + i * 30);
-            const e = new Date(s.getTime() + 30 * 60000);
-            return { start: date + 'T08:00:00', end: date + 'T08:30:00',
-                     startUtc: s.toISOString(), endUtc: e.toISOString(), available: true };
-          });
           return Promise.resolve(new Response(
-            JSON.stringify({ success: true, calendar: CAL, slots }),
+            JSON.stringify({ success: true, calendar: CAL, slots: daySlots(date),
+                             filtered: { offered: 6, withheld: 0 } }),
+            { status: 200, headers: { 'Content-Type': 'application/json' } }));
+        }
+        // /api/month (ed00ce0, 2026-10-24) — the whole picker month in one
+        // request, shaped as functions/api/month.ts answers: { success,
+        // calendar, days: { date: [{startUtc, endUtc, available}] } }, every
+        // weekday in the window, past starts already dropped. \`astro preview\`
+        // has no Pages Functions, so unstubbed this is a 404 in the console.
+        if (url.includes('/api/month')) {
+          const q = new URL(url, location.origin).searchParams;
+          const from = Date.parse(q.get('from') + 'T00:00:00Z');
+          const n = Number(q.get('days')) || 31;
+          const days = {};
+          for (let i = 0; i < n; i++) {
+            const d = new Date(from + i * 86400000);
+            if (!CAL.bookable_weekdays.includes(d.getUTCDay())) continue;
+            const date = d.toISOString().slice(0, 10);
+            days[date] = daySlots(date).filter((sl) => Date.parse(sl.startUtc) > Date.now());
+          }
+          return Promise.resolve(new Response(
+            JSON.stringify({ success: true, calendar: { id: CAL.id, time_zone: CAL.time_zone, slot_duration: 60 }, days }),
             { status: 200, headers: { 'Content-Type': 'application/json' } }));
         }
         if (url.includes('create-booking')) {
@@ -1885,8 +1909,14 @@ if (booking.mode !== 'native') {
           && !!document.querySelector('[data-cta="book-fallback-call"]');
     `));
 
-  check('the time step is not shown until a day is chosen', await evaluate(p, `
-    return document.querySelector('[data-step-time]').hidden === true;
+  // 5411a91 (Brian, 2026-10-18): the picker opens on the first day that really
+  // has a time, already selected, so the times are on screen without a tap.
+  check('it opens on the first open day with that day\'s times showing', await evaluate(p, `
+    const on = document.querySelector('[data-day].bk__day--on');
+    const first = [...document.querySelectorAll('[data-day]')].find(b => !b.disabled);
+    return !!on && on === first && on.getAttribute('aria-pressed') === 'true'
+        && document.querySelector('[data-step-time]').hidden === false
+        && document.querySelectorAll('[data-slot]').length > 0;
   `));
 
   /* ── pick a day ────────────────────────────────────────────────────────── */
@@ -2031,7 +2061,7 @@ if (booking.mode !== 'native') {
         && b.calendarId === 'test-calendar-id'
         && b.firstName === 'Ada' && b.lastName === 'Lovelace'
         && /^\\d{4}-\\d{2}-\\d{2}T/.test(b.startTime) && !!b.endTime
-        && b.durationMinutes === 30
+        && b.durationMinutes === 60
         && b.locationType === 'phone'
         // The CALENDAR's timezone goes to the server; only the display is
         // converted to Arizona. Sending Phoenix here would move the appointment.
@@ -2058,9 +2088,12 @@ if (booking.mode !== 'native') {
         && /^\\d{4}-\\d{2}-\\d{2}T/.test(b.appt.start);
   `));
 
-  check('the phone fallback survives all the way to the confirmation',
+  // Until the booking is made the phone line stays (checked above); once it is
+  // confirmed, 8456db7 withdraws it — "Calendar not loading?" no
+  // longer applies to someone holding a confirmation.
+  check('the phone fallback is withdrawn once the booking is confirmed',
     await evaluate(p, `
-      return /Calendar not loading\\?/.test(document.body.innerText);
+      return !/Calendar not loading\\?/.test(document.body.innerText);
     `));
 
   check('the third-party embed was never loaded on the happy path',
@@ -2087,7 +2120,7 @@ if (booking.mode !== 'native') {
       const real = window.fetch;
       window.fetch = function (input) {
         const url = String(typeof input === 'string' ? input : input.url || '');
-        if (url.includes('/api/availability') || url.includes('supabase.co')) return Promise.reject(new Error('offline'));
+        if (url.includes('/api/availability') || url.includes('/api/month') || url.includes('supabase.co')) return Promise.reject(new Error('offline'));
         return real.apply(this, arguments);
       };
     })();
@@ -2104,12 +2137,14 @@ if (booking.mode !== 'native') {
         const real = window.fetch;
         window.fetch = function (input) {
           const url = String(typeof input === 'string' ? input : input.url || '');
-          if (url.includes('/api/availability') || url.includes('supabase.co')) return Promise.reject(new Error('offline'));
+          if (url.includes('/api/availability') || url.includes('/api/month') || url.includes('supabase.co')) return Promise.reject(new Error('offline'));
           return real.apply(this, arguments);
         };
       })();
     `);
-    await sleep(900);
+    // The picker retries a failed lookup three times with backoff (≈3.7s at
+    // most, 2026-10-23) before it believes it, so give it that long.
+    await sleep(5000);
     check('the survey banner is withdrawn when the picker cannot load', await evaluate(q, `
       return document.querySelector('[data-fallback]').hidden === false
           && document.querySelector('[data-carry]').hidden === true;
@@ -2120,7 +2155,7 @@ if (booking.mode !== 'native') {
     width: 375, height: 812, deviceScaleFactor: 2, mobile: true,
   });
   await p.send('Page.reload');
-  await sleep(2200);
+  await sleep(5000); // past the lookup's retries — see above
 
   // 2026-10-23: the embed is unguarded (30-min Mountain slots, no diary check),
   // so a failed lookup shows a closed calendar and the phone, never the embed.
