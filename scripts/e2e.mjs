@@ -399,18 +399,19 @@ console.log('\nAPI — /api/lead relay (mocked upstream)');
   }
 }
 
-// ── availability: the feed that is in step with Brian's calendar ────────────
-// Thursday 20 August 2026: this site offered an unbroken run of half-hours from
-// 7:00 while Brian's calendar carried "Off" 07:00–20:00, and he booked 7:30 to
-// prove it. Medicare On Main greyed that Thursday out, because it reads
-// GoHighLevel's free-slots feed instead. Asked for 18–31 August that feed
-// answers 18, 25, 26, 27, 28, 31 and no 20th (verified against the live
-// calendar, 2026-08-18).
+// ── availability: X (GoGuruX) only, 60-minute appointments ──────────────────
+// Since 0d784b8 (2026-10-23, Brian: "we are on X not GHL… use X calendar for
+// 602") /api/availability reads ONE upstream: GoGuruX's own open starts, via
+// gx-availability-cache. GHL's free-slots feed is not read at all. Since
+// 15d1407 (2026-10-26) every appointment is 60 minutes, enforced in the route
+// rather than read off the calendar object.
 //
-// /api/availability now reads the same feed. These drive the real function with
-// every upstream stubbed, and the sharpest check is that GoGuruX's slot list is
-// never used again for anything.
-console.log('\nAPI — /api/availability (the free-slots feed, mocked upstreams)');
+// These drive the real function with every upstream stubbed. What they pin:
+// the one upstream and its query, the response shape the picker depends on,
+// fail-closed on any upstream fault, no start whose full hour is not open in
+// X's list (the 10/27 spill-over), no past starts, and the optional Google
+// second opinion.
+console.log('\nAPI — /api/availability (X-only, 60-minute, mocked upstreams)');
 {
   const { onRequest } = await import('../functions/api/availability.ts');
   const { generateKeyPairSync } = await import('node:crypto');
@@ -423,38 +424,35 @@ console.log('\nAPI — /api/availability (the free-slots feed, mocked upstreams)
 
   const ORIGIN = `https://${site.domain}`;
   const az = (day, hhmm) => `${day}T${hhmm}:00-07:00`;
+  const iso = (day, hhmm) => new Date(az(day, hhmm)).toISOString();
+  /** A day N days from now in Arizona — the route drops past starts, so fixed dates rot. */
+  const azDay = (n) => new Date(Date.now() - 7 * 3_600_000 + n * 86_400_000).toISOString().slice(0, 10);
+  const DAY = azDay(21);
+  const PAST = azDay(-2);
 
-  /** What the feed really answers for a working Tuesday. */
-  const TUESDAY_FEED = {
-    '2026-08-25': { slots: ['08:30', '09:00', '09:30'].map((t) => az('2026-08-25', t)) },
-    traceId: 'stub',
-  };
-  /** And for the Thursday he is off: the day is simply not there. */
-  const THURSDAY_FEED = { traceId: 'stub' };
-
-  /** GoGuruX's half-hours 07:00–16:30 for any day (the intersection needs it to agree). */
-  const gxDay = (day) => Array.from({ length: 20 }, (_, i) => {
-    const t = `${String(7 + Math.floor(i / 2)).padStart(2, '0')}:${i % 2 ? '30' : '00'}`;
-    const startUtc = new Date(az(day || '2026-08-20', t)).toISOString();
-    return { startUtc, endUtc: new Date(Date.parse(startUtc) + 30 * 60000).toISOString(), available: true };
+  /** X's open half-hour starts, as gx-availability-cache relays them. */
+  const gx = (day, times, extra = {}) => times.map((t) => {
+    const startUtc = iso(day, t);
+    return { startUtc, endUtc: new Date(Date.parse(startUtc) + 30 * 60000).toISOString(), available: true, ...extra };
   });
 
-  /** The eight slots GoGuruX offered that Thursday — which must never surface. */
-  const GOGURUX_SLOTS = ['07:00','07:30','08:00','08:30','09:00','09:30','10:00','10:30'].map((t) => {
-    const startUtc = new Date(az('2026-08-20', t)).toISOString();
-    return { startUtc, endUtc: new Date(Date.parse(startUtc) + 30 * 60000).toISOString(), available: true };
-  });
+  /**
+   * A working day on X's 30-minute grid: 09:00–11:00 and 13:00–14:30 open.
+   * A 60-minute call needs the next half-hour open too, so it fits at 09:00,
+   * 09:30, 10:00, 13:00 and 13:30 — never 10:30 (11:00 is taken) or 14:00.
+   */
+  const OPEN = ['09:00', '09:30', '10:00', '10:30', '13:00', '13:30', '14:00'];
 
   async function call(opts = {}) {
     const {
       method = 'GET',
-      date = '2026-08-20',
+      date = DAY,
+      fresh = false,
       env = {},
-      feed = THURSDAY_FEED,
-      feedStatus = 200,
-      goguruxSlots = null,
-      goguruxCalendar = { id: 'gogurux-cal', slot_duration: 30, time_zone: 'America/Denver' },
-      goguruxStatus = 200,
+      gxSlots = gx(DAY, OPEN),
+      gxCalendar = { id: 'gogurux-cal', slot_duration: 30, time_zone: 'America/Denver' },
+      gxStatus = 200,
+      gxBody = null,
       busy = [],
       freebusyStatus = 200,
       tokenStatus = 200,
@@ -476,25 +474,28 @@ console.log('\nAPI — /api/availability (the free-slots feed, mocked upstreams)
         return new Response(JSON.stringify({ calendars: { 'brianinsuranceservices@gmail.com': { busy } } }),
           { status: freebusyStatus });
       }
-      if (u.includes('free-slots')) {
-        return new Response(JSON.stringify(feed), { status: feedStatus });
+      if (u.includes('gx-availability-cache')) {
+        return new Response(JSON.stringify(gxBody ?? { success: gxStatus === 200, calendar: gxCalendar, slots: gxSlots }),
+          { status: gxStatus });
       }
-      // 602 reaches GoGuruX through gx-availability-cache since 2026-10-15.
-      if (u.includes('get-availability') || u.includes('gx-availability-cache')) {
-        return new Response(JSON.stringify({ success: goguruxStatus === 200, calendar: goguruxCalendar, slots: goguruxSlots ?? gxDay(date) }),
-          { status: goguruxStatus });
-      }
-      return realFetch(url, init);
+      // Anything else (GHL free-slots above all) is a regression: answer with a
+      // full day of slots so that, if it were read, it would show.
+      return new Response(JSON.stringify({ [date]: { slots: gx(DAY, ['07:00', '07:30', '08:00']).map((s) => s.startUtc) } }),
+        { status: 200 });
     };
     console.error = (...a) => logged.push(a.join(' '));
     console.log = (...a) => logged.push(a.join(' '));
 
     try {
-      const qs = date === null ? '' : `?date=${encodeURIComponent(date)}`;
+      const q = new URLSearchParams();
+      if (date !== null) q.set('date', date);
+      if (fresh) q.set('fresh', '1');
+      const qs = q.toString() ? `?${q}` : '';
       const res = await onRequest({ request: new Request(`${ORIGIN}/api/availability${qs}`, { method }), env });
       let json = null;
       try { json = await res.clone().json(); } catch { /* not JSON */ }
-      return { status: res.status, json, seen, logged: logged.join(' | '), allow: res.headers.get('allow') };
+      return { status: res.status, json, seen, logged: logged.join(' | '), allow: res.headers.get('allow'),
+        cache: res.headers.get('cache-control') };
     } finally {
       globalThis.fetch = realFetch;
       console.error = realError;
@@ -502,74 +503,119 @@ console.log('\nAPI — /api/availability (the free-slots feed, mocked upstreams)
     }
   }
 
-  /* ── the Thursday ─────────────────────────────────────────────────────── */
+  const starts = (r) => (r.json?.slots ?? []).map((s) => s.startUtc);
+
+  /* ── the one upstream ─────────────────────────────────────────────────── */
   {
     const r = await call();
-    check('THE BUG: the blocked Thursday now offers nothing',
-      r.status === 200 && r.json.success === true && r.json.slots.length === 0,
-      `${r.status} kept=${r.json?.slots?.length}`);
-    check('THE SMOKING GUN: GoGuruX\'s eight slots are never used',
-      !JSON.stringify(r.json.slots).includes('T14:00:00'), JSON.stringify(r.json.slots).slice(0, 120));
-    check('it read the free-slots feed', r.seen.some((u) => u.includes('free-slots')));
-    check('it asked GoGuruX only for the calendar the booking needs',
-      r.json.calendar?.id === 'gogurux-cal');
+    check('it reads X through gx-availability-cache',
+      r.seen.length === 1 && r.seen[0].startsWith('https://gx-availability-cache.') && r.seen[0].includes('/availability?'),
+      r.seen.join(' , '));
+    check('GHL\'s free-slots feed is never asked (X only since 10/23)',
+      !r.seen.some((u) => /free-slots|leadconnectorhq/.test(u)), r.seen.join(' , '));
+    const q = new URL(r.seen[0] ?? 'https://x/').searchParams;
+    check('it asks X for the requested day at 60 minutes on the 602 calendar',
+      q.get('date') === DAY && q.get('duration') === '60' && q.get('calendar_slug') === '602-medicare'
+        && q.get('location_slug') === 'medicareonmain-com' && !q.has('fresh'),
+      r.seen[0]);
+    const f = await call({ fresh: true });
+    check('fresh=1 (the last look before booking) is passed through to skip the cache',
+      new URL(f.seen[0] ?? 'https://x/').searchParams.get('fresh') === '1', f.seen[0]);
   }
 
   /* ── a working day ────────────────────────────────────────────────────── */
   {
-    const r = await call({ date: '2026-08-25', feed: TUESDAY_FEED });
-    // 45-minute appointments on the feed's 30-minute grid (2026-10-23): a start
-    // needs the next cell free too, so 09:30 (10:00 not listed) is not offered.
-    check('a day the feed lists offers every start a 45-minute call fits', r.json.slots.length === 2,
-      String(r.json.slots?.length));
-    check('the feed\'s start times survive the round trip',
-      r.json.slots[0].startUtc === new Date(az('2026-08-25', '08:30')).toISOString(),
-      r.json.slots[0]?.startUtc);
-    check('every appointment is 45 minutes even when the calendar says 30',
-      Date.parse(r.json.slots[0].endUtc) - Date.parse(r.json.slots[0].startUtc) === 45 * 60000);
-    check('and the calendar object handed to the picker says 45',
-      r.json.calendar.slot_duration === 45);
-    check('no offered start runs into the next busy cell (the 10/27 spill-over)',
-      !r.json.slots.some((sl) => sl.startUtc === new Date(az('2026-08-25', '09:30')).toISOString()));
+    const r = await call();
+    check('200 { success, calendar, slots, filtered }',
+      r.status === 200 && r.json?.success === true && r.json.calendar && Array.isArray(r.json.slots)
+        && typeof r.json.filtered?.offered === 'number' && typeof r.json.filtered?.withheld === 'number',
+      JSON.stringify(r.json).slice(0, 200));
+    check('availability is never cached', /no-store/.test(r.cache ?? ''), r.cache);
+    check('the calendar object handed to the picker keeps X\'s id',
+      r.json.calendar?.id === 'gogurux-cal', JSON.stringify(r.json.calendar));
+    check('and says 60 minutes even when X\'s calendar says 30',
+      r.json.calendar?.slot_duration === 60, String(r.json.calendar?.slot_duration));
+    const want = ['09:00', '09:30', '10:00', '13:00', '13:30'].map((t) => iso(DAY, t));
+    check('offers exactly the starts a full hour fits in X\'s open list',
+      JSON.stringify(starts(r)) === JSON.stringify(want),
+      `${starts(r).join(', ')} ≠ ${want.join(', ')}`);
+    check('every slot is 60 minutes long',
+      r.json.slots.length > 0 && r.json.slots.every((s) => Date.parse(s.endUtc) - Date.parse(s.startUtc) === 60 * 60000));
+    check('no offered start spills into time X does not list as open (the 10/27 spill-over)',
+      !starts(r).includes(iso(DAY, '10:30')) && !starts(r).includes(iso(DAY, '14:00')), starts(r).join(', '));
+    check('filtered.offered counts what was offered', r.json.filtered.offered === want.length
+      && r.json.filtered.withheld === 0, JSON.stringify(r.json.filtered));
+  }
+  {
+    // X answered for the full hour already: its starts stand on their own.
+    const r = await call({ gxCalendar: { id: 'gogurux-cal', slot_duration: 60 },
+      gxSlots: gx(DAY, ['09:00', '11:00', '15:00']) });
+    check('when X already answered at 60 minutes its starts are trusted as-is',
+      starts(r).length === 3, starts(r).join(', '));
+  }
+  {
+    const r = await call({ gxSlots: [...gx(DAY, ['09:00', '09:30', '10:00']), ...gx(DAY, ['10:30'], { available: false })] });
+    check('a start X marks available:false is never offered and never counts as open',
+      JSON.stringify(starts(r)) === JSON.stringify([iso(DAY, '09:00'), iso(DAY, '09:30')]), starts(r).join(', '));
+  }
+  {
+    const r = await call({ gxSlots: gx(DAY, ['09:00']) });
+    check('a lone half-hour cannot hold an hour, so nothing is offered', r.status === 200 && starts(r).length === 0,
+      starts(r).join(', '));
+  }
+  {
+    const r = await call({ date: PAST, gxSlots: gx(PAST, OPEN) });
+    check('starts already in the past are never offered', r.status === 200 && starts(r).length === 0,
+      starts(r).join(', '));
+  }
+  {
+    const r = await call({ gxSlots: [] });
+    check('a day X has nothing open offers nothing', r.status === 200 && starts(r).length === 0);
   }
 
   /* ── failing closed ───────────────────────────────────────────────────── */
   {
-    const r = await call({ feedStatus: 500, feed: {} });
-    check('a feed outage is 502 and NO slots', r.status === 502 && !r.json.slots);
-    check('it never falls back to GoGuruX\'s list', !JSON.stringify(r.json).includes('startUtc'));
-    check('and says so in the logs', /free-slots failed, withholding/.test(r.logged));
+    const r = await call({ gxStatus: 500 });
+    check('an X outage is 502 and NO slots', r.status === 502 && r.json?.success === false && !r.json.slots,
+      `${r.status} ${JSON.stringify(r.json)}`);
+    check('it never falls back to any other feed', !JSON.stringify(r.json).includes('startUtc')
+      && r.seen.every((u) => u.includes('gx-availability-cache')), r.seen.join(' , '));
+    check('and says so in the logs', /calendar lookup failed/.test(r.logged), r.logged);
   }
   {
-    const r = await call({ goguruxStatus: 500 });
+    const r = await call({ gxBody: { success: true, slots: gx(DAY, OPEN) } });
     check('no calendar object means 502 — there would be nothing to book against',
-      r.status === 502);
+      r.status === 502 && !r.json?.slots, String(r.status));
+  }
+  {
+    const r = await call({ gxBody: { success: true, calendar: { id: 'gogurux-cal' } } });
+    check('no slot list means 502, never an empty-looking open day',
+      r.status === 502 && !r.json?.slots, String(r.status));
   }
 
   /* ── the optional second opinion ──────────────────────────────────────── */
   {
-    const r = await call({ date: '2026-08-25', feed: TUESDAY_FEED });
-    check('with no credential set the feed is trusted on its own',
-      r.status === 200 && r.json.slots.length === 2);
-    check('and Google is not called at all', !r.seen.some((u) => u.includes('freeBusy')));
+    const r = await call();
+    check('with no credential set, X\'s list is trusted on its own',
+      r.status === 200 && starts(r).length === 5);
+    check('and Google is not called at all', !r.seen.some((u) => u.includes('freeBusy') || u.includes('oauth2')));
   }
   {
     const r = await call({
-      date: '2026-08-25', feed: TUESDAY_FEED, env: { GOOGLE_SERVICE_ACCOUNT_JSON: SA },
-      busy: [{ start: az('2026-08-25', '09:00'), end: az('2026-08-25', '09:30') }],
+      env: { GOOGLE_SERVICE_ACCOUNT_JSON: SA },
+      busy: [{ start: az(DAY, '10:00'), end: az(DAY, '10:30') }],
     });
-    // Busy 09:00–09:30: the 08:30 call would run to 09:15, so both starts go.
-    check('a configured diary check subtracts anything the feed still listed',
-      r.json.slots.length === 0, String(r.json.slots.length));
-    check('and reports what it withheld', r.json.filtered.withheld === 2);
+    // Busy 10:00–10:30: the 09:00 hour ends on it and stays; 09:30 and 10:00 overlap it.
+    check('a configured diary check subtracts any hour that overlaps Google busy time',
+      JSON.stringify(starts(r)) === JSON.stringify(['09:00', '13:00', '13:30'].map((t) => iso(DAY, t))),
+      starts(r).join(', '));
+    check('and reports what it withheld',
+      r.json.filtered.offered === 5 && r.json.filtered.withheld === 2, JSON.stringify(r.json.filtered));
   }
   {
-    const r = await call({
-      date: '2026-08-25', feed: TUESDAY_FEED,
-      env: { GOOGLE_SERVICE_ACCOUNT_JSON: SA }, tokenStatus: 401,
-    });
+    const r = await call({ env: { GOOGLE_SERVICE_ACCOUNT_JSON: SA }, tokenStatus: 401 });
     check('a broken optional check is skipped, not turned into an outage',
-      r.status === 200 && r.json.slots.length === 2);
+      r.status === 200 && starts(r).length === 5);
     check('but it is logged rather than passed over in silence',
       /optional diary check skipped/.test(r.logged));
   }
@@ -577,10 +623,13 @@ console.log('\nAPI — /api/availability (the free-slots feed, mocked upstreams)
   /* ── the shape of the route ───────────────────────────────────────────── */
   {
     const r = await call({ method: 'POST' });
-    check('POST is refused with 405 and an Allow header', r.status === 405 && r.allow === 'GET');
+    check('POST is refused with 405 and an Allow header',
+      r.status === 405 && r.allow === 'GET' && r.json?.success === false);
+    check('and never reaches X', r.seen.length === 0);
   }
   {
-    check('a missing date is 400', (await call({ date: null })).status === 400);
+    const a = await call({ date: null });
+    check('a missing date is 400', a.status === 400 && a.json?.success === false && a.seen.length === 0);
     check('a date it cannot read is 400, never guessed at',
       (await call({ date: '20th August' })).status === 400);
   }
