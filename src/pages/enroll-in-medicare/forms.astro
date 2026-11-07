@@ -71,8 +71,8 @@ const schemaNodes = [
             <label>Last name<input name="last" required autocomplete="family-name" /></label>
             <label>Suffix<input name="suffix" placeholder="Jr., Sr." autocomplete="honorific-suffix" /></label>
           </div>
-          <label>Medicare number <span class="fx__hint">On your red, white and blue card (11 letters and numbers)</span>
-            <input name="mbi" required maxlength="13" placeholder="1EG4-TE5-MK72" autocomplete="off" spellcheck="false" style="text-transform:uppercase" /></label>
+          <label>Medicare number <span class="fx__hint">On your red, white and blue card. No card yet? Leave it blank: you don’t have Part A yet, and we’ll make just the form you need.</span>
+            <input name="mbi" maxlength="13" placeholder="1EG4-TE5-MK72" autocomplete="off" spellcheck="false" style="text-transform:uppercase" /></label>
           <label>Mailing address<input name="street" required autocomplete="address-line1" /></label>
           <div class="fx__grid fx__grid--city">
             <label>City<input name="city" required autocomplete="address-level2" /></label>
@@ -144,7 +144,8 @@ const schemaNodes = [
           <a class="btn btn--lg" id="dl-40b" download="CMS-40B-filled.pdf">Download CMS-40B</a>
           <a class="btn btn--lg btn--ghost" id="dl-l564" download="CMS-L564-filled.pdf">Download CMS-L564</a>
         </div>
-        <ol class="fx__next">
+        <p class="fx__noa" id="fx-noa" hidden><strong>No Medicare number means you don’t have Part A yet,</strong> so form CMS-40B isn’t for you. Apply for Part A and Part B together on Social Security’s “Sign up for Medicare” page, and include your CMS-L564 (after your employer fills in Section B). <a class="link" href="https://www.ssa.gov/medicare/sign-up" target="_blank" rel="noopener">Apply at Social Security ↗</a></p>
+        <ol class="fx__next" id="fx-next">
           <li><strong>Sign and date CMS-40B</strong> on page 3.</li>
           <li><strong>Give CMS-L564 to your employer’s HR or benefits office</strong> to fill out Section B and sign.</li>
           <li><strong>Send both to Social Security:</strong> upload them online, or fax or mail them to your local office.
@@ -200,11 +201,12 @@ const schemaNodes = [
     err.hidden = true;
     try {
       const d = Object.fromEntries(new FormData(form)) as Record<string, string>;
-      const need = ['first', 'last', 'mbi', 'street', 'city', 'state', 'zip', 'phone', 'ssn', 'employer', 'eStreet', 'eCity', 'eState', 'eZip', 'jobStart', 'covStart'];
+      const need = ['first', 'last', 'street', 'city', 'state', 'zip', 'phone', 'ssn', 'employer', 'eStreet', 'eCity', 'eState', 'eZip', 'jobStart', 'covStart'];
       const missing = need.filter((k) => !String(d[k] || '').trim());
       if (missing.length) throw new Error('Please fill in every field that isn’t marked optional.');
       const mbi = d.mbi.toUpperCase().replace(/[^A-Z0-9]/g, '');
-      if (mbi.length !== 11) throw new Error('Your Medicare number should be 11 letters and numbers.');
+      const noA = mbi.length === 0;
+      if (!noA && mbi.length !== 11) throw new Error('Your Medicare number should be 11 letters and numbers. No card yet? Leave it blank.');
       const ssn = digits(d.ssn);
       if (ssn.length !== 9) throw new Error('Your Social Security number should be 9 digits.');
       const ph = digits(d.phone).replace(/^1(?=\d{10}$)/, '');
@@ -216,7 +218,7 @@ const schemaNodes = [
       const sm = d.start === 'later' ? my(d.startMonth || '', 'Part B start month') : null;
       const name = [d.first, d.middle, d.last, d.suffix].map((s) => (s || '').trim()).filter(Boolean).join(' ');
 
-      // ── CMS-40B ──
+      // ── CMS-40B (only with Part A, i.e. a Medicare number) ──
       const b = await load('/forms/cms-40b.pdf');
       const f = b.getForm();
       const t = (k: string, v: string) => f.getTextField(k).setText(v);
@@ -252,9 +254,12 @@ const schemaNodes = [
 
       urls.forEach((x) => URL.revokeObjectURL(x));
       const mk = async (doc: PDFDocument) => URL.createObjectURL(new Blob([(await doc.save()) as BlobPart], { type: 'application/pdf' }));
-      urls = [await mk(b), await mk(l)];
-      (document.getElementById('dl-40b') as HTMLAnchorElement).href = urls[0];
+      urls = [noA ? '' : await mk(b), await mk(l)];
+      const a40 = document.getElementById('dl-40b') as HTMLAnchorElement;
+      a40.hidden = noA; if (!noA) a40.href = urls[0];
       (document.getElementById('dl-l564') as HTMLAnchorElement).href = urls[1];
+      (document.getElementById('fx-noa') as HTMLElement).hidden = !noA;
+      (document.getElementById('fx-next') as HTMLElement).hidden = noA;
       out.hidden = false;
       out.scrollIntoView({ behavior: 'smooth', block: 'start' });
       out.focus({ preventScroll: true });
@@ -298,6 +303,7 @@ const schemaNodes = [
   .fx__out { padding: var(--s-6); border-radius: 16px; border: 2px solid var(--navy); background: var(--surface); box-shadow: 0 14px 34px rgb(1 20 89 / 0.14); }
   .fx__out h2 { margin: 0 0 var(--s-4); color: var(--navy); }
   .fx__dl { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-bottom: var(--s-5); }
+  .fx__noa { margin: 0 0 var(--s-4); padding: var(--s-4); border-radius: 10px; background: color-mix(in srgb, var(--navy) 6%, #fff); line-height: 1.6; }
   .fx__next { display: grid; gap: var(--s-3); padding-left: 1.3rem; font-size: var(--t-base); line-height: 1.6; }
   .fx__links { display: flex; flex-wrap: wrap; gap: var(--s-4); margin-top: var(--s-2); }
   .fx__check { margin-top: var(--s-5); padding: var(--s-5); border-radius: 12px; background: color-mix(in srgb, var(--red) 5%, var(--surface)); border: 2px solid var(--red); }

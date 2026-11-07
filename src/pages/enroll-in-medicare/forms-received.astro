@@ -1,0 +1,66 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import BookingPicker from '../../components/BookingPicker.astro';
+import site from '../../config/site';
+
+/**
+ * Where the X (GoGuruX) "Part B Enrollment Forms" form redirects after submit
+ * (settings.redirectUrl on form_templates 3c29d9a2…). Brian, 2026-11-07: the
+ * stock "Thank you" was weak. The moment someone hands over their forms is the
+ * moment they are most likely to book, so the calendar is ON this page.
+ * noindex: it only makes sense right after a submission.
+ */
+const PATH = '/enroll-in-medicare/forms-received/';
+const steps = [
+  { h: 'We fill out your forms', p: 'Your CMS-40B and CMS-L564 are filled in from your answers, usually within the hour.' },
+  { h: 'We go over them with you', p: 'On a quick call we check every date, so your Part B starts when it should and there is no gap or penalty.' },
+  { h: 'You sign and we send', p: 'You sign, your employer completes their section, and we walk you through sending it to Social Security. Then we help you pick your coverage.' },
+];
+---
+<BaseLayout title="Got It: Your Part B Forms Are Underway" description="We received your answers. Pick a time for your free call to go over your Medicare Part B forms." path={PATH} noindex>
+  <section class="section fr" data-caustics="0.3">
+    <div class="wrap">
+      <div class="fr__hero">
+        <span class="fr__check" aria-hidden="true">✓</span>
+        <p class="eyebrow">Got it. You’re in good hands.</p>
+        <h1>We’re filling out your forms now.</h1>
+        <p class="fr__lede">One last step: <strong>pick a time for your free call</strong> so we can go over your forms with you and get them signed. It takes about 20 minutes and there’s no cost.</p>
+        <div class="fr__actions">
+          <a class="btn btn--lg" href="#pick-a-time" data-cta="forms-received-book">Pick my call time ↓</a>
+          <a class="btn btn--ghost btn--lg" href={site.phone.href} data-cta="forms-received-call">Call {site.phone.display}</a>
+        </div>
+      </div>
+
+      <ol class="fr__steps">
+        {steps.map((s, i) => (
+          <li><span class="fr__n tabular" aria-hidden="true">{i + 1}</span><div><h2>{s.h}</h2><p>{s.p}</p></div></li>
+        ))}
+      </ol>
+
+      <div class="fr__urgent">
+        <strong>Don’t wait on this one.</strong> Your enrollment window has a deadline, and a late Part B penalty lasts for life. Booking now locks in your spot before it gets close.
+      </div>
+
+      <div id="pick-a-time" class="fr__book">
+        <h2>Pick a time for your free call</h2>
+        <BookingPicker topic="t65" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .fr__hero { max-width: 44rem; text-align: left; }
+  .fr__check { display: inline-grid; place-items: center; width: 3.5rem; height: 3.5rem; border-radius: 50%; background: #1f9d55; color: #fff; font-size: 1.9rem; font-weight: 700; margin-bottom: var(--s-4); box-shadow: 0 10px 24px rgb(31 157 85 / 0.3); }
+  .fr__hero h1 { margin: var(--s-2) 0 var(--s-4); color: var(--navy); }
+  .fr__lede { font-size: var(--t-lg); line-height: 1.6; color: var(--ink-body); }
+  .fr__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-5); }
+  .fr__steps { list-style: none; padding: 0; margin: var(--s-7) 0 var(--s-5); display: grid; grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr)); gap: var(--s-4); max-width: 60rem; }
+  .fr__steps li { display: grid; grid-template-columns: 2.5rem 1fr; gap: var(--s-3); padding: var(--s-5); border: 1px solid var(--rule-soft); border-radius: 14px; background: var(--surface); }
+  .fr__n { display: grid; place-items: center; width: 2.4rem; height: 2.4rem; border-radius: 50%; background: var(--navy); color: #fff; font-weight: 700; }
+  .fr__steps h2 { margin: 0.2rem 0 var(--s-2); font-size: var(--t-lg); color: var(--navy); }
+  .fr__steps p { margin: 0; line-height: 1.6; color: var(--ink-body); }
+  .fr__urgent { max-width: 60rem; padding: var(--s-4) var(--s-5); border-left: 4px solid var(--red); border-radius: 10px; background: color-mix(in srgb, var(--red) 6%, var(--surface)); line-height: 1.6; }
+  .fr__book { margin-top: var(--s-7); scroll-margin-top: 6rem; }
+  .fr__book h2 { color: var(--navy); margin-bottom: var(--s-4); }
+</style>
