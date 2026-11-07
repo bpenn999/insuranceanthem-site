@@ -52,7 +52,12 @@ const schemaNodes = [
     lede="Answer a few questions and we’ll fill in forms CMS-40B and CMS-L564 for you. Then download them, sign, and send them to Social Security."
     breadcrumbs={breadcrumbs}
   >
-    <p class="fx__private"><span aria-hidden="true">🔒</span> <strong>Private by design:</strong> everything you type stays on this device. Nothing is sent to us or anyone else.</p>
+    <div class="fx__choose">
+      <p class="fx__choose-h">Rather have us do it?</p>
+      <p class="fx__choose-p">Send your answers to 602Medicare and we’ll fill out both forms for you, then call to go over them before you sign.</p>
+      <a class="btn" href="https://my.gogurux.com/f/ypfeoie6fdppazyn6j7g/part-b-forms" target="_blank" rel="noopener">Have us fill them out for me ↗</a>
+    </div>
+    <p class="fx__private"><span aria-hidden="true">🔒</span> <strong>Or do it yourself below, privately:</strong> everything you type stays on this device. Nothing is sent to us or anyone else.</p>
   </PageHero>
 
   <section class="section" data-caustics="0.2">
@@ -263,6 +268,9 @@ const schemaNodes = [
 
 <style>
   .fx [hidden] { display: none !important; }
+  .fx__choose { max-width: 46rem; margin-bottom: var(--s-4); padding: var(--s-5); border-radius: 14px; background: var(--navy); color: #fff; }
+  .fx__choose-h { margin: 0 0 var(--s-2); font-family: var(--font-display); font-size: var(--t-xl); color: #fff; }
+  .fx__choose-p { margin: 0 0 var(--s-4); color: #dfe5f2; line-height: 1.6; }
   .fx { display: grid; gap: var(--s-6); max-width: 46rem; }
   .fx__private { display: inline-block; padding: var(--s-3) var(--s-4); border-radius: 10px; background: var(--surface); border: 1px solid var(--rule-soft); font-size: var(--t-sm); }
   .fx__form fieldset { margin: 0 0 var(--s-5); padding: var(--s-5); border: 1px solid var(--rule-soft); border-radius: 14px; background: var(--surface); display: grid; gap: var(--s-4); }

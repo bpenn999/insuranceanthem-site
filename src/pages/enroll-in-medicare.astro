@@ -37,6 +37,8 @@ const SSA_ACCOUNT = 'https://www.ssa.gov/myaccount/';
 const SSA_OFFICE = 'https://www.ssa.gov/locator';
 const FORM_40B = '/forms/cms-40b.pdf';
 const BOOK = `${site.consult.url}?topic=t65`;
+/** X (GoGuruX) form: answers land in Brian's CRM (BAA), the x-call-notes job fills the PDFs into the contact's Documents and tasks Mar. */
+const XFORM = 'https://my.gogurux.com/f/ypfeoie6fdppazyn6j7g/part-b-forms';
 const FORM_L564 = '/forms/cms-l564.pdf';
 
 type Step = { h: string; p: string; links?: { label: string; href: string; primary?: boolean; ext?: boolean }[]; tip?: string };
@@ -88,13 +90,13 @@ const employer: Step[] = [
   },
   {
     h: 'Fill out form CMS-40B',
-    p: 'This is your application for Part B. Answer a few questions and we’ll fill it out for you, right on your device, or download the blank form. Then sign it.',
-    links: [{ label: 'Fill it out online for me', href: '/enroll-in-medicare/forms/', primary: true }, { label: 'Download blank CMS-40B (PDF)', href: FORM_40B }],
+    p: 'This is your application for Part B. Send us your answers and we’ll fill it out for you and go over it with you before you sign. Or fill it out yourself online.',
+    links: [{ label: 'Have us fill it out for you', href: XFORM, primary: true, ext: true }, { label: 'Fill it out yourself online', href: '/enroll-in-medicare/forms/' }, { label: 'Blank CMS-40B (PDF)', href: FORM_40B }],
   },
   {
     h: 'Have your employer fill out form CMS-L564',
     p: 'You fill in Section A. Your employer’s HR or benefits office fills in Section B to confirm your group coverage. Ask early, because this is the step that usually takes longest.',
-    links: [{ label: 'Fill out my part online', href: '/enroll-in-medicare/forms/', primary: true }, { label: 'Download blank CMS-L564 (PDF)', href: FORM_L564 }],
+    links: [{ label: 'Have us fill it out for you', href: XFORM, primary: true, ext: true }, { label: 'Fill it out yourself online', href: '/enroll-in-medicare/forms/' }, { label: 'Blank CMS-L564 (PDF)', href: FORM_L564 }],
     tip: 'If your employer can’t complete it, Social Security can accept other proof of coverage, such as pay stubs or W-2s showing health premiums. Call us and we’ll help you sort it out.',
   },
   {
