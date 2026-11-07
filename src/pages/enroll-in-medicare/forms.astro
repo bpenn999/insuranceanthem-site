@@ -125,11 +125,12 @@ const schemaNodes = [
 
         <fieldset>
           <legend><span class="fx__n">3</span> When should Part B start?</legend>
-          <p class="fx__p">If you’re still on the employer plan (or in the first full month off it), you can pick your start date. Most people pick the 1st of the month after their employer coverage ends.</p>
+          <p class="fx__p">If you’re still on the employer plan (or in the first full month off it), you can pick your start date. Most people want it to start the 1st of the month after their employer coverage ends, so there’s no gap.</p>
           <div class="fx__radio fx__radio--stack" role="radiogroup">
-            <label><input type="radio" name="start" value="later" checked /> A later month (up to 3 months after I sign up):
-              <input name="startMonth" class="fx__inline" placeholder="01/2027" inputmode="numeric" maxlength="7" /></label>
+            <label><input type="radio" name="start" value="after" checked /> <span><strong>The 1st of the month after my employer coverage ends</strong> (most people)</span></label>
             <label><input type="radio" name="start" value="now" /> The 1st of the month I send this in</label>
+            <label><input type="radio" name="start" value="later" /> A later month (up to 3 months after I sign up):
+              <input name="startMonth" class="fx__inline" placeholder="01/2027" inputmode="numeric" maxlength="7" /></label>
             <label><input type="radio" name="start" value="none" /> Not sure. Leave it blank and I’ll ask</label>
           </div>
         </fieldset>
@@ -243,6 +244,12 @@ const schemaNodes = [
       if (d.required === 'yes') { c('CheckBox1-2-4-1'); if (d.requiredWhy?.trim()) t('1-2-4-3', d.requiredWhy.trim()); } else c('CheckBox1-2-4-2');
       if (d.start === 'now') c('CheckBox1-2-4-4');
       if (sm) { c('CheckBox1-2-4-5'); t('1-2-4-6', sm[0]); t('1-2-4-7', sm[1]); }
+      if (d.start === 'after') {
+        if (!ce) throw new Error('To start Part B the month after your coverage ends, enter when your health coverage ends (or pick another option).');
+        let mm = +ce[0] + 1, yy = +ce[1]; if (mm > 12) { mm = 1; yy++; }
+        const now = new Date(); const cur = now.getFullYear() * 12 + now.getMonth(); const tgt = yy * 12 + (mm - 1);
+        if (tgt <= cur) c('CheckBox1-2-4-4'); else { c('CheckBox1-2-4-5'); t('1-2-4-6', String(mm).padStart(2, '0')); t('1-2-4-7', String(yy)); }
+      }
 
       // ── CMS-L564 Section A ──
       const l = await load('/forms/cms-l564.pdf');
