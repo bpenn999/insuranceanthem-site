@@ -182,11 +182,17 @@ const schemaNodes = [
   });
 
   const digits = (v: string) => v.replace(/\D/g, '');
+  const MON = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'];
   const my = (v: string, label: string) => {
-    const m = v.trim().match(/^(\d{1,2})\s*[\/\-]\s*(\d{4})$/);
-    if (!m || +m[1] < 1 || +m[1] > 12) throw new Error(`${label}: use month/year, like 03/2010.`);
-    return [m[1].padStart(2, '0'), m[2]];
+    const x = v.trim().toLowerCase(); let m: RegExpMatchArray | null;
+    let r: string[] | null = null;
+    if ((m = x.match(/^(\d{1,2})\s*[\/\-.]\s*(?:\d{1,2}\s*[\/\-.]\s*)?(\d{4})$/))) r = +m[1] >= 1 && +m[1] <= 12 ? [m[1].padStart(2, '0'), m[2]] : null;
+    else if ((m = x.match(/^(\d{4})\s*[\/\-.]\s*(\d{1,2})(?:\s*[\/\-.]\s*\d{1,2})?$/))) r = +m[2] >= 1 && +m[2] <= 12 ? [m[2].padStart(2, '0'), m[1]] : null;
+    else if ((m = x.match(/^([a-z]{3})[a-z]*\.?\s*(?:\d{1,2},?\s*)?(\d{4})$/)) && MON.includes(m[1])) r = [String(MON.indexOf(m[1]) + 1).padStart(2, '0'), m[2]];
+    if (!r) throw new Error(`${label}: enter a date like 03/2010 or 03/01/2010.`);
+    return r;
   };
+
 
   async function load(path: string) {
     const doc = await PDFDocument.load(await (await fetch(path)).arrayBuffer());
