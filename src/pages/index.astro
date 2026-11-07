@@ -86,6 +86,10 @@ const faqSchema = {
           </a>
         </div>
 
+        <p class="hero__enroll">
+          <a href="/enroll-in-medicare/">New to Medicare? Follow our step-by-step enrollment guide →</a>
+        </p>
+
         <p class="hero__meta">
           <strong>{site.agent.name}</strong> · {site.agent.title} · NPN {site.agent.npn}
         </p>
@@ -465,6 +469,9 @@ const faqSchema = {
     margin-top: var(--s-7);
   }
 
+  .hero__enroll { margin-top: var(--s-4); font-size: var(--t-base); }
+  .hero__enroll a { color: #fff; font-weight: 700; text-decoration: underline; text-decoration-color: rgba(255,255,255,.45); text-underline-offset: 4px; }
+  .hero__enroll a:hover { text-decoration-color: #fff; }
   .hero__meta {
     margin-top: var(--s-6);
     padding-top: var(--s-5);

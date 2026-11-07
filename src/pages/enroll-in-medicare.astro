@@ -1,0 +1,415 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import CtaBand from '../components/CtaBand.astro';
+import Faq from '../components/Faq.astro';
+import site, { abs } from '../config/site';
+
+/**
+ * How to enroll in Medicare — the step-by-step page (Brian, 2026-11-07).
+ *
+ * Two paths: turning 65, and leaving employer coverage. Linked from the
+ * site-wide strip at the very top of every page (EnrollStrip.astro), the home
+ * hero and the mobile menu, because Brian wants it findable from anywhere.
+ *
+ * ⚠️ Social Security URLs were checked in a real browser on 2026-11-07
+ * (ssa.gov returns 403 to scripts, so link checkers can't verify them):
+ *   /medicare/sign-up, /medicare/sign-up/part-b-only, /myaccount/, /locator.
+ * The CMS-40B and CMS-L564 links point at OUR copies in /forms/ so a cms.gov
+ * reshuffle can't break them. No dollar figures on this page on purpose —
+ * they change every January.
+ */
+
+const PATH = '/enroll-in-medicare/';
+const title = 'How to Enroll in Medicare: Step by Step (Turning 65 or Leaving Work)';
+const description = `Step-by-step Medicare sign-up in Arizona: turning 65, or leaving employer coverage with forms CMS-40B and L564. Free help: ${site.phone.display}.`;
+const published = '2026-11-07';
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'How to Enroll in Medicare', path: PATH },
+];
+
+const SSA_SIGNUP = 'https://www.ssa.gov/medicare/sign-up';
+const SSA_PARTB = 'https://www.ssa.gov/medicare/sign-up/part-b-only';
+const SSA_ACCOUNT = 'https://www.ssa.gov/myaccount/';
+const SSA_OFFICE = 'https://www.ssa.gov/locator';
+const FORM_40B = '/forms/cms-40b.pdf';
+const BOOK = `${site.consult.url}?topic=t65`;
+const FORM_L564 = '/forms/cms-l564.pdf';
+
+type Step = { h: string; p: string; links?: { label: string; href: string; primary?: boolean; ext?: boolean }[]; tip?: string };
+
+const t65: Step[] = [
+  {
+    h: 'Check whether you’re signed up automatically',
+    p: 'If you already get Social Security (or Railroad Retirement) benefits at least 4 months before you turn 65, you’re enrolled in Part A and Part B automatically. Your Medicare card arrives in the mail about 3 months before your 65th birthday. If that’s you, skip to step 5.',
+  },
+  {
+    h: 'Know your 7-month window',
+    p: 'Your Initial Enrollment Period starts 3 months before the month you turn 65 and ends 3 months after it. Sign up in the first 3 months and your coverage starts on the 1st of your birthday month. Wait until your birthday month or later and it starts the month after you sign up.',
+    links: [{ label: 'See my enrollment timeline', href: '/tools/enrollment-timeline/' }],
+    tip: 'Sign up early. There’s no benefit to waiting, and waiting past your window can mean a late penalty that lasts for life.',
+  },
+  {
+    h: 'Create your my Social Security account',
+    p: 'Social Security’s online application asks you to sign in. You’ll do that with a Login.gov or ID.me account. Have your email, phone and a government photo ID (like your driver’s license) ready.',
+    links: [{ label: 'How to set up your account', href: '#account' }],
+  },
+  {
+    h: 'Apply for Part A and Part B online',
+    p: 'On Social Security’s “Sign up for Medicare” page, choose “Apply for myself.” Prefer to talk to someone? Call Social Security at 1-800-772-1213, or visit your local office.',
+    links: [
+      { label: 'Apply at Social Security', href: SSA_SIGNUP, primary: true, ext: true },
+      { label: 'Find your local office', href: SSA_OFFICE, ext: true },
+    ],
+  },
+  {
+    h: 'Watch for your Medicare card',
+    p: 'Your red, white and blue card shows your Medicare number and the dates Part A and Part B start. Keep it handy, because you’ll need it to choose your coverage.',
+  },
+  {
+    h: 'Choose how you’ll get your coverage',
+    p: 'Original Medicare doesn’t cover everything. Most people add either a Medicare Supplement plus a Part D drug plan, or a Medicare Advantage plan. Your 6-month Medicare Supplement open enrollment starts the month your Part B begins. During those 6 months you can’t be turned down for your health.',
+    links: [{ label: 'Book my free enrollment call', href: BOOK, primary: true }],
+  },
+];
+
+const employer: Step[] = [
+  {
+    h: 'Make sure you qualify for the 8-month window',
+    p: 'You get a penalty-free Special Enrollment Period if you (or your spouse) had health coverage through current employment since turning 65, and the employer has 20 or more employees. You have 8 months from when the job or the coverage ends, whichever comes first.',
+    tip: 'COBRA and retiree coverage don’t count. The 8-month clock starts when the job ends, not when COBRA runs out.',
+  },
+  {
+    h: 'Pick your Part B start date',
+    p: 'Most people choose the 1st of the month after their employer coverage ends, so there’s no gap. You’ll write this date on the CMS-40B.',
+  },
+  {
+    h: 'Fill out form CMS-40B',
+    p: 'This is your application for Part B. Fill in Section 1 (your information) and Section 2 (your employer coverage dates and start date), then sign it.',
+    links: [{ label: 'Download CMS-40B (PDF)', href: FORM_40B, primary: true }],
+  },
+  {
+    h: 'Have your employer fill out form CMS-L564',
+    p: 'You fill in Section A. Your employer’s HR or benefits office fills in Section B to confirm your group coverage. Ask early, because this is the step that usually takes longest.',
+    links: [{ label: 'Download CMS-L564 (PDF)', href: FORM_L564, primary: true }],
+    tip: 'If your employer can’t complete it, Social Security can accept other proof of coverage, such as pay stubs or W-2s showing health premiums. Call us and we’ll help you sort it out.',
+  },
+  {
+    h: 'Send both forms to Social Security',
+    p: 'Upload them online through Social Security’s Part B application, or fax or mail them to your local Social Security office. Make copies first.',
+    links: [
+      { label: 'Upload at Social Security', href: SSA_PARTB, primary: true, ext: true },
+      { label: 'Find your local office', href: SSA_OFFICE, ext: true },
+    ],
+  },
+  {
+    h: 'Sign up for Part A if you haven’t yet',
+    p: 'Part A is usually premium-free. If you don’t have it yet, apply online at Social Security.',
+    links: [{ label: 'Apply at Social Security', href: SSA_SIGNUP, ext: true }],
+    tip: 'Have a Health Savings Account (HSA)? Part A can start up to 6 months back, so stop HSA contributions 6 months before you sign up. That avoids a tax penalty.',
+  },
+  {
+    h: 'Line up your drug coverage and your plan',
+    p: 'You have 2 months after your employer coverage ends to join a Part D drug plan or Medicare Advantage plan without a penalty. Keep the letter from your employer that says your drug coverage was “creditable.” Your 6-month Medicare Supplement window starts when Part B begins.',
+    links: [{ label: 'Book my free enrollment call', href: BOOK, primary: true }],
+  },
+];
+
+const faqs = [
+  {
+    q: 'Do I need a my Social Security account to sign up for Medicare?',
+    a: 'To apply online, yes. Social Security asks you to sign in with Login.gov or ID.me. If you would rather not set one up, you can sign up by phone at 1-800-772-1213 or in person at your local Social Security office.',
+  },
+  {
+    q: 'Can I delay Medicare if I’m still working?',
+    a: 'Usually, if your health coverage comes from current employment (yours or your spouse’s) and the employer has 20 or more employees. Many people take premium-free Part A and delay Part B. If the employer has fewer than 20 employees, Medicare usually pays first at 65, so delaying can leave you underinsured. Check with your benefits office before you rely on it.',
+  },
+  {
+    q: 'What if my employer won’t fill out the CMS-L564?',
+    a: 'Social Security can accept other proof of group coverage, such as pay stubs showing health insurance premiums, W-2s showing pre-tax premiums, or a statement from the insurer. Send what you have with your CMS-40B and call us if you get stuck.',
+  },
+  {
+    q: 'Does COBRA count as employer coverage for Medicare?',
+    a: 'No. COBRA and retiree coverage are not coverage through current employment. Your 8-month Part B window starts when the job ends, even if COBRA continues longer.',
+  },
+  {
+    q: 'Does it cost anything to have 602Medicare help me enroll?',
+    a: `No. There is no fee for the help, the forms or the plan comparison. Call ${site.phone.display} or book a time online, and ${site.agent.name} will walk you through each step.`,
+  },
+];
+
+const howTo = (name: string, steps: Step[], id: string) => ({
+  '@type': 'HowTo',
+  '@id': `${abs(PATH)}#${id}`,
+  name,
+  step: steps.map((s, i) => ({ '@type': 'HowToStep', position: i + 1, name: s.h, text: s.p })),
+});
+
+const schemaNodes = [
+  {
+    '@type': 'WebPage',
+    '@id': `${abs(PATH)}#webpage`,
+    url: abs(PATH),
+    name: title,
+    description,
+    isPartOf: { '@id': `${site.origin}/#website` },
+    inLanguage: 'en-US',
+    datePublished: published,
+    dateModified: published,
+    author: { '@id': `${site.origin}/#organization` },
+    reviewedBy: { '@id': `${site.origin}/#brian-penner` },
+    publisher: { '@id': `${site.origin}/#organization` },
+  },
+  howTo('How to enroll in Medicare when you turn 65', t65, 'turning-65'),
+  howTo('How to enroll in Medicare Part B when leaving employer coverage', employer, 'leaving-employer'),
+  {
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+];
+---
+<BaseLayout
+  title={title}
+  description={description}
+  path={PATH}
+  breadcrumbs={breadcrumbs}
+  schemaNodes={schemaNodes}
+  publishedAt={published}
+  modifiedAt={published}
+>
+  <PageHero
+    eyebrow="Step by step · No cost for our help"
+    title="How to Enroll in Medicare"
+    lede="Every step is below. But you don’t have to do this alone: book a free call and we’ll enroll you, start to finish, by phone."
+    breadcrumbs={breadcrumbs}
+  >
+    <div class="en__urgent">
+      <p class="en__urgent-h">Let us enroll you. It’s free, and it’s faster.</p>
+      <p class="en__urgent-p">Medicare runs on deadlines. Miss your window or pick the wrong start date and you can face a gap in coverage or a late penalty that lasts for life. On one call we’ll check your dates, do the application with you and line up your coverage.</p>
+      <div class="en__urgent-a">
+        <a class="btn btn--lg" href={BOOK} data-cta="enroll-hero-book">Book my free enrollment call</a>
+        <a class="btn btn--ghost btn--lg" href={site.phone.href} data-cta="enroll-hero-call">Call {site.phone.display}</a>
+      </div>
+      <p class="en__urgent-f">Fall is our busiest season. Grab a time now, before your window gets close.</p>
+    </div>
+    <p class="en__diy">Prefer to do it yourself? Pick your path:</p>
+    <div class="en__paths">
+      <a class="en__path" href="#turning-65">
+        <span class="en__path-k">Path 1</span>
+        <span class="en__path-t">I’m turning 65</span>
+        <span class="en__path-s">6 steps · sign up online with Social Security</span>
+        <span class="en__path-go" aria-hidden="true">→</span>
+      </a>
+      <a class="en__path" href="#leaving-employer">
+        <span class="en__path-k">Path 2</span>
+        <span class="en__path-t">I’m leaving my employer’s health plan</span>
+        <span class="en__path-s">7 steps · forms CMS-40B and CMS-L564</span>
+        <span class="en__path-go" aria-hidden="true">→</span>
+      </a>
+    </div>
+  </PageHero>
+
+  <!-- ── Account ──────────────────────────────────────────────────────── -->
+  <section class="section band--tint" id="account" data-caustics="0.22">
+    <div class="wrap">
+      <SectionHead eyebrow="Before you start" title="Set up your my Social Security account" />
+      <div class="en__acct">
+        <ol class="en__mini">
+          <li><strong>Go to Social Security’s account page</strong> and choose how to sign in.</li>
+          <li><strong>Pick Login.gov</strong> if you live in the U.S. and aren’t sure. Pick <strong>ID.me</strong> if you already have one.</li>
+          <li><strong>Have these ready:</strong> your email, a phone that gets texts, and a government photo ID like your driver’s license. ID.me also needs a camera for a selfie.</li>
+          <li><strong>Sign in to my Social Security</strong> with your new account. You’ll use it to apply for Medicare and check your status.</li>
+        </ol>
+        <div class="en__acct-cta">
+          <a class="btn" href={SSA_ACCOUNT} target="_blank" rel="noopener">Create my account at Social Security ↗</a>
+          <p class="en__fine">You’ll leave our site for ssa.gov. We never ask for your Login.gov or ID.me password.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── Path 1 ───────────────────────────────────────────────────────── -->
+  <section class="section" id="turning-65" data-caustics="0.3">
+    <div class="wrap">
+      <SectionHead eyebrow="Path 1" title="Enrolling when you turn 65" />
+      <ol class="en__steps">
+        {t65.map((s, i) => (
+          <>
+          <li class="en__step">
+            <span class="en__num tabular" aria-hidden="true">{i + 1}</span>
+            <div class="en__body">
+              <h3>{s.h}</h3>
+              <p>{s.p}</p>
+              {s.tip && <p class="en__tip"><strong>Tip:</strong> {s.tip}</p>}
+              {s.links && (
+                <div class="en__links">
+                  {s.links.map((l) => (
+                    <a class:list={['btn', { 'btn--ghost': !l.primary }]} href={l.href}
+                       {...(l.ext ? { target: '_blank', rel: 'noopener' } : {})}>{l.label}{l.ext ? ' ↗' : ''}</a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </li>
+          {i === 2 && (
+            <li class="en__cta">
+              <p class="en__cta-h">Want us to do the rest with you?</p>
+              <p class="en__cta-p">Book a free call before you apply. We’ll double-check your dates and fill out the application with you, so nothing gets missed.</p>
+              <a class="btn" href={BOOK}>Book my free enrollment call</a>
+            </li>
+          )}
+          </>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── Path 2 ───────────────────────────────────────────────────────── -->
+  <section class="section band--tint" id="leaving-employer" data-caustics="0.24">
+    <div class="wrap">
+      <SectionHead eyebrow="Path 2" title="Enrolling when you leave employer coverage" />
+      <ol class="en__steps">
+        {employer.map((s, i) => (
+          <>
+          <li class="en__step">
+            <span class="en__num tabular" aria-hidden="true">{i + 1}</span>
+            <div class="en__body">
+              <h3>{s.h}</h3>
+              <p>{s.p}</p>
+              {s.tip && <p class="en__tip"><strong>Tip:</strong> {s.tip}</p>}
+              {s.links && (
+                <div class="en__links">
+                  {s.links.map((l) => (
+                    <a class:list={['btn', { 'btn--ghost': !l.primary }]} href={l.href}
+                       {...(l.ext ? { target: '_blank', rel: 'noopener' } : {})}>{l.label}{l.ext ? ' ↗' : ''}</a>
+                  ))}
+                </div>
+              )}
+            </div>
+          </li>
+          {i === 2 && (
+            <li class="en__cta">
+              <p class="en__cta-h">Want us to do the rest with you?</p>
+              <p class="en__cta-p">Book a free call before you apply. We’ll double-check your dates and fill out the application with you, so nothing gets missed.</p>
+              <a class="btn" href={BOOK}>Book my free enrollment call</a>
+            </li>
+          )}
+          </>
+        ))}
+      </ol>
+      <p class="en__more">
+        More detail: <a class="link" href="/learn/special-enrollment-periods/">Special Enrollment Periods</a> ·
+        <a class="link" href="/learn/late-enrollment-penalties/">Late enrollment penalties</a> ·
+        <a class="link" href="/tools/late-enrollment-penalty-calculator/">Penalty calculator</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ── FAQ ──────────────────────────────────────────────────────────── -->
+  <section class="section" data-caustics="0.26">
+    <div class="wrap wrap--narrow">
+      <SectionHead eyebrow="Common questions" title="Signing up for Medicare" />
+      <Faq items={faqs} openFirst />
+    </div>
+  </section>
+
+  <CtaBand
+    title="Want us to do it with you?"
+    body="We’ll go through every step by phone, check your forms before you send them, and then help you pick the right coverage. No cost to you."
+    cta="Book my free enrollment call"
+  />
+</BaseLayout>
+
+<style>
+  .en__urgent {
+    max-width: 52rem;
+    margin-bottom: var(--s-6);
+    padding: var(--s-5) var(--s-6);
+    border-radius: 16px;
+    background: var(--navy);
+    color: #fff;
+    box-shadow: 0 14px 34px rgb(1 20 89 / 0.22);
+  }
+  .en__urgent-h { margin: 0 0 var(--s-2); font-family: var(--font-display); font-size: var(--t-2xl); line-height: 1.2; color: #fff; }
+  .en__urgent-p { margin: 0 0 var(--s-4); font-size: var(--t-base); line-height: 1.6; color: #dfe5f2; }
+  .en__urgent-a { display: flex; flex-wrap: wrap; gap: var(--s-3); }
+  .en__urgent .btn--ghost { color: #fff; border-color: rgb(255 255 255 / 0.6); }
+  .en__urgent-f { margin: var(--s-4) 0 0; font-size: var(--t-sm); color: var(--red-lift, #ff5a5f); font-weight: 700; }
+  .en__diy { margin: 0 0 var(--s-3); font-size: var(--t-sm); font-weight: 700; color: var(--ink-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+  .en__cta {
+    padding: var(--s-5) var(--s-6);
+    border-radius: 14px;
+    border: 2px solid var(--red);
+    background: color-mix(in srgb, var(--red) 5%, var(--surface));
+  }
+  .en__cta-h { margin: 0 0 var(--s-2); font-family: var(--font-display); font-size: var(--t-xl); color: var(--navy); }
+  .en__cta-p { margin: 0 0 var(--s-4); font-size: var(--t-base); line-height: 1.6; color: var(--ink-body); }
+  .en__paths { display: grid; grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr)); gap: var(--s-4); max-width: 52rem; }
+  .en__path {
+    position: relative;
+    display: grid;
+    gap: 0.25rem;
+    padding: var(--s-5) var(--s-6) var(--s-5) var(--s-5);
+    border: 1px solid var(--rule);
+    border-left: 5px solid var(--red);
+    border-radius: 14px;
+    background: var(--surface);
+    box-shadow: 0 8px 24px rgb(1 20 89 / 0.08);
+    color: var(--ink);
+    text-decoration: none;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+  }
+  .en__path:hover { transform: translateY(-2px); box-shadow: 0 12px 30px rgb(1 20 89 / 0.14); }
+  .en__path-k { font-size: var(--t-xs); font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--red); }
+  .en__path-t { font-family: var(--font-display); font-size: var(--t-xl); line-height: 1.2; color: var(--navy); }
+  .en__path-s { font-size: var(--t-sm); color: var(--ink-muted); }
+  .en__path-go { position: absolute; right: var(--s-5); top: 50%; translate: 0 -50%; font-size: 1.5rem; color: var(--red); }
+
+  .en__acct { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--s-6); align-items: start; }
+  .en__mini { margin: 0; padding-left: 1.3rem; display: grid; gap: var(--s-3); font-size: var(--t-base); line-height: 1.6; }
+  .en__acct-cta { padding: var(--s-5); border: 1px solid var(--rule-soft); border-radius: 14px; background: var(--surface); }
+  .en__fine { margin-top: var(--s-3); font-size: var(--t-xs); color: var(--ink-muted); }
+
+  .en__steps { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--s-4); max-width: 54rem; counter-reset: none; }
+  .en__step {
+    display: grid;
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: var(--s-4);
+    padding: var(--s-5);
+    border: 1px solid var(--rule-soft);
+    border-radius: 14px;
+    background: var(--surface);
+  }
+  .en__num {
+    display: grid;
+    place-items: center;
+    width: 2.75rem;
+    height: 2.75rem;
+    border-radius: 50%;
+    background: var(--navy);
+    color: #fff;
+    font-weight: 700;
+    font-size: var(--t-lg);
+  }
+  .en__body h3 { margin: 0.35rem 0 var(--s-2); font-size: var(--t-lg); color: var(--navy); }
+  .en__body p { margin: 0; font-size: var(--t-base); line-height: 1.65; color: var(--ink-body); }
+  .en__tip {
+    margin-top: var(--s-3) !important;
+    padding: var(--s-3) var(--s-4);
+    border-left: 4px solid var(--red);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--red) 6%, var(--surface));
+    font-size: var(--t-sm) !important;
+  }
+  .en__links { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-top: var(--s-4); }
+  .en__more { margin-top: var(--s-6); font-size: var(--t-sm); color: var(--ink-muted); }
+
+  @media (max-width: 760px) {
+    .en__acct { grid-template-columns: 1fr; }
+    .en__step { grid-template-columns: 1fr; gap: var(--s-3); }
+    .en__path-go { display: none; }
+  }
+</style>

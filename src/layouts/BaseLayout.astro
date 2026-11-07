@@ -3,6 +3,7 @@ import '../styles/global.css';
 import BaseHead from '../components/BaseHead.astro';
 import Schema from '../components/Schema.astro';
 import Header from '../components/Header.astro';
+import EnrollStrip from '../components/EnrollStrip.astro';
 import Footer from '../components/Footer.astro';
 import MobileCallBar from '../components/MobileCallBar.astro';
 import HelpLauncher from '../components/HelpLauncher.astro';
@@ -76,6 +77,7 @@ const {
     <canvas class="caustics" aria-hidden="true"></canvas>
 
     <div class="page-shell">
+      {!landing && <EnrollStrip />}
       {!landing && <Header />}
       <main id="main">
         <slot />

@@ -1,0 +1,52 @@
+---
+/**
+ * The slim strip above the header on every page (Brian, 2026-11-07: "a link to
+ * it somewhere easily on my main page, even in the top somewhere, this is
+ * important"). It sits OUTSIDE the sticky header so it scrolls away and the
+ * header still pins to the top. Hidden on the guide itself.
+ */
+const PATH = '/enroll-in-medicare/';
+const here = Astro.url.pathname === PATH;
+---
+{!here && (
+  <div class="enroll-strip">
+    <a href={PATH} class="enroll-strip__link">
+      <span class="enroll-strip__tag">New to Medicare?</span>
+      <span class="enroll-strip__text">Step-by-step enrollment guide: turning 65 or leaving work, with the forms</span>
+      <span class="enroll-strip__go" aria-hidden="true">→</span>
+    </a>
+  </div>
+)}
+
+<style>
+  .enroll-strip { background: var(--navy); }
+  .enroll-strip__link {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.6rem;
+    padding: 0.55rem 1rem;
+    color: #fff;
+    text-decoration: none;
+    font-size: var(--t-sm);
+    line-height: 1.35;
+    text-align: center;
+  }
+  .enroll-strip__tag {
+    flex: none;
+    padding: 0.15rem 0.55rem;
+    border-radius: 999px;
+    background: var(--red);
+    font-weight: 700;
+    font-size: var(--t-xs);
+    letter-spacing: 0.02em;
+  }
+  .enroll-strip__text { text-decoration: underline; text-decoration-color: rgb(255 255 255 / 0.35); text-underline-offset: 3px; }
+  .enroll-strip__link:hover .enroll-strip__text { text-decoration-color: #fff; }
+  .enroll-strip__go { color: var(--red-lift, #ff5a5f); font-weight: 700; }
+  @media (max-width: 640px) {
+    .enroll-strip__text { display: none; }
+    .enroll-strip__link::after { content: 'See the step-by-step guide'; text-decoration: underline; text-underline-offset: 3px; }
+    .enroll-strip__go { order: 3; }
+  }
+</style>
