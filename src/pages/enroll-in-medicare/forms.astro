@@ -1,0 +1,302 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageHero from '../../components/PageHero.astro';
+import site, { abs } from '../../config/site';
+
+/**
+ * Fill CMS-40B + CMS-L564 on the visitor's own device (Brian, 2026-11-07:
+ * "have them fill it on their device").
+ *
+ * ⚠️ PRIVACY IS THE DESIGN. The SSN and Medicare number are typed into this page
+ * and written into the PDFs by pdf-lib IN THE BROWSER. Nothing is posted,
+ * stored, logged or sent anywhere — no fetch except loading the two blank PDFs
+ * from /forms/. Do not add analytics events with field values, do not post this
+ * form to /api/lead, and do not add a "send to Brian" button without a secure
+ * upload behind it.
+ *
+ * Field names were read from the 07/2025 CMS-40B and 03/2025 CMS-L564 with
+ * pypdf on 2026-11-07. If CMS revises a form, re-check the names (a missing
+ * field throws and the page shows the error rather than a half-filled form).
+ */
+
+const PATH = '/enroll-in-medicare/forms/';
+const title = 'Fill Out Medicare Forms CMS-40B and CMS-L564 Online';
+const description = 'Fill out CMS-40B and CMS-L564 on your own device, then download them ready to sign. Nothing you type is sent to us. Free help: ' + site.phone.display + '.';
+const published = '2026-11-07';
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'How to Enroll in Medicare', path: '/enroll-in-medicare/' },
+  { name: 'Fill out your forms', path: PATH },
+];
+const BOOK = `${site.consult.url}?topic=t65`;
+const schemaNodes = [
+  {
+    '@type': 'WebPage',
+    '@id': `${abs(PATH)}#webpage`,
+    url: abs(PATH),
+    name: title,
+    description,
+    isPartOf: { '@id': `${site.origin}/#website` },
+    inLanguage: 'en-US',
+    datePublished: published,
+    dateModified: published,
+    publisher: { '@id': `${site.origin}/#organization` },
+  },
+];
+---
+<BaseLayout title={title} description={description} path={PATH} breadcrumbs={breadcrumbs}
+  schemaNodes={schemaNodes} publishedAt={published} modifiedAt={published}>
+  <PageHero
+    eyebrow="Leaving employer coverage"
+    title="Fill out your Part B forms"
+    lede="Answer a few questions and we’ll fill in forms CMS-40B and CMS-L564 for you. Then download them, sign, and send them to Social Security."
+    breadcrumbs={breadcrumbs}
+  >
+    <p class="fx__private"><span aria-hidden="true">🔒</span> <strong>Private by design:</strong> everything you type stays on this device. Nothing is sent to us or anyone else.</p>
+  </PageHero>
+
+  <section class="section" data-caustics="0.2">
+    <div class="wrap fx">
+      <form id="fx" class="fx__form" autocomplete="on" novalidate>
+        <fieldset>
+          <legend><span class="fx__n">1</span> About you</legend>
+          <div class="fx__grid fx__grid--name">
+            <label>First name<input name="first" required autocomplete="given-name" /></label>
+            <label>Middle<input name="middle" autocomplete="additional-name" /></label>
+            <label>Last name<input name="last" required autocomplete="family-name" /></label>
+            <label>Suffix<input name="suffix" placeholder="Jr., Sr." autocomplete="honorific-suffix" /></label>
+          </div>
+          <label>Medicare number <span class="fx__hint">On your red, white and blue card (11 letters and numbers)</span>
+            <input name="mbi" required maxlength="13" placeholder="1EG4-TE5-MK72" autocomplete="off" spellcheck="false" style="text-transform:uppercase" /></label>
+          <label>Mailing address<input name="street" required autocomplete="address-line1" /></label>
+          <div class="fx__grid fx__grid--city">
+            <label>City<input name="city" required autocomplete="address-level2" /></label>
+            <label>State<input name="state" required maxlength="2" value="AZ" autocomplete="address-level1" style="text-transform:uppercase" /></label>
+            <label>ZIP<input name="zip" required inputmode="numeric" maxlength="5" autocomplete="postal-code" /></label>
+          </div>
+          <div class="fx__grid fx__grid--2">
+            <label>Phone<input name="phone" required inputmode="tel" autocomplete="tel" placeholder="10-digit number" /></label>
+            <label>Email <span class="fx__hint">optional</span><input name="email" type="email" autocomplete="email" /></label>
+          </div>
+          <label>Social Security number <span class="fx__hint">Goes on form CMS-L564 only. It never leaves this device.</span>
+            <input name="ssn" required inputmode="numeric" maxlength="11" placeholder="123-45-6789" autocomplete="off" /></label>
+        </fieldset>
+
+        <fieldset>
+          <legend><span class="fx__n">2</span> The job with the health coverage</legend>
+          <div class="fx__radio" role="radiogroup">
+            <span>Whose job was it?</span>
+            <label><input type="radio" name="whose" value="me" checked /> Mine</label>
+            <label><input type="radio" name="whose" value="spouse" /> My spouse’s</label>
+          </div>
+          <div class="fx__spouse" hidden>
+            <div class="fx__grid fx__grid--2">
+              <label>Spouse’s full name<input name="empName" /></label>
+              <label>Spouse’s Social Security number<input name="empSsn" inputmode="numeric" maxlength="11" autocomplete="off" /></label>
+            </div>
+          </div>
+          <label>Employer’s name<input name="employer" required autocomplete="organization" /></label>
+          <label>Employer’s address<input name="eStreet" required /></label>
+          <div class="fx__grid fx__grid--city">
+            <label>City<input name="eCity" required /></label>
+            <label>State<input name="eState" required maxlength="2" value="AZ" style="text-transform:uppercase" /></label>
+            <label>ZIP<input name="eZip" required inputmode="numeric" maxlength="5" /></label>
+          </div>
+          <div class="fx__grid fx__grid--2">
+            <label>Job started <span class="fx__hint">month/year</span><input name="jobStart" required placeholder="03/2010" inputmode="numeric" maxlength="7" /></label>
+            <label>Job ended <span class="fx__hint">leave blank if still working</span><input name="jobEnd" placeholder="12/2026" inputmode="numeric" maxlength="7" /></label>
+          </div>
+          <div class="fx__grid fx__grid--2">
+            <label>Health coverage started<input name="covStart" required placeholder="03/2010" inputmode="numeric" maxlength="7" /></label>
+            <label>Health coverage ends/ended <span class="fx__hint">blank if not ended</span><input name="covEnd" placeholder="12/2026" inputmode="numeric" maxlength="7" /></label>
+          </div>
+          <div class="fx__radio" role="radiogroup">
+            <span>Has an employer or insurer required you to sign up for Part B?</span>
+            <label><input type="radio" name="required" value="no" checked /> No</label>
+            <label><input type="radio" name="required" value="yes" /> Yes</label>
+          </div>
+          <label class="fx__why" hidden>Explain how and why <span class="fx__hint">attach proof when you send the form</span><textarea name="requiredWhy" rows="2"></textarea></label>
+        </fieldset>
+
+        <fieldset>
+          <legend><span class="fx__n">3</span> When should Part B start?</legend>
+          <p class="fx__p">If you’re still on the employer plan (or in the first full month off it), you can pick your start date. Most people pick the 1st of the month after their employer coverage ends.</p>
+          <div class="fx__radio fx__radio--stack" role="radiogroup">
+            <label><input type="radio" name="start" value="later" checked /> A later month (up to 3 months after I sign up):
+              <input name="startMonth" class="fx__inline" placeholder="01/2027" inputmode="numeric" maxlength="7" /></label>
+            <label><input type="radio" name="start" value="now" /> The 1st of the month I send this in</label>
+            <label><input type="radio" name="start" value="none" /> Not sure. Leave it blank and I’ll ask</label>
+          </div>
+        </fieldset>
+
+        <p class="fx__err" role="alert" hidden></p>
+        <button type="submit" class="btn btn--lg">Fill out my forms</button>
+      </form>
+
+      <aside class="fx__out" id="fx-out" hidden tabindex="-1">
+        <h2>Your forms are ready</h2>
+        <div class="fx__dl">
+          <a class="btn btn--lg" id="dl-40b" download="CMS-40B-filled.pdf">Download CMS-40B</a>
+          <a class="btn btn--lg btn--ghost" id="dl-l564" download="CMS-L564-filled.pdf">Download CMS-L564</a>
+        </div>
+        <ol class="fx__next">
+          <li><strong>Sign and date CMS-40B</strong> on page 3.</li>
+          <li><strong>Give CMS-L564 to your employer’s HR or benefits office</strong> to fill out Section B and sign.</li>
+          <li><strong>Send both to Social Security:</strong> upload them online, or fax or mail them to your local office.
+            <div class="fx__links">
+              <a class="link" href="https://www.ssa.gov/medicare/sign-up/part-b-only" target="_blank" rel="noopener">Upload at Social Security ↗</a>
+              <a class="link" href="https://www.ssa.gov/locator" target="_blank" rel="noopener">Find your local office ↗</a>
+            </div>
+          </li>
+        </ol>
+        <div class="fx__check">
+          <p><strong>Want us to check them before you send them?</strong> One mistake can delay your Part B. Book a free call and we’ll go over both forms with you, then help you pick your coverage.</p>
+          <a class="btn" href={BOOK}>Book my free enrollment call</a>
+          <p class="fx__or">or call <a class="link" href={site.phone.href}>{site.phone.display}</a></p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { PDFDocument, PDFName } from 'pdf-lib';
+
+  const form = document.getElementById('fx') as HTMLFormElement;
+  const out = document.getElementById('fx-out') as HTMLElement;
+  const err = form.querySelector('.fx__err') as HTMLElement;
+  const spouse = form.querySelector('.fx__spouse') as HTMLElement;
+  const why = form.querySelector('.fx__why') as HTMLElement;
+  let urls: string[] = [];
+
+  form.addEventListener('change', () => {
+    const d = new FormData(form);
+    spouse.hidden = d.get('whose') !== 'spouse';
+    why.hidden = d.get('required') !== 'yes';
+  });
+
+  const digits = (v: string) => v.replace(/\D/g, '');
+  const my = (v: string, label: string) => {
+    const m = v.trim().match(/^(\d{1,2})\s*[\/\-]\s*(\d{4})$/);
+    if (!m || +m[1] < 1 || +m[1] > 12) throw new Error(`${label}: use month/year, like 03/2010.`);
+    return [m[1].padStart(2, '0'), m[2]];
+  };
+
+  async function load(path: string) {
+    const doc = await PDFDocument.load(await (await fetch(path)).arrayBuffer());
+    const af = doc.catalog.get(PDFName.of('AcroForm'));
+    const afd = af ? (doc.context.lookup(af) as any) : null;
+    if (afd?.delete) afd.delete(PDFName.of('XFA'));
+    return doc;
+  }
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    err.hidden = true;
+    try {
+      const d = Object.fromEntries(new FormData(form)) as Record<string, string>;
+      const need = ['first', 'last', 'mbi', 'street', 'city', 'state', 'zip', 'phone', 'ssn', 'employer', 'eStreet', 'eCity', 'eState', 'eZip', 'jobStart', 'covStart'];
+      const missing = need.filter((k) => !String(d[k] || '').trim());
+      if (missing.length) throw new Error('Please fill in every field that isn’t marked optional.');
+      const mbi = d.mbi.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      if (mbi.length !== 11) throw new Error('Your Medicare number should be 11 letters and numbers.');
+      const ssn = digits(d.ssn);
+      if (ssn.length !== 9) throw new Error('Your Social Security number should be 9 digits.');
+      const ph = digits(d.phone).replace(/^1(?=\d{10}$)/, '');
+      if (ph.length !== 10) throw new Error('Please enter a 10-digit phone number.');
+      const js = my(d.jobStart, 'Job started');
+      const cs = my(d.covStart, 'Health coverage started');
+      const je = d.jobEnd.trim() ? my(d.jobEnd, 'Job ended') : null;
+      const ce = d.covEnd.trim() ? my(d.covEnd, 'Health coverage ended') : null;
+      const sm = d.start === 'later' ? my(d.startMonth || '', 'Part B start month') : null;
+      const name = [d.first, d.middle, d.last, d.suffix].map((s) => (s || '').trim()).filter(Boolean).join(' ');
+
+      // ── CMS-40B ──
+      const b = await load('/forms/cms-40b.pdf');
+      const f = b.getForm();
+      const t = (k: string, v: string) => f.getTextField(k).setText(v);
+      const c = (k: string) => f.getCheckBox(k).check();
+      t('1-1-1', mbi.slice(0, 4)); t('1-1-2', mbi.slice(4, 7)); t('1-1-3', mbi.slice(7));
+      t('1-2', name);
+      t('1-3-1', d.street.trim()); t('1-3-2', d.city.trim()); t('1-3-3', d.state.trim().toUpperCase().slice(0, 2)); t('1-3-4', digits(d.zip).slice(0, 5));
+      t('1-4-1', ph.slice(0, 3)); t('1-4-2', ph.slice(3, 6)); t('1-4-3', ph.slice(6));
+      if (d.email?.trim()) t('1-5', d.email.trim());
+      c('CheckBox1-2-1-1'); // employer coverage since 65: yes
+      c('CheckBox1-2-2-2'); // international volunteer: no
+      t('1-2-3-1', js[0]); t('1-2-3-2', js[1]);
+      if (je) { t('1-2-3-3', je[0]); t('1-2-3-4', je[1]); } else c('CheckBox1-2-3-5');
+      t('1-2-3-11', cs[0]); t('1-2-3-12', cs[1]);
+      if (ce) { t('1-2-3-13', ce[0]); t('1-2-3-14', ce[1]); } else c('CheckBox1-2-3-15');
+      if (d.required === 'yes') { c('CheckBox1-2-4-1'); if (d.requiredWhy?.trim()) t('1-2-4-3', d.requiredWhy.trim()); } else c('CheckBox1-2-4-2');
+      if (d.start === 'now') c('CheckBox1-2-4-4');
+      if (sm) { c('CheckBox1-2-4-5'); t('1-2-4-6', sm[0]); t('1-2-4-7', sm[1]); }
+
+      // ── CMS-L564 Section A ──
+      const l = await load('/forms/cms-l564.pdf');
+      const g = l.getForm();
+      const u = (k: string, v: string) => g.getTextField(k).setText(v);
+      u('1-1', name);
+      u('1-2-1', ssn.slice(0, 3)); u('1-2-2', ssn.slice(3, 5)); u('1-2-3', ssn.slice(5));
+      if (d.whose === 'spouse') {
+        if (d.empName?.trim()) u('1-3', d.empName.trim());
+        const es = digits(d.empSsn || '');
+        if (es.length === 9) { u('1-4-1', es.slice(0, 3)); u('1-4-2', es.slice(3, 5)); u('1-4-3', es.slice(5)); }
+      }
+      u('1-5', d.employer.trim()); u('1-6', d.eStreet.trim()); u('1-7', d.eCity.trim());
+      u('1-8', d.eState.trim().toUpperCase().slice(0, 2)); u('1-9', digits(d.eZip).slice(0, 5));
+
+      urls.forEach((x) => URL.revokeObjectURL(x));
+      const mk = async (doc: PDFDocument) => URL.createObjectURL(new Blob([(await doc.save()) as BlobPart], { type: 'application/pdf' }));
+      urls = [await mk(b), await mk(l)];
+      (document.getElementById('dl-40b') as HTMLAnchorElement).href = urls[0];
+      (document.getElementById('dl-l564') as HTMLAnchorElement).href = urls[1];
+      out.hidden = false;
+      out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      out.focus({ preventScroll: true });
+    } catch (x) {
+      err.textContent = (x as Error).message || 'Something went wrong. Please call us and we’ll fill it out with you.';
+      err.hidden = false;
+      err.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+</script>
+
+<style>
+  .fx { display: grid; gap: var(--s-6); max-width: 46rem; }
+  .fx__private { display: inline-block; padding: var(--s-3) var(--s-4); border-radius: 10px; background: var(--surface); border: 1px solid var(--rule-soft); font-size: var(--t-sm); }
+  .fx__form fieldset { margin: 0 0 var(--s-5); padding: var(--s-5); border: 1px solid var(--rule-soft); border-radius: 14px; background: var(--surface); display: grid; gap: var(--s-4); }
+  .fx__form legend { padding: 0 var(--s-2); font-family: var(--font-display); font-size: var(--t-xl); color: var(--navy); display: flex; align-items: center; gap: var(--s-2); }
+  .fx__n { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--navy); color: #fff; font-family: var(--font-body, inherit); font-size: var(--t-sm); font-weight: 700; }
+  .fx__form label { display: grid; gap: 0.35rem; font-weight: 600; font-size: var(--t-sm); color: var(--ink); }
+  .fx__form input:not([type=radio]), .fx__form textarea {
+    width: 100%; padding: 0.75rem 0.85rem; border: 1px solid var(--rule); border-radius: 10px; background: #fff;
+    font: inherit; font-weight: 400; font-size: var(--t-base); color: var(--ink);
+  }
+  .fx__form input:focus, .fx__form textarea:focus { outline: 3px solid color-mix(in srgb, var(--navy) 30%, transparent); border-color: var(--navy); }
+  .fx__hint { font-weight: 400; color: var(--ink-muted); font-size: var(--t-xs); }
+  .fx__grid { display: grid; gap: var(--s-3); }
+  .fx__grid--name { grid-template-columns: 2fr 1fr 2fr 1fr; }
+  .fx__grid--city { grid-template-columns: 3fr 1fr 1.5fr; }
+  .fx__grid--2 { grid-template-columns: 1fr 1fr; }
+  .fx__radio { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); align-items: center; font-size: var(--t-base); }
+  .fx__radio > span { width: 100%; font-weight: 600; font-size: var(--t-sm); }
+  .fx__radio label { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 400; font-size: var(--t-base); }
+  .fx__radio--stack { flex-direction: column; align-items: flex-start; }
+  .fx__radio input[type=radio] { width: 1.2rem; height: 1.2rem; accent-color: var(--navy); }
+  .fx__inline { width: 7.5rem !important; display: inline-block; }
+  .fx__p { margin: 0; font-size: var(--t-sm); color: var(--ink-body); line-height: 1.6; }
+  .fx__err { padding: var(--s-3) var(--s-4); border-radius: 10px; background: color-mix(in srgb, var(--red) 8%, #fff); border-left: 4px solid var(--red); color: var(--ink); font-weight: 600; }
+  .fx__out { padding: var(--s-6); border-radius: 16px; border: 2px solid var(--navy); background: var(--surface); box-shadow: 0 14px 34px rgb(1 20 89 / 0.14); }
+  .fx__out h2 { margin: 0 0 var(--s-4); color: var(--navy); }
+  .fx__dl { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-bottom: var(--s-5); }
+  .fx__next { display: grid; gap: var(--s-3); padding-left: 1.3rem; font-size: var(--t-base); line-height: 1.6; }
+  .fx__links { display: flex; flex-wrap: wrap; gap: var(--s-4); margin-top: var(--s-2); }
+  .fx__check { margin-top: var(--s-5); padding: var(--s-5); border-radius: 12px; background: color-mix(in srgb, var(--red) 5%, var(--surface)); border: 2px solid var(--red); }
+  .fx__check p { margin: 0 0 var(--s-3); line-height: 1.6; }
+  .fx__or { margin: var(--s-3) 0 0 !important; font-size: var(--t-sm); }
+  @media (max-width: 640px) {
+    .fx__grid--name, .fx__grid--city, .fx__grid--2 { grid-template-columns: 1fr 1fr; }
+    .fx__grid--city label:first-child { grid-column: 1 / -1; }
+    .fx__form fieldset { padding: var(--s-4); }
+  }
+</style>
