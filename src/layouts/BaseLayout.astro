@@ -62,6 +62,8 @@ const {
   </head>
 
   <body>
+    {/* Cloudflare Email Obfuscation otherwise rewrites the footer address and injects a render-blocking email-decode.min.js on the live domain (PSI 90s on pages.dev vs 60s live, 11/8). */}
+    <Fragment set:html="<!--email_off-->" />
     <a href="#main" class="skip-link">Skip to main content</a>
 
     <!-- Scroll progress. Purely decorative; hidden entirely under reduced motion. -->
@@ -103,6 +105,7 @@ const {
     <!-- How the visitor found the site, for the lead scoreboard. First-party,
          session-only, and described on /privacy/. -->
     <Attribution />
+    <Fragment set:html="<!--/email_off-->" />
   </body>
 </html>
 
