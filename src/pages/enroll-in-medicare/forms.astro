@@ -71,6 +71,12 @@ const schemaNodes = [
             <label>Last name<input name="last" required autocomplete="family-name" /></label>
             <label>Suffix<input name="suffix" placeholder="Jr., Sr." autocomplete="honorific-suffix" /></label>
           </div>
+          <div class="fx__radio" role="radiogroup">
+            <span>Do you already have Medicare Part A? <span class="fx__hint">Most people do: it usually starts on its own at 65 if you get Social Security, or you signed up for it.</span></span>
+            <label><input type="radio" name="hasA" value="yes" checked /> Yes</label>
+            <label><input type="radio" name="hasA" value="no" /> No, not yet</label>
+            <label><input type="radio" name="hasA" value="unsure" /> Not sure</label>
+          </div>
           <label class="fx__mbi">Medicare number <span class="fx__hint">On your red, white and blue card. Not handy? Leave it blank and we’ll fill it in with you.</span>
             <input name="mbi" maxlength="20" placeholder="1EG4-TE5-MK72" autocomplete="off" spellcheck="false" style="text-transform:uppercase" /></label>
           <label>Mailing address<input name="street" required autocomplete="address-line1" /></label>
@@ -153,6 +159,19 @@ const schemaNodes = [
         </div>
         <p class="fx__noa fx__warn" id="fx-cobra" hidden><strong>Heads up: COBRA and retiree coverage don’t count as coverage from current work.</strong> Your Special Enrollment Period is based on when the job (not the COBRA) ended, and it lasts 8 months. If that window has passed, a late penalty can apply. Please call us before you send anything so we can check your dates.</p>
         <p class="fx__noa" id="fx-nostart" hidden><strong>We left your Part B start month blank</strong> because you didn’t enter when your employer coverage ends. Once you know, write it in on the CMS-40B (question 4), or book your free call and we’ll fill it in with you.</p>
+        <div class="fx__noa" id="fx-noa" hidden>
+          <p><strong>You don’t have Part A yet, so you don’t need form CMS-40B.</strong> You’ll apply for Part A and Part B together online, the same application people turning 65 use.</p>
+          <ol>
+            <li><strong>Give CMS-L564 to your employer’s HR or benefits office</strong> to fill out Section B and sign. (A signed letter or email from HR with the same dates also works.)</li>
+            <li><strong>Apply for Part A and Part B online</strong> at Social Security. Don’t use the “Part B only” page; it needs a Medicare number.</li>
+            <li><strong>Upload your signed L564</strong> when the online application asks for proof of your employer coverage. (You can also fax, mail or take it to your local office.)
+              <div class="fx__links">
+                <a class="link" href="https://www.ssa.gov/medicare/sign-up" target="_blank" rel="noopener">Apply for Part A &amp; B online ↗</a>
+                <a class="link" href="https://www.ssa.gov/locator" target="_blank" rel="noopener">Find your local office ↗</a>
+              </div>
+            </li>
+          </ol>
+        </div>
         <ol class="fx__next" id="fx-next">
           <li><strong>Give CMS-L564 to your employer’s HR or benefits office</strong> to fill out Section B and sign. (A signed letter or email from HR with the same dates also works.)</li>
           <li><strong>Easiest: apply for Part B online</strong> with your Medicare number. It asks the same questions as the CMS-40B, so keep your filled-in 40B next to you and copy from it. Then upload your signed L564 (and your signed 40B too, if you’d like).</li>
@@ -163,7 +182,6 @@ const schemaNodes = [
             </div>
           </li>
         </ol>
-        <p class="fx__noa"><strong>Don’t have Part A yet?</strong> Skip the CMS-40B. Apply for Part A and Part B together <a class="link" href="https://www.ssa.gov/medicare/sign-up" target="_blank" rel="noopener">online at Social Security ↗</a> and upload your signed L564 when it asks for proof of employer coverage.</p>
         <div class="fx__check">
           <p><strong>Want us to check them before you send them?</strong> One mistake can delay your Part B. Book a free call and we’ll go over both forms with you, then help you pick your coverage.</p>
           <a class="btn" href={BOOK}>Book my free enrollment call</a>
@@ -184,8 +202,13 @@ const schemaNodes = [
   const why = form.querySelector('.fx__why') as HTMLElement;
   let urls: string[] = [];
 
+  const mbiBox = form.querySelector('.fx__mbi') as HTMLElement;
+  const startSet = form.querySelector('.fx__startset') as HTMLElement;
   form.addEventListener('change', () => {
     const d = new FormData(form);
+    const hasA = d.get('hasA');
+    const noA = hasA === 'no' || (hasA === 'unsure' && !String(d.get('mbi') || '').trim());
+    mbiBox.hidden = hasA === 'no'; startSet.hidden = noA;
     spouse.hidden = d.get('whose') !== 'spouse';
     why.hidden = d.get('required') !== 'yes';
   });
@@ -219,7 +242,8 @@ const schemaNodes = [
       const need = ['first', 'last', 'street', 'city', 'state', 'zip', 'phone', 'ssn', 'employer', 'eStreet', 'eCity', 'eState', 'eZip', 'jobStart', 'covStart'];
       const missing = need.filter((k) => !String(d[k] || '').trim());
       if (missing.length) throw new Error('Please fill in every field that isn’t marked optional.');
-      const mbi = d.mbi.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const mbi = d.hasA === 'no' ? '' : d.mbi.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const noA = d.hasA === 'no' || (d.hasA === 'unsure' && mbi.length === 0);
       if (mbi.length && mbi.length !== 11) throw new Error('Your Medicare number should be 11 letters and numbers. Not handy? Leave it blank.');
       const ssn = digits(d.ssn);
       if (ssn.length !== 9) throw new Error('Your Social Security number should be 9 digits.');
@@ -232,9 +256,9 @@ const schemaNodes = [
       const sm = d.start === 'later' ? my(d.startMonth || '', 'Part B start month') : null;
       const name = [d.first, d.middle, d.last, d.suffix].map((s) => (s || '').trim()).filter(Boolean).join(' ');
 
-      // ── CMS-40B (always; no Part A question since Brian 11/8: "I don't think Part A should even be a question") ──
-      const b = await load('/forms/cms-40b.pdf');
-      const f = b.getForm();
+      // ── CMS-40B (only with Part A) ──
+      const b = noA ? null : await load('/forms/cms-40b.pdf');
+      const f = (b ?? (await load('/forms/cms-40b.pdf'))).getForm();
       const t = (k: string, v: string) => f.getTextField(k).setText(v);
       const c = (k: string) => f.getCheckBox(k).check();
       t('1-1-1', mbi.slice(0, 4)); t('1-1-2', mbi.slice(4, 7)); t('1-1-3', mbi.slice(7));
@@ -275,19 +299,21 @@ const schemaNodes = [
 
       urls.forEach((x) => URL.revokeObjectURL(x));
       const mk = async (doc: PDFDocument) => URL.createObjectURL(new Blob([(await doc.save()) as BlobPart], { type: 'application/pdf' }));
-      urls = [await mk(b), await mk(l)];
+      urls = [noA ? '' : await mk(b!), await mk(l)];
       const a40 = document.getElementById('dl-40b') as HTMLAnchorElement;
-      a40.href = urls[0];
+      a40.hidden = noA; if (!noA) a40.href = urls[0];
       (document.getElementById('fx-cobra') as HTMLElement).hidden = d.basis !== 'cobra';
       (document.getElementById('dl-l564') as HTMLAnchorElement).href = urls[1];
-      (document.getElementById('fx-nostart') as HTMLElement).hidden = !(d.start === 'after' && !ce);
+      (document.getElementById('fx-noa') as HTMLElement).hidden = !noA;
+      (document.getElementById('fx-nostart') as HTMLElement).hidden = noA || !(d.start === 'after' && !ce);
+      (document.getElementById('fx-next') as HTMLElement).hidden = noA;
       out.hidden = false;
       // Lead to X: name + contact ONLY. Never SSN, MBI, employer or dates (Brian 11/8: "it didn't create a contact in X").
       const startLbl: Record<string, string> = { after: 'month after employer coverage ends', now: 'month they send it in', later: 'a later month', none: 'not sure' };
       fetch('/api/lead', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
         first: d.first.trim(), last: d.last.trim(), phone: d.phone.trim(), email: (d.email || '').trim(), zip: digits(d.zip).slice(0, 5),
         source: '602medicare.com Part B forms (did it themselves)', situation: 'retiring', consent: 'yes',
-        message: `Filled out their own Part B forms on 602medicare.com/enroll-in-medicare/forms/ (CMS-40B + CMS-L564${d.basis === 'cobra' ? '. WARNING: says coverage is COBRA/retiree, check SEP dates' : ''}). Wants Part B to start: ${startLbl[d.start] || d.start}. Call to help them sign and send it to Social Security.`,
+        message: `Filled out their own Part B forms on 602medicare.com/enroll-in-medicare/forms/ (${noA ? 'NO Part A yet: L564 only, applying for A+B online' : 'has Part A: CMS-40B + CMS-L564'}${d.basis === 'cobra' ? '. WARNING: says coverage is COBRA/retiree, check SEP dates' : ''}). Wants Part B to start: ${startLbl[d.start] || d.start}. Call to help them sign and send it to Social Security.`,
       }) }).catch(() => {});
       out.scrollIntoView({ behavior: 'smooth', block: 'start' });
       out.focus({ preventScroll: true });
