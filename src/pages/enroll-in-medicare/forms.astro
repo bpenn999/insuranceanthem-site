@@ -21,7 +21,7 @@ import site, { abs } from '../../config/site';
 
 const PATH = '/enroll-in-medicare/forms/';
 const title = 'Fill Out Medicare Forms CMS-40B and CMS-L564 Online';
-const description = 'Fill out CMS-40B and CMS-L564 on your own device, then download them ready to sign. Nothing you type is sent to us. Free help: ' + site.phone.display + '.';
+const description = 'Fill out CMS-40B and CMS-L564 on your own device, then download them ready to sign. Your SSN and Medicare number never leave it. Free help: ' + site.phone.display + '.';
 const published = '2026-11-07';
 const breadcrumbs = [
   { name: 'Home', path: '/' },
@@ -57,7 +57,7 @@ const schemaNodes = [
       <p class="fx__choose-p">Send your answers to 602Medicare and we’ll fill out both forms for you, then call to go over them before you sign.</p>
       <a class="btn" href="https://my.gogurux.com/f/ypfeoie6fdppazyn6j7g/part-b-forms" target="_blank" rel="noopener">Have us fill them out for me ↗</a>
     </div>
-    <p class="fx__private"><span aria-hidden="true">🔒</span> <strong>Or do it yourself below, privately:</strong> everything you type stays on this device. Nothing is sent to us or anyone else.</p>
+    <p class="fx__private"><span aria-hidden="true">🔒</span> <strong>Or do it yourself below, privately:</strong> your Social Security number, Medicare number and job details stay on this device. We only get your name and how to reach you, so we can help if you get stuck.</p>
   </PageHero>
 
   <section class="section" data-caustics="0.2">
@@ -137,6 +137,7 @@ const schemaNodes = [
 
         <p class="fx__err" role="alert" hidden></p>
         <button type="submit" class="btn btn--lg">Fill out my forms</button>
+        <p class="fx__tcpa">By clicking, you agree 602Medicare may call, text or email you about your Medicare enrollment. Not required to buy anything. Msg &amp; data rates may apply; reply STOP to opt out.</p>
       </form>
 
       <aside class="fx__out" id="fx-out" hidden tabindex="-1">
@@ -277,6 +278,13 @@ const schemaNodes = [
       (document.getElementById('fx-nostart') as HTMLElement).hidden = noA || !(d.start === 'after' && !ce);
       (document.getElementById('fx-next') as HTMLElement).hidden = noA;
       out.hidden = false;
+      // Lead to X: name + contact ONLY. Never SSN, MBI, employer or dates (Brian 11/8: "it didn't create a contact in X").
+      const startLbl: Record<string, string> = { after: 'month after employer coverage ends', now: 'month they send it in', later: 'a later month', none: 'not sure' };
+      fetch('/api/lead', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+        first: d.first.trim(), last: d.last.trim(), phone: d.phone.trim(), email: (d.email || '').trim(), zip: digits(d.zip).slice(0, 5),
+        source: '602medicare.com Part B forms (did it themselves)', situation: 'retiring', consent: 'yes',
+        message: `Filled out their own Part B forms on 602medicare.com/enroll-in-medicare/forms/ (${noA ? 'NO Part A yet: L564 only, needs to apply for A+B' : 'CMS-40B + CMS-L564'}). Wants Part B to start: ${startLbl[d.start] || d.start}. Call to help them sign and send it to Social Security.`,
+      }) }).catch(() => {});
       out.scrollIntoView({ behavior: 'smooth', block: 'start' });
       out.focus({ preventScroll: true });
     } catch (x) {
@@ -293,6 +301,7 @@ const schemaNodes = [
   .fx__choose-h { margin: 0 0 var(--s-2); font-family: var(--font-display); font-size: var(--t-xl); color: #fff; }
   .fx__choose-p { margin: 0 0 var(--s-4); color: #dfe5f2; line-height: 1.6; }
   .fx { display: grid; gap: var(--s-6); max-width: 46rem; }
+  .fx__tcpa { margin-top: var(--s-3); max-width: 40rem; font-size: var(--t-xs, 0.8rem); color: var(--ink-muted, #5b6472); line-height: 1.5; }
   .fx__private { display: inline-block; padding: var(--s-3) var(--s-4); border-radius: 10px; background: var(--surface); border: 1px solid var(--rule-soft); font-size: var(--t-sm); }
   .fx__form fieldset { margin: 0 0 var(--s-5); padding: var(--s-5); border: 1px solid var(--rule-soft); border-radius: 14px; background: var(--surface); display: grid; gap: var(--s-4); }
   .fx__form legend { padding: 0 var(--s-2); font-family: var(--font-display); font-size: var(--t-xl); color: var(--navy); display: flex; align-items: center; gap: var(--s-2); }
