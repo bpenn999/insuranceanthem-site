@@ -71,7 +71,13 @@ const schemaNodes = [
             <label>Last name<input name="last" required autocomplete="family-name" /></label>
             <label>Suffix<input name="suffix" placeholder="Jr., Sr." autocomplete="honorific-suffix" /></label>
           </div>
-          <label>Medicare number <span class="fx__hint">On your red, white and blue card. No card yet? Leave it blank: you don’t have Part A yet, and we’ll make just the form you need.</span>
+          <div class="fx__radio" role="radiogroup">
+            <span>Do you already have Medicare Part A? <span class="fx__hint">Most people do: it usually starts on its own at 65 if you get Social Security, or you signed up for it.</span></span>
+            <label><input type="radio" name="hasA" value="yes" checked /> Yes</label>
+            <label><input type="radio" name="hasA" value="no" /> No, not yet</label>
+            <label><input type="radio" name="hasA" value="unsure" /> Not sure</label>
+          </div>
+          <label class="fx__mbi">Medicare number <span class="fx__hint">On your red, white and blue card. Not handy? Leave it blank and we’ll fill it in with you.</span>
             <input name="mbi" maxlength="20" placeholder="1EG4-TE5-MK72" autocomplete="off" spellcheck="false" style="text-transform:uppercase" /></label>
           <label>Mailing address<input name="street" required autocomplete="address-line1" /></label>
           <div class="fx__grid fx__grid--city">
@@ -83,8 +89,33 @@ const schemaNodes = [
             <label>Phone<input name="phone" required inputmode="tel" autocomplete="tel" placeholder="10-digit number" /></label>
             <label>Email <span class="fx__hint">optional</span><input name="email" type="email" autocomplete="email" /></label>
           </div>
-          <label>Social Security number <span class="fx__hint">Goes on form CMS-L564 only. It never leaves this device.</span>
+          <label>Social Security number <span class="fx__hint">Goes on your forms only. It never leaves this device.</span>
             <input name="ssn" required inputmode="numeric" maxlength="11" placeholder="123-45-6789" autocomplete="off" /></label>
+          <div class="fx__noA" hidden>
+            <p class="fx__p"><strong>No Part A yet?</strong> Then you’ll apply for Part A and Part B together on form CMS-18-F-5. A few more questions for that form:</p>
+            <div class="fx__grid fx__grid--2">
+              <label>Date of birth<input name="dob" placeholder="06/20/1961" maxlength="20" /></label>
+              <label>State or country where you were born<input name="birthplace" placeholder="Ohio" /></label>
+            </div>
+            <div class="fx__radio" role="radiogroup"><span>Sex</span>
+              <label><input type="radio" name="sex" value="m" /> Male</label><label><input type="radio" name="sex" value="f" /> Female</label></div>
+            <div class="fx__radio" role="radiogroup"><span>Are you a U.S. citizen?</span>
+              <label><input type="radio" name="citizen" value="yes" /> Yes</label><label><input type="radio" name="citizen" value="no" /> No</label></div>
+            <div class="fx__radio" role="radiogroup"><span>Are you married?</span>
+              <label><input type="radio" name="married" value="yes" /> Yes</label><label><input type="radio" name="married" value="no" /> No</label></div>
+            <div class="fx__grid fx__grid--2 fx__mar" hidden>
+              <label>Spouse’s full name<input name="spName" /></label>
+              <label>Spouse’s date of birth<input name="spDob" placeholder="mm/dd/yyyy" maxlength="20" /></label>
+            </div>
+            <div class="fx__radio" role="radiogroup"><span>Do you have Medicaid?</span>
+              <label><input type="radio" name="medicaid" value="no" checked /> No</label><label><input type="radio" name="medicaid" value="yes" /> Yes</label></div>
+            <div class="fx__radio" role="radiogroup"><span>Have you worked for a railroad?</span>
+              <label><input type="radio" name="railroad" value="no" checked /> No</label><label><input type="radio" name="railroad" value="yes" /> Yes</label></div>
+            <div class="fx__grid fx__grid--2">
+              <label>Total earnings last year <span class="fx__hint">optional</span><input name="earnLast" placeholder="$85,000 or none" /></label>
+              <label>Expected earnings this year <span class="fx__hint">optional</span><input name="earnThis" placeholder="$85,000 or none" /></label>
+            </div>
+          </div>
         </fieldset>
 
         <fieldset>
@@ -115,6 +146,11 @@ const schemaNodes = [
             <label>Health coverage started<input name="covStart" required placeholder="03/2010" maxlength="20" /></label>
             <label>Health coverage ends/ended <span class="fx__hint">blank if you don’t know yet</span><input name="covEnd" placeholder="12/2026" maxlength="20" /></label>
           </div>
+          <div class="fx__radio fx__radio--stack" role="radiogroup">
+            <span>Is that health coverage from a job you (or your spouse) still have?</span>
+            <label><input type="radio" name="basis" value="current" checked /> Yes, from current work (or it ended within the last 8 months)</label>
+            <label><input type="radio" name="basis" value="cobra" /> No, it’s COBRA or retiree coverage</label>
+          </div>
           <div class="fx__radio" role="radiogroup">
             <span>Has an employer or insurer required you to sign up for Part B?</span>
             <label><input type="radio" name="required" value="no" checked /> No</label>
@@ -123,7 +159,7 @@ const schemaNodes = [
           <label class="fx__why" hidden>Explain how and why <span class="fx__hint">attach proof when you send the form</span><textarea name="requiredWhy" rows="2"></textarea></label>
         </fieldset>
 
-        <fieldset>
+        <fieldset class="fx__startset">
           <legend><span class="fx__n">3</span> When should Part B start?</legend>
           <p class="fx__p">If you’re still on the employer plan (or in the first full month off it), you can pick your start date. Most people want it to start the 1st of the month after their employer coverage ends, so there’s no gap.</p>
           <div class="fx__radio fx__radio--stack" role="radiogroup">
@@ -144,16 +180,30 @@ const schemaNodes = [
         <h2>Your forms are ready</h2>
         <div class="fx__dl">
           <a class="btn btn--lg" id="dl-40b" download="CMS-40B-filled.pdf">Download CMS-40B</a>
+          <a class="btn btn--lg" id="dl-18f5" download="CMS-18-F-5-filled.pdf" hidden>Download CMS-18-F-5</a>
           <a class="btn btn--lg btn--ghost" id="dl-l564" download="CMS-L564-filled.pdf">Download CMS-L564</a>
         </div>
+        <p class="fx__noa fx__warn" id="fx-cobra" hidden><strong>Heads up: COBRA and retiree coverage don’t count as coverage from current work.</strong> Your Special Enrollment Period is based on when the job (not the COBRA) ended, and it lasts 8 months. If that window has passed, a late penalty can apply. Please call us before you send anything so we can check your dates.</p>
         <p class="fx__noa" id="fx-nostart" hidden><strong>We left your Part B start month blank</strong> because you didn’t enter when your employer coverage ends. Once you know, write it in on the CMS-40B (question 4), or book your free call and we’ll fill it in with you.</p>
-        <p class="fx__noa" id="fx-noa" hidden><strong>No Medicare number means you don’t have Part A yet,</strong> so form CMS-40B isn’t for you. Apply for Part A and Part B together on Social Security’s “Sign up for Medicare” page, and include your CMS-L564 (after your employer fills in Section B). <a class="link" href="https://www.ssa.gov/medicare/sign-up" target="_blank" rel="noopener">Apply at Social Security ↗</a></p>
+        <div class="fx__noa" id="fx-noa" hidden>
+          <p><strong>Because you don’t have Part A yet, we filled out CMS-18-F-5</strong> (the application for Part A, which also signs you up for Part B) instead of CMS-40B.</p>
+          <ol>
+            <li><strong>Give CMS-L564 to your employer’s HR or benefits office</strong> to fill out Section B and sign. (A signed letter or email from HR with the same dates also works.)</li>
+            <li><strong>Easiest: apply for Part A and Part B online</strong> at Social Security, then send the signed L564 the way they ask. (The Part B-only page won’t work for you, because it needs a Medicare number.)</li>
+            <li><strong>Prefer paper?</strong> Check the CMS-18-F-5, finish anything left blank, sign item 7b on page 2, and send it with the L564 to your local Social Security office.
+              <div class="fx__links">
+                <a class="link" href="https://www.ssa.gov/medicare/sign-up" target="_blank" rel="noopener">Apply for Part A &amp; B online ↗</a>
+                <a class="link" href="https://www.ssa.gov/locator" target="_blank" rel="noopener">Find your local office ↗</a>
+              </div>
+            </li>
+          </ol>
+        </div>
         <ol class="fx__next" id="fx-next">
-          <li><strong>Sign and date CMS-40B</strong> on page 3.</li>
-          <li><strong>Give CMS-L564 to your employer’s HR or benefits office</strong> to fill out Section B and sign.</li>
-          <li><strong>Send both to Social Security:</strong> upload them online, or fax or mail them to your local office.
+          <li><strong>Give CMS-L564 to your employer’s HR or benefits office</strong> to fill out Section B and sign. (A signed letter or email from HR with the same dates also works.)</li>
+          <li><strong>Easiest: apply for Part B online</strong> with your Medicare number and upload the signed L564. Online, you don’t need the CMS-40B.</li>
+          <li><strong>Prefer paper?</strong> Sign and date CMS-40B (page 3), then fax, mail or take both forms to your local Social Security office.
             <div class="fx__links">
-              <a class="link" href="https://www.ssa.gov/medicare/sign-up/part-b-only" target="_blank" rel="noopener">Upload at Social Security ↗</a>
+              <a class="link" href="https://www.ssa.gov/medicare/sign-up/part-b-only" target="_blank" rel="noopener">Apply for Part B online ↗</a>
               <a class="link" href="https://www.ssa.gov/locator" target="_blank" rel="noopener">Find your local office ↗</a>
             </div>
           </li>
@@ -178,8 +228,16 @@ const schemaNodes = [
   const why = form.querySelector('.fx__why') as HTMLElement;
   let urls: string[] = [];
 
+  const noABox = form.querySelector('.fx__noA') as HTMLElement;
+  const mbiBox = form.querySelector('.fx__mbi') as HTMLElement;
+  const marBox = form.querySelector('.fx__mar') as HTMLElement;
+  const startSet = form.querySelector('.fx__startset') as HTMLElement;
   form.addEventListener('change', () => {
     const d = new FormData(form);
+    const hasA = d.get('hasA');
+    const noA = hasA === 'no' || (hasA === 'unsure' && !String(d.get('mbi') || '').trim());
+    noABox.hidden = !noA; mbiBox.hidden = hasA === 'no'; startSet.hidden = noA;
+    marBox.hidden = d.get('married') !== 'yes';
     spouse.hidden = d.get('whose') !== 'spouse';
     why.hidden = d.get('required') !== 'yes';
   });
@@ -213,9 +271,17 @@ const schemaNodes = [
       const need = ['first', 'last', 'street', 'city', 'state', 'zip', 'phone', 'ssn', 'employer', 'eStreet', 'eCity', 'eState', 'eZip', 'jobStart', 'covStart'];
       const missing = need.filter((k) => !String(d[k] || '').trim());
       if (missing.length) throw new Error('Please fill in every field that isn’t marked optional.');
-      const mbi = d.mbi.toUpperCase().replace(/[^A-Z0-9]/g, '');
-      const noA = mbi.length === 0;
-      if (!noA && mbi.length !== 11) throw new Error('Your Medicare number should be 11 letters and numbers. No card yet? Leave it blank.');
+      const mbi = d.hasA === 'no' ? '' : d.mbi.toUpperCase().replace(/[^A-Z0-9]/g, '');
+      const noA = d.hasA === 'no' || (d.hasA === 'unsure' && mbi.length === 0);
+      if (mbi.length && mbi.length !== 11) throw new Error('Your Medicare number should be 11 letters and numbers. Not handy? Leave it blank.');
+      const full = (v: string, label: string) => { const m = v.trim().match(/^(\d{1,2})\s*[\/\-.]\s*(\d{1,2})\s*[\/\-.]\s*(\d{4})$/);
+        if (!m || +m[1] > 12 || +m[2] > 31) throw new Error(`${label}: enter it like 06/20/1961.`); return [m[1].padStart(2, '0'), m[2].padStart(2, '0'), m[3]]; };
+      let dob: string[] | null = null, spDob: string[] | null = null;
+      if (noA) {
+        if (!d.dob?.trim() || !d.birthplace?.trim() || !d.sex || !d.citizen || !d.married) throw new Error('Please answer the CMS-18-F-5 questions: date of birth, where you were born, sex, citizenship and marital status.');
+        dob = full(d.dob, 'Date of birth');
+        if (d.married === 'yes' && d.spDob?.trim()) spDob = full(d.spDob, 'Spouse’s date of birth');
+      }
       const ssn = digits(d.ssn);
       if (ssn.length !== 9) throw new Error('Your Social Security number should be 9 digits.');
       const ph = digits(d.phone).replace(/^1(?=\d{10}$)/, '');
@@ -227,9 +293,44 @@ const schemaNodes = [
       const sm = d.start === 'later' ? my(d.startMonth || '', 'Part B start month') : null;
       const name = [d.first, d.middle, d.last, d.suffix].map((s) => (s || '').trim()).filter(Boolean).join(' ');
 
-      // ── CMS-40B (only with Part A, i.e. a Medicare number) ──
-      const b = await load('/forms/cms-40b.pdf');
-      const f = b.getForm();
+      // ── CMS-18-F-5 (no Part A: applies for A + B together; fields mapped from the 07/2025 form) ──
+      let f5: PDFDocument | null = null;
+      if (noA && dob) {
+        f5 = await load('/forms/cms-18f5.pdf');
+        const h = f5.getForm();
+        const T = (k: string, v: string) => h.getTextField(k).setText(v);
+        const C = (k: string) => h.getCheckBox(k).check();
+        T('1-1-1', ssn.slice(0, 3)); T('1-1-2', ssn.slice(3, 5)); T('1-1-3', ssn.slice(5));
+        T('1-1-7', [d.last.trim() + ',', d.first.trim(), (d.middle || '').trim(), (d.suffix || '').trim()].filter(Boolean).join(' '));
+        C(d.sex === 'm' ? 'CheckBox1-1-9' : 'CheckBox1-1-10');
+        T('1-1-11', dob[0]); T('1-1-12', dob[1]); T('1-1-13', dob[2]);
+        T('1-1-14', d.birthplace.trim());
+        T('1-1-15', `${d.street.trim()}, ${d.city.trim()}, ${d.state.trim().toUpperCase().slice(0, 2)} ${digits(d.zip).slice(0, 5)}`);
+        T('1-1-17', ph.slice(0, 3)); T('1-1-18', ph.slice(3, 6)); T('1-1-19', ph.slice(6));
+        if (d.email?.trim()) T('1-1-20', d.email.trim());
+        if (d.earnLast?.trim()) T('1-2-1', d.earnLast.trim());
+        if (d.earnThis?.trim()) T('1-2-2', d.earnThis.trim());
+        C(d.railroad === 'yes' ? 'CheckBox1-2-3' : 'CheckBox1-2-4');
+        C(d.citizen === 'yes' ? 'CheckBox1-3-1' : 'CheckBox1-3-2');
+        if (d.married === 'yes') {
+          C('CheckBox1-4-1');
+          if (d.spName?.trim()) T('1-4-3', d.spName.trim());
+          if (spDob) { T('1-4-4', spDob[0]); T('1-4-5', spDob[1]); T('1-4-6', spDob[2]); }
+        } else C('CheckBox1-4-2');
+        C('CheckBox2-5-3'); // 5b: yes, sign up for Part B
+        C(d.medicaid === 'yes' ? 'CheckBox2-6-1' : 'CheckBox2-6-2');
+        C('CheckBox2-6-3'); // 6b: employer group health plan coverage: yes
+        C('CheckBox2-6-6'); // 6c: international volunteer: no
+        T('2-6-7', js[0]); T('2-6-8', js[1]);
+        if (je) { T('2-6-9', je[0]); T('2-6-10', je[1]); } else C('CheckBox2-6-11');
+        T('2-6-12', cs[0]); T('2-6-13', cs[1]);
+        if (ce) { T('2-6-14', ce[0]); T('2-6-15', ce[1]); } else C('CheckBox2-6-16');
+        C('CheckBox2-6-23'); // 6e: OPM retirement benefits: no
+      }
+
+      // ── CMS-40B (only with Part A) ──
+      const b = noA ? null : await load('/forms/cms-40b.pdf');
+      const f = (b ?? (await load('/forms/cms-40b.pdf'))).getForm();
       const t = (k: string, v: string) => f.getTextField(k).setText(v);
       const c = (k: string) => f.getCheckBox(k).check();
       t('1-1-1', mbi.slice(0, 4)); t('1-1-2', mbi.slice(4, 7)); t('1-1-3', mbi.slice(7));
@@ -270,9 +371,12 @@ const schemaNodes = [
 
       urls.forEach((x) => URL.revokeObjectURL(x));
       const mk = async (doc: PDFDocument) => URL.createObjectURL(new Blob([(await doc.save()) as BlobPart], { type: 'application/pdf' }));
-      urls = [noA ? '' : await mk(b), await mk(l)];
+      urls = [noA ? '' : await mk(b!), await mk(l), f5 ? await mk(f5) : ''];
       const a40 = document.getElementById('dl-40b') as HTMLAnchorElement;
       a40.hidden = noA; if (!noA) a40.href = urls[0];
+      const a5 = document.getElementById('dl-18f5') as HTMLAnchorElement;
+      a5.hidden = !f5; if (f5) a5.href = urls[2];
+      (document.getElementById('fx-cobra') as HTMLElement).hidden = d.basis !== 'cobra';
       (document.getElementById('dl-l564') as HTMLAnchorElement).href = urls[1];
       (document.getElementById('fx-noa') as HTMLElement).hidden = !noA;
       (document.getElementById('fx-nostart') as HTMLElement).hidden = noA || !(d.start === 'after' && !ce);
@@ -283,7 +387,7 @@ const schemaNodes = [
       fetch('/api/lead', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
         first: d.first.trim(), last: d.last.trim(), phone: d.phone.trim(), email: (d.email || '').trim(), zip: digits(d.zip).slice(0, 5),
         source: '602medicare.com Part B forms (did it themselves)', situation: 'retiring', consent: 'yes',
-        message: `Filled out their own Part B forms on 602medicare.com/enroll-in-medicare/forms/ (${noA ? 'NO Part A yet: L564 only, needs to apply for A+B' : 'CMS-40B + CMS-L564'}). Wants Part B to start: ${startLbl[d.start] || d.start}. Call to help them sign and send it to Social Security.`,
+        message: `Filled out their own Part B forms on 602medicare.com/enroll-in-medicare/forms/ (${noA ? 'NO Part A yet: CMS-18-F-5 + L564, apply for A+B together' : 'has Part A: CMS-40B + CMS-L564'}${d.basis === 'cobra' ? '. WARNING: says coverage is COBRA/retiree, check SEP dates' : ''}). Wants Part B to start: ${startLbl[d.start] || d.start}. Call to help them sign and send it to Social Security.`,
       }) }).catch(() => {});
       out.scrollIntoView({ behavior: 'smooth', block: 'start' });
       out.focus({ preventScroll: true });
@@ -301,6 +405,8 @@ const schemaNodes = [
   .fx__choose-h { margin: 0 0 var(--s-2); font-family: var(--font-display); font-size: var(--t-xl); color: #fff; }
   .fx__choose-p { margin: 0 0 var(--s-4); color: #dfe5f2; line-height: 1.6; }
   .fx { display: grid; gap: var(--s-6); max-width: 46rem; }
+  .fx__warn { border-left: 4px solid var(--red); }
+  .fx__noa ol { margin: var(--s-3) 0 0; padding-left: 1.2rem; }
   .fx__tcpa { margin-top: var(--s-3); max-width: 40rem; font-size: var(--t-xs, 0.8rem); color: var(--ink-muted, #5b6472); line-height: 1.5; }
   .fx__private { display: inline-block; padding: var(--s-3) var(--s-4); border-radius: 10px; background: var(--surface); border: 1px solid var(--rule-soft); font-size: var(--t-sm); }
   .fx__form fieldset { margin: 0 0 var(--s-5); padding: var(--s-5); border: 1px solid var(--rule-soft); border-radius: 14px; background: var(--surface); display: grid; gap: var(--s-4); }
