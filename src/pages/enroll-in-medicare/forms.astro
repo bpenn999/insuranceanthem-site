@@ -72,7 +72,7 @@ const schemaNodes = [
             <label>Suffix<input name="suffix" placeholder="Jr., Sr." autocomplete="honorific-suffix" /></label>
           </div>
           <label>Medicare number <span class="fx__hint">On your red, white and blue card. No card yet? Leave it blank: you don’t have Part A yet, and we’ll make just the form you need.</span>
-            <input name="mbi" maxlength="13" placeholder="1EG4-TE5-MK72" autocomplete="off" spellcheck="false" style="text-transform:uppercase" /></label>
+            <input name="mbi" maxlength="20" placeholder="1EG4-TE5-MK72" autocomplete="off" spellcheck="false" style="text-transform:uppercase" /></label>
           <label>Mailing address<input name="street" required autocomplete="address-line1" /></label>
           <div class="fx__grid fx__grid--city">
             <label>City<input name="city" required autocomplete="address-level2" /></label>
@@ -108,12 +108,12 @@ const schemaNodes = [
             <label>ZIP<input name="eZip" required inputmode="numeric" maxlength="5" /></label>
           </div>
           <div class="fx__grid fx__grid--2">
-            <label>Job started <span class="fx__hint">month/year</span><input name="jobStart" required placeholder="03/2010" inputmode="numeric" maxlength="7" /></label>
-            <label>Job ended <span class="fx__hint">leave blank if still working</span><input name="jobEnd" placeholder="12/2026" inputmode="numeric" maxlength="7" /></label>
+            <label>Job started <span class="fx__hint">month/year</span><input name="jobStart" required placeholder="03/2010" maxlength="20" /></label>
+            <label>Job ended <span class="fx__hint">leave blank if still working</span><input name="jobEnd" placeholder="12/2026" maxlength="20" /></label>
           </div>
           <div class="fx__grid fx__grid--2">
-            <label>Health coverage started<input name="covStart" required placeholder="03/2010" inputmode="numeric" maxlength="7" /></label>
-            <label>Health coverage ends/ended <span class="fx__hint">blank if not ended</span><input name="covEnd" placeholder="12/2026" inputmode="numeric" maxlength="7" /></label>
+            <label>Health coverage started<input name="covStart" required placeholder="03/2010" maxlength="20" /></label>
+            <label>Health coverage ends/ended <span class="fx__hint">blank if you don’t know yet</span><input name="covEnd" placeholder="12/2026" maxlength="20" /></label>
           </div>
           <div class="fx__radio" role="radiogroup">
             <span>Has an employer or insurer required you to sign up for Part B?</span>
@@ -130,7 +130,7 @@ const schemaNodes = [
             <label><input type="radio" name="start" value="after" checked /> <span><strong>The 1st of the month after my employer coverage ends</strong> (most people)</span></label>
             <label><input type="radio" name="start" value="now" /> The 1st of the month I send this in</label>
             <label><input type="radio" name="start" value="later" /> A later month (up to 3 months after I sign up):
-              <input name="startMonth" class="fx__inline" placeholder="01/2027" inputmode="numeric" maxlength="7" /></label>
+              <input name="startMonth" class="fx__inline" placeholder="01/2027" maxlength="20" /></label>
             <label><input type="radio" name="start" value="none" /> Not sure. Leave it blank and I’ll ask</label>
           </div>
         </fieldset>
@@ -145,6 +145,7 @@ const schemaNodes = [
           <a class="btn btn--lg" id="dl-40b" download="CMS-40B-filled.pdf">Download CMS-40B</a>
           <a class="btn btn--lg btn--ghost" id="dl-l564" download="CMS-L564-filled.pdf">Download CMS-L564</a>
         </div>
+        <p class="fx__noa" id="fx-nostart" hidden><strong>We left your Part B start month blank</strong> because you didn’t enter when your employer coverage ends. Once you know, write it in on the CMS-40B (question 4), or book your free call and we’ll fill it in with you.</p>
         <p class="fx__noa" id="fx-noa" hidden><strong>No Medicare number means you don’t have Part A yet,</strong> so form CMS-40B isn’t for you. Apply for Part A and Part B together on Social Security’s “Sign up for Medicare” page, and include your CMS-L564 (after your employer fills in Section B). <a class="link" href="https://www.ssa.gov/medicare/sign-up" target="_blank" rel="noopener">Apply at Social Security ↗</a></p>
         <ol class="fx__next" id="fx-next">
           <li><strong>Sign and date CMS-40B</strong> on page 3.</li>
@@ -245,10 +246,11 @@ const schemaNodes = [
       if (d.start === 'now') c('CheckBox1-2-4-4');
       if (sm) { c('CheckBox1-2-4-5'); t('1-2-4-6', sm[0]); t('1-2-4-7', sm[1]); }
       if (d.start === 'after') {
-        if (!ce) throw new Error('To start Part B the month after your coverage ends, enter when your health coverage ends (or pick another option).');
+        if (ce) {
         let mm = +ce[0] + 1, yy = +ce[1]; if (mm > 12) { mm = 1; yy++; }
         const now = new Date(); const cur = now.getFullYear() * 12 + now.getMonth(); const tgt = yy * 12 + (mm - 1);
         if (tgt <= cur) c('CheckBox1-2-4-4'); else { c('CheckBox1-2-4-5'); t('1-2-4-6', String(mm).padStart(2, '0')); t('1-2-4-7', String(yy)); }
+      }
       }
 
       // ── CMS-L564 Section A ──
@@ -272,6 +274,7 @@ const schemaNodes = [
       a40.hidden = noA; if (!noA) a40.href = urls[0];
       (document.getElementById('dl-l564') as HTMLAnchorElement).href = urls[1];
       (document.getElementById('fx-noa') as HTMLElement).hidden = !noA;
+      (document.getElementById('fx-nostart') as HTMLElement).hidden = noA || !(d.start === 'after' && !ce);
       (document.getElementById('fx-next') as HTMLElement).hidden = noA;
       out.hidden = false;
       out.scrollIntoView({ behavior: 'smooth', block: 'start' });
