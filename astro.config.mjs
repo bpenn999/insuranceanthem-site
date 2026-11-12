@@ -22,7 +22,7 @@ export default defineConfig({
     sitemap({
       // /llms.txt is a machine-readable index, not a page — the audit asserts
       // every sitemap URL has an HTML route behind it, and it has none.
-      filter: (page) => !page.includes('/thank-you') && !page.endsWith('/llms.txt') && !page.includes('/turning-65-medicare-help'),
+      filter: (page) => !page.includes('/thank-you') && !page.endsWith('/llms.txt') && !page.includes('/turning-65-medicare-help') && !page.includes('/medicare-101-webinar'),
       changefreq: 'weekly',
       lastmod: new Date(),
     }),
