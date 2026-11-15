@@ -30,6 +30,9 @@ import {
 interface Env extends TrackEnv {
   /** GoGuruX inbound webhook. Secret — set in the Pages dashboard, never here. */
   GOGURUX_WEBHOOK_URL?: string;
+  /** Seminar RSVPs (source "602 Medicare 101 Seminar") go to their own GoGuruX
+   *  workflow, which sends the confirmation and the day-before reminder. Secret. */
+  GOGURUX_SEMINAR_WEBHOOK_URL?: string;
 }
 
 /** The slice of Pages' EventContext this function actually uses. */
@@ -228,7 +231,8 @@ export const onRequest = async (context: Context): Promise<Response> => {
     notes: buildNotes(fields, attributionNote(attr)),
   };
 
-  const webhook = env.GOGURUX_WEBHOOK_URL;
+  const webhook = (payload.source === '602 Medicare 101 Seminar' && env.GOGURUX_SEMINAR_WEBHOOK_URL)
+    || env.GOGURUX_WEBHOOK_URL;
   if (!webhook) {
     // Answering 200 here would tell the browser the lead landed when nothing
     // was sent anywhere. 502 sends it down the mailto path instead.
