@@ -55,3 +55,9 @@
 
 /robots.txt
   Cache-Control: public, max-age=3600
+
+# Copies of government/carrier forms (CMS-40B, L564, SSA-44, ManhattanLife claim).
+# Google reports them as "Duplicate without user-selected canonical" because the
+# originals live on cms.gov/ssa.gov. They are for visitors, not for search.
+/forms/*
+  X-Robots-Tag: noindex
