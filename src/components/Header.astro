@@ -77,7 +77,7 @@ const { mark, product } = site.wordmark;
       </picture>
       <span class="brand__text">
         <span class="brand__name">
-          <span class="brand__name-mark">{mark}</span><span class="brand__name-product">{product}</span>
+          <span class="brand__name-mark">{mark}</span><span class="brand__name-product">{product}</span><sup class="brand__tm" aria-hidden="true">{site.trademarkSymbol}</sup>
         </span>
         <span class="brand__sub">Medicare, done locally</span>
       </span>
@@ -254,6 +254,18 @@ const { mark, product } = site.wordmark;
      5.6:1, navy 16.9:1), which the old gold half never was. */
   .brand__name-mark { color: var(--red); }
   .brand__name-product { color: var(--navy); }
+  /* Small, raised, muted — present for the legal notice, never competing with
+     the name. vertical-align on a fixed font-size (not <sup> defaults) so the
+     line box doesn't grow and nudge the header height. */
+  .brand__tm {
+    font-size: 0.42em;
+    vertical-align: 0.95em;
+    line-height: 0;
+    margin-left: 0.08em;
+    color: var(--navy);
+    opacity: 0.7;
+    font-weight: 400;
+  }
   .brand__sub {
     font-size: 0.6875rem;
     letter-spacing: 0.06em;

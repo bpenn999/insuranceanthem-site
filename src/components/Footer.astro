@@ -191,7 +191,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
     </div>
 
     <div class="foot__base">
-      <p>&copy; {year} {copyrightLine}. All rights reserved.</p>
+      <p>&copy; {year} {copyrightLine}. All rights reserved. {site.name}{site.trademarkSymbol} is a trademark of {site.parentCompany}.</p>
       <p class="foot__base-right">
         Your local advisor · {site.address.display}
       </p>

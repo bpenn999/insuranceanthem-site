@@ -43,6 +43,15 @@ export const site = {
     product: 'Medicare',
   },
   /**
+   * The trademark symbol, shown ONLY on the header wordmark and in the footer
+   * trademark notice — never in running copy, <title>, meta or schema.
+   * 602 MEDICARE is USPTO SN 99163181 (Kenztara INC, class 36). The Statement
+   * of Use was ordered 11/16/2026; until the registration certificate ISSUES this
+   * must stay '™'. Using '®' before registration is illegal (15 U.S.C. §1111
+   * misuse) and can sink the registration. Flip to '®' the day it registers.
+   */
+  trademarkSymbol: '™',
+  /**
    * The positioning line. Two jobs at once: it names the office (Anthem, which
    * is where appointments and the LocalBusiness address actually are) and the
    * reach (Phoenix metro). Keep both halves whenever this is reworded — dropping
