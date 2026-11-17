@@ -10,19 +10,20 @@ import site from '../config/site';
  *
  * Do not re-add "or your local State Health Insurance Program (SHIP)".
  */
-export const tpmoDisclaimer = `We do not offer every plan available in your area. Currently we represent ${site.agent.statesLicensed} organizations which offer ${'{PLAN_COUNT}'} products in your area. Please contact Medicare.gov or 1-800-MEDICARE to get information on all of your options.`;
-
 /**
- * Rendered version. `planCount` is intentionally a plain string so it can be set
- * to the real carrier/product count once contracts are confirmed. Until then the
- * shorter compliant form (no product count) is used.
+ * Organization/product counts for the TPMO line. Source: Brian's X book of business
+ * (11/16/2026 — 10 Medicare carriers, ~159 distinct plans). Same numbers fleet-wide.
  */
-export function tpmoText(planCount?: number | string): string {
-  if (planCount == null || planCount === '') {
-    return 'We do not offer every plan available in your area. Please contact Medicare.gov or 1-800-MEDICARE to get information on all of your options.';
-  }
-  return tpmoDisclaimer.replace('{PLAN_COUNT}', String(planCount));
+export const ORG_COUNT = 10;
+export const PRODUCT_COUNT = 150;
+
+export const tpmoDisclaimer = `We do not offer every plan available in your area. Currently, we represent ${ORG_COUNT} organizations which offer ${PRODUCT_COUNT} products in your area. Please contact Medicare.gov or 1-800-MEDICARE to get information on all of your options.`;
+
+export function tpmoText(): string {
+  return tpmoDisclaimer;
 }
+
+export const proprietaryNotice = `This is a proprietary website and is not associated, endorsed or authorized by the Social Security Administration, the Department of Health and Human Services or the Centers for Medicare & Medicaid Services. This site contains decision-support content and information about Medicare, services related to Medicare and services for people with Medicare. If you would like to find more information about the Medicare program, please visit the Official U.S. Government Site for People with Medicare at www.medicare.gov.`;
 
 export const nonAffiliation = `${site.name} is not connected with or endorsed by the United States government or the federal Medicare program.`;
 

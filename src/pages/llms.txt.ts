@@ -38,7 +38,7 @@ licensed in ${site.agent.statesLicensed} states, ${site.agent.experience.toLower
 Based in ${site.address.display}. Phone ${site.phone.display}. Email ${site.email}.
 Hours: ${site.hours.display}.
 
-We do not offer every plan available in your area. Any information we provide is
+We do not offer every plan available in your area. Currently, we represent 10 organizations which offer 150 products in your area. Any information we provide is
 limited to those plans we do offer in your area. Please contact Medicare.gov or
 1-800-MEDICARE to get information on all of your options. ${site.name} is not
 connected with or endorsed by the United States government or the federal

@@ -4,7 +4,7 @@ import site from '../config/site';
 import { products } from '../data/products';
 import { tools } from '../data/tools';
 import { locations } from '../data/locations';
-import { tpmoText, nonAffiliation, notAdvice } from '../data/compliance';
+import { tpmoText, nonAffiliation, notAdvice, proprietaryNotice } from '../data/compliance';
 import { partners } from '../config/partners';
 
 /**
@@ -183,6 +183,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
       <p class="foot__license">{licenseLine}</p>
       <p>{tpmoText()}</p>
       <p>{nonAffiliation}</p>
+      <p>{proprietaryNotice}</p>
       <p>{notAdvice}</p>
       <p class="foot__legal-fine">
         We comply with applicable federal civil rights laws and do not discriminate on the basis of
