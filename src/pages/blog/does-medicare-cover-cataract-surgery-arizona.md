@@ -56,7 +56,7 @@ If you have Original Medicare, the structure is the same as any other Part B ser
 <div class="stat-callout">
   <p class="stat-callout__figure">{{partB.deductible}} deductible, then {{partB.coinsurance}} of the approved amount — with no annual out-of-pocket limit in Original Medicare</p>
   <p class="stat-callout__body">That {{partB.coinsurance}} is the whole reason Medicare Supplements exist. Original Medicare has no maximum out-of-pocket, so your share of a covered procedure is open-ended by design. Two eyes means two surgical dates, and the deductible is annual rather than per procedure — so if both eyes are done in the same calendar year, you meet {{partB.deductible}} once. The standard Part B premium is {{partB.premium}} a month before any income-related adjustment.</p>
-  <p class="stat-callout__cite">Sources: Medicare.gov cataract surgery coverage page; CMS {{year}} Part A &amp; B premiums and deductibles. Verified against medicare.gov.</p>
+  <p class="stat-callout__cite">Sources: Medicare.gov cataract surgery coverage page; CMS {{figYear}} Part A &amp; B premiums and deductibles. Verified against medicare.gov.</p>
 </div>
 
 A Medicare Supplement is what turns that open-ended 20% into a known number. Plan G, the most commonly bought letter, leaves you the Part B deductible and essentially nothing else on a covered service — so a Plan G household's cataract surgery costs the deductible and then stops, whatever the approved amount turns out to be. That is the structural argument for a supplement, and it applies to a knee, a stent and a cataract equally. [The full comparison](/learn/medicare-advantage-vs-medigap/) is on the Learn shelf.

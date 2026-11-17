@@ -145,7 +145,7 @@ If you are reviewing anyway this fall, the drug plan is where the real money is 
 <div class="stat-callout">
   <p class="stat-callout__figure">About 1 in 3 people in the United States will have shingles in their lifetime</p>
   <p class="stat-callout__body">CDC's figure, and the reason this is worth ten minutes of admin. The most common complication is postherpetic neuralgia — long-term nerve pain that can outlast the rash by months. The vaccine is two doses, and under a Part D plan both are $0. The cost of not having a drug plan, on the other hand, compounds: the Part D late enrollment penalty is permanent, and the {{partD.cap}} annual out-of-pocket cap on covered drugs only protects people who have a plan for it to apply to.</p>
-  <p class="stat-callout__cite">Sources: CDC, "About shingles (herpes zoster)" and "Shingles vaccination". Part D figures: CMS, {{year}}.</p>
+  <p class="stat-callout__cite">Sources: CDC, "About shingles (herpes zoster)" and "Shingles vaccination". Part D figures: CMS, {{figYear}}.</p>
 </div>
 
 ## What Medicare pays for the shot if you have no drug coverage

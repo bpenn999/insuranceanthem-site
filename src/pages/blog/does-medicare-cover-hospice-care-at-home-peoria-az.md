@@ -81,7 +81,7 @@ There is also something most families never hear about: before choosing hospice 
     </tr>
     <tr>
       <td>Inpatient respite care (up to 5 days at a time)</td>
-      <td>5% of the Medicare-approved amount, capped at the Part A hospital deductible ({{partA.deductible}} in {{year}})</td>
+      <td>5% of the Medicare-approved amount, capped at the Part A hospital deductible ({{partA.deductible}} in {{figYear}})</td>
       <td>Same split as the drug copay above</td>
     </tr>
     <tr>

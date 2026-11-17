@@ -58,6 +58,14 @@ plugin. **An unknown token throws at build time on purpose** — a silently wron
 figure on a Medicare site is the failure this arrangement exists to prevent. Use a token
 wherever one exists.
 
+**Two kinds of year token (split 2026-11-17).** `{{figYear}}` is the plan year the dollar
+figures apply to (`PLAN_YEAR`, 2027) — use it next to any figure ("{{partB.premium}} a month
+in {{figYear}}"). `{{year}}` / `{{nextYear}}` are the CALENDAR year the copy is written in
+(`CONTENT_YEAR`, 2026/2027) for editorial phrasing ("your {{nextYear}} plan", "January 1,
+{{nextYear}}"). `{{irmaaTaxYear}}` / `{{irmaaFiledYear}}` = the lookback return and the year
+it is filed. Never put `{{year}}` beside a figure token: in November the figures roll
+forward while the calendar does not. Bump `CONTENT_YEAR` on January 1.
+
 ## Two content shelves — do not confuse them
 - **`src/content/learn/`** — the evergreen reference shelf. Long explainers, revised in
   place when CMS moves a number.

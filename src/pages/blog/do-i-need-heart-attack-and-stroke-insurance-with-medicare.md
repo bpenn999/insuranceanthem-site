@@ -45,7 +45,7 @@ sources:
     url: https://www.carescout.com/cost-of-care
 ---
 
-**You do not need heart attack and stroke insurance to be covered for a heart attack or a stroke. Medicare pays for the ambulance, the hospital stay, inpatient rehab and cardiac rehab. With Original Medicare and Medigap Plan G, your share of all of that comes down to the Part B deductible ({{partB.deductible}} in {{year}}). On a Medicare Advantage plan, your share is capped by the plan's in-network out-of-pocket limit, and in Maricopa County 19 of the 45 general Advantage plans with drug coverage set that limit at $5,000 or more for 2027.** A heart and stroke policy pays you cash on diagnosis. It earns its premium only when there is a real gap for that cash to fill.
+**You do not need heart attack and stroke insurance to be covered for a heart attack or a stroke. Medicare pays for the ambulance, the hospital stay, inpatient rehab and cardiac rehab. With Original Medicare and Medigap Plan G, your share of all of that comes down to the Part B deductible ({{partB.deductible}} in {{figYear}}). On a Medicare Advantage plan, your share is capped by the plan's in-network out-of-pocket limit, and in Maricopa County 19 of the 45 general Advantage plans with drug coverage set that limit at $5,000 or more for 2027.** A heart and stroke policy pays you cash on diagnosis. It earns its premium only when there is a real gap for that cash to fill.
 
 I hear this one around north Peoria, often from a Vistancia or Trilogy couple right after a mailer or a neighbor's scare. It is a fair worry. CDC's county estimates put about 3 in 100 Maricopa County adults as having had a stroke and about 1 in 20 as living with coronary heart disease, and both rise with age. The useful question is not whether a heart attack is expensive. It is how much of the expense is already yours under the Medicare you have.
 
@@ -66,7 +66,7 @@ A heart attack or stroke moves through several parts of Medicare in a few days. 
     <tr><td>Inpatient rehabilitation facility</td><td>Part A</td><td>No second deductible if admitted within 60 days of the hospital stay</td></tr>
     <tr><td>Skilled nursing facility, after a 3-day inpatient stay</td><td>Part A</td><td>$0 for days 1 to 20, {{partA.snf}} a day for days 21 to 100</td></tr>
     <tr><td>Cardiac rehab, outpatient therapy</td><td>Part B</td><td>{{partB.coinsurance}} of each session</td></tr>
-    <tr><td>Drugs after discharge</td><td>Part D</td><td>Capped at {{partD.cap}} in {{year}}, $2,400 in {{nextYear}}</td></tr>
+    <tr><td>Drugs after discharge</td><td>Part D</td><td>Capped at {{partD.cap}} in {{figYear}} (up from $2,100 in 2026)</td></tr>
   </tbody>
 </table>
 </div>

@@ -48,7 +48,7 @@ The call usually starts with "we." *We got a letter. We're turning 65. What shou
 Forty years of employer coverage teaches couples to think in terms of "employee plus spouse." Medicare drops that the day the first of you turns 65:
 
 - **Separate enrollment.** Each spouse signs up during their own seven-month Initial Enrollment Period around their own 65th birthday. An older spouse can be on Medicare for years before the younger one is eligible. [Can my spouse get Medicare when I turn 65?](/blog/can-my-spouse-get-medicare-when-i-turn-65/) covers that gap.
-- **Separate premiums.** Each of you pays the Part B premium, {{partB.premium}} a month in {{year}} before any surcharge, and each of you pays your own plan premium.
+- **Separate premiums.** Each of you pays the Part B premium, {{partB.premium}} a month in {{figYear}} before any surcharge, and each of you pays your own plan premium.
 - **Separate plans.** One of you can be on an HMO, the other on a PPO, or one on Original Medicare with a supplement. A plan change for one spouse leaves the other's coverage alone.
 - **Separate letters.** A non-renewal notice applies only to the person enrolled in the plan that is ending. If you weren't on that plan, the letter doesn't change your coverage.
 
@@ -96,7 +96,7 @@ The other route for the spouse with the ending plan is a different Advantage pla
 Couples tend to match because it's easier to keep track of. In Vistancia, Trilogy and the 85383 corridor around Lake Pleasant Parkway and Happy Valley Road, these are the reasons I most often see a couple split:
 
 - **Different doctors.** One spouse is in and out of a cardiology group at Arrowhead or a practice in Sun City. The other sees a primary care doctor once a year. A network that covers the first spouse well might be unnecessary for the second, or the other way around. On the Peoria–Glendale–Sun City seam, two plans with the same name can have different directories depending on the facility, so check each spouse's doctors by name. [Do I need a referral?](/blog/do-i-need-a-referral-medicare-advantage-peoria-az/) explains how HMO and PPO rules play out locally.
-- **Different prescriptions.** Drug formularies are written plan by plan. A couple on one Part D or Advantage plan is often paying for one spouse's specialty drug to sit on a bad tier. Run each person's list separately on Medicare.gov's plan finder. Every enrollee's out-of-pocket drug costs are capped at {{partD.cap}} in {{year}}, and that cap is per person, not per household.
+- **Different prescriptions.** Drug formularies are written plan by plan. A couple on one Part D or Advantage plan is often paying for one spouse's specialty drug to sit on a bad tier. Run each person's list separately on Medicare.gov's plan finder. Every enrollee's out-of-pocket drug costs are capped at {{partD.cap}} in {{figYear}}, and that cap is per person, not per household.
 - **Different travel.** If one spouse spends summers in Flagstaff or with family out of state, and the other mostly stays home, a supplement's nationwide reach may matter for one and not the other.
 - **Different rights.** This winter, the spouse with the ending plan can get a supplement without health questions now. The spouse turning 65 gets that chance once. A couple might reasonably decide that the person with a health history uses the protected window for a supplement, and the healthier spouse chooses an Advantage plan, knowing that switching back later would mean health questions.
 

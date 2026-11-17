@@ -89,7 +89,7 @@ If the account will not recognise you yet, the enrollment probably has not finis
 
 Yes, as long as your coverage start date has passed. The card proves you have Medicare; it is not what turns Medicare on. If January 1 is your start date and the envelope is still somewhere in the post on January 6, you have had Medicare for six days.
 
-Give the office the printed copy from your account, or just the Medicare number. Original Medicare allows claims to be filed up to 12 months after the date of service, so a provider who sees you in the first week can bill once the number is in hand. If you are starting with the Part B deductible, it is {{partB.deductible}} in {{year}}, and the 2027 figure is due from CMS in mid-November.
+Give the office the printed copy from your account, or just the Medicare number. Original Medicare allows claims to be filed up to 12 months after the date of service, so a provider who sees you in the first week can bill once the number is in hand. If you are starting with the Part B deductible, it is {{partB.deductible}} in {{figYear}}.
 
 The thing to avoid is the opposite mistake: assuming you have coverage because a card arrived, when the date printed on it is still in the future. Read the start dates on the card, not just the colours.
 

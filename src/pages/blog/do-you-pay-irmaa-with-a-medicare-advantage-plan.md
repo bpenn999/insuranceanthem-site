@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 title: 'Do you pay IRMAA with a Medicare Advantage plan?'
 seoTitle: 'Do You Pay IRMAA With Medicare Advantage? Arizona 2026'
-description: 'Yes. Advantage plans do not remove IRMAA: in 2026 Part B runs $284.10 to $689.90 a month above $109,000 of income, plus $14.50 to $91 for drugs.'
+description: 'Yes. Advantage plans do not remove IRMAA: in 2027 Part B runs $293.10 to $711.80 a month above $112,000 of income, plus $15.40 to $96.40 for drugs.'
 summary: 'A $0-premium Medicare Advantage plan does not take a higher-income household out of IRMAA. The Part B surcharge applies to everyone with Part B, and the Part D surcharge applies to any Advantage plan with drug coverage. Here is which charge follows which kind of coverage, how Social Security collects it, the seven Maricopa County plans with no drug coverage, and what changes for 2027.'
 category: IRMAA
 publishedAt: 2026-10-17
@@ -11,9 +11,9 @@ image: /blog/do-you-pay-irmaa-with-a-medicare-advantage-plan-photo.jpg
 imageAlt: 'A white-haired woman in glasses, a tan sweater and a long pearl necklace types on a laptop on a leather sofa in warm window light.'
 faqs:
   - q: Do you pay IRMAA if you have a Medicare Advantage plan?
-    a: Yes. Social Security's own operations manual lists people with Part B and a Medicare Advantage plan with drug coverage among those who pay IRMAA when their income is over the threshold. You keep paying the Part B premium in a Medicare Advantage plan, so the Part B surcharge comes with it, and the drug coverage inside the plan carries the Part D surcharge. For 2026 the surcharge starts above $109,000 of 2024 income for a single filer and $218,000 filing jointly.
+    a: Yes. Social Security's own operations manual lists people with Part B and a Medicare Advantage plan with drug coverage among those who pay IRMAA when their income is over the threshold. You keep paying the Part B premium in a Medicare Advantage plan, so the Part B surcharge comes with it, and the drug coverage inside the plan carries the Part D surcharge. For 2027 the surcharge starts above $112,000 of 2025 income for a single filer and $224,000 filing jointly.
   - q: Does a $0 premium Medicare Advantage plan avoid IRMAA?
-    a: No. The $0 is the plan's own premium. IRMAA is charged by Medicare on top of the Part B premium and on top of whatever the plan charges for drug coverage, even when that plan premium is zero. A single filer in the first 2026 tier in a $0 plan still pays $284.10 a month for Part B and a $14.50 Part D surcharge.
+    a: No. The $0 is the plan's own premium. IRMAA is charged by Medicare on top of the Part B premium and on top of whatever the plan charges for drug coverage, even when that plan premium is zero. A single filer in the first 2027 tier in a $0 plan still pays $293.10 a month for Part B and a $15.40 Part D surcharge.
   - q: Is IRMAA paid to Medicare or to my plan?
     a: To Medicare, through Social Security. Both surcharges are normally withheld from your Social Security benefit, whatever way you pay the plan premium. If you are not drawing Social Security yet, or the benefit is too small, Medicare bills you directly. Your plan never collects it.
   - q: What happens if you don't pay the Part D IRMAA?
@@ -29,8 +29,8 @@ sources:
     url: https://secure.ssa.gov/poms.nsf/lnx/0601101031
   - label: 'Social Security POMS HI 01101.020 — IRMAA sliding scale tables'
     url: https://secure.ssa.gov/poms.nsf/lnx/0601101020
-  - label: 'CMS — 2026 Medicare Parts A and B premiums and deductibles fact sheet, with the Part D income-related amounts (November 14, 2025)'
-    url: https://www.cms.gov/newsroom/fact-sheets/2026-medicare-parts-b-premiums-deductibles
+  - label: 'CMS — 2027 Medicare Parts A and B premiums and deductibles fact sheet, with the Part D income-related amounts (November 17, 2026)'
+    url: https://www.cms.gov/newsroom/fact-sheets/2027-medicare-parts-b-premiums-deductibles
   - label: 'Medicare.gov — Monthly premium for drug plans, including the 2026 Part D IRMAA table'
     url: https://www.medicare.gov/drug-coverage-part-d/costs-for-medicare-drug-coverage/monthly-premium-for-drug-plans
   - label: '42 CFR §423.4 — definitions: a "Part D plan" includes an MA-PD plan'
@@ -43,7 +43,7 @@ sources:
     url: https://www.cms.gov/files/zip/cy2027-landscape-202609-1.zip
 ---
 
-**Yes. A Medicare Advantage plan does not take you out of IRMAA. You still pay the Part B premium in an Advantage plan, so the income-related Part B surcharge comes with it: {{irmaa.t1.partB}} to {{irmaa.t5.partB}} a month in {{year}} instead of {{partB.premium}}, once a single filer's {{irmaaTaxYear}} income passes {{irmaa.singleStart}} ({{irmaa.jointStart}} filing jointly). If the plan includes drug coverage, as most do, the Part D surcharge of {{irmaa.t1.partD}} to {{irmaa.t5.partD}} a month applies as well. A $0 plan premium changes neither.**
+**Yes. A Medicare Advantage plan does not take you out of IRMAA. You still pay the Part B premium in an Advantage plan, so the income-related Part B surcharge comes with it: {{irmaa.t1.partB}} to {{irmaa.t5.partB}} a month in {{figYear}} instead of {{partB.premium}}, once a single filer's {{irmaaTaxYear}} income passes {{irmaa.singleStart}} ({{irmaa.jointStart}} filing jointly). If the plan includes drug coverage, as most do, the Part D surcharge of {{irmaa.t1.partD}} to {{irmaa.t5.partD}} a month applies as well. A $0 plan premium changes neither.**
 
 I hear the opposite assumption every fall in north Peoria. A couple in Vistancia or Trilogy sells a house in the Midwest, takes a big IRA distribution to cover the move, or does a Roth conversion in the first year of retirement, and two years later a letter from Social Security raises their Part B. When the Annual Enrollment Period opens, someone at the table says, "We'll take one of the $0 Advantage plans and get out of that." It is a reasonable guess, and it is wrong. IRMAA is charged by Medicare on your income, not by the plan on its price, and the plan you pick has almost nothing to do with it.
 
@@ -73,7 +73,7 @@ The two rows that surprise people are the first and the last. The $0 plan still 
 
 ## What a $0 Advantage plan still costs a higher-income household
 
-Here is the {{year}} schedule for a single filer, using {{irmaaTaxYear}} income. Even with a plan premium of zero, these are the amounts Medicare collects each month. Joint filers start at {{irmaa.jointStart}} and climb on a wider scale; the [IRMAA estimator](/tools/irmaa-estimator/) handles both, and married-filing-separately has its own steeper table.
+Here is the {{figYear}} schedule for a single filer, using {{irmaaTaxYear}} income. Even with a plan premium of zero, these are the amounts Medicare collects each month. Joint filers start at {{irmaa.jointStart}} and climb on a wider scale; the [IRMAA estimator](/tools/irmaa-estimator/) handles both, and married-filing-separately has its own steeper table.
 
 <div class="table-scroll">
 <table>
@@ -123,7 +123,7 @@ If your 2026 Advantage plan is one of the Maricopa plans being discontinued, the
 Two things move each year, and neither is set yet.
 
 - **The tax year.** 2027 IRMAA is based on your **2025** return. If 2025 held a home sale, a Roth conversion or a final year of salary, expect the letter from Social Security late this year. The [Roth conversion post](/blog/does-a-roth-conversion-affect-medicare-premiums/) and the [home-sale post](/blog/does-selling-my-house-affect-medicare-premiums/) cover those two triggers.
-- **The dollar amounts and income brackets.** CMS announces them with the 2027 Part B premium, usually in November; the 2026 figures came out on November 14, 2025. Until then, every figure on this page is the {{year}} schedule.
+- **The dollar amounts and income brackets.** CMS announces them each November with the Part B premium; the 2027 figures came out on November 17, 2026, and every figure on this page is the {{figYear}} schedule.
 
 If your income has dropped since 2025 because you retired, cut your hours or lost a spouse, you do not have to wait it out. Form SSA-44 asks Social Security to use a more recent year, and it works the same whichever plan you choose. [How to appeal IRMAA after retirement](/blog/how-do-i-appeal-irmaa-after-retirement/) walks through it. For whether the conversion or the sale itself made sense, talk to your tax advisor; my part is the Medicare side.
 

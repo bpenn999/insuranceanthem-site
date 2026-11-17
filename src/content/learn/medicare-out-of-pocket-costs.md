@@ -1,20 +1,21 @@
 ---
-title: "MOOP & Deductibles: Medicare Out-of-Pocket Costs in 2026"
-seoTitle: "Medicare Out-of-Pocket Costs 2026: MOOP & Deductibles"
-description: "Every 2026 Medicare cost in one place — Part A and B deductibles, coinsurance, the Part D cap, and what the out-of-pocket maximum really covers."
-summary: "What a year on Medicare actually costs in 2026: the deductibles, the coinsurance, the Part D cap, and the out-of-pocket maximum that only exists on one of the two paths."
+title: "MOOP & Deductibles: Medicare Out-of-Pocket Costs in 2027"
+seoTitle: "Medicare Out-of-Pocket Costs 2027: MOOP & Deductibles"
+description: "Every 2027 Medicare cost in one place — Part A and B deductibles, coinsurance, the Part D cap, and what the out-of-pocket maximum really covers."
+summary: "What a year on Medicare actually costs in 2027: the deductibles, the coinsurance, the Part D cap, and the out-of-pocket maximum that only exists on one of the two paths."
 category: "Costs"
 publishedAt: 2026-08-02
+updatedAt: 2026-11-17
 readMinutes: 10
 relatedProducts: [medicare-advantage, medicare-supplement, long-term-care]
 relatedTools: [medicare-cost-estimator, irmaa-estimator]
 faqs:
-  - q: "What is the Medicare Part B deductible in 2026?"
-    a: "The annual Part B deductible for 2026 is $283. After you meet it, Original Medicare generally pays 80% of the approved amount for covered services and you are responsible for the remaining 20%, with no upper limit unless you have a supplement or an Advantage plan."
+  - q: "What is the Medicare Part B deductible in 2027?"
+    a: "The annual Part B deductible for 2027 is $292. After you meet it, Original Medicare generally pays 80% of the approved amount for covered services and you are responsible for the remaining 20%, with no upper limit unless you have a supplement or an Advantage plan."
   - q: "Does Original Medicare have an out-of-pocket maximum?"
     a: "No. Original Medicare on its own has no annual cap on what you can spend — the 20% coinsurance continues indefinitely. That absence is the single strongest argument for pairing it with a Medicare Supplement, and it is why Medicare Advantage plans are required to have a cap."
-  - q: "What is the Part A hospital deductible in 2026?"
-    a: "$1,736 per benefit period, not per year. A benefit period starts when you are admitted and ends after 60 consecutive days out of a hospital or skilled nursing facility, so two separate admissions far enough apart mean paying the deductible twice in one year."
+  - q: "What is the Part A hospital deductible in 2027?"
+    a: "$1,776 per benefit period, not per year. A benefit period starts when you are admitted and ends after 60 consecutive days out of a hospital or skilled nursing facility, so two separate admissions far enough apart mean paying the deductible twice in one year."
   - q: "Does the Medicare Advantage out-of-pocket maximum cover everything?"
     a: "No. It covers in-network Part A and Part B services. Prescription drugs run on the separate Part D cap, and supplemental benefits like dental and vision generally sit outside it entirely. Out-of-network care may have a higher cap or none at all depending on the plan."
 sources:
@@ -26,9 +27,9 @@ sources:
     url: "https://www.medicare.gov/coverage"
 ---
 
-Medicare is not free, and the places it costs money are not always the obvious ones. This is every {{year}} figure in one place, plus the structural point that matters more than any individual number: **only one of the two Medicare paths has a cap on what you can spend.**
+Medicare is not free, and the places it costs money are not always the obvious ones. This is every {{figYear}} figure in one place, plus the structural point that matters more than any individual number: **only one of the two Medicare paths has a cap on what you can spend.**
 
-All figures below are for plan year {{year}} and come from a single source in this site's code, so they update together when CMS publishes next year's amounts.
+All figures below are for plan year {{figYear}} and come from a single source in this site's code, so they update together when CMS publishes next year's amounts.
 
 ## Part B: the everyday costs
 
@@ -44,7 +45,7 @@ That {{partB.coinsurance}} is the number to pay attention to, because on Origina
 
 ## Part A: the hospital costs
 
-Most people pay **no premium** for Part A, having earned it through 40 quarters of work. Those without enough quarters pay up to {{partA.premiumIfUninsured}} a month in {{year}}.
+Most people pay **no premium** for Part A, having earned it through 40 quarters of work. Those without enough quarters pay up to {{partA.premiumIfUninsured}} a month in {{figYear}}.
 
 The cost sharing is where it gets structural:
 
@@ -65,7 +66,7 @@ The skilled nursing arithmetic is worth spelling out: eighty days at {{partA.snf
 
 **Plan premiums vary by plan.** Add the income-related surcharge if it applies — {{irmaa.t1.partD}} to {{irmaa.t5.partD}} a month, on top of whatever the plan charges.
 
-**Deductible: up to {{partD.maxDeductible}}** in {{year}}, depending on the plan. Some charge nothing; some charge the maximum; some apply it only to higher tiers.
+**Deductible: up to {{partD.maxDeductible}}** in {{figYear}}, depending on the plan. Some charge nothing; some charge the maximum; some apply it only to higher tiers.
 
 **Out-of-pocket cap: {{partD.cap}}.** Once your spending on covered drugs reaches it, the plan pays 100% of covered drugs for the rest of the year. Premiums do not count toward it, and the counter resets on 1 January.
 
@@ -103,7 +104,7 @@ Rough shapes, for a sense of scale rather than a quote.
 
 That last comparison is the whole argument for a supplement, and the reason the honest question is not "what will this cost?" but "what will a *bad* year cost?"
 
-The [annual cost estimator](/tools/medicare-cost-estimator/) runs both structures against your own expected usage using these {{year}} figures. Run it twice — a normal year and a bad one. If the answer flips, that is the most useful thing it can tell you.
+The [annual cost estimator](/tools/medicare-cost-estimator/) runs both structures against your own expected usage using these {{figYear}} figures. Run it twice — a normal year and a bad one. If the answer flips, that is the most useful thing it can tell you.
 
 ## Not all supplements cover the same things
 
@@ -111,7 +112,7 @@ The [annual cost estimator](/tools/medicare-cost-estimator/) runs both structure
 
 Between *letters*, though, the differences are substantial. The two most commonly bought today:
 
-**Plan G** covers everything Original Medicare leaves except the {{year}} Part B deductible of {{partB.deductible}}. You pay that once a year and effectively nothing else for Medicare-covered services.
+**Plan G** covers everything Original Medicare leaves except the {{figYear}} Part B deductible of {{partB.deductible}}. You pay that once a year and effectively nothing else for Medicare-covered services.
 
 **Plan N** costs less monthly and covers slightly less: you pay the Part B deductible, plus small copays for office and emergency room visits, and it does not cover Part B excess charges — the amount a provider who does not accept Medicare assignment may bill above the approved rate.
 
@@ -146,4 +147,4 @@ Plenty of people who qualify never apply. It costs nothing to check.
 - **Only Advantage plans have a medical out-of-pocket maximum.** Medigap removes the exposure instead.
 - The question that matters is what a *bad* year costs, not an average one.
 
-Figures are for plan year {{year}} and change each January. If you are reading this later, confirm the current amounts before planning around them.
+Figures are for plan year {{figYear}} and change each January. If you are reading this later, confirm the current amounts before planning around them.

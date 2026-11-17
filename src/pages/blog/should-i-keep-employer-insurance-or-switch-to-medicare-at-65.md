@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 title: 'Should I keep my employer insurance or switch to Medicare at 65?'
 seoTitle: 'Employer Insurance or Medicare at 65? Arizona 2027'
-description: 'Either is allowed at a 20-plus-employee employer. Switching costs $202.90 a month for Part B alone; the average worker pays $120 a month for job coverage.'
+description: 'Either is allowed at a 20-plus-employee employer. Switching costs $209.40 a month for Part B alone; the average worker pays $120 a month for job coverage.'
 summary: 'If you are still on the payroll at 65 and your employer has 20 or more workers, Medicare lets you keep the group plan with no penalty. That makes it a pricing decision, not a deadline. Here is what goes on each side of the ledger for a north Peoria household, using the 2027 Maricopa County plan files, and the four things that usually settle it.'
 category: Turning 65
 publishedAt: 2026-11-11
@@ -15,7 +15,7 @@ faqs:
   - q: Can I drop my employer insurance and go on Medicare?
     a: Yes. You can leave a group plan at 65 or later and enroll in Part B during the eight months after the coverage ends, using form CMS-L564 to show you had employer coverage. Your one-time Medigap open enrollment starts the month Part B starts, and you have two full months after the employer coverage ends to join a drug plan or Medicare Advantage plan without a gap.
   - q: Is Medicare cheaper than employer insurance?
-    a: Often not for someone with a generous employer plan. The 2025 KFF employer survey put the average worker's share of single coverage at $1,440 a year, about $120 a month. Part B alone is $202.90 a month in 2026, before a Medicare Supplement or drug plan. Medicare tends to come out ahead when the employer plan carries a high deductible or a large payroll deduction, or when you use a lot of care.
+    a: Often not for someone with a generous employer plan. The 2025 KFF employer survey put the average worker's share of single coverage at $1,440 a year, about $120 a month. Part B alone is $209.40 a month in 2027, before a Medicare Supplement or drug plan. Medicare tends to come out ahead when the employer plan carries a high deductible or a large payroll deduction, or when you use a lot of care.
   - q: Should I sign up for Part A if I keep my employer insurance?
     a: Most people can, because Part A is premium-free with 40 quarters of work. The exception is anyone still putting money into a Health Savings Account, since any Medicare enrollment ends HSA contributions and Part A can be backdated up to six months.
   - q: Can my employer pay me to switch to Medicare?
@@ -43,7 +43,7 @@ sources:
     url: https://www.ssa.gov/benefits/medicare/medicare-premiums.html
 ---
 
-**If you are still working at 65 for an employer with 20 or more employees, Medicare lets you keep the group plan as your main coverage and sign up for Part B later with no penalty. So the question is not whether you may stay, but whether staying is cheaper and covers the people and doctors you need.** Part B alone is {{partB.premium}} a month in {{year}}. The average worker's share of single employer coverage was about $120 a month in KFF's 2025 survey. That gap is the first thing to beat.
+**If you are still working at 65 for an employer with 20 or more employees, Medicare lets you keep the group plan as your main coverage and sign up for Part B later with no penalty. So the question is not whether you may stay, but whether staying is cheaper and covers the people and doctors you need.** Part B alone is {{partB.premium}} a month in {{figYear}}. The average worker's share of single employer coverage was about $120 a month in KFF's 2025 survey. That gap is the first thing to beat.
 
 Below the 20-employee line the answer is different. Medicare pays first, the group plan pays second, and you should enroll in Part A and Part B at 65. The rules for that case, and for COBRA and retiree plans, are in [Do I need to sign up for Medicare at 65 if I'm still working?](/blog/do-i-need-medicare-at-65-if-still-working/). This post is for the people who have a real choice.
 
@@ -60,8 +60,8 @@ Put the two options next to each other for one plan year, using your own pay stu
     <tr><th scope="col">Line</th><th scope="col">Stay on the employer plan</th><th scope="col">Switch to Medicare</th></tr>
   </thead>
   <tbody>
-    <tr><td>Monthly premium</td><td>Your payroll deduction. KFF's 2025 average for single coverage: $1,440 a year</td><td>Part B {{partB.premium}} in {{year}} (2027 figure not yet announced), plus a Medigap and drug plan, or a Medicare Advantage plan</td></tr>
-    <tr><td>Deductible</td><td>KFF's 2025 average for single coverage: $1,886</td><td>Part B {{partB.deductible}} in {{year}}. Plan G leaves you that and very little else</td></tr>
+    <tr><td>Monthly premium</td><td>Your payroll deduction. KFF's 2025 average for single coverage: $1,440 a year</td><td>Part B {{partB.premium}} in {{figYear}}, plus a Medigap and drug plan, or a Medicare Advantage plan</td></tr>
+    <tr><td>Deductible</td><td>KFF's 2025 average for single coverage: $1,886</td><td>Part B {{partB.deductible}} in {{figYear}}. Plan G leaves you that and very little else</td></tr>
     <tr><td>Worst-year limit</td><td>Your plan's out-of-pocket maximum</td><td>Medigap Plan G: about the Part B deductible. Maricopa Advantage plans: $2,000 to $8,900 in 2027</td></tr>
     <tr><td>Prescriptions</td><td>Your plan's formulary and tiers</td><td>Part D caps your drug spending at $2,400 in 2027, with a deductible of up to $700</td></tr>
     <tr><td>Spouse or children</td><td>Can stay on as dependents</td><td>Not covered. Medicare is one person at a time</td></tr>
@@ -83,7 +83,7 @@ The Medicare column has two routes in it, and they price very differently. One i
 ## When staying usually comes out ahead
 
 - **Someone else is on your plan.** This settles more of these conversations than any number. If a 61-year-old spouse or a college-age child is covered through your job, dropping it drops them, and their replacement coverage belongs in the Medicare column of your table. [Can my spouse get Medicare when I turn 65?](/blog/can-my-spouse-get-medicare-when-i-turn-65/) covers the age question.
-- **Your income is high.** Medicare premiums carry a surcharge, IRMAA, based on your tax return from two years earlier. In {{year}} it starts above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} for a joint return, and it pushes Part B to {{irmaa.t1.partB}} a month at the first tier, plus an add-on to your drug plan. A senior executive or physician still earning a full salary can pay several times the standard Part B premium. Your share of a group plan has no surcharge at all. The [IRMAA explainer](/learn/irmaa-explained/) has the full tier table.
+- **Your income is high.** Medicare premiums carry a surcharge, IRMAA, based on your tax return from two years earlier. In {{figYear}} it starts above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} for a joint return, and it pushes Part B to {{irmaa.t1.partB}} a month at the first tier, plus an add-on to your drug plan. A senior executive or physician still earning a full salary can pay several times the standard Part B premium. Your share of a group plan has no surcharge at all. The [IRMAA explainer](/learn/irmaa-explained/) has the full tier table.
 - **Your employer funds an HSA.** Enrolling in any part of Medicare ends your ability to put money into a Health Savings Account, and that includes the employer's deposit. [Can I contribute to an HSA while on Medicare?](/blog/can-i-contribute-to-an-hsa-while-on-medicare/) has the six-month look-back.
 - **You already met this year's deductible.** If it is October and you have paid your employer plan's deductible and most of its out-of-pocket maximum, switching on November 1 starts Medicare's deductibles from zero for the last two months. Leaving in January makes more sense.
 

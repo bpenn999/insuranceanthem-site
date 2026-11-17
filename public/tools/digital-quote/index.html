@@ -300,7 +300,7 @@
 
 <footer class="legal">
   <p>We do not offer every plan available in your area. Currently, we represent 7 organizations which offer 38 products in your area. Any information we provide is limited to those plans we do offer in your area. Please contact Medicare.gov or 1-800-MEDICARE to get information on all of your options. 602Medicare is a licensed independent insurance agency (NPN 8206556). Not connected with or endorsed by the United States government or the federal Medicare program.</p>
-  <p>This survey is educational. Umbrella suggestions are based only on your answers and are not a guarantee of benefits, eligibility or price. Plan availability, premiums and health questions vary by carrier, county and enrollment period. Medicare figures shown are 2026 federal amounts unless marked otherwise.</p>
+  <p>This survey is educational. Umbrella suggestions are based only on your answers and are not a guarantee of benefits, eligibility or price. Plan availability, premiums and health questions vary by carrier, county and enrollment period. Medicare figures shown are 2027 federal amounts unless marked otherwise.</p>
   <p class="no-print">Anthem, AZ 85086 &middot; (602) 844-6002 &middot; help@602medicare.com &middot; <a href="/privacy/">Privacy</a> &middot; <a href="/tools/digital-quote-supplement/">Fillable Med Supp sheet</a> &middot; <a href="/tools/digital-quote-advantage/">Fillable Advantage sheet</a></p>
 </footer>
 
@@ -353,8 +353,8 @@
     return '<svg class="ico" viewBox="0 0 24 24" aria-hidden="true">' + (ICONS[n] || ICONS.check) + '</svg>';
   }
 
-  var PART_B = 202.90;       // 2026 standard Part B premium (CMS); 2027 amount not yet announced
-  var PART_B_DED = 283;      // 2026 Part B deductible (CMS)
+  var PART_B = 209.40;       // 2027 standard Part B premium (CMS fact sheet, 2026-11-17)
+  var PART_B_DED = 292;      // 2027 Part B deductible (CMS)
   var RX_CAP = 2400;         // 2027 Part D out-of-pocket threshold (CMS CY2027 landscape file)
   var DATA_BASE = '/data/plans-2027/';
   var STATE_NAMES = {AZ:'Arizona',CA:'California',CO:'Colorado',FL:'Florida',GA:'Georgia',IA:'Iowa',IN:'Indiana',LA:'Louisiana',MI:'Michigan',NC:'North Carolina',NJ:'New Jersey',NM:'New Mexico',NV:'Nevada',OH:'Ohio',OR:'Oregon',TX:'Texas',UT:'Utah',VA:'Virginia'};
@@ -390,7 +390,7 @@
       ['50','Under $50','$'], ['150','$50 to $150','$$'],
       ['300','$150 to $300','$$$'], ['300+','Over $300','$$$$'],
       ['unsure','Not sure yet','?']]},
-    {id:'income', q:'Is your yearly income over $109,000 (single) or $218,000 (married)?', help:'Medicare charges higher-income people more for Part B and drug coverage. It uses your tax return from two years ago.', opts:[
+    {id:'income', q:'Is your yearly income over $112,000 (single) or $224,000 (married)?', help:'Medicare charges higher-income people more for Part B and drug coverage. It uses your tax return from two years ago.', opts:[
       ['no','No','check'], ['yes','Yes','trend'], ['skip','I\u2019d rather not say','lock']]},
     {id:'contact', type:'contact', q:'Where should we send your bundle options?', help:'Brian will confirm your doctors and prescriptions and finish the pricing. No cost, and no pressure.'}
   ];
@@ -409,9 +409,9 @@
 
   // ---------------------------------------------------------------- generic coverage layers
   var L = {
-    om:   {i:'landmark', n:'Original Medicare (Parts A & B)', w:'The government base for hospital and doctor care. Everyone pays the Part B premium: $202.90/month in 2026 (the 2027 amount comes out in November).', base:true, fixed:PART_B},
-    suppG:{i:'shield', n:'Medicare Supplement Plan G', w:'Pays nearly everything Medicare leaves. You pay the $' + PART_B_DED + ' Part B deductible (2026), then $0 for covered care. Any doctor in the U.S. who takes Medicare. Same benefits from every carrier — only the price differs.'},
-    suppN:{i:'shield', n:'Medicare Supplement Plan N', w:'Lower premium than Plan G. You pay the $' + PART_B_DED + ' Part B deductible (2026), up to $20 per office visit and up to $50 per ER visit. Any doctor who takes Medicare.'},
+    om:   {i:'landmark', n:'Original Medicare (Parts A & B)', w:'The government base for hospital and doctor care. Everyone pays the Part B premium: $209.40/month in 2027.', base:true, fixed:PART_B},
+    suppG:{i:'shield', n:'Medicare Supplement Plan G', w:'Pays nearly everything Medicare leaves. You pay the $' + PART_B_DED + ' Part B deductible (2027), then $0 for covered care. Any doctor in the U.S. who takes Medicare. Same benefits from every carrier — only the price differs.'},
+    suppN:{i:'shield', n:'Medicare Supplement Plan N', w:'Lower premium than Plan G. You pay the $' + PART_B_DED + ' Part B deductible (2027), up to $20 per office visit and up to $50 per ER visit. Any doctor who takes Medicare.'},
     pdp:  {i:'pill', n:'Prescription Drug Plan (Part D)', w:'Covers your medicines. Drug costs are capped at $' + RX_CAP.toLocaleString() + ' a year in 2027.'},
     mapd: {i:'stetho', n:'Medicare Advantage plan with drug coverage', w:'One plan for hospital, doctor and drugs, often with a low or $0 premium. Uses a network. You pay copays as you go, up to the plan’s yearly limit.'},
     dvh:  {i:'tooth', n:'Dental, Vision & Hearing plan', w:'Cleanings, fillings, crowns, eye exams, glasses and hearing aids — things Original Medicare mostly does not cover.', add:true},
@@ -776,7 +776,7 @@
     h += '<li class="layer' + (l.base ? ' base' : l.add ? ' add' : '') + '"><div class="ln"><span class="i" aria-hidden="true">' + icon(l.i) + '</span><span>' + esc(l.n) + '</span></div>' +
          '<div class="lw">' + esc(l.w) + '</div>';
     if (l.noPrem) h += '<div class="lp"><input class="car" data-k="' + key + '" placeholder="Appt / notes" value="' + esc(CAR[key] || '') + '"></div>';
-    else h += '<div class="lp"><input class="car" data-k="' + key + '" placeholder="' + (l.base ? 'Medicare' : 'Carrier / plan') + '" value="' + esc(CAR[key] != null ? CAR[key] : (l.base ? 'Part B premium (2026)' : '')) + '">' +
+    else h += '<div class="lp"><input class="car" data-k="' + key + '" placeholder="' + (l.base ? 'Medicare' : 'Carrier / plan') + '" value="' + esc(CAR[key] != null ? CAR[key] : (l.base ? 'Part B premium (2027)' : '')) + '">' +
               '<input class="prem" data-k="' + key + '" value="' + fmt(PR[key] != null ? PR[key] : (l.fixed || 0)) + '" aria-label="Monthly premium"></div>';
     return h + '</li>';
   }
@@ -861,7 +861,7 @@
     }
 
     if (A.income === 'yes'){
-      h += '<div class="irmaa"><b>Income surcharge (IRMAA):</b> because your income is over the line, Medicare adds an extra charge to Part B (starting at +$81.20/month in 2026) and to drug coverage (starting at +$14.50/month). It’s billed by Medicare, not the insurance company.' +
+      h += '<div class="irmaa"><b>Income surcharge (IRMAA):</b> because your income is over the line, Medicare adds an extra charge to Part B (starting at +$83.70/month in 2027) and to drug coverage (starting at +$15.40/month). It’s billed by Medicare, not the insurance company.' +
         '<div class="ir-row">IRMAA per person / mo: Part B <input id="irB" value="' + fmt(PR.irB || 0) + '"> Part D <input id="irD" value="' + fmt(PR.irD || 0) + '"> <span>(added to every bundle total)</span></div></div>';
     }
 

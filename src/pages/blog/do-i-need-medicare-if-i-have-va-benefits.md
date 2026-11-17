@@ -88,7 +88,7 @@ VA puts it this way: you choose which benefits to use each time you receive care
 
 ## Why Part B is the decision that matters
 
-Part A is premium-free for anyone with 40 quarters of work, so for most veterans it costs nothing to take and there is no reason to refuse it. Part B is the one with a bill attached: {{partB.premium}} a month in {{year}}, more on higher incomes. That is where veterans hesitate, and where the rules are least forgiving.
+Part A is premium-free for anyone with 40 quarters of work, so for most veterans it costs nothing to take and there is no reason to refuse it. Part B is the one with a bill attached: {{partB.premium}} a month in {{figYear}}, more on higher incomes. That is where veterans hesitate, and where the rules are least forgiving.
 
 Medicare lets you delay Part B without penalty only while you, or your spouse, have group coverage through **current employment**. VA health care is not that. Neither is a military pension, retiree coverage or COBRA. So a veteran who retires, declines Part B because "I have the VA," and changes their mind five years later finds three things waiting:
 

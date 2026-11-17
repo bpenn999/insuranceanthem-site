@@ -5,6 +5,7 @@ description: "Custodial long-term care, the 100-day skilled nursing limit, denta
 summary: "Most people find the gap at the worst possible moment — standing in a hospital discharge meeting being asked where their parent is going next. It is a much better conversation to have ten years early."
 category: Long-Term Care
 publishedAt: 2026-07-24
+updatedAt: 2026-11-17
 readMinutes: 9
 relatedProducts: [long-term-care, medicare-advantage]
 relatedTools: [medicare-cost-estimator]
@@ -38,7 +39,7 @@ This is not a loophole or a denial you can appeal. It is how the program was des
 
 Medicare covers **skilled** care: medical treatment, and rehabilitation delivered by licensed professionals.
 
-After a qualifying inpatient hospital stay, Medicare can cover up to **100 days in a skilled nursing facility** per benefit period. Days 1 to 20 are covered in full. From day 21 to day 100 there is a daily coinsurance — **$217 a day for plan year 2026** — which works out to a little over $17,000 if you use all eighty days.
+After a qualifying inpatient hospital stay, Medicare can cover up to **100 days in a skilled nursing facility** per benefit period. Days 1 to 20 are covered in full. From day 21 to day 100 there is a daily coinsurance — **$222 a day for plan year 2027** — which works out to a little under $17,800 if you use all eighty days.
 
 And it only continues while you need *skilled* care. This part surprises people most. If you stabilise — if you still need help but no longer need a nurse or a therapist — coverage ends, even if you are on day 30 of 100.
 

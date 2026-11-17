@@ -132,9 +132,9 @@ The second is the seam. Plan availability is set county by county, but the ZIP d
 And a third, for the seasonal households in Westbrook Village and Trilogy: if you are out of state four months a year, a hearing benefit tied to a Maricopa County provider network is only usable while you are here. That is a small version of the larger [Advantage-versus-supplement question](/learn/medicare-advantage-vs-medigap/) these households face anyway, and it should not be the item that decides it.
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium in {{year}}, which buys you no hearing aid coverage at all</p>
+  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium in {{figYear}}, which buys you no hearing aid coverage at all</p>
   <p class="stat-callout__body">The Part B annual deductible is {{partB.deductible}}, and after it you pay {{partB.coinsurance}} of the approved amount for a covered diagnostic hearing exam. For the hearing aid itself, Original Medicare's share is zero — so the cost of the device is either an Advantage plan's supplemental benefit, a separate policy, or your own money.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Parts A &amp; B premiums and deductibles; Medicare.gov hearing coverage pages.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Parts A &amp; B premiums and deductibles; Medicare.gov hearing coverage pages.</p>
 </div>
 
 ## What to do between now and December 7

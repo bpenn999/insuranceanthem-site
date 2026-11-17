@@ -167,7 +167,7 @@ describe('annual windows', () => {
 
 describe('IRMAA — bracket boundaries are exclusive at the bottom', () => {
   test('exactly at the first threshold is still standard', () => {
-    const r = lookupIrmaa(109_000, 'single');
+    const r = lookupIrmaa(112_000, 'single');
     assert.equal(r.tier, 0);
     assert.equal(r.surcharged, false);
     assert.equal(r.partBTotal, partB.standardPremium);
@@ -175,11 +175,11 @@ describe('IRMAA — bracket boundaries are exclusive at the bottom', () => {
   });
 
   test('one dollar over lands in tier 1', () => {
-    const r = lookupIrmaa(109_001, 'single');
+    const r = lookupIrmaa(112_001, 'single');
     assert.equal(r.tier, 1);
     assert.equal(r.surcharged, true);
-    assert.equal(r.partBTotal, 284.1);
-    assert.equal(r.partDSurcharge, 14.5);
+    assert.equal(r.partBTotal, 293.1);
+    assert.equal(r.partDSurcharge, 15.4);
   });
 
   test('every single-filer boundary is off-by-one safe', () => {
@@ -206,13 +206,13 @@ describe('IRMAA — filing statuses do not bleed into each other', () => {
   });
 
   test('married filing separately uses its own steeper table', () => {
-    assert.equal(lookupIrmaa(109_000, 'separate').tier, 0);
+    assert.equal(lookupIrmaa(112_000, 'separate').tier, 0);
     // Separate filers jump straight to the tier-4 amounts above the threshold.
     const r = lookupIrmaa(200_000, 'separate');
-    assert.equal(r.partBTotal, 649.2);
-    assert.equal(r.partDSurcharge, 83.3);
-    // …and to the top tier above $391,000.
-    assert.equal(lookupIrmaa(400_000, 'separate').partBTotal, 689.9);
+    assert.equal(r.partBTotal, 670.0);
+    assert.equal(r.partDSurcharge, 88.3);
+    // …and to the top tier from $388,000.
+    assert.equal(lookupIrmaa(400_000, 'separate').partBTotal, 711.8);
   });
 });
 
@@ -246,7 +246,7 @@ describe('Part A premium tiers', () => {
     assert.equal(partA.quartersForFree, 40);
   });
   test('30–39 quarters is the 45%-reduced premium', () => {
-    assert.equal(partA.premiumByQuarters.reduced, 311);
+    assert.equal(partA.premiumByQuarters.reduced, 328);
     assert.equal(partA.quartersForReduced, 30);
     // CMS describes this as a 45% reduction off the full premium.
     const expected = Math.round(partA.premiumByQuarters.full * 0.55);
@@ -256,7 +256,7 @@ describe('Part A premium tiers', () => {
     );
   });
   test('under 30 quarters pays the full premium', () => {
-    assert.equal(partA.premiumByQuarters.full, 565);
+    assert.equal(partA.premiumByQuarters.full, 597);
     assert.equal(partA.premiumByQuarters.full, partA.premiumIfUninsured);
   });
   test('the tiers are ordered and the thresholds do not overlap', () => {
@@ -326,21 +326,23 @@ describe('cost of care figures', () => {
 
 describe('published figures match the CY2026 CMS fact sheet', () => {
   test('plan year and IRMAA lookback', () => {
-    assert.equal(PLAN_YEAR, 2026);
-    assert.equal(IRMAA_TAX_YEAR, 2024);
+    assert.equal(PLAN_YEAR, 2027);
+    assert.equal(IRMAA_TAX_YEAR, 2025);
   });
   test('Part B', () => {
-    assert.equal(partB.standardPremium, 202.9);
-    assert.equal(partB.deductible, 283);
+    assert.equal(partB.standardPremium, 209.4);
+    assert.equal(partB.deductible, 292);
   });
   test('Part A', () => {
-    assert.equal(partA.deductible, 1736);
-    assert.equal(partA.coinsurance61to90, 434);
-    assert.equal(partA.lifetimeReserve, 868);
-    assert.equal(partA.snf21to100, 217);
+    assert.equal(partA.deductible, 1776);
+    assert.equal(partA.coinsurance61to90, 444);
+    assert.equal(partA.lifetimeReserve, 888);
+    assert.equal(partA.snf21to100, 222);
   });
   test('Part D out-of-pocket cap', () => {
-    assert.equal(partD.outOfPocketCap, 2100);
+    assert.equal(partD.outOfPocketCap, 2400);
+    assert.equal(partD.maxDeductible, 700);
+    assert.equal(partD.baseBeneficiaryPremium, 41.33);
   });
   test('the standard bracket total equals the standard premium', () => {
     assert.equal(irmaaBrackets[0].partBTotal, partB.standardPremium);

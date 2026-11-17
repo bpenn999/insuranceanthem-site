@@ -1,19 +1,20 @@
 ---
 title: "IRMAA Explained: How Income Affects Your Medicare Premiums"
-seoTitle: "IRMAA Explained: 2026 Medicare Income Brackets"
-description: "How the Medicare income surcharge works — the 2026 brackets, the two-year lookback, the cliff effect, and the SSA-44 appeal most retirees never file."
-summary: "Higher income means a surcharge on Part B and Part D, decided by a tax return you filed two years ago. Here are the 2026 brackets, the cliff nobody warns you about, and the appeal that gets missed."
+seoTitle: "IRMAA Explained: 2027 Medicare Income Brackets"
+description: "How the Medicare income surcharge works — the 2027 brackets, the two-year lookback, the cliff effect, and the SSA-44 appeal most retirees never file."
+summary: "Higher income means a surcharge on Part B and Part D, decided by a tax return you filed two years ago. Here are the 2027 brackets, the cliff nobody warns you about, and the appeal that gets missed."
 category: "Costs"
 publishedAt: 2026-08-02
+updatedAt: 2026-11-17
 readMinutes: 10
 featured: true
 relatedProducts: [part-d, medicare-advantage]
 relatedTools: [irmaa-estimator, medicare-cost-estimator]
 faqs:
-  - q: "What income does 2026 IRMAA use?"
-    a: "Your modified adjusted gross income from your 2024 federal tax return — a two-year lookback. That means your 2026 surcharge was decided by a return you filed in 2025, and nothing you do to your income this year changes it."
-  - q: "What is the 2026 IRMAA threshold?"
-    a: "The first surcharge tier begins above $109,000 for single filers and above $218,000 for married filing jointly, based on 2024 modified adjusted gross income. At exactly $109,000 you pay the standard premium; at $109,001 you are in tier 1."
+  - q: "What income does 2027 IRMAA use?"
+    a: "Your modified adjusted gross income from your 2025 federal tax return — a two-year lookback. That means your 2027 surcharge is decided by a return you filed in 2026, and nothing you do to your income this year changes it."
+  - q: "What is the 2027 IRMAA threshold?"
+    a: "The first surcharge tier begins above $112,000 for single filers and above $224,000 for married filing jointly, based on 2025 modified adjusted gross income. At exactly $112,000 you pay the standard premium; at $112,001 you are in tier 1."
   - q: "Can I appeal an IRMAA determination?"
     a: "Yes, if a qualifying life-changing event reduced your income since the tax year used. Social Security lists eight: marriage, divorce or annulment, death of a spouse, you or your spouse stopping work or reducing hours, loss of income-producing property, loss of pension income, and an employer settlement payment. Retirement is the most commonly missed one. You file form SSA-44."
   - q: "Is IRMAA charged per person or per household?"
@@ -33,13 +34,13 @@ It surprises them for a specific reason: it is based on a tax return you filed t
 
 ## How it works
 
-Every autumn, Social Security looks at your **modified adjusted gross income** from the tax return two years prior. For {{year}}, that is your **{{irmaaTaxYear}}** return, filed in {{nextYear}} minus one.
+Every autumn, Social Security looks at your **modified adjusted gross income** from the tax return two years prior. For {{figYear}}, that is your **{{irmaaTaxYear}}** return, filed in {{irmaaFiledYear}}.
 
 MAGI here means your adjusted gross income — line 11 of Form 1040 — plus any tax-exempt interest from line 2a. Municipal bond interest counts, which catches out people who chose those investments partly for their tax treatment.
 
 If that figure exceeds the threshold, a surcharge is added to your Part B premium and a second surcharge to your Part D premium. Both are charged **per person**. A married couple both on Medicare each pay their own, based on the same joint income.
 
-## The {{year}} brackets
+## The {{figYear}} brackets
 
 Based on **{{irmaaTaxYear}}** MAGI. The Part B figure is the total you pay; the Part D figure is a surcharge added to whatever your chosen drug plan charges.
 
@@ -64,7 +65,7 @@ This is the part that costs people real money.
 
 IRMAA is not phased in. One dollar over a threshold moves you into the entire bracket. Somebody with MAGI of {{irmaa.singleStart}} pays the standard {{partB.premium}}. Somebody one dollar higher pays {{irmaa.t1.partB}}, plus {{irmaa.t1.partD}} on their drug plan — for all twelve months.
 
-That is roughly a $1,150 annual difference triggered by a single dollar of income, per person.
+That is roughly a $1,190 annual difference triggered by a single dollar of income, per person.
 
 If you are anywhere near a threshold, the December decisions that set your MAGI deserve genuine care:
 
@@ -93,7 +94,7 @@ Social Security recognizes exactly eight events:
 
 **Number four is the big one.** Retirement counts as a work stoppage, and it is the most commonly missed reason to file.
 
-Think about the timing. Someone who retired in {{irmaaTaxYear}} plus one had a full working salary on their {{irmaaTaxYear}} return. Social Security uses that return to set their {{year}} premium. They are now retired, living on a fraction of that income, paying a surcharge calculated on a salary they no longer earn.
+Think about the timing. Someone who retired in {{irmaaFiledYear}} had a full working salary on their {{irmaaTaxYear}} return. Social Security uses that return to set their {{figYear}} premium. They are now retired, living on a fraction of that income, paying a surcharge calculated on a salary they no longer earn.
 
 That is precisely what SSA-44 exists for. You file it with proof of the event — a letter from your employer, a retirement date — and an estimate of your current income. It is a two-page form and it is worth real money.
 
@@ -105,9 +106,9 @@ Two examples, because the abstract version does not convey the scale.
 
 **A single filer with {{irmaaTaxYear}} MAGI of {{irmaa.singleStart}} exactly.** Standard premium: {{partB.premium}} a month, no Part D surcharge. Nothing to do.
 
-**The same person, one dollar higher.** Part B becomes {{irmaa.t1.partB}}, and {{irmaa.t1.partD}} is added to their drug plan. Over twelve months that single dollar of income costs roughly $1,150.
+**The same person, one dollar higher.** Part B becomes {{irmaa.t1.partB}}, and {{irmaa.t1.partD}} is added to their drug plan. Over twelve months that single dollar of income costs roughly $1,190.
 
-**A married couple, both 67, both on Medicare, joint MAGI of $280,000.** That lands in the third bracket. Each of them pays {{irmaa.t2.partB}} for Part B and an extra {{irmaa.t2.partD}} on their drug plan. Because IRMAA is charged per person, the household is paying roughly $5,800 a year more than a couple below the first threshold — for identical coverage.
+**A married couple, both 67, both on Medicare, joint MAGI of $300,000.** That lands in the third bracket. Each of them pays {{irmaa.t2.partB}} for Part B and an extra {{irmaa.t2.partD}} on their drug plan. Because IRMAA is charged per person, the household is paying roughly $6,000 a year more than a couple below the first threshold — for identical coverage.
 
 That "identical coverage" point is worth dwelling on. IRMAA buys you nothing. It is not a better plan or a wider network; it is the same Medicare at a higher price. Which is precisely why the timing decisions that set your MAGI are worth getting right, and why the appeal below is worth filing when it applies.
 
@@ -139,7 +140,7 @@ That "identical coverage" point is worth dwelling on. IRMAA buys you nothing. It
 
 ## The short version
 
-- {{year}} IRMAA is set by your **{{irmaaTaxYear}}** MAGI — already decided, already filed.
+- {{figYear}} IRMAA is set by your **{{irmaaTaxYear}}** MAGI — already decided, already filed.
 - The first threshold is {{irmaa.singleStart}} single, {{irmaa.jointStart}} joint.
 - It is a **cliff**. One dollar over moves you into the whole bracket.
 - It is **per person** — double it for a couple.

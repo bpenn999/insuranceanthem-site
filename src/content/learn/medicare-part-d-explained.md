@@ -1,17 +1,18 @@
 ---
 title: "Understanding Medicare Part D Prescription Drug Coverage"
-seoTitle: "Medicare Part D Explained: 2026 Costs & Coverage"
-description: "How Part D works — formulary tiers, the 2026 $2,100 out-of-pocket cap, pharmacy networks, the late penalty, and why the cheapest premium rarely wins."
-summary: "The cheapest premium is almost never the cheapest plan. Here is how formularies, tiers and pharmacy networks decide what you really pay — and how the 2026 out-of-pocket cap changes the math."
+seoTitle: "Medicare Part D Explained: 2027 Costs & Coverage"
+description: "How Part D works — formulary tiers, the 2027 $2,400 out-of-pocket cap, pharmacy networks, the late penalty, and why the cheapest premium rarely wins."
+summary: "The cheapest premium is almost never the cheapest plan. Here is how formularies, tiers and pharmacy networks decide what you really pay — and how the 2027 out-of-pocket cap changes the math."
 category: "Part D"
 publishedAt: 2026-08-02
+updatedAt: 2026-11-17
 readMinutes: 10
 featured: true
 relatedProducts: [part-d, medicare-supplement, medicare-advantage]
 relatedTools: [medicare-cost-estimator, enrollment-timeline]
 faqs:
-  - q: "What is the Part D out-of-pocket cap in 2026?"
-    a: "It is $2,100. Once your out-of-pocket spending on covered drugs reaches that amount, your plan pays 100% of covered drugs for the rest of the calendar year. Premiums do not count toward the cap, and the amount resets every 1 January."
+  - q: "What is the Part D out-of-pocket cap in 2027?"
+    a: "It is $2,400 for 2027 (up from $2,100 in 2026). Once your out-of-pocket spending on covered drugs reaches that amount, your plan pays 100% of covered drugs for the rest of the calendar year. Premiums do not count toward the cap, and the amount resets every 1 January."
   - q: "Do I need Part D if I take no medication?"
     a: "Usually yes. If you go 63 or more days after your Initial Enrollment Period without creditable drug coverage, Medicare adds a permanent penalty to your premium — for life, not for a year. A low-cost plan now is almost always cheaper than the penalty later, and it covers you if something changes."
   - q: "Why is my drug more expensive than my neighbor's on the same medication?"
@@ -75,9 +76,9 @@ This is a real structural improvement. Before the cap existed, catastrophic drug
 
 But it does not make plan choice less important — it makes it more important. The cap tells you the *worst* case. **When** you reach it depends entirely on how your plan tiers your specific drugs. Two plans with identical premiums can put you at the cap in March or in October. That is seven months of difference in what you actually pay, on the same medication list.
 
-**A plan deductible may apply**, up to {{partD.maxDeductible}} in {{year}}. Some plans charge nothing; some charge the full amount; some apply it only to higher tiers. If your January fill looks like full retail, an unmet deductible is usually why — and unlike a tier change, that one settles down once satisfied.
+**A plan deductible may apply**, up to {{partD.maxDeductible}} in {{figYear}}. Some plans charge nothing; some charge the full amount; some apply it only to higher tiers. If your January fill looks like full retail, an unmet deductible is usually why — and unlike a tier change, that one settles down once satisfied.
 
-**Higher income adds a surcharge.** If your {{irmaaTaxYear}} modified adjusted gross income was above {{irmaa.singleStart}} filing single or {{irmaa.jointStart}} jointly, an income-related amount is added to your Part D premium in {{year}} — from {{irmaa.t1.partD}} to {{irmaa.t5.partD}} a month depending on bracket. It is added to whatever your plan charges, not instead of it. See [IRMAA explained](/learn/irmaa-explained/).
+**Higher income adds a surcharge.** If your {{irmaaTaxYear}} modified adjusted gross income was above {{irmaa.singleStart}} filing single or {{irmaa.jointStart}} jointly, an income-related amount is added to your Part D premium in {{figYear}} — from {{irmaa.t1.partD}} to {{irmaa.t5.partD}} a month depending on bracket. It is added to whatever your plan charges, not instead of it. See [IRMAA explained](/learn/irmaa-explained/).
 
 ## The late enrollment penalty
 
@@ -125,7 +126,7 @@ Put a note in your calendar for 1 October. Then when the Annual Notice of Change
 
 - The formulary and your pharmacy decide your cost, not the premium.
 - Tiers and pharmacy status reset every 1 January, whether or not your health does.
-- The {{year}} out-of-pocket cap is {{partD.cap}}; *when* you reach it is plan-dependent.
+- The {{figYear}} out-of-pocket cap is {{partD.cap}}; *when* you reach it is plan-dependent.
 - The late penalty is permanent — take a plan at 65 even if you take nothing.
 - Price the whole year across every available plan, then re-price it every autumn.
 

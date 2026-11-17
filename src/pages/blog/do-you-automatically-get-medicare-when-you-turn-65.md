@@ -120,14 +120,14 @@ Whichever way you lean, the comparison belongs inside the six months, not after.
 
 Drug coverage is not automatic for anyone. Even people enrolled in Part A and Part B on their own have to choose a stand-alone Part D plan or a Medicare Advantage plan that includes drugs, and the window is the same seven months.
 
-Go 63 days or more past the end of that window without creditable drug coverage and a penalty attaches to your drug premium for as long as you have Part D. That holds even if you take nothing today, which is why [Do I need Part D if I don't take prescriptions?](/blog/do-i-need-medicare-part-d-if-i-dont-take-prescriptions/) exists. For {{year}}, out-of-pocket spending on covered drugs is capped at {{partD.cap}}, and the cap resets with the plan year.
+Go 63 days or more past the end of that window without creditable drug coverage and a penalty attaches to your drug premium for as long as you have Part D. That holds even if you take nothing today, which is why [Do I need Part D if I don't take prescriptions?](/blog/do-i-need-medicare-part-d-if-i-dont-take-prescriptions/) exists. For {{figYear}}, out-of-pocket spending on covered drugs is capped at {{partD.cap}}, and the cap resets with the plan year.
 
 ## What it costs, and the income question nobody expects
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partB.premium}} a month is the {{year}} standard Part B premium</p>
-  <p class="stat-callout__body">The {{year}} Part B deductible is {{partB.deductible}}, and the Part A hospital deductible is {{partA.deductible}} per benefit period. CMS publishes the 2027 figures in mid-November, so anyone whose coverage starts in January will pay the new amount. The part that surprises people new to Medicare is IRMAA: Part B and Part D premiums are income-adjusted using your tax return from two years earlier, so {{year}} premiums are set by {{irmaaTaxYear}} income. For a single filer the surcharge starts above {{irmaa.singleStart}}, and for a couple filing jointly above {{irmaa.jointStart}}. Someone who retired this year and is turning 65 in 2027 is often priced off a full salary year that no longer exists.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Parts A and B premiums and deductibles; SSA IRMAA determination tables.</p>
+  <p class="stat-callout__figure">{{partB.premium}} a month is the {{figYear}} standard Part B premium</p>
+  <p class="stat-callout__body">The {{figYear}} Part B deductible is {{partB.deductible}}, and the Part A hospital deductible is {{partA.deductible}} per benefit period. These are the 2027 amounts CMS published on November 17, 2026. The part that surprises people new to Medicare is IRMAA: Part B and Part D premiums are income-adjusted using your tax return from two years earlier, so {{figYear}} premiums are set by {{irmaaTaxYear}} income. For a single filer the surcharge starts above {{irmaa.singleStart}}, and for a couple filing jointly above {{irmaa.jointStart}}. Someone who retired this year and is turning 65 in 2027 is often priced off a full salary year that no longer exists.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Parts A and B premiums and deductibles; SSA IRMAA determination tables.</p>
 </div>
 
 Retirement is a recognized life-changing event, and Form SSA-44 lets you ask Social Security to use your current income instead. Do that one with your tax advisor rather than guessing. [How do I appeal IRMAA after retirement?](/blog/how-do-i-appeal-irmaa-after-retirement/) walks through the form, and the [IRMAA estimator](/tools/irmaa-estimator/) shows where your income lands first.

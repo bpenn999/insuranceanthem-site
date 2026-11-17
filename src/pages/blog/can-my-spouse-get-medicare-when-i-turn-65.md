@@ -61,14 +61,14 @@ Premium-free Part A requires about ten years, 40 quarters, of Medicare-covered w
 - **The working spouse has the 40 quarters.**
 - **You have been married at least a year** when the application goes in. Divorced spouses can qualify on a former spouse's record after a marriage of ten years or more, and surviving spouses have their own shorter rule.
 
-Without that, the {{year}} Part A premium is {{partA.premiumIfUninsured}} a month with fewer than 30 quarters, and 45 percent less with 30 to 39, which is real money over a retirement. The [Part A premium checker](/tools/part-a-premium/) runs the quarters test for either spouse.
+Without that, the {{figYear}} Part A premium is {{partA.premiumIfUninsured}} a month with fewer than 30 quarters, and 45 percent less with 30 to 39, which is real money over a retirement. The [Part A premium checker](/tools/part-a-premium/) runs the quarters test for either spouse.
 
 Part B is different. Everyone pays the Part B premium, work history or not, and here is the detail higher-income couples in 85383 should plan around: **IRMAA is charged per person, but it is set by your joint return.** While only one of you is on Medicare, one surcharge is owed. When the second spouse enrolls, the same tax return produces a second one. The [IRMAA estimator](/tools/irmaa-estimator/) shows where a couple lands, and [IRMAA explained](/learn/irmaa-explained/) covers the two-year lookback that makes a final salary year follow you into retirement.
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{irmaa.jointStart}} is where the {{year}} IRMAA surcharge starts for a couple filing jointly</p>
+  <p class="stat-callout__figure">{{irmaa.jointStart}} is where the {{figYear}} IRMAA surcharge starts for a couple filing jointly</p>
   <p class="stat-callout__body">Above that line each enrolled spouse pays {{irmaa.t1.partB}} a month for Part B instead of the standard {{partB.premium}}, plus a Part D surcharge, and the brackets climb from there. With one spouse on Medicare the household owes one surcharge; when the second enrolls on the same joint income it owes two. Retirement is a life-changing event Social Security will consider on Form SSA-44, and a Roth conversion or large capital gain in the year before either spouse enrolls lands on the premium two years later.</p>
-  <p class="stat-callout__cite">Source: SSA IRMAA determination tables for {{year}}, based on {{irmaaTaxYear}} modified adjusted gross income.</p>
+  <p class="stat-callout__cite">Source: SSA IRMAA determination tables for {{figYear}}, based on {{irmaaTaxYear}} modified adjusted gross income.</p>
 </div>
 
 ## Four ways Peoria couples cover a spouse who is under 65

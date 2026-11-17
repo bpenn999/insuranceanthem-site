@@ -47,7 +47,7 @@ That is why this question has jumped in north Peoria this fall. Plenty of people
 
 Creditable drug coverage is coverage expected to pay, on average, at least as much as Medicare's standard Part D benefit. If what you have meets that bar, you can delay Part D with no penalty for as long as you keep it. If it does not, Medicare treats you as if you had no drug coverage at all for penalty purposes.
 
-The bar moved because Part D got richer. Since 2025 the standard benefit has an annual out-of-pocket cap, {{partD.cap}} this year and $2,400 in 2027, and plans now carry far more of the cost of expensive drugs. An employer plan that comfortably matched the old Part D can fall short of the new one without a single change to its own design.
+The bar moved because Part D got richer. Since 2025 the standard benefit has an annual out-of-pocket cap, $2,100 in 2026 and {{partD.cap}} in {{figYear}}, and plans now carry far more of the cost of expensive drugs. An employer plan that comfortably matched the old Part D can fall short of the new one without a single change to its own design.
 
 For years, employers that did not hire an actuary could use a shortcut CMS published in 2009: cover brand and generic drugs, give reasonable pharmacy access, and be designed to pay at least 60% of members' drug costs. CMS's final rule of April 6, 2026 retires that shortcut. For 2027, the only shortcut left requires **73%**. CMS's own modeling in the rule projects the figure keeps rising, to about 75% by 2030. So a plan that passes this year can fail next year, and the notice is worth reading every fall, not once.
 

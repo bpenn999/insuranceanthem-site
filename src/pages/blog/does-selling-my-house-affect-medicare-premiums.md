@@ -25,8 +25,8 @@ faqs:
 sources:
   - label: 'Medicare.gov — Medicare costs, including income-related premium amounts'
     url: https://www.medicare.gov/basics/costs/medicare-costs
-  - label: 'CMS — 2026 Medicare Parts A & B premiums and deductibles fact sheet'
-    url: https://www.cms.gov/newsroom/fact-sheets/2026-medicare-parts-b-premiums-deductibles
+  - label: 'CMS — 2027 Medicare Parts A & B premiums and deductibles fact sheet'
+    url: https://www.cms.gov/newsroom/fact-sheets/2027-medicare-parts-b-premiums-deductibles
   - label: 'Social Security — Request to lower an Income-Related Monthly Adjustment Amount'
     url: https://www.ssa.gov/medicare/lower-irmaa
   - label: 'Social Security — Form SSA-44, Life-Changing Event'
@@ -55,7 +55,7 @@ Where it does bite is a specific and predictable set of cases: a home held long 
 
 ## The two-year delay is what makes this invisible
 
-Social Security does not look at what you are earning now. It sets your {{year}} premium from the tax return you filed for **{{irmaaTaxYear}}** — the most recent one the IRS has finished processing. Run the same arithmetic forward on a sale:
+Social Security does not look at what you are earning now. It sets your {{figYear}} premium from the tax return you filed for **{{irmaaTaxYear}}** — the most recent one the IRS has finished processing. Run the same arithmetic forward on a sale:
 
 - You close on a Peoria house in **{{year}}**.
 - The gain appears on your **{{year}}** return, filed in **{{nextYear}}**.
@@ -67,11 +67,11 @@ The other half of that delay is good news, and it is the half nobody mentions: *
 
 ## What the surcharge actually costs
 
-The standard Part B premium for {{year}} is {{partB.premium}} a month. Above the threshold, you pay that plus an adjustment, and a second, smaller adjustment on Part D — which you owe even if your drug coverage is bundled inside a Medicare Advantage plan, and which is billed by Medicare rather than by the plan.
+The standard Part B premium for {{figYear}} is {{partB.premium}} a month. Above the threshold, you pay that plus an adjustment, and a second, smaller adjustment on Part D — which you owe even if your drug coverage is bundled inside a Medicare Advantage plan, and which is billed by Medicare rather than by the plan.
 
 <div class="table-scroll">
 <table>
-  <caption class="sr-only">{{year}} Medicare Part B and Part D income-related surcharges by modified adjusted gross income, single filer</caption>
+  <caption class="sr-only">{{figYear}} Medicare Part B and Part D income-related surcharges by modified adjusted gross income, single filer</caption>
   <thead>
     <tr><th scope="col">Your {{irmaaTaxYear}} MAGI (single filer)</th><th scope="col">Part B per month</th><th scope="col">Part D surcharge</th></tr>
   </thead>
@@ -86,7 +86,7 @@ The standard Part B premium for {{year}} is {{partB.premium}} a month. Above the
 </table>
 </div>
 
-<p class="table-source">Source: CMS {{year}} Parts A &amp; B premiums and deductibles, and the CMS {{year}} Part D income-related adjustment amounts. Per person, per month.</p>
+<p class="table-source">Source: CMS {{figYear}} Parts A &amp; B premiums and deductibles, and the CMS {{figYear}} Part D income-related adjustment amounts. Per person, per month.</p>
 
 Filing jointly, every threshold in that table is exactly double — {{irmaa.jointStart}} to enter the first tier, {{irmaa.t1.jointMax}} to leave it — with one exception. The top tier starts at {{irmaa.topJoint}} for a couple rather than at twice {{irmaa.topSingle}}. And the surcharge is **per person**: a married couple both on Medicare each pay it, so the household number is twice what the table shows.
 
@@ -99,7 +99,7 @@ Two features of this system are worth more of your attention than the dollar amo
 <div class="stat-callout">
   <p class="stat-callout__figure">{{irmaa.t5.annualExtra}} — the most a single year of surcharges can add, per person, at the top tier</p>
   <p class="stat-callout__body">That is the extreme case. At the first tier the extra is {{irmaa.t1.partB}} for Part B instead of {{partB.premium}}, plus {{irmaa.t1.partD}} on Part D — meaningful, annoying, and gone the following year. None of it changes your actual coverage: the Part B deductible stays {{partB.deductible}}, the Part D out-of-pocket cap stays {{partD.cap}}, and your plan behaves exactly as it did before.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Parts A &amp; B and Part D income-related monthly adjustment amounts. Verified against cms.gov.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Parts A &amp; B and Part D income-related monthly adjustment amounts. Verified against cms.gov.</p>
 </div>
 
 ## Can you appeal it? Usually not for the sale itself

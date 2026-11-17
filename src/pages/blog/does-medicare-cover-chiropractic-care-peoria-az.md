@@ -68,7 +68,7 @@ CMS puts it in one sentence in its policy manual. Coverage extends only to manua
     <tr>
       <td>Spinal adjustment to correct a subluxation (active treatment)</td>
       <td>Yes</td>
-      <td>The Part B deductible ({{partB.deductible}} in {{year}}), then {{partB.coinsurance}} of the Medicare-approved amount</td>
+      <td>The Part B deductible ({{partB.deductible}} in {{figYear}}), then {{partB.coinsurance}} of the Medicare-approved amount</td>
     </tr>
     <tr>
       <td>New-patient exam or re-exam</td>
@@ -124,7 +124,7 @@ The office knows which kind of visit it is billing. If the chiropractor expects 
 
 ## What a covered adjustment costs you
 
-On Original Medicare with nothing else, you pay the Part B deductible, which is {{partB.deductible}} in {{year}}, and then {{partB.coinsurance}} of the Medicare-approved amount for each covered adjustment. The deductible is once a year across all your Part B care, so most people have already met it by spring. The {{nextYear}} deductible will be announced in November.
+On Original Medicare with nothing else, you pay the Part B deductible, which is {{partB.deductible}} in {{figYear}}, and then {{partB.coinsurance}} of the Medicare-approved amount for each covered adjustment. The deductible is once a year across all your Part B care, so most people have already met it by spring.
 
 What you carry alongside Medicare changes that:
 
@@ -158,7 +158,7 @@ If you are on Original Medicare, the question to ask the office is a different o
 ## The short version
 
 - **Medicare covers spinal adjustments from a chiropractor** when they correct a subluxation and you are expected to improve.
-- **You pay the Part B deductible, {{partB.deductible}} in {{year}}, then {{partB.coinsurance}}.** Plan G pays that {{partB.coinsurance}}. An Advantage plan charges a copay.
+- **You pay the Part B deductible, {{partB.deductible}} in {{figYear}}, then {{partB.coinsurance}}.** Plan G pays that {{partB.coinsurance}}. An Advantage plan charges a copay.
 - **Exams, X-rays, massage and maintenance visits are not covered**, and a supplement does not pay for them either.
 - **There is no set number of visits.** Coverage ends when the treatment stops producing improvement.
 - **Some Advantage plans add routine visits** as an extra benefit, inside the network, and the details change each January.

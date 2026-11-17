@@ -120,7 +120,7 @@ Plenty of Peoria households fit here: a spouse who naturalized decades ago and h
 
 ## Part A on a spouse's record
 
-Premium-free Part A normally comes from 40 quarters of work. If you do not have them yourself, you may get it on a current spouse's record, a deceased spouse's record or, after a marriage of at least ten years, a former spouse's record. Without that, Part A costs up to {{partA.premiumIfUninsured}} a month in {{year}}. That makes the marriage certificate the single most valuable piece of paper in some households.
+Premium-free Part A normally comes from 40 quarters of work. If you do not have them yourself, you may get it on a current spouse's record, a deceased spouse's record or, after a marriage of at least ten years, a former spouse's record. Without that, Part A costs up to {{partA.premiumIfUninsured}} a month in {{figYear}}. That makes the marriage certificate the single most valuable piece of paper in some households.
 
 This comes up more often than people expect among higher-earning couples where one spouse spent years running the household or a family business that did not pay them a wage. For a current spouse, Social Security's evidence rule often settles for signed statements from both of you about when and where you married. Where there is any doubt, or the claim is on a former or late spouse's record, it wants a certified copy of the public or religious marriage record, or the original certificate. For a former spouse, add the divorce decree so the ten years can be counted. [Can my spouse get Medicare when I turn 65?](/blog/can-my-spouse-get-medicare-when-i-turn-65/) covers the age-gap side of the same question.
 

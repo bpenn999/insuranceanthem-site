@@ -127,9 +127,9 @@ If you are here from October to April and back north for the summer, you have no
 None of this changes the federal numbers, which are the same in Peoria as in Peoria, Illinois:
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium for {{year}}</p>
-  <p class="stat-callout__body">The Part B annual deductible is {{partB.deductible}}, the Part A hospital deductible is {{partA.deductible}} per benefit period, and Part D has a hard annual out-of-pocket cap of {{partD.cap}} on covered drugs. Higher earners pay more for Part B and Part D through IRMAA, which is set from your tax return two years back — so your {{year}} premium reflects {{irmaaTaxYear}}, including anything you did with the house you just sold.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Parts A &amp; B premiums and deductibles fact sheet, and Medicare.gov costs. Figures verified against cms.gov and medicare.gov.</p>
+  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium for {{figYear}}</p>
+  <p class="stat-callout__body">The Part B annual deductible is {{partB.deductible}}, the Part A hospital deductible is {{partA.deductible}} per benefit period, and Part D has a hard annual out-of-pocket cap of {{partD.cap}} on covered drugs. Higher earners pay more for Part B and Part D through IRMAA, which is set from your tax return two years back — so your {{figYear}} premium reflects {{irmaaTaxYear}}, including anything you did with the house you just sold.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Parts A &amp; B premiums and deductibles fact sheet, and Medicare.gov costs. Figures verified against cms.gov and medicare.gov.</p>
 </div>
 
 That last point catches new arrivals often enough to flag: a gain on the home you sold to get here can raise your Medicare premiums two years later, and the [IRMAA estimator](/tools/irmaa-estimator/) will show you where you land. Selling a house is not on the list of life-changing events that can be appealed, so it is a planning conversation with your tax advisor rather than a form.

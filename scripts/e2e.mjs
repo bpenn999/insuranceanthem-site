@@ -1066,23 +1066,23 @@ console.log('\nTool — IRMAA estimator');
 {
   const p = await openPage('/tools/irmaa-estimator/');
   const standard = await evaluate(p, `
-    document.getElementById('irmaa-magi').value = '109000';
+    document.getElementById('irmaa-magi').value = '112000';
     document.getElementById('irmaa').requestSubmit();
     return { head: document.getElementById('irmaa-head').textContent,
              stats: document.getElementById('irmaa-stats').textContent };
   `);
   check('exactly at the threshold → no surcharge', /No IRMAA surcharge/.test(standard.head), standard.head);
-  check('shows the standard $202.90 premium', /\\$202\\.90/.test(standard.stats.replace(/\$/g,'\\$')) || standard.stats.includes('202.90'), standard.stats);
+  check('shows the standard $209.40 premium', standard.stats.includes('209.40'), standard.stats);
   const tier1 = await evaluate(p, `
-    document.getElementById('irmaa-magi').value = '109001';
+    document.getElementById('irmaa-magi').value = '112001';
     document.getElementById('irmaa').requestSubmit();
     return { head: document.getElementById('irmaa-head').textContent,
              stats: document.getElementById('irmaa-stats').textContent,
              body: document.getElementById('irmaa-body').textContent };
   `);
   check('one dollar over → Tier 1', /Tier 1/.test(tier1.stats), tier1.stats);
-  check('shows the $284.10 Part B figure', tier1.stats.includes('284.10'), tier1.stats);
-  check('shows the $14.50 Part D surcharge', tier1.stats.includes('14.50'), tier1.stats);
+  check('shows the $293.10 Part B figure', tier1.stats.includes('293.10'), tier1.stats);
+  check('shows the $15.40 Part D surcharge', tier1.stats.includes('15.40'), tier1.stats);
   check('surfaces the SSA-44 retirement appeal', /SSA-44/.test(tier1.body), tier1.body.slice(0,140));
   const joint = await evaluate(p, `
     document.querySelector('input[name="filing"][value="joint"]').checked = true;
@@ -1093,7 +1093,7 @@ console.log('\nTool — IRMAA estimator');
   check('joint filer at $150k pays no surcharge', /No IRMAA surcharge/.test(joint), joint);
   const near = await evaluate(p, `
     document.querySelector('input[name="filing"][value="single"]').checked = true;
-    document.getElementById('irmaa-magi').value = '105000';
+    document.getElementById('irmaa-magi').value = '108000';
     document.getElementById('irmaa').requestSubmit();
     return document.getElementById('irmaa-body').textContent;
   `);
@@ -1134,7 +1134,7 @@ console.log('\nTool — cost estimator');
   `);
   check('heavy usage flips to the Supplement', /Supplement route comes out/.test(heavy.head), heavy.head);
   check('explains hitting the Advantage out-of-pocket cap', /out-of-pocket maximum/.test(heavy.body), heavy.body.slice(0,130));
-  check('caps drug spend at the 2026 Part D limit', /\\$2,100/.test(heavy.body) || heavy.body.includes('$2,100'), heavy.body.slice(0,400));
+  check('caps drug spend at the 2027 Part D limit', heavy.body.includes('$2,400'), heavy.body.slice(0,400));
   check('a winner is flagged exactly once', await evaluate(p, `
     return document.querySelectorAll('.cost-col[data-winner]').length === 1;
   `));
@@ -1537,7 +1537,7 @@ console.log('\nTool — Part B giveback');
              body: document.getElementById('gb-body').textContent };
   `);
   check('renders a result', !base.hidden);
-  check('nets $50 off the $202.90 premium', base.stats.includes('202.90') && base.stats.includes('152.90'), base.stats);
+  check('nets $50 off the $209.40 premium', base.stats.includes('209.40') && base.stats.includes('159.40'), base.stats);
   check('annualises to $600', base.stats.includes('$600'), base.stats);
   check('caps a giveback above the standard premium', await evaluate(p, `
     document.getElementById('gb-amount').value = 400;
@@ -1548,7 +1548,7 @@ console.log('\nTool — Part B giveback');
     document.getElementById('gb-amount').value = 50;
     const r = document.querySelector('input[name="irmaa"][value="yes"]');
     r.checked = true; r.dispatchEvent(new Event('change'));
-    document.getElementById('gb-surcharge').value = 81.20;
+    document.getElementById('gb-surcharge').value = 83.70;
     document.getElementById('gb').requestSubmit();
     return /IRMAA surcharge is untouched/.test(document.getElementById('gb-body').textContent);
   `));
@@ -1571,13 +1571,13 @@ console.log('\nTool — Part A premium');
     document.getElementById('pa').requestSubmit();
     return document.getElementById('pa-stats').textContent;
   `);
-  check('8 years (32 quarters) → the $311 reduced tier', reduced.includes('311') && reduced.includes('Reduced'), reduced);
+  check('8 years (32 quarters) → the $328 reduced tier', reduced.includes('328') && reduced.includes('Reduced'), reduced);
   const full = await evaluate(p, `
     document.getElementById('pa-years').value = 5;
     document.getElementById('pa').requestSubmit();
     return document.getElementById('pa-stats').textContent;
   `);
-  check('5 years (20 quarters) → the $565 full tier', full.includes('565') && full.includes('Full'), full);
+  check('5 years (20 quarters) → the $597 full tier', full.includes('597') && full.includes('Full'), full);
   check('boundary: exactly 40 quarters is free', await evaluate(p, `
     const r = document.querySelector('input[name="mode"][value="quarters"]');
     r.checked = true; r.dispatchEvent(new Event('change'));
@@ -1588,7 +1588,7 @@ console.log('\nTool — Part A premium');
   check('boundary: 39 quarters is not free', await evaluate(p, `
     document.getElementById('pa-quarters').value = 39;
     document.getElementById('pa').requestSubmit();
-    return document.getElementById('pa-stats').textContent.includes('311');
+    return document.getElementById('pa-stats').textContent.includes('328');
   `));
   check('surfaces the spouse-record route', await evaluate(p, `
     return /spouse/i.test(document.getElementById('pa-body').textContent);

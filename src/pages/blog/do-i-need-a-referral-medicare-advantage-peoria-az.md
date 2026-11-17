@@ -184,9 +184,9 @@ A PPO usually charges more in premium than an HMO in the same county, and its co
 What does not change either way:
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium in {{year}}, which you pay whether or not your plan asks for referrals</p>
+  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium in {{figYear}}, which you pay whether or not your plan asks for referrals</p>
   <p class="stat-callout__body">Original Medicare's own numbers sit underneath every Advantage plan: the Part B annual deductible is {{partB.deductible}}, the Part A hospital deductible is {{partA.deductible}} per benefit period, and Part D carries a hard annual out-of-pocket cap of {{partD.cap}} on covered drugs. What the HMO-versus-PPO decision moves is the plan's own cost sharing and its rules — the copays, the out-of-pocket maximum, and whether a specialist visit needs permission first.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Parts A &amp; B premiums and deductibles, and the CMS Part D {{year}} figures. Verified against cms.gov.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Parts A &amp; B premiums and deductibles, and the CMS Part D {{figYear}} figures. Verified against cms.gov.</p>
 </div>
 
 Higher income adds a separate layer that has nothing to do with referrals: IRMAA starts above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} filing jointly, based on your {{irmaaTaxYear}} return. If a one-off event pushed you over — selling a house, a Roth conversion, the year you retired — that is appealable on Form SSA-44, and worth raising with your tax advisor. You can [see where your income lands](/tools/irmaa-estimator/) in a minute or so.

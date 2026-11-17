@@ -41,7 +41,7 @@ sources:
 
 **Yes. You can end Medicare Part B at any time by sending Social Security a written request, and CMS Form CMS-1763 says coverage stops the last day of the month after the month you submit it.** File on April 5 and Part B ends May 31. If a group plan through your own or your spouse's current job takes over with no gap, you can come back later with an 8-month special enrollment period and no late penalty. Whether you should is a separate question. Part B goes back on easily. A Medicare Supplement may not.
 
-The question fits a common story in Vistancia and Trilogy. Someone retires at 65, does everything right, and at 67 takes a consulting contract or a part-time job with benefits along Lake Pleasant Parkway. Now they are paying {{partB.premium}} a month in {{year}} for coverage that sits behind a group plan, and they want to know if they can stop. Here is how I would work through it, as education and not as advice for your situation.
+The question fits a common story in Vistancia and Trilogy. Someone retires at 65, does everything right, and at 67 takes a consulting contract or a part-time job with benefits along Lake Pleasant Parkway. Now they are paying {{partB.premium}} a month in {{figYear}} for coverage that sits behind a group plan, and they want to know if they can stop. Here is how I would work through it, as education and not as advice for your situation.
 
 ## Check these two things before you touch the form
 
@@ -130,7 +130,7 @@ Missing the eight months sends you to the General Enrollment Period, January 1 t
 ## The order I would do it in
 
 1. Ask HR for the employee count, the first day of coverage and the creditable drug notice, in writing.
-2. Price both premiums, and your share of the deductible, against {{partB.annual}} a year for Part B at the {{year}} rate. Higher-income households should use their actual IRMAA figure instead.
+2. Price both premiums, and your share of the deductible, against {{partB.annual}} a year for Part B at the {{figYear}} rate. Higher-income households should use their actual IRMAA figure instead.
 3. Decide about Medigap first. It is the only step you may not be able to reverse.
 4. File CMS-1763 in the month that lines up with the group plan's start date, and keep your proof.
 5. Save a reminder for the day the job ends. The [enrollment timeline tool](/tools/enrollment-timeline/) lays out the dates.

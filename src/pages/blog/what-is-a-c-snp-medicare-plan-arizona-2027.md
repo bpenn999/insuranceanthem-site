@@ -51,7 +51,7 @@ Three kinds of Special Needs Plan exist. One is for people who have both Medicar
 
 In exchange for that narrow door, the plan is allowed to design everything around one kind of patient. Medicare.gov's description is that every SNP must include Part D drug coverage and must provide care coordination. In practice a heart-and-diabetes plan tends to put insulin, test supplies and the common cardiac drugs on favorable tiers, set specialist copays with frequent cardiology and endocrinology visits in mind, and assign a care manager. How well a given plan does that is in its Evidence of Coverage and drug list. The label alone does not tell you.
 
-What does not change: you still pay the Part B premium, {{partB.premium}} a month in {{year}}, and you are still in a network.
+What does not change: you still pay the Part B premium, {{partB.premium}} a month in {{figYear}}, and you are still in a network.
 
 ## Which conditions the Maricopa County plans accept
 

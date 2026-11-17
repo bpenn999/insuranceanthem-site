@@ -84,20 +84,20 @@ Here is the part that matters most for the households I work with in Vistancia a
 <table>
   <caption class="sr-only">What a full Part B giveback leaves you paying at each 2026 IRMAA tier</caption>
   <thead>
-    <tr><th scope="col">{{year}} IRMAA tier</th><th scope="col">Part B you are billed</th><th scope="col">Left after a full {{partB.premium}} giveback</th><th scope="col">Part D surcharge, untouched</th></tr>
+    <tr><th scope="col">{{figYear}} IRMAA tier</th><th scope="col">Part B you are billed</th><th scope="col">Left after a full {{partB.premium}} giveback</th><th scope="col">Part D surcharge, untouched</th></tr>
   </thead>
   <tbody>
     <tr><td>Standard (no surcharge)</td><td>{{partB.premium}}</td><td>$0</td><td>$0</td></tr>
-    <tr><td>Tier 1 (single over {{irmaa.singleStart}})</td><td>{{irmaa.t1.partB}}</td><td>$81.20</td><td>{{irmaa.t1.partD}}</td></tr>
+    <tr><td>Tier 1 (single over {{irmaa.singleStart}})</td><td>{{irmaa.t1.partB}}</td><td>$83.70</td><td>{{irmaa.t1.partD}}</td></tr>
     <tr><td>Tier 2 (single over {{irmaa.t1.singleMax}})</td><td>{{irmaa.t2.partB}}</td><td>{{partB.premium}}</td><td>{{irmaa.t2.partD}}</td></tr>
-    <tr><td>Tier 3 (single over {{irmaa.t2.singleMax}})</td><td>{{irmaa.t3.partB}}</td><td>$324.60</td><td>{{irmaa.t3.partD}}</td></tr>
+    <tr><td>Tier 3 (single over {{irmaa.t2.singleMax}})</td><td>{{irmaa.t3.partB}}</td><td>$335.00</td><td>{{irmaa.t3.partD}}</td></tr>
   </tbody>
 </table>
 </div>
 
-<p class="table-source">Source: Social Security, "Medicare premiums: rules for higher-income beneficiaries," and the CMS {{year}} Parts A and B figures. A full giveback is the theoretical maximum; most plans pay a fraction of it.</p>
+<p class="table-source">Source: Social Security, "Medicare premiums: rules for higher-income beneficiaries," and the CMS {{figYear}} Parts A and B figures. A full giveback is the theoretical maximum; most plans pay a fraction of it.</p>
 
-Notice tier one. A household just over the first threshold that finds a plan with the maximum giveback is still writing a check for $81.20 a month on Part B and {{irmaa.t1.partD}} on Part D, and the ad it responded to said nothing about either. And the typical giveback is not the maximum, so the real figure is larger.
+Notice tier one. A household just over the first threshold that finds a plan with the maximum giveback is still writing a check for $83.70 a month on Part B and {{irmaa.t1.partD}} on Part D, and the ad it responded to said nothing about either. And the typical giveback is not the maximum, so the real figure is larger.
 
 If you are in that position, the higher-value question is usually not the giveback at all. It is whether the surcharge itself can be appealed. A retirement, a reduction in hours, or the death of a spouse since {{irmaaTaxYear}} is a life-changing event Social Security will reconsider on Form SSA-44, and for a recent retiree that is often worth several times what any plan gives back. The [IRMAA explainer](/learn/irmaa-explained/) walks through it, and the [IRMAA estimator](/tools/irmaa-estimator/) shows which tier your own income lands in.
 
@@ -148,7 +148,7 @@ The [Annual Enrollment Period](/learn/medicare-enrollment-periods/) runs October
 - **A Part B giveback is a Medicare Advantage plan paying back part or all of your {{partB.premium}} Part B premium.** It is real, and about a third of Advantage enrollees have one.
 - **Four in ten people in giveback plans get back less than $10 a month.** The advertised benefit and the paid benefit are often different plans.
 - **It shows up as a smaller Social Security deduction**, or a smaller premium bill if you are not drawing yet. It lags a month or two and is credited back to your start date.
-- **It never reduces an IRMAA surcharge.** A tier-one household with a full giveback still pays $81.20 a month on Part B plus the Part D surcharge.
+- **It never reduces an IRMAA surcharge.** A tier-one household with a full giveback still pays $83.70 a month on Part B plus the Part D surcharge.
 - **It stops the day you leave the plan.**
 - **The plan pays for it somewhere** — network, copays, formulary or extras.
 - **Check doctors, out-of-pocket maximum and prescriptions first.** The giveback breaks ties. It does not make the decision.

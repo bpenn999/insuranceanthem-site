@@ -48,7 +48,7 @@ It was a **one-time Part B premium rebate**, paid in October 2026 from the Medic
 - CMS says most recipients would also get an email or letter about it in mid-October.
 - **Nobody had to apply**, and there was no fee.
 
-It does not change your Part B premium, which is {{partB.premium}} a month in {{year}} for most people. It does not repeat, and it is a separate thing from the "Part B giveback" some Medicare Advantage plans advertise. That giveback is a plan benefit and is explained in [Is the Medicare Part B giveback worth it?](/blog/is-the-medicare-part-b-giveback-worth-it-peoria-az/)
+It does not change your Part B premium, which is {{partB.premium}} a month in {{figYear}} for most people. It does not repeat, and it is a separate thing from the "Part B giveback" some Medicare Advantage plans advertise. That giveback is a plan benefit and is explained in [Is the Medicare Part B giveback worth it?](/blog/is-the-medicare-part-b-giveback-worth-it-peoria-az/)
 
 ## The four tests, in the order people fail them
 
@@ -87,7 +87,7 @@ It does not change your Part B premium, which is {{partB.premium}} a month in {{
 
 **IRMAA.** This is the one that surprises people who chose Original Medicare with a Medicare Supplement precisely because they wanted the traditional route. If you pay IRMAA, you were excluded even though you are in Original Medicare.
 
-For {{year}}, IRMAA applies when your modified adjusted gross income on your {{irmaaTaxYear}} tax return was above **{{irmaa.singleStart}} filing single or {{irmaa.jointStart}} filing jointly**. The first bracket raises Part B to {{irmaa.t1.partB}} a month and adds {{irmaa.t1.partD}} a month to Part D. The full table and how the two-year look-back works are in the [IRMAA explainer](/learn/irmaa-explained/), and the [IRMAA estimator](/tools/irmaa-estimator/) will place you in a bracket in under a minute.
+For {{figYear}}, IRMAA applies when your modified adjusted gross income on your {{irmaaTaxYear}} tax return was above **{{irmaa.singleStart}} filing single or {{irmaa.jointStart}} filing jointly**. The first bracket raises Part B to {{irmaa.t1.partB}} a month and adds {{irmaa.t1.partD}} a month to Part D. The full table and how the two-year look-back works are in the [IRMAA explainer](/learn/irmaa-explained/), and the [IRMAA estimator](/tools/irmaa-estimator/) will place you in a bracket in under a minute.
 
 A one-off spike in {{irmaaTaxYear}}, such as a home sale, a Roth conversion or a large capital gain, is enough to put you over. If that spike followed a life-changing event like retirement, you may be able to get the surcharge itself reduced; [How do I appeal IRMAA after retirement?](/blog/how-do-i-appeal-irmaa-after-retirement/) walks through Form SSA-44. CMS's FAQ does not say whether an appeal would change your rebate eligibility after the fact, so do not count on it, and ask your tax advisor how an appeal fits the rest of your plans.
 

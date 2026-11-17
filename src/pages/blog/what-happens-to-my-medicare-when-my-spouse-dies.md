@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 title: 'What happens to my Medicare when my spouse dies?'
 seoTitle: 'What Happens to Medicare When a Spouse Dies? Arizona 2026'
-description: "Your own Medicare stays the same. The shift is IRMAA: single-filer surcharges start at $109,000 in 2026, half the $218,000 joint line, often 3 years on."
+description: "Your own Medicare stays the same. The shift is IRMAA: single-filer surcharges start at $112,000 in 2027, half the $224,000 joint line, often 3 years on."
 summary: "Your Medicare card, your plan and your doctors stay exactly as they are. What changes is everything around them: a plan you were on through your spouse's job, a Medigap household discount, and, for a lot of Peoria couples, the income line for Medicare's high-income surcharge, which drops by half once you file single. Here is what happens right away, what can wait, and the year the premium change usually arrives."
 category: Planning
 publishedAt: 2026-10-28
@@ -15,7 +15,7 @@ faqs:
   - q: Can I stay on my deceased husband's insurance?
     a: If it was a group plan from his current job, federal COBRA law lets a surviving spouse keep it for up to 36 months, though at the full cost. If it was a retiree plan, the plan's own rules decide whether a surviving spouse stays on, so ask the benefits office directly. A Medicare Advantage, Medigap or Part D plan in his name ends with him; it cannot be transferred to you.
   - q: Do widows pay more for Medicare?
-    a: Some do, a couple of years later. The income-related surcharge (IRMAA) for single filers starts at half the joint threshold, $109,000 instead of $218,000 in 2026. A survivor whose income stays close to what the couple had can cross that line once they start filing single, which is usually the third Medicare year after the death.
+    a: Some do, a couple of years later. The income-related surcharge (IRMAA) for single filers starts at half the joint threshold, $112,000 instead of $224,000 in 2027. A survivor whose income stays close to what the couple had can cross that line once they start filing single, which is usually the third Medicare year after the death.
   - q: Can a widow appeal IRMAA?
     a: Yes. Death of a spouse is one of the life-changing events Social Security accepts on Form SSA-44. It helps when your income actually fell, for example because your spouse's pension or paycheck stopped, and the surcharge is still based on the old joint return. It does not help if your own income alone is above the single threshold.
   - q: What happens to my spouse's Medicare Advantage or Part D plan after they die?
@@ -25,7 +25,7 @@ faqs:
 sources:
   - label: 'SSA POMS HI 01120.001 — IRMAA new initial determinations and the qualifying life-changing events (including death of spouse)'
     url: https://secure.ssa.gov/poms.nsf/lnx/0601120001
-  - label: 'SSA POMS HI 01101.020 — 2026 IRMAA tables by tax filing status (single includes qualifying surviving spouse)'
+  - label: 'SSA POMS HI 01101.020 — IRMAA tables by tax filing status (single includes qualifying surviving spouse)'
     url: https://secure.ssa.gov/poms.nsf/lnx/0601101020
   - label: 'IRS Publication 501 — Filing status (spouse died during the year)'
     url: https://www.irs.gov/publications/p501
@@ -45,7 +45,7 @@ sources:
     url: https://www.medicare.gov/publications/02110-medigap-guide-health-insurance.pdf
 ---
 
-**Your own Medicare does not change when your spouse dies.** Part A, Part B and whatever plan you are on, a Medigap policy, a Medicare Advantage plan or a Part D plan, are in your name alone. Your card, your doctors and your premium carry on as they were. The coverage that ends is coverage you had *through* your spouse, such as a plan from their employer. The cost that changes, a couple of years later, is the income-related surcharge called IRMAA. Its single-filer threshold is {{irmaa.singleStart}} in {{year}}, half the {{irmaa.jointStart}} joint line.
+**Your own Medicare does not change when your spouse dies.** Part A, Part B and whatever plan you are on, a Medigap policy, a Medicare Advantage plan or a Part D plan, are in your name alone. Your card, your doctors and your premium carry on as they were. The coverage that ends is coverage you had *through* your spouse, such as a plan from their employer. The cost that changes, a couple of years later, is the income-related surcharge called IRMAA. Its single-filer threshold is {{irmaa.singleStart}} in {{figYear}}, half the {{irmaa.jointStart}} joint line.
 
 I sit down with widows and widowers in [Peoria](/service-area/peoria-az/) more often than with anyone else, mostly in Trilogy at Vistancia, Sun City West and the older streets around Westbrook Village. The conversation nearly always starts the same way: "I don't even know what I'm supposed to do with Medicare now." The honest answer is: less than you fear in the first month, and one thing worth planning for in the third year.
 
@@ -106,7 +106,7 @@ Put the two-year look-back and the extra joint year together, and here is what i
 </table>
 </div>
 
-The thresholds for 2027 and later haven't been published yet, but they always keep the same shape, with single at half of joint. Using {{year}}'s numbers: a couple with $200,000 of income pays no surcharge. The survivor often keeps far more than half of that, through the larger of the two Social Security checks, a survivor pension, and required distributions from an IRA rolled over in their own name. At $150,000 of single income, that survivor lands in the second tier. Part B becomes {{irmaa.t2.partB}} a month plus {{irmaa.t2.partD}} on top of the Part D premium. The surcharge isn't tied to the death; it shows up the first year Social Security uses a single return, and the letter arrives in late 2028.
+The thresholds move each year, but they always keep the same shape, with single at half of joint. Using {{figYear}}'s numbers: a couple with $200,000 of income pays no surcharge. The survivor often keeps far more than half of that, through the larger of the two Social Security checks, a survivor pension, and required distributions from an IRA rolled over in their own name. At $150,000 of single income, that survivor lands in the second tier. Part B becomes {{irmaa.t2.partB}} a month plus {{irmaa.t2.partD}} on top of the Part D premium. The surcharge isn't tied to the death; it shows up the first year Social Security uses a single return, and the letter arrives in late 2028.
 
 You can't appeal your way out of that version, because nothing is wrong with the number. It's what single filers at that income pay. What does help is time. A survivor who sees it coming has two-plus years to think about which accounts to draw from. That is a conversation for your tax advisor, and the same logic I go through in [the Roth conversion post](/blog/does-a-roth-conversion-affect-medicare-premiums/). If the house in Vistancia or Westbrook Village is going to be sold, the timing of the sale matters too, for the reason in [the home-sale post](/blog/does-selling-my-house-affect-medicare-premiums/).
 

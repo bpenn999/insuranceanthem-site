@@ -33,7 +33,7 @@ sources:
     url: https://www.ssa.gov/medicare/sign-up/part-b-only
   - label: 'Medicare.gov — Medigap (Medicare Supplement Insurance)'
     url: https://www.medicare.gov/health-drug-plans/medigap
-  - label: 'CMS — 2026 Medicare Parts A & B Premiums and Deductibles (fact sheet)'
+  - label: 'CMS — 2027 Medicare Parts A & B Premiums and Deductibles (fact sheet)'
     url: https://www.cms.gov/newsroom/fact-sheets
 ---
 
@@ -122,7 +122,7 @@ The balance is yours. There is no required distribution, no spend-by date, no ac
 
 What it will pay for on the Medicare side is broader than most people realize:
 
-- **Part B premiums** — the {{partB.premium}} standard premium in {{year}}, and any income-related surcharge on top of it.
+- **Part B premiums** — the {{partB.premium}} standard premium in {{figYear}}, and any income-related surcharge on top of it.
 - **Part D premiums**, and Medicare Advantage premiums.
 - **Deductibles, copays and coinsurance** — the {{partB.deductible}} Part B deductible, the {{partA.deductible}} hospital deductible per benefit period, drug costs up to the {{partD.cap}} annual cap.
 - Dental, vision and hearing costs, long-term care insurance premiums within the age-based IRS limits, and the rest of the standard qualified-expense list.
@@ -134,9 +134,9 @@ And one exception that matters here: **Medigap premiums do not qualify.** Public
 For a household already paying an income-related surcharge, the HSA does something no other account does: it pays medical bills without adding a dollar to your income.
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{irmaa.singleStart}} single / {{irmaa.jointStart}} joint — where the {{year}} Part B surcharge begins</p>
-  <p class="stat-callout__body">IRMAA is set from your modified adjusted gross income two years back, so {{year}} premiums run off your {{irmaaTaxYear}} return. A qualified HSA distribution is not income and does not appear in that calculation. Pulling {{partB.annual}} from an IRA to cover a year of Part B premiums does show up — and, in a year you are near an edge, can be what moves you across it.</p>
-  <p class="stat-callout__cite">Sources: SSA income-related monthly adjustment amount tables and the CMS {{year}} Parts A &amp; B premiums and deductibles fact sheet, verified against the published figures.</p>
+  <p class="stat-callout__figure">{{irmaa.singleStart}} single / {{irmaa.jointStart}} joint — where the {{figYear}} Part B surcharge begins</p>
+  <p class="stat-callout__body">IRMAA is set from your modified adjusted gross income two years back, so {{figYear}} premiums run off your {{irmaaTaxYear}} return. A qualified HSA distribution is not income and does not appear in that calculation. Pulling {{partB.annual}} from an IRA to cover a year of Part B premiums does show up — and, in a year you are near an edge, can be what moves you across it.</p>
+  <p class="stat-callout__cite">Sources: SSA income-related monthly adjustment amount tables and the CMS {{figYear}} Parts A &amp; B premiums and deductibles fact sheet, verified against the published figures.</p>
 </div>
 
 The brackets are cliffs, not slopes — one dollar over a threshold moves the whole year's premium up a tier. [How IRMAA actually works](/learn/irmaa-explained/) covers the mechanics, and the [IRMAA estimator](/tools/irmaa-estimator/) will show you which tier your own numbers land in. Spending down an HSA in retirement is one of the few levers that reduces cash outlay without touching the number the surcharge is calculated from. Whether it belongs in your sequence of withdrawals is a question for your tax advisor and your financial professional — I am naming the interaction, not the strategy.

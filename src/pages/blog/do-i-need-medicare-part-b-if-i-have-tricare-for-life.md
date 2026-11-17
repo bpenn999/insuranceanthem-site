@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 title: 'Do I need Medicare Part B if I have TRICARE For Life?'
 seoTitle: 'Do I Need Medicare Part B With TRICARE For Life? Arizona'
-description: 'Yes. Retirees and families must keep Part B, $202.90 a month in 2026, or TRICARE For Life stops paying. What it means near Luke AFB in Glendale and Peoria.'
+description: 'Yes. Retirees and families must keep Part B, $209.40 a month in 2027, or TRICARE For Life stops paying. What it means near Luke AFB in Glendale and Peoria.'
 summary: 'TRICARE For Life is the one Medicare arrangement where the answer is not "it depends." A military retiree, a retiree''s spouse or a survivor must have Part A and Part B, and the moment Part B lapses, TRICARE stops paying with it. For the Luke Air Force Base households spread across Glendale, Peoria and Sun City, that turns the Part B decision most people agonise over into a single line item, and it makes most of what gets sold to them at 65 unnecessary. Here is what you actually need, what you do not, and the two situations where people get caught.'
 category: Enrollment
 publishedAt: 2026-09-24
@@ -45,7 +45,7 @@ sources:
     url: https://www.tricare.mil/GettingCare/FindDoctor/MTF/Facilities/Luke-Medical-Group
 ---
 
-**Yes. If you are a military retiree, a retiree's spouse or a survivor, you must have Medicare Part A and Part B to keep TRICARE, and TRICARE For Life only pays while Part B is in force.** There is no TRICARE For Life enrollment and no TRICARE For Life fee. The premium you pay is Medicare's, {{partB.premium}} a month in {{year}} before any income surcharge, and in exchange TRICARE steps in behind Medicare and picks up most of what it leaves. Decline Part B, drop it, or miss the premium, and TRICARE stops with it. That is the whole rule, and it does not bend for people who are still working.
+**Yes. If you are a military retiree, a retiree's spouse or a survivor, you must have Medicare Part A and Part B to keep TRICARE, and TRICARE For Life only pays while Part B is in force.** There is no TRICARE For Life enrollment and no TRICARE For Life fee. The premium you pay is Medicare's, {{partB.premium}} a month in {{figYear}} before any income surcharge, and in exchange TRICARE steps in behind Medicare and picks up most of what it leaves. Decline Part B, drop it, or miss the premium, and TRICARE stops with it. That is the whole rule, and it does not bend for people who are still working.
 
 I write about Medicare for the north Valley, and TRICARE For Life is the exception to most of it. The Luke Air Force Base clinic sits on Litchfield Road in [Glendale](/service-area/glendale-az/), and the households it produced over forty years of retirements are spread across the west side: Glendale's older neighborhoods, the [Peoria](/service-area/peoria-az/) core along 83rd and Thunderbird, Westbrook Village, and a steady number who moved up to Vistancia and the 85383 corridor in the last few years. For those families the Part B question that everyone else weighs for months has one answer, and most of what gets marketed to a 65-year-old in this ZIP is something they already have. Here is what you need, what you do not, and the two places people get caught.
 
@@ -92,14 +92,14 @@ The mechanism only works if Medicare is paying first. That is why TRICARE ties e
 
 The standard Part B premium is {{partB.premium}} a month, and TRICARE does not pay any of it. That is the number most retirees have in mind. The number that surprises them is the surcharge.
 
-Part B premiums are income-related. Medicare looks at your tax return from two years back, so your {{year}} premium is set by your {{irmaaTaxYear}} modified adjusted gross income, and the surcharge starts above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} for a couple filing jointly. A retired officer with a pension, a working spouse, a required minimum distribution and a rental in Westbrook Village crosses that line more often than people expect. At the first tier Part B runs {{irmaa.t1.partB}} a month instead of {{partB.premium}}, and it climbs from there. You can [see where you land](/tools/irmaa-estimator/) in about a minute.
+Part B premiums are income-related. Medicare looks at your tax return from two years back, so your {{figYear}} premium is set by your {{irmaaTaxYear}} modified adjusted gross income, and the surcharge starts above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} for a couple filing jointly. A retired officer with a pension, a working spouse, a required minimum distribution and a rental in Westbrook Village crosses that line more often than people expect. At the first tier Part B runs {{irmaa.t1.partB}} a month instead of {{partB.premium}}, and it climbs from there. You can [see where you land](/tools/irmaa-estimator/) in about a minute.
 
 Two things follow from that. First, the surcharge is not a reason to skip Part B. Without Part B there is no TRICARE For Life, and replacing what it does on the open market would cost far more than the surcharge. Second, the year you retire from a second career is usually the year to [ask Social Security to reconsider](/blog/how-do-i-appeal-irmaa-after-retirement/), because a drop in income after a work stoppage is one of the events that lets them use a more recent year.
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partB.premium}} a month, {{partB.annual}} a year, is the whole cost of keeping TRICARE For Life in {{year}}</p>
+  <p class="stat-callout__figure">{{partB.premium}} a month, {{partB.annual}} a year, is the whole cost of keeping TRICARE For Life in {{figYear}}</p>
   <p class="stat-callout__body">That is the standard Part B premium. There is no TRICARE For Life enrollment fee, no Medigap premium to add and no Part D premium required. Higher earners pay more through IRMAA, starting above {{irmaa.singleStart}} single or {{irmaa.jointStart}} joint on {{irmaaTaxYear}} income.</p>
-  <p class="stat-callout__cite">Source: CMS, {{year}} Medicare Parts A &amp; B premiums and deductibles; SSA IRMAA tables; TRICARE, "Medicare Part B premiums for TRICARE For Life."</p>
+  <p class="stat-callout__cite">Source: CMS, {{figYear}} Medicare Parts A &amp; B premiums and deductibles; SSA IRMAA tables; TRICARE, "Medicare Part B premiums for TRICARE For Life."</p>
 </div>
 
 ## Still working at 65 with employer insurance? This is the first trap

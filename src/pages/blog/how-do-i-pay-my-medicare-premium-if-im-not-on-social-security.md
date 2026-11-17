@@ -33,11 +33,11 @@ sources:
     url: https://www.irs.gov/publications/p969
   - label: 'Social Security POMS HI 01101.001 — IRMAA, including direct billing when no benefit is being paid'
     url: https://secure.ssa.gov/poms.nsf/lnx/0601101001
-  - label: 'CMS — 2026 Medicare Parts A and B premiums and deductibles fact sheet'
-    url: https://www.cms.gov/newsroom/fact-sheets/2026-medicare-parts-b-premiums-deductibles
+  - label: 'CMS — 2027 Medicare Parts A and B premiums and deductibles fact sheet'
+    url: https://www.cms.gov/newsroom/fact-sheets/2027-medicare-parts-b-premiums-deductibles
 ---
 
-**If you are not drawing Social Security, Medicare sends you a bill. For most people that is a Part B bill every three months, due on the 25th, covering three months of the {{partB.premium}} monthly premium for {{year}}. You can pay it online in your Medicare account, have it drafted monthly with Medicare Easy Pay, use your bank's bill pay, or mail a check or card payment with the coupon. Signing up for Medicare does not require you to start Social Security.**
+**If you are not drawing Social Security, Medicare sends you a bill. For most people that is a Part B bill every three months, due on the 25th, covering three months of the {{partB.premium}} monthly premium for {{figYear}}. You can pay it online in your Medicare account, have it drafted monthly with Medicare Easy Pay, use your bank's bill pay, or mail a check or card payment with the coupon. Signing up for Medicare does not require you to start Social Security.**
 
 That last sentence is the reason this comes up so often now. Full retirement age is 67 for anyone born in 1960 or later, and a lot of the people I sit down with in north Peoria (Vistancia, Trilogy, the new streets off Lake Pleasant Parkway) are deliberately leaving Social Security alone until 70. They sign up for Part A and Part B at 65, which is the right call when there is no employer plan behind them, and then a few weeks later an envelope from Medicare arrives asking for money. Nobody told them it would. Here is how the billing works so the envelope is not a surprise.
 
@@ -52,7 +52,7 @@ When a benefit check exists, Medicare takes its premiums out of it before the mo
     <tr><th scope="col">What you owe</th><th scope="col">Who bills it</th><th scope="col">How often</th></tr>
   </thead>
   <tbody>
-    <tr><td>Part B premium only (standard {{partB.premium}} a month in {{year}})</td><td>Medicare</td><td>Every 3 months</td></tr>
+    <tr><td>Part B premium only (standard {{partB.premium}} a month in {{figYear}})</td><td>Medicare</td><td>Every 3 months</td></tr>
     <tr><td>Part B plus a Part B income surcharge (IRMAA)</td><td>Medicare, on the same bill</td><td>Every 3 months</td></tr>
     <tr><td>Part A premium (only if you have fewer than 40 work quarters; up to {{partA.premiumIfUninsured}} a month)</td><td>Medicare</td><td>Every month</td></tr>
     <tr><td>Part D income surcharge (IRMAA)</td><td>Medicare</td><td>Every month</td></tr>

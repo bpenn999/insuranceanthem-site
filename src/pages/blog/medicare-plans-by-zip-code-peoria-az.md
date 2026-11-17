@@ -123,7 +123,7 @@ That is why the useful comparison is never "which plan is better in Peoria". It 
 <div class="stat-callout">
   <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium, identical in 85345, 85383 and every other ZIP in America</p>
   <p class="stat-callout__body">The Part B annual deductible is {{partB.deductible}}, the Part A inpatient hospital deductible is {{partA.deductible}} per benefit period, and Part D has a hard annual out-of-pocket cap of {{partD.cap}} on covered drugs. None of these move with your address. What does move it upward is income: IRMAA starts above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} filing jointly, based on your {{irmaaTaxYear}} tax return.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Parts A &amp; B premiums and deductibles, and the CMS Part D {{year}} figures. Verified against cms.gov.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Parts A &amp; B premiums and deductibles, and the CMS Part D {{figYear}} figures. Verified against cms.gov.</p>
 </div>
 
 If your Part B premium is higher than your neighbor's, the cause is almost always IRMAA and almost never geography. You can [check where your income lands](/tools/irmaa-estimator/) in about a minute, and if a one-off event pushed you over — a home sale, a Roth conversion, a retirement — that is appealable on Form SSA-44 and worth a conversation with your tax advisor.

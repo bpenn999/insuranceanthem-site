@@ -55,8 +55,8 @@ Under Part B, rather than under the single Part A hospital deductible.
 
 <div class="stat-callout">
   <p class="stat-callout__figure">{{partB.deductible}} deductible, then {{partB.coinsurance}} — the Part B structure an observation stay is billed under</p>
-  <p class="stat-callout__body">An inpatient admission runs through Part A instead: {{partA.deductible}} per benefit period for {{year}}, which covers the first 60 days. Part B has no annual out-of-pocket maximum, so the coinsurance keeps counting.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Parts A &amp; B premiums and deductibles; Medicare.gov, "Inpatient or outpatient hospital status affects your costs".</p>
+  <p class="stat-callout__body">An inpatient admission runs through Part A instead: {{partA.deductible}} per benefit period for {{figYear}}, which covers the first 60 days. Part B has no annual out-of-pocket maximum, so the coinsurance keeps counting.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Parts A &amp; B premiums and deductibles; Medicare.gov, "Inpatient or outpatient hospital status affects your costs".</p>
 </div>
 
 There is a guard rail, and it is smaller than it sounds. Medicare's rule is that the copayment for **a single** outpatient hospital service cannot be more than the inpatient hospital deductible — but your **total** copayment for all the outpatient services in the stay may well be more than that deductible. A busy two-night observation stay is not one service. It is a chest X-ray, a CT, three sets of labs, a cardiology consult and a bag of fluids, each with its own line.
@@ -109,9 +109,9 @@ So the arithmetic that catches families is this one. Monday night in observation
 </table>
 </div>
 
-<p class="table-source">Sources: Medicare.gov, "Inpatient or outpatient hospital status affects your costs" and "Skilled nursing facility care"; CMS {{year}} Parts A &amp; B deductible and coinsurance amounts.</p>
+<p class="table-source">Sources: Medicare.gov, "Inpatient or outpatient hospital status affects your costs" and "Skilled nursing facility care"; CMS {{figYear}} Parts A &amp; B deductible and coinsurance amounts.</p>
 
-What that gap is worth in Arizona: the statewide median for a semi-private nursing home room runs about {{care.az.nursingSemiPrivate}} a month in the {{care.surveyYear}} CareScout survey. Even when Medicare *does* cover the stay, it is not free after the first stretch — days 21 through 100 carry a daily coinsurance of {{partA.snf}} in {{year}}. But the difference between "coinsurance from day 21" and "everything from day one" is the difference this one paperwork line makes.
+What that gap is worth in Arizona: the statewide median for a semi-private nursing home room runs about {{care.az.nursingSemiPrivate}} a month in the {{care.surveyYear}} CareScout survey. Even when Medicare *does* cover the stay, it is not free after the first stretch — days 21 through 100 carry a daily coinsurance of {{partA.snf}} in {{figYear}}. But the difference between "coinsurance from day 21" and "everything from day one" is the difference this one paperwork line makes.
 
 And note the other condition, because it surprises people who assume rehab can wait: you generally have to enter the facility **within 30 days** of leaving the hospital.
 

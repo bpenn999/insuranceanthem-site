@@ -21,7 +21,7 @@ faqs:
   - q: Does living in Anthem rather than Phoenix change which plans I can get?
     a: Yes, because Medicare Advantage and Part D availability is set county by county, and networks are drawn around specific hospital systems. Anthem, New River and Desert Hills sit in Maricopa County alongside Glendale, Peoria and north Phoenix, so the plan menu is the same — but which of those plans actually reaches your doctors from up here is a different question, and it is the one worth asking.
 sources:
-  - label: 'CMS — 2026 Medicare Parts A & B Premiums and Deductibles (fact sheet)'
+  - label: 'CMS — 2027 Medicare Parts A & B Premiums and Deductibles (fact sheet)'
     url: https://www.cms.gov/newsroom/fact-sheets
   - label: 'Medicare.gov — Get started with Medicare: when to sign up'
     url: https://www.medicare.gov/basics/get-started-with-medicare/sign-up
@@ -102,12 +102,12 @@ One local wrinkle worth knowing: if your birthday is on the **first** of the mon
 Here is the part everyone wants first, and it is the part that is genuinely simple — these are set by CMS and they are the same in Anthem as in Anchorage.
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium for {{year}}</p>
+  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium for {{figYear}}</p>
   <p class="stat-callout__body">On top of that, the Part B annual deductible is {{partB.deductible}}, the Part A inpatient hospital deductible is {{partA.deductible}} per benefit period, and Part D now has a hard annual out-of-pocket cap of {{partD.cap}} on covered drugs.</p>
-  <p class="stat-callout__cite">Source: CMS, 2026 Medicare Parts A &amp; B Premiums and Deductibles fact sheet, and the CMS Part D {{year}} fact sheet. Figures verified against cms.gov.</p>
+  <p class="stat-callout__cite">Source: CMS, 2027 Medicare Parts A &amp; B Premiums and Deductibles fact sheet, and the CMS Part D {{figYear}} fact sheet. Figures verified against cms.gov.</p>
 </div>
 
-Two honest caveats about that premium. First, most people pay it, but higher earners pay more through IRMAA — a surcharge based on your tax return from two years back, so your {{year}} premium is set by your {{irmaaTaxYear}} income. It starts above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} for a couple filing jointly. You can [check where you land](/tools/irmaa-estimator/) in about a minute.
+Two honest caveats about that premium. First, most people pay it, but higher earners pay more through IRMAA — a surcharge based on your tax return from two years back, so your {{figYear}} premium is set by your {{irmaaTaxYear}} income. It starts above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} for a couple filing jointly. You can [check where you land](/tools/irmaa-estimator/) in about a minute.
 
 Second, Part A is premium-free only if you have 40 quarters of Medicare-covered work — about ten years. Below that there is a reduced rate and a full rate, and it is worth [checking your quarters](/tools/part-a-premium/) rather than assuming.
 

@@ -83,7 +83,7 @@ Two things follow from that. First, a doctor who has opted out of Medicare is th
 
 ## How Medigap and Medicare Advantage fit in
 
-**With a Medicare Supplement,** a concierge doctor who participates in Medicare works like any other doctor. Medicare pays its share, your Medigap plan pays its share, and the fee is separate. On a Plan G you would owe the yearly Part B deductible ({{partB.deductible}} in {{year}}) and very little else for covered care. Plan G also covers the up-to-15% excess charge a non-participating doctor can add, which matters in Arizona because the state does not ban those charges. The [Plan G vs. Plan N calculator](/tools/plan-g-vs-plan-n/) shows the difference.
+**With a Medicare Supplement,** a concierge doctor who participates in Medicare works like any other doctor. Medicare pays its share, your Medigap plan pays its share, and the fee is separate. On a Plan G you would owe the yearly Part B deductible ({{partB.deductible}} in {{figYear}}) and very little else for covered care. Plan G also covers the up-to-15% excess charge a non-participating doctor can add, which matters in Arizona because the state does not ban those charges. The [Plan G vs. Plan N calculator](/tools/plan-g-vs-plan-n/) shows the difference.
 
 If the doctor has opted out, the Supplement is no help. Federal rules require the private contract to tell you, in writing, that Medigap plans do not pay for those services.
 

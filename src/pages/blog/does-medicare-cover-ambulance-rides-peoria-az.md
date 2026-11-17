@@ -90,7 +90,7 @@ The cost side is the simple half. After you meet the Part B deductible, you pay 
 </div>
 <p class="table-source">Sources: Medicare.gov ambulance services coverage page and the CMS Medicare Benefit Policy Manual, Chapter 10.</p>
 
-Two numbers underneath that table are worth holding onto, because they are the ones people get wrong. The Part B deductible in {{year}} is {{partB.deductible}} for the year — not per trip, and not per emergency. And the coinsurance is {{partB.coinsurance}} of the *Medicare-approved amount*, which is not the figure the ambulance service prints on its own paperwork. Those two documents arriving a fortnight apart, saying different things, is the single most common reason somebody calls me about an ambulance bill.
+Two numbers underneath that table are worth holding onto, because they are the ones people get wrong. The Part B deductible in {{figYear}} is {{partB.deductible}} for the year — not per trip, and not per emergency. And the coinsurance is {{partB.coinsurance}} of the *Medicare-approved amount*, which is not the figure the ambulance service prints on its own paperwork. Those two documents arriving a fortnight apart, saying different things, is the single most common reason somebody calls me about an ambulance bill.
 
 ## "Nearest appropriate facility" is stricter than it sounds
 
@@ -180,9 +180,9 @@ Emergency and urgently needed care travels with you on an Advantage plan. Routin
 It is worth keeping the scale honest. An ambulance ride is a real expense and an unpleasant surprise. It is not, for most households, the expensive part of a bad year.
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partA.deductible}} — the Part A hospital deductible per benefit period in {{year}}, which the ambulance ride is usually the prelude to</p>
+  <p class="stat-callout__figure">{{partA.deductible}} — the Part A hospital deductible per benefit period in {{figYear}}, which the ambulance ride is usually the prelude to</p>
   <p class="stat-callout__body">The ride gets billed under Part B at {{partB.coinsurance}} after the {{partB.deductible}} deductible. What follows it is billed under Part A, per benefit period, and a second admission after a new benefit period starts means a second deductible. Meanwhile Part D carries a hard annual out-of-pocket cap of {{partD.cap}} on covered drugs, and the standard Part B premium runs {{partB.premium}} a month regardless. Sort the coverage that governs the hospital stay, and the ambulance takes care of itself.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Medicare Parts A &amp; B premiums and deductibles, and the CMS Part D {{year}} figures. Verified against cms.gov.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Medicare Parts A &amp; B premiums and deductibles, and the CMS Part D {{figYear}} figures. Verified against cms.gov.</p>
 </div>
 
 The same logic applies to the thing that follows an ambulance more often than an admission does — being kept in the hospital [under observation rather than admitted](/blog/does-medicare-cover-hospital-observation-stay/), which is billed under Part B and has consequences of its own. And if you want the wider map of where Medicare simply stops, [what Medicare does not pay for](/learn/what-medicare-does-not-pay-for/) is the page to read once, properly, before you need it.

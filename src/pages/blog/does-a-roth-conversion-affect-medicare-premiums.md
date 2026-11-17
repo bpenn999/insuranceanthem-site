@@ -25,8 +25,8 @@ faqs:
 sources:
   - label: 'Medicare.gov — Medicare costs, including the Part B premium by income'
     url: https://www.medicare.gov/basics/costs/medicare-costs
-  - label: 'CMS — 2026 Medicare Parts A and B premiums and deductibles'
-    url: https://www.cms.gov/newsroom/fact-sheets/2026-medicare-parts-b-premiums-deductibles
+  - label: 'CMS — 2027 Medicare Parts A and B premiums and deductibles'
+    url: https://www.cms.gov/newsroom/fact-sheets/2027-medicare-parts-b-premiums-deductibles
   - label: 'Social Security — What to do if your income has gone down (life-changing events)'
     url: https://www.ssa.gov/medicare/lower-irmaa
   - label: 'Social Security — Form SSA-44, Medicare IRMAA life-changing event'
@@ -49,15 +49,15 @@ Medicare charges an income surcharge called IRMAA, the income-related monthly ad
 
 A Roth conversion is a distribution from a traditional IRA or 401(k). It lands in adjusted gross income the same way a withdrawal would, and the fact that you moved the money into another retirement account rather than into your checking account makes no difference to the calculation. Convert $100,000 and your MAGI rises by $100,000 that year.
 
-The part that catches people is the delay. Social Security does not look at this year's income. For {{year}} premiums it read your **{{irmaaTaxYear}}** tax return. For 2028 premiums it will read your {{year}} return. So the conversion you make this autumn is invisible on your Medicare bill until January 2028, and by then the money is long since moved.
+The part that catches people is the delay. Social Security does not look at this year's income. For {{figYear}} premiums it read your **{{irmaaTaxYear}}** tax return. For 2028 premiums it will read your {{year}} return. So the conversion you make this autumn is invisible on your Medicare bill until January 2028, and by then the money is long since moved.
 
-## The {{year}} IRMAA brackets, and what a conversion does to them
+## The {{figYear}} IRMAA brackets, and what a conversion does to them
 
 Here is what Social Security is working from this year. The income column is {{irmaaTaxYear}} MAGI. The Part B figure is what you pay per month per person; the Part D figure is added to your drug plan's own premium.
 
 <div class="table-scroll">
 <table>
-  <caption class="sr-only">2026 Medicare IRMAA brackets by modified adjusted gross income, single and joint filers, with monthly Part B premium and Part D surcharge</caption>
+  <caption class="sr-only">{{figYear}} Medicare IRMAA brackets by modified adjusted gross income, single and joint filers, with monthly Part B premium and Part D surcharge</caption>
   <thead>
     <tr><th scope="col">Single filer MAGI</th><th scope="col">Joint filer MAGI</th><th scope="col">Part B per month</th><th scope="col">Part D surcharge</th></tr>
   </thead>
@@ -72,11 +72,11 @@ Here is what Social Security is working from this year. The income column is {{i
 </table>
 </div>
 
-<p class="table-source">Source: Medicare.gov, "Medicare costs", and the CMS 2026 Parts A and B premiums fact sheet. Married filing separately uses a steeper two-step table not shown here.</p>
+<p class="table-source">Source: Medicare.gov, "Medicare costs", and the CMS {{figYear}} Parts A and B premiums fact sheet. Married filing separately uses a steeper two-step table not shown here.</p>
 
 Three things about that table matter more than the figures in it.
 
-**It is a cliff.** There is no phase-in. A couple with {{irmaa.jointStart}} of MAGI pays the standard {{partB.premium}} each. A couple one dollar higher pays {{irmaa.t1.partB}} each, plus {{irmaa.t1.partD}} each on their drug plans, for the whole year. That single dollar costs roughly $1,150 per person, or about $2,300 for the household.
+**It is a cliff.** There is no phase-in. A couple with {{irmaa.jointStart}} of MAGI pays the standard {{partB.premium}} each. A couple one dollar higher pays {{irmaa.t1.partB}} each, plus {{irmaa.t1.partD}} each on their drug plans, for the whole year. That single dollar costs roughly $1,190 per person, or about $2,380 for the household.
 
 **It is per person.** The income is joint, but the surcharge is charged to each spouse on Medicare. Every bracket you climb, you climb twice.
 
@@ -113,7 +113,7 @@ Work it as a single example. A married couple, both on Medicare, with {{year}} i
 - **Without the conversion**, their MAGI is under {{irmaa.jointStart}} and each pays {{partB.premium}} for Part B in 2028, with no drug-plan surcharge.
 - **With the conversion**, their MAGI is $250,000. That is the second row. Each pays {{irmaa.t1.partB}} for Part B and an extra {{irmaa.t1.partD}} on their drug plan, every month of 2028.
 
-The household cost of the surcharge is roughly $2,300 for the year. Whether that is a good trade depends on what the conversion saves them over the following twenty years in taxes on required minimum distributions, and that is a question for the person who does their return, not for me. What I can tell you is that a couple who converted $28,000 instead of $60,000 would have stayed under the line and paid nothing extra, and that the difference between those two figures is the kind of thing a fifteen-minute conversation in October sorts out.
+The household cost of the surcharge is roughly $2,380 for the year. Whether that is a good trade depends on what the conversion saves them over the following twenty years in taxes on required minimum distributions, and that is a question for the person who does their return, not for me. What I can tell you is that a couple who converted $34,000 instead of $60,000 would have stayed under the line and paid nothing extra, and that the difference between those two figures is the kind of thing a fifteen-minute conversation in October sorts out.
 
 That is the idea behind **filling the bracket**: work out the distance between your projected MAGI and the next IRMAA line, and convert up to that distance rather than past it. If the number you want to convert is larger than the room, split it across two tax years. Two conversions of $30,000 in December and January do the same work as one of $60,000, and they can land in two different Medicare years or in none at all.
 
@@ -140,7 +140,7 @@ If you retired this year or reduced your hours, there is one more step. You can 
 ## The short version
 
 - **A Roth conversion is ordinary income, and IRMAA counts it in full.** A {{year}} conversion sets your 2028 Part B and Part D premiums.
-- **The surcharge is a cliff, charged per person.** One dollar over {{irmaa.jointStart}} joint or {{irmaa.singleStart}} single costs roughly $1,150 a year each.
+- **The surcharge is a cliff, charged per person.** One dollar over {{irmaa.jointStart}} joint or {{irmaa.singleStart}} single costs roughly $1,190 a year each.
 - **It cannot be appealed or reversed.** A conversion is not a life-changing event on Form SSA-44, and conversions have not been recharacterizable since 2018.
 - **It lasts one year** unless you keep converting in each following year.
 - **Fill the bracket, do not cross it.** Convert up to the room between your projected MAGI and the next line, or split across December and January.

@@ -1,6 +1,7 @@
 import { visit } from 'unist-util-visit';
 import {
   PLAN_YEAR,
+  CONTENT_YEAR,
   IRMAA_TAX_YEAR,
   partA,
   partB,
@@ -13,8 +14,8 @@ import {
 /**
  * Lets markdown articles reference the CY figures without hard-coding them.
  *
- *   "The standard Part B premium is {{partB.premium}} a month in {{year}}."
- *   → "The standard Part B premium is $202.90 a month in 2026."
+ *   "The standard Part B premium is {{partB.premium}} a month in {{figYear}}."
+ *   → "The standard Part B premium is $209.40 a month in 2027."
  *
  * Why this exists: there are eleven articles quoting these numbers. Typing them
  * by hand would mean the November CMS update became an eleven-file find-and-
@@ -30,9 +31,14 @@ const b = (tier) => irmaaBrackets[tier];
 
 export const FIGURE_TOKENS = {
   // Years
-  'year': String(PLAN_YEAR),
-  'nextYear': String(PLAN_YEAR + 1),
+  // Calendar years for editorial copy ("this year", "your {{nextYear}} plan").
+  'year': String(CONTENT_YEAR),
+  'nextYear': String(CONTENT_YEAR + 1),
+  // The plan year the dollar figures below apply to — use next to a figure.
+  'figYear': String(PLAN_YEAR),
   'irmaaTaxYear': String(IRMAA_TAX_YEAR),
+  /** The year the IRMAA lookback return is filed in (PLAN_YEAR - 1). */
+  'irmaaFiledYear': String(IRMAA_TAX_YEAR + 1),
 
   // Part B
   'partB.premium': usd(partB.standardPremium, 2),

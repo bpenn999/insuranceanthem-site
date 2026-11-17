@@ -66,9 +66,9 @@ Two things, and both matter.
 **The penalty clock starts.** FEHB in retirement is not coverage from current employment. So if you pass up Part B at retirement, or at 65 if you were already retired, there is no Special Enrollment Period waiting later. A change of heart means the General Enrollment Period, January 1 through March 31, with Part B starting the month after you sign up, plus the 10%-per-year penalty described in the [late-enrollment penalties explainer](/learn/late-enrollment-penalties/). OPM's own example on its annuitant page walks through exactly that cost.
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partB.premium}} a month, standard Part B premium in {{year}}</p>
+  <p class="stat-callout__figure">{{partB.premium}} a month, standard Part B premium in {{figYear}}</p>
   <p class="stat-callout__body">That is the figure to weigh against what your FEHB plan waives or pays back once Medicare is primary. Above {{irmaa.singleStart}} of income for a single filer, or {{irmaa.jointStart}} for a couple, the IRMAA surcharge raises it. A late start adds 10% for each full 12 months without Part B.</p>
-  <p class="stat-callout__cite">Sources: Medicare.gov, "Avoid late enrollment penalties"; OPM, Medicare for annuitants. CMS announces the {{nextYear}} premium in November.</p>
+  <p class="stat-callout__cite">Sources: Medicare.gov, "Avoid late enrollment penalties"; OPM, Medicare for annuitants. Figures are CMS's 2027 amounts, announced November 17, 2026.</p>
 </div>
 
 ## When is Part B worth paying for on top of FEHB?
@@ -124,7 +124,7 @@ In my experience the people who come out ahead with Part B are the ones who use 
 
 ## How does IRMAA change the math for a federal retiree?
 
-A lot, and it is the part federal households underestimate. A full pension plus required minimum distributions from the Thrift Savings Plan can put a couple over the {{irmaa.jointStart}} line without much else going on. IRMAA is based on the tax return from two years earlier, so for {{year}} it looks at {{irmaaTaxYear}} income, and it raises the Part B premium for as long as income stays up.
+A lot, and it is the part federal households underestimate. A full pension plus required minimum distributions from the Thrift Savings Plan can put a couple over the {{irmaa.jointStart}} line without much else going on. IRMAA is based on the tax return from two years earlier, so for {{figYear}} it looks at {{irmaaTaxYear}} income, and it raises the Part B premium for as long as income stays up.
 
 That surcharge goes to Medicare, not to your FEHB plan, so when a plan says it reimburses part of the Part B premium, ask whether that covers only the standard amount. If your last working year is what pushed you into a bracket, retirement is a life-changing event Social Security accepts for a reduction; I walk through it in [how do I appeal IRMAA after retirement?](/blog/how-do-i-appeal-irmaa-after-retirement/) and the [IRMAA estimator](/tools/irmaa-estimator/) will show where you land. Bring your tax advisor into any decision that turns on income.
 

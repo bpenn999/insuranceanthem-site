@@ -21,7 +21,7 @@ faqs:
   - q: When can I change my Part D plan for 2027?
     a: Between October 15 and December 7, 2026, for a January 1, 2027 start. That is the Annual Enrollment Period, and anyone with Medicare can use it to switch stand-alone drug plans for any reason. After December 7 most people are locked into their choice for the year unless a special situation applies.
   - q: Does IRMAA apply to my Part D plan?
-    a: Yes, if your income two years back is above the threshold. The Part D income-related surcharge is added on top of whatever your plan charges and is paid to Medicare, not the plan, so a cheaper plan does not lower it. The 2027 IRMAA brackets have not been announced yet; CMS normally publishes them in the fall alongside the Part B premium.
+    a: Yes, if your income two years back is above the threshold. The Part D income-related surcharge is added on top of whatever your plan charges and is paid to Medicare, not the plan, so a cheaper plan does not lower it. For 2027 it starts at $15.40 a month per person, for single filers above $112,000 of 2025 income or joint filers above $224,000.
 sources:
   - label: 'CMS — CY2027 Medicare Advantage / Part D Landscape file (Arizona PDP rows: premium, deductible, benefit type)'
     url: https://www.cms.gov/files/zip/cy2027-landscape-202609-1.zip
@@ -83,7 +83,7 @@ Two federal changes landed on the same year.
 
 The first is that CMS ended the **Part D Premium Stabilization Demonstration** after {{year}}. It began in 2025, when the Inflation Reduction Act's redesign of the drug benefit was expected to push stand-alone premiums up sharply, and it paid plans to hold them down. AARP reported the program paid $9.8 billion in subsidies over 2025 and 2026. CMS announced in July that 2027 would go without it.
 
-The second is that plans are now on the hook for more of the cost of an expensive year. The out-of-pocket cap rises from {{partD.cap}} in {{year}} to $2,400 in {{nextYear}}, and above that line the plan, the drug maker and Medicare pay, not you. A plan that pays more in its members' worst years charges more in premium in every year. That is the trade the cap made. [The 2027 cap explained](/blog/medicare-part-d-out-of-pocket-cap-2027/) walks through what counts toward it.
+The second is that plans are now on the hook for more of the cost of an expensive year. The out-of-pocket cap rises from $2,100 in 2026 to {{partD.cap}} in {{figYear}}, and above that line the plan, the drug maker and Medicare pay, not you. A plan that pays more in its members' worst years charges more in premium in every year. That is the trade the cap made. [The 2027 cap explained](/blog/medicare-part-d-out-of-pocket-cap-2027/) walks through what counts toward it.
 
 CMS's own projection was mild: an average stand-alone premium of $36 a month in 2027 against $35.09 this year, and a national base premium rising the full 6 percent the law allows, from $38.99 to $41.33. An average hides the spread. Arizona's cheapest plans went from nothing to between $5 and $10, which barely registers, while the plans that larger numbers of retirees have held for years took the large increases. Nationally, AARP's reporting of KFF's count has stand-alone plans falling from 360 to 312, and no $0 stand-alone plan anywhere for people who do not get Extra Help.
 
@@ -107,7 +107,7 @@ The Medigap-plus-Part-D setup is common up here for good reasons — households 
 
 **If you are on one of the AARP plans, look first.** They took the largest increases on the shelf and a lot of supplement households hold one because it came bundled in the same mailing as their Medigap policy years ago. There is no rule that your drug plan and your supplement have to come from the same company.
 
-**Remember the IRMAA line sits on top.** For higher-income households, the Part D income-related surcharge is added to whatever plan you choose and is paid to Medicare, not the plan. In {{year}} it starts at {{irmaa.t1.partD}} a month per person and reaches {{irmaa.t5.partD}} at the top bracket. Switching to a cheaper plan does nothing to it, and a forced plan change does not reset it either. The {{nextYear}} brackets have not been announced yet. The [IRMAA estimator](/tools/irmaa-estimator/) shows where your {{irmaaTaxYear}} return puts you this year.
+**Remember the IRMAA line sits on top.** For higher-income households, the Part D income-related surcharge is added to whatever plan you choose and is paid to Medicare, not the plan. In {{figYear}} it starts at {{irmaa.t1.partD}} a month per person and reaches {{irmaa.t5.partD}} at the top bracket. Switching to a cheaper plan does nothing to it, and a forced plan change does not reset it either. The [IRMAA estimator](/tools/irmaa-estimator/) shows where your {{irmaaTaxYear}} return puts you this year.
 
 **Know who is not affected the same way.** If your drug coverage comes inside a Medicare Advantage plan, these stand-alone premiums are not your premiums. CMS projected the Advantage-side drug premium falling for 2027. Your plan's own notice is the number that matters, and the [Peoria plan-by-ZIP post](/blog/medicare-plans-by-zip-code-peoria-az/) explains why the Maricopa Advantage menu looks the same from 85383 and 85345 while the networks do not.
 

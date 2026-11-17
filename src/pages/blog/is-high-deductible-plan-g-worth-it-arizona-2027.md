@@ -43,11 +43,11 @@ The high-deductible version is standard Plan G with one change: nothing is paid 
 
 Three details matter in practice:
 
-- **The Part B deductible counts.** Standard Plan G leaves you the Part B deductible ({{partB.deductible}} in {{year}}; CMS announces the 2027 figure in November). On the high-deductible version it is simply the first dollars toward $3,050.
-- **The Part A hospital deductible counts too.** One inpatient stay puts {{partA.deductible}} (the {{year}} figure) toward the total, so a year with a hospital admission and a few weeks of follow-up care can reach $3,050 quickly. From there you pay nothing more for covered services.
+- **The Part B deductible counts.** Standard Plan G leaves you the Part B deductible ({{partB.deductible}} in {{figYear}}, up from $283 in 2026). On the high-deductible version it is simply the first dollars toward $3,050.
+- **The Part A hospital deductible counts too.** One inpatient stay puts {{partA.deductible}} (the {{figYear}} figure) toward the total, so a year with a hospital admission and a few weeks of follow-up care can reach $3,050 quickly. From there you pay nothing more for covered services.
 - **It resets every January 1, and the figure moves.** CMS raises it each year by the change in the consumer price index, as section 1882(p)(11) of the Social Security Act requires. The 2027 notice applied a 3.4 percent increase and rounded to the nearest $10.
 
-What it does not include: your premium, and prescription drugs. Plan G has never covered drugs, so you still need a Part D plan, which has its own out-of-pocket cap ({{partD.cap}} in {{year}}). For a household that likes to know its worst case, the arithmetic is unusually clean. Add the deductible, the Part D cap and a year of premiums, and nothing Medicare covers can cost you more than that.
+What it does not include: your premium, and prescription drugs. Plan G has never covered drugs, so you still need a Part D plan, which has its own out-of-pocket cap ({{partD.cap}} in {{figYear}}). For a household that likes to know its worst case, the arithmetic is unusually clean. Add the deductible, the Part D cap and a year of premiums, and nothing Medicare covers can cost you more than that.
 
 ## Standard G, high-deductible G or an Advantage plan
 

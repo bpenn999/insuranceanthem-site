@@ -113,7 +113,7 @@ Part B is the one people know about. Three others start at the same time.
 
 ## What it costs, and the bill that surprises people
 
-The standard Part B premium is {{partB.premium}} a month in {{year}}, with a {{partB.deductible}} deductible. CMS has not published the 2027 figures yet. It usually does later in the fall, and a January starter pays the 2027 amount.
+The standard Part B premium is {{partB.premium}} a month in {{figYear}}, with a {{partB.deductible}} deductible. CMS has not published the 2027 figures yet. It usually does later in the fall, and a January starter pays the 2027 amount.
 
 The surprise for most of the households I work with is IRMAA, the income-related surcharge. A Part B start in 2027 is priced from your **2025** tax return, which is a full year of salary, often with a bonus or deferred compensation on top. If your income drops when you retire, that is a "work stoppage" under Social Security's rules, and Form SSA-44 asks them to use your new, lower income instead. File it once your retirement date is fixed. Do not wait for the first bill. ([How the SSA-44 appeal works.](/blog/how-do-i-appeal-irmaa-after-retirement/)) For the tax side, especially anything to do with deferred comp or a Roth conversion in the retirement year, talk to your tax advisor.
 

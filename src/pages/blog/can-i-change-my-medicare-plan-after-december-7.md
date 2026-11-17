@@ -109,7 +109,7 @@ If you have a Medicare Supplement, you are on Original Medicare, and your drug c
 
 In Arizona the 2027 price is the problem. According to CMS's 2027 plan landscape files, there are nine stand-alone drug plans in the state for 2027 and none of them has a $0 premium. They run from $5.30 to $191.50 a month. The highest, AARP Medicare Rx Preferred, was $97.50 a month in 2026, so a household that keeps it by default pays nearly twice as much for twelve months. I went through every plan and why the prices moved in [how much are Part D plans in Arizona for 2027](/blog/medicare-part-d-plans-arizona-2027/).
 
-The premium is only part of it. A cheaper plan that leaves one of your drugs off its formulary can cost more at the pharmacy counter. The comparison that matters is your actual prescription list, priced at the pharmacy you actually use, across all nine plans. Out-of-pocket drug costs are capped at {{partD.cap}} for {{year}}, rising for 2027, but the cap applies to drug costs, not the premium.
+The premium is only part of it. A cheaper plan that leaves one of your drugs off its formulary can cost more at the pharmacy counter. The comparison that matters is your actual prescription list, priced at the pharmacy you actually use, across all nine plans. Out-of-pocket drug costs are capped at {{partD.cap}} for {{figYear}} (up from $2,100 in 2026), but the cap applies to drug costs, not the premium.
 
 Higher-income households have one more reason to get this right: the Part D income surcharge is added on top of whatever plan you choose and goes to Medicare. A plan change does not move it up or down, so compare plans on premium plus expected drug costs and treat the surcharge as fixed.
 

@@ -41,7 +41,7 @@ sources:
     url: https://www.law.cornell.edu/cfr/text/20/404.316
 ---
 
-**If you have Medicare because of Social Security disability, turning 65 does not end it and you do not reapply. Your Part A and Part B continue without a gap; Social Security simply switches the reason you are entitled from disability to age.** You also get a fresh set of enrollment windows. Any Part B late-enrollment surcharge is rolled back to the standard premium, {{partB.premium}} a month in {{year}}, starting the month you turn 65. Any Part D late penalty ends, and a six-month Medigap open enrollment period opens.
+**If you have Medicare because of Social Security disability, turning 65 does not end it and you do not reapply. Your Part A and Part B continue without a gap; Social Security simply switches the reason you are entitled from disability to age.** You also get a fresh set of enrollment windows. Any Part B late-enrollment surcharge is rolled back to the standard premium, {{partB.premium}} a month in {{figYear}}, starting the month you turn 65. Any Part D late penalty ends, and a six-month Medigap open enrollment period opens.
 
 That last one is the part that matters most in Arizona. Federal law does not require insurers to sell Medigap to anyone under 65, Arizona has never added that requirement, and no insurer here offers it voluntarily. So if you went on Medicare early, you have probably been on Original Medicare alone or in a Medicare Advantage plan for years, with no other choice. At 65, for six months, you can buy any Medigap policy sold here, and the insurer cannot turn you down or charge more because of your health.
 

@@ -41,7 +41,7 @@ sources:
 
 **Yes, almost always. Retiree insurance is not a substitute for Medicare Part B, and it does not let you delay Part B without a penalty.** Once you are 65 and retired, Medicare pays first and the retiree plan pays second, which means the plan is built on the assumption that Part B is already there. Skip it and the plan can refuse the share Medicare would have paid, and the late-enrollment penalty is 10% of the premium for every full 12 months you went without. The real exception is a federal retiree keeping a federal employee plan.
 
-I get this question in north Peoria more than anywhere else I work. A lot of the people who have moved into Vistancia and the 85383 corridor over the past few years arrived with a retiree plan from a career in Illinois, Michigan, Minnesota or Washington: a manufacturer, a utility, a school district, a union trust. It is good coverage, they have had it for years, and the standard Part B premium of {{partB.premium}} a month in {{year}} looks like money spent on something they already have. It is not the same thing, and the difference shows up on the first large claim.
+I get this question in north Peoria more than anywhere else I work. A lot of the people who have moved into Vistancia and the 85383 corridor over the past few years arrived with a retiree plan from a career in Illinois, Michigan, Minnesota or Washington: a manufacturer, a utility, a school district, a union trust. It is good coverage, they have had it for years, and the standard Part B premium of {{partB.premium}} a month in {{figYear}} looks like money spent on something they already have. It is not the same thing, and the difference shows up on the first large claim.
 
 ## Why does retiree coverage not let me skip Part B?
 
@@ -67,8 +67,8 @@ Two things, and the second lasts longer than the first.
 
 <div class="stat-callout">
   <p class="stat-callout__figure">10% for every 12 months — the Part B late-enrollment penalty</p>
-  <p class="stat-callout__body">It is added to the standard premium ({{partB.premium}} a month in {{year}}) for as long as you have Part B. Retiree coverage, COBRA and individual policies do not stop the clock. Only group coverage from current employment does.</p>
-  <p class="stat-callout__cite">Source: Medicare.gov, "Avoid late enrollment penalties" and "Working past 65". The {{nextYear}} standard premium is announced by CMS in November.</p>
+  <p class="stat-callout__body">It is added to the standard premium ({{partB.premium}} a month in {{figYear}}) for as long as you have Part B. Retiree coverage, COBRA and individual policies do not stop the clock. Only group coverage from current employment does.</p>
+  <p class="stat-callout__cite">Source: Medicare.gov, "Avoid late enrollment penalties" and "Working past 65". Figures are CMS's 2027 amounts, announced November 17, 2026.</p>
 </div>
 
 ## Which retiree plans require Part B, and which do not?
@@ -150,7 +150,7 @@ For a household with the means to choose, this is the real decision at 65: stay 
 
 ## What about the income surcharge on Part B?
 
-Higher-income retirees pay more than the standard premium through IRMAA, which is based on the tax return from two years earlier. For {{year}} it begins above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} for a couple filing jointly, and the [IRMAA estimator](/tools/irmaa-estimator/) will show where you land.
+Higher-income retirees pay more than the standard premium through IRMAA, which is based on the tax return from two years earlier. For {{figYear}} it begins above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} for a couple filing jointly, and the [IRMAA estimator](/tools/irmaa-estimator/) will show where you land.
 
 For most retiree plans the surcharge changes nothing, because Part B is required either way. For a federal retiree it is part of the arithmetic. And if the income that put you in a higher bracket came from your last working year, retirement is one of the life-changing events Social Security accepts for a reduction request. I walk through that in [how to appeal IRMAA after retirement](/blog/how-do-i-appeal-irmaa-after-retirement/). Your tax advisor should be part of that conversation.
 

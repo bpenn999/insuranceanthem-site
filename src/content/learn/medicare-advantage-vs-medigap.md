@@ -1,10 +1,11 @@
 ---
 title: "Medicare Advantage vs. Medigap: Which Is Right for You?"
 seoTitle: "Medicare Advantage vs Medigap: Which Is Right?"
-description: "The real trade-offs between Medicare Advantage and Medigap — networks, costs, travel and underwriting — with current 2026 figures and no sales pitch."
+description: "The real trade-offs between Medicare Advantage and Medigap — networks, costs, travel and underwriting — with current 2027 figures and no sales pitch."
 summary: "One decision shapes everything else about your Medicare. Here is what actually separates the two paths — networks, cost structure, travel and the underwriting deadline nobody warns you about."
 category: "Medicare Advantage"
 publishedAt: 2026-08-02
+updatedAt: 2026-11-17
 readMinutes: 11
 featured: true
 relatedProducts: [medicare-advantage, medicare-supplement, part-d]
@@ -35,7 +36,7 @@ Neither is the right answer in general. Anyone who tells you otherwise is sellin
 
 ## The two structures, briefly
 
-**A Medicare Advantage plan** (Part C) is a private plan that delivers your Part A and Part B benefits. One card, one plan, usually with prescription drug coverage folded in, and often extras like dental, vision and hearing. You keep paying your Part B premium — {{partB.premium}} a month at the standard rate in {{year}} — plus whatever the plan itself charges, which is frequently nothing.
+**A Medicare Advantage plan** (Part C) is a private plan that delivers your Part A and Part B benefits. One card, one plan, usually with prescription drug coverage folded in, and often extras like dental, vision and hearing. You keep paying your Part B premium — {{partB.premium}} a month at the standard rate in {{figYear}} — plus whatever the plan itself charges, which is frequently nothing.
 
 **A Medicare Supplement**, usually called Medigap, works alongside Original Medicare instead of replacing it. Medicare pays first, the supplement pays most of what Medicare leaves behind. There is no network. You add a standalone Part D plan for prescriptions, because Medigap policies sold today never include them.
 
@@ -53,7 +54,7 @@ The protection is the annual out-of-pocket maximum. Once you hit it, the plan co
 
 ### On Medigap plus Part D
 
-You pay the {{partB.premium}} Part B premium, the supplement premium, and a Part D premium. Then, on the most common plan design, you pay the {{year}} Part B deductible of {{partB.deductible}} and essentially nothing else for Medicare-covered services. Not for the specialist, not for the imaging, not for the hospital stay.
+You pay the {{partB.premium}} Part B premium, the supplement premium, and a Part D premium. Then, on the most common plan design, you pay the {{figYear}} Part B deductible of {{partB.deductible}} and essentially nothing else for Medicare-covered services. Not for the specialist, not for the imaging, not for the hospital stay.
 
 That is what the monthly premium buys: the near-elimination of variable costs.
 
@@ -61,7 +62,7 @@ That is what the monthly premium buys: the near-elimination of variable costs.
 
 For somebody who sees a doctor three times a year, Advantage usually wins on total cost, often comfortably. For somebody managing two chronic conditions with regular specialist visits, Medigap frequently wins despite the higher premium, because copays accumulate faster than premiums do.
 
-The [annual cost estimator](/tools/medicare-cost-estimator/) will run your own numbers through both structures using {{year}} federal figures. Run it twice — once for a normal year, once for a bad one with an admission in it. If the answer flips between those two runs, that tells you something no average ever will.
+The [annual cost estimator](/tools/medicare-cost-estimator/) will run your own numbers through both structures using {{figYear}} federal figures. Run it twice — once for a normal year, once for a bad one with an admission in it. If the answer flips between those two runs, that tells you something no average ever will.
 
 ## Networks: the part that decides it for most people
 
@@ -117,11 +118,11 @@ Most Advantage plans include Part D. Medigap always needs a separate one.
 
 Either way, the drug side deserves its own analysis, because formularies vary enormously between plans whose premiums look identical. Two plans four dollars apart in premium can differ by several hundred dollars a year on the same medication list, purely because one puts a common generic on a higher tier.
 
-The {{year}} Part D out-of-pocket cap is {{partD.cap}}. Once your spending on covered drugs reaches it, the plan covers them fully for the rest of the year. That cap is a genuine improvement — and it makes plan choice more consequential, not less, because *when* you reach it depends entirely on how your plan tiers your drugs. Details are in [Part D explained](/learn/medicare-part-d-explained/).
+The {{figYear}} Part D out-of-pocket cap is {{partD.cap}}. Once your spending on covered drugs reaches it, the plan covers them fully for the rest of the year. That cap is a genuine improvement — and it makes plan choice more consequential, not less, because *when* you reach it depends entirely on how your plan tiers your drugs. Details are in [Part D explained](/learn/medicare-part-d-explained/).
 
 ## Higher income changes both
 
-If your modified adjusted gross income on your {{irmaaTaxYear}} return was above {{irmaa.singleStart}} filing single or {{irmaa.jointStart}} filing jointly, you pay an income-related surcharge on Part B and Part D in {{year}}. It applies on both paths and is not avoidable by choosing one over the other.
+If your modified adjusted gross income on your {{irmaaTaxYear}} return was above {{irmaa.singleStart}} filing single or {{irmaa.jointStart}} filing jointly, you pay an income-related surcharge on Part B and Part D in {{figYear}}. It applies on both paths and is not avoidable by choosing one over the other.
 
 It does affect the arithmetic, though, because it raises the fixed cost of both columns. See [IRMAA explained](/learn/irmaa-explained/), or run your own figure through the [IRMAA estimator](/tools/irmaa-estimator/).
 

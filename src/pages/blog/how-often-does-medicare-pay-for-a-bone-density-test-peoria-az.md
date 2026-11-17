@@ -91,7 +91,7 @@ Two things help. First, your Medicare.gov account lists past claims, so you can 
   <tbody>
     <tr>
       <td>Original Medicare</td>
-      <td>$0. No Part B deductible ({{partB.deductible}} in {{year}}) and no coinsurance</td>
+      <td>$0. No Part B deductible ({{partB.deductible}} in {{figYear}}) and no coinsurance</td>
       <td>A provider who does not accept assignment, a scan too soon, or not meeting one of the five groups</td>
     </tr>
     <tr>

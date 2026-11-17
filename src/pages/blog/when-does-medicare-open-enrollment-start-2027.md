@@ -125,12 +125,12 @@ The one people most often get wrong: **the fall window does not give you a Medic
 ## The {{year}} numbers, and the ones that are not out yet
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium for {{year}}, unchanged by anything you do in the fall</p>
-  <p class="stat-callout__body">The {{year}} Part B deductible is {{partB.deductible}}, the Part A inpatient hospital deductible is {{partA.deductible}} per benefit period, and Part D has a hard annual out-of-pocket cap of {{partD.cap}} on covered drugs. Switching plans in October does not move any of these — they are set nationally. What does move your Part B premium is income: IRMAA begins above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} filing jointly, based on your {{irmaaTaxYear}} tax return.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Parts A &amp; B premiums and deductibles, and the CMS Part D {{year}} figures. Verified against cms.gov.</p>
+  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium for {{figYear}}, unchanged by anything you do in the fall</p>
+  <p class="stat-callout__body">The {{figYear}} Part B deductible is {{partB.deductible}}, the Part A inpatient hospital deductible is {{partA.deductible}} per benefit period, and Part D has a hard annual out-of-pocket cap of {{partD.cap}} on covered drugs. Switching plans in October does not move any of these — they are set nationally. What does move your Part B premium is income: IRMAA begins above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} filing jointly, based on your {{irmaaTaxYear}} tax return.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Parts A &amp; B premiums and deductibles, and the CMS Part D {{figYear}} figures. Verified against cms.gov.</p>
 </div>
 
-The {{nextYear}} versions of those figures are published by CMS in the fall, usually in November — partway through the enrollment window rather than before it. That is not a reason to wait. Your plan's own {{nextYear}} costs are in the ANOC by September 30, and the federal numbers move by a few dollars, not by enough to change which plan fits.
+CMS published those {{figYear}} figures on November 17 — partway through the enrollment window rather than before it, which is normal. Waiting for them was never a reason to delay. Your plan's own {{nextYear}} costs are in the ANOC by September 30, and the federal numbers move by a few dollars, not by enough to change which plan fits.
 
 If a one-off event pushed your income up two years ago — a home sale, a Roth conversion, the year you actually retired — [check where you land](/tools/irmaa-estimator/) and talk to your tax advisor about appealing on Form SSA-44. That is a separate track from anything you do in October.
 

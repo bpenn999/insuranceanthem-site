@@ -298,7 +298,7 @@
         <div class="layer">
           <span class="ico">&#128737;&#65039;</span>
           <div><div class="l-name">Medicare Advantage Plan (Part C)</div>
-          <div class="l-desc">Bundles hospital + medical (usually drugs too) through a plan network; copays as you go, capped by the plan's in-network max out-of-pocket &mdash; up to $9,250 (2026).</div></div>
+          <div class="l-desc">Bundles hospital + medical (usually drugs too) through a plan network; copays as you go, capped by the plan's in-network max out-of-pocket &mdash; up to $9,850 (2027).</div></div>
           <span class="pill active">Layer 2</span>
         </div>
         <div class="layer rec-b">
@@ -317,11 +317,11 @@
       <div class="exposure">
         <h4>Potential Annual Exposure Without Supplemental Coverage</h4>
         <div class="bar-row"><span class="b-label">Long-term care</span><div class="track"><div class="fill" style="width:100%;background:var(--cta)"></div></div><span class="b-amt" style="color:var(--cta)">$126,000/yr</span></div>
-        <div class="bar-row"><span class="b-label">Serious-illness yr</span><div class="track"><div class="fill" style="width:12%;background:var(--accent-dark)"></div></div><span class="b-amt" style="color:var(--accent-dark)">MOOP $9,250</span></div>
-        <div class="bar-row"><span class="b-label">Rx drugs (Part D)</span><div class="track"><div class="fill" style="width:4%;background:var(--primary)"></div></div><span class="b-amt" style="color:var(--primary)">$2,100/yr</span></div>
+        <div class="bar-row"><span class="b-label">Serious-illness yr</span><div class="track"><div class="fill" style="width:12%;background:var(--accent-dark)"></div></div><span class="b-amt" style="color:var(--accent-dark)">MOOP $9,850</span></div>
+        <div class="bar-row"><span class="b-label">Rx drugs (Part D)</span><div class="track"><div class="fill" style="width:4%;background:var(--primary)"></div></div><span class="b-amt" style="color:var(--primary)">$2,400/yr</span></div>
         <div class="bar-row"><span class="b-label">Preventive care</span><div class="track"><div class="fill" style="width:2%;background:var(--teal)"></div></div><span class="b-amt" style="color:var(--teal)">$0 in-network</span></div>
         <div class="verdicts">
-          <div class="verdict v-bad"><small>Without layers 3 &amp; 4</small><div class="big">$137,000+</div><span>worst-case year: LTC + plan MOOP + Rx cap</span></div>
+          <div class="verdict v-bad"><small>Without layers 3 &amp; 4</small><div class="big">$138,000+</div><span>worst-case year: LTC + plan MOOP + Rx cap</span></div>
           <div class="verdict v-good"><small>With all four layers</small><div class="big">Protected</div><span>coverage across every major risk</span></div>
         </div>
         <div class="stat-note"><b>7 in 10</b> people turning 65 today will need some type of long-term care service in their lifetime &mdash; and Medicare does not cover custodial long-term care.
@@ -335,11 +335,11 @@
     <div class="sec-t">Core Coverage Summary</div>
     <table id="coreTbl">
       <tr><th>Coverage Type</th><th>Carrier / Plan</th><th>Monthly Premium</th></tr>
-      <tr><td>Medicare A &amp; B *</td><td class="c" contenteditable="true">Medicare</td><td class="prem"><input class="fld money prem-in" value="$202.90"></td></tr>
+      <tr><td>Medicare A &amp; B *</td><td class="c" contenteditable="true">Medicare</td><td class="prem"><input class="fld money prem-in" value="$209.40"></td></tr>
       <tr><td>Medicare Advantage Plan (Part C)</td><td class="c" contenteditable="true" data-ph="Carrier &amp; plan"></td><td class="prem"><input class="fld money prem-in" value="$0.00"></td></tr>
       <tr><td>Drug Coverage</td><td class="c" contenteditable="true" data-ph="Carrier &amp; plan, or included (MAPD)"></td><td class="prem"><input class="fld money prem-in" value="$0.00"></td></tr>
     </table>
-    <div class="moop-line">Plan max out-of-pocket (in-network): <span contenteditable="true" data-ph="$0,000">&nbsp;</span> &nbsp;&middot;&nbsp; 2026 federal cap: $9,250</div>
+    <div class="moop-line">Plan max out-of-pocket (in-network): <span contenteditable="true" data-ph="$0,000">&nbsp;</span> &nbsp;&middot;&nbsp; 2027 federal cap: $9,850</div>
   </div>
 
   <!-- ADDITIONAL COVERAGE -->
@@ -360,12 +360,12 @@
   <div class="total-band">
     <span class="t-label">Estimated Monthly Premium Total</span>
     <span class="t-note">auto-calculated</span>
-    <span class="t-amt" id="grandTotal">$202.90</span><span class="t-annual" id="grandAnnual"></span>
+    <span class="t-amt" id="grandTotal">$209.40</span><span class="t-annual" id="grandAnnual"></span>
   </div>
 
   <!-- IRMAA CALCULATOR -->
   <div class="sec sec-irmaa">
-    <div class="sec-t">*IRMAA Calculator &mdash; Income-Based Surcharge (2026)</div>
+    <div class="sec-t">*IRMAA Calculator &mdash; Income-Based Surcharge (2027)</div>
     <div class="irmaa-bar">
       <label>Tax filing status
         <select id="irFiling" class="fld sel">
@@ -374,28 +374,28 @@
           <option value="mfs">Married filing separately</option>
         </select>
       </label>
-      <label>2024 MAGI (income)
+      <label>2025 MAGI (income)
         <input id="irMagi" class="fld money" placeholder="$0" style="text-align:left; max-width:130px">
       </label>
       <div class="ir-result" id="irBracket">Enter income to estimate IRMAA</div>
     </div>
     <table>
       <tr><th>Adjustment</th><th>Monthly Estimate</th><th>Notes</th></tr>
-      <tr><td>Part B IRMAA</td><td class="c"><input id="irB" class="fld money prem-in" value="$0.00" style="max-width:110px"></td><td class="c" id="irBNote">Added to the $202.90 standard Part B premium</td></tr>
+      <tr><td>Part B IRMAA</td><td class="c"><input id="irB" class="fld money prem-in" value="$0.00" style="max-width:110px"></td><td class="c" id="irBNote">Added to the $209.40 standard Part B premium</td></tr>
       <tr><td>Part D IRMAA</td><td class="c"><input id="irD" class="fld money prem-in" value="$0.00" style="max-width:110px"></td><td class="c" id="irDNote">Paid to Medicare on top of your drug plan premium</td></tr>
     </table>
-    <div class="ir-tiers-t">The 2026 brackets &mdash; what Medicare charges at each income level</div>
+    <div class="ir-tiers-t">The 2027 brackets &mdash; what Medicare charges at each income level</div>
     <table class="ir-tiers">
-      <tr><th>Your 2024 income &mdash; single</th><th>&mdash; married filing jointly</th><th>Part B / mo</th><th>Part D / mo</th></tr>
-      <tr class="tier-none"><td>$109,000 or less</td><td>$218,000 or less</td><td>standard $202.90</td><td>no surcharge</td></tr>
-      <tr><td>$109,001 &ndash; $137,000</td><td>$218,001 &ndash; $274,000</td><td>+ $81.20</td><td>+ $14.50</td></tr>
-      <tr><td>$137,001 &ndash; $171,000</td><td>$274,001 &ndash; $342,000</td><td>+ $202.90</td><td>+ $37.50</td></tr>
-      <tr><td>$171,001 &ndash; $205,000</td><td>$342,001 &ndash; $410,000</td><td>+ $324.60</td><td>+ $60.40</td></tr>
-      <tr><td>$205,001 &ndash; $500,000</td><td>$410,001 &ndash; $750,000</td><td>+ $446.30</td><td>+ $83.30</td></tr>
-      <tr><td>Above $500,000</td><td>Above $750,000</td><td>+ $487.00</td><td>+ $91.00</td></tr>
+      <tr><th>Your 2025 income &mdash; single</th><th>&mdash; married filing jointly</th><th>Part B / mo</th><th>Part D / mo</th></tr>
+      <tr class="tier-none"><td>$112,000 or less</td><td>$224,000 or less</td><td>standard $209.40</td><td>no surcharge</td></tr>
+      <tr><td>$112,001 &ndash; $141,000</td><td>$224,001 &ndash; $282,000</td><td>+ $83.70</td><td>+ $15.40</td></tr>
+      <tr><td>$141,001 &ndash; $177,000</td><td>$282,001 &ndash; $354,000</td><td>+ $209.40</td><td>+ $39.70</td></tr>
+      <tr><td>$177,001 &ndash; $212,000</td><td>$354,001 &ndash; $424,000</td><td>+ $335.00</td><td>+ $64.00</td></tr>
+      <tr><td>$212,001 &ndash; $499,999</td><td>$424,001 &ndash; $749,999</td><td>+ $460.60</td><td>+ $88.30</td></tr>
+      <tr><td>$500,000 or more</td><td>$750,000 or more</td><td>+ $502.40</td><td>+ $96.40</td></tr>
     </table>
-    <div class="ir-mfs"><b>Married filing separately:</b> $109,000 or less &mdash; no surcharge &middot; $109,001&ndash;$391,000 &mdash; add $446.30 (Part B) and $83.30 (Part D) &middot; above $391,000 &mdash; add $487.00 and $91.00.</div>
-    <div class="ir-fine">2026 amounts per CMS, based on your 2024 tax return (MAGI). IRMAA applies per person and is billed by Medicare &mdash; usually deducted from Social Security &mdash; not by your insurance carrier. Amounts flow into the total above.</div>
+    <div class="ir-mfs"><b>Married filing separately:</b> $112,000 or less &mdash; no surcharge &middot; $112,001&ndash;$387,999 &mdash; add $460.60 (Part B) and $88.30 (Part D) &middot; $388,000 or more &mdash; add $502.40 and $96.40.</div>
+    <div class="ir-fine">2027 amounts per CMS, based on your 2025 tax return (MAGI). IRMAA applies per person and is billed by Medicare &mdash; usually deducted from Social Security &mdash; not by your insurance carrier. Amounts flow into the total above.</div>
   </div>
 
   <div class="print-only p-next">
@@ -417,7 +417,7 @@
     <div class="f-contact">Anthem, AZ 85086 <span class="d">&#9670;</span> (602) 844-6002 <span class="d">&#9670;</span> 602Medicare.com</div>
     <div class="f-legal">
       <p>We do not offer every plan available in your area. Currently, we represent 7 organizations which offer 38 products in your area. Any information we provide is limited to those plans we do offer in your area. Please contact Medicare.gov or 1-800-MEDICARE to get information on all of your options. 602Medicare is a licensed independent insurance agency (NPN 8206556). Not connected with or endorsed by the United States government or the federal Medicare program.</p>
-      <p>Based on 2026 Medicare rates. Figures are estimates for illustration purposes only. Individual costs vary by health status, geographic location, and plan selection. This material is educational and is not a guarantee of benefits or coverage.</p>
+      <p>Based on 2027 Medicare rates. Figures are estimates for illustration purposes only. Individual costs vary by health status, geographic location, and plan selection. This material is educational and is not a guarantee of benefits or coverage.</p>
     </div>
   </div>
 
@@ -455,29 +455,29 @@
       '<td class="prem"><input class="fld money prem-in" value="$0.00"></td>';
     recalc();
   }
-  // ---- IRMAA calculator (2026 CMS figures; MAGI from 2024 return) ----
+  // ---- IRMAA calculator (2027 CMS figures; MAGI from 2025 return) ----
   // Each tier: [upper MAGI bound, Part B surcharge, Part D surcharge, label]
   var IRMAA = {
     single: [
-      [109000, 0,      0,     'No IRMAA — MAGI $109,000 or less'],
-      [137000, 81.20,  14.50, 'Tier 1 of 5 — $109,001–$137,000'],
-      [171000, 202.90, 37.50, 'Tier 2 of 5 — $137,001–$171,000'],
-      [205000, 324.60, 60.40, 'Tier 3 of 5 — $171,001–$205,000'],
-      [500000, 446.30, 83.30, 'Tier 4 of 5 — $205,001–$499,999'],
-      [Infinity,487.00,91.00, 'Tier 5 of 5 — $500,000+']
+      [112000, 0,      0,     'No IRMAA — MAGI $112,000 or less'],
+      [141000, 83.70,  15.40, 'Tier 1 of 5 — $112,001–$141,000'],
+      [177000, 209.40, 39.70, 'Tier 2 of 5 — $141,001–$177,000'],
+      [212000, 335.00, 64.00, 'Tier 3 of 5 — $177,001–$212,000'],
+      [499999.99, 460.60, 88.30, 'Tier 4 of 5 — $212,001–$499,999'],
+      [Infinity,502.40,96.40, 'Tier 5 of 5 — $500,000+']
     ],
     joint: [
-      [218000, 0,      0,     'No IRMAA — MAGI $218,000 or less'],
-      [274000, 81.20,  14.50, 'Tier 1 of 5 — $218,001–$274,000'],
-      [342000, 202.90, 37.50, 'Tier 2 of 5 — $274,001–$342,000'],
-      [410000, 324.60, 60.40, 'Tier 3 of 5 — $342,001–$410,000'],
-      [750000, 446.30, 83.30, 'Tier 4 of 5 — $410,001–$749,999'],
-      [Infinity,487.00,91.00, 'Tier 5 of 5 — $750,000+']
+      [224000, 0,      0,     'No IRMAA — MAGI $224,000 or less'],
+      [282000, 83.70,  15.40, 'Tier 1 of 5 — $224,001–$282,000'],
+      [354000, 209.40, 39.70, 'Tier 2 of 5 — $282,001–$354,000'],
+      [424000, 335.00, 64.00, 'Tier 3 of 5 — $354,001–$424,000'],
+      [749999.99, 460.60, 88.30, 'Tier 4 of 5 — $424,001–$749,999'],
+      [Infinity,502.40,96.40, 'Tier 5 of 5 — $750,000+']
     ],
     mfs: [
-      [109000, 0,      0,     'No IRMAA — MAGI $109,000 or less'],
-      [391000, 446.30, 83.30, 'High tier — $109,001–$390,999'],
-      [Infinity,487.00,91.00, 'Top tier — $391,000+']
+      [112000, 0,      0,     'No IRMAA — MAGI $112,000 or less'],
+      [387999.99, 460.60, 88.30, 'High tier — $112,001–$387,999'],
+      [Infinity,502.40,96.40, 'Top tier — $388,000+']
     ]
   };
   function irmaaCalc(){
@@ -498,8 +498,8 @@
     badge.textContent = t[3];
     badge.className = 'ir-result ' + (t[1] > 0 ? 'hit' : 'clear');
     document.getElementById('irBNote').textContent = t[1] > 0
-      ? 'Total Part B: ' + fmt(202.90 + t[1]) + '/mo per person'
-      : 'Added to the $202.90 standard Part B premium';
+      ? 'Total Part B: ' + fmt(209.40 + t[1]) + '/mo per person'
+      : 'Added to the $209.40 standard Part B premium';
     recalc();
   }
   document.getElementById('irMagi').addEventListener('input', irmaaCalc);

@@ -110,7 +110,7 @@ The paperwork side: a health care provider must assess you face-to-face before c
 </table>
 </div>
 
-<p class="table-source">Source: Medicare.gov, "Home health services coverage" — coverage details, who's eligible, costs and how often. Verified against medicare.gov, August 2026. Part B deductible figure from the CMS {{year}} premiums and deductibles release.</p>
+<p class="table-source">Source: Medicare.gov, "Home health services coverage" — coverage details, who's eligible, costs and how often. Verified against medicare.gov, August 2026. Part B deductible figure from the CMS {{figYear}} premiums and deductibles release.</p>
 
 In practice, most home health schedules land nowhere near 28 hours. A typical run after a joint replacement or a cardiac event is a nurse two or three times a week and a therapist two or three times a week, an hour or so each. The 8-and-28 ceiling is the outer edge, not the plan.
 

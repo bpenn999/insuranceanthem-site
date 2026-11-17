@@ -13,54 +13,64 @@
  *        • CMS Part D fact sheet (out-of-pocket cap, base beneficiary premium)
  *        • SSA IRMAA determination tables
  *
- *  CURRENT DATA: CY2026. Verified 2026-08-02 against the CMS 2026 Parts A & B
- *  fact sheet (released 2025-11-14) and published 2026 IRMAA tables.
+ *  CURRENT DATA: CY2027. Verified 2026-11-17 against the CMS 2027 Parts A & B
+ *  fact sheet (released 2026-11-17) incl. its IRMAA tables, and the CY2027
+ *  Rate Announcement / Part D bid release for the Part D figures.
  * ═══════════════════════════════════════════════════════════════════════════
  */
 
 /** The plan year every figure below applies to. Rendered on-page next to the numbers. */
-export const PLAN_YEAR = 2026;
+export const PLAN_YEAR = 2027;
+
+/**
+ * The CALENDAR year the editorial copy was written against. The markdown
+ * tokens {{year}} / {{nextYear}} resolve to this (e.g. "your {{nextYear}} plan"
+ * during AEP, "January 1, {{nextYear}}"), NOT to the figures' plan year. Copy
+ * that sits next to a dollar figure uses {{figYear}} (= PLAN_YEAR) instead.
+ * Bump this on January 1, and re-read the AEP posts that say "next year".
+ */
+export const CONTENT_YEAR = 2026;
 
 /** The tax year whose MAGI determines this plan year's IRMAA (two-year lookback). */
 export const IRMAA_TAX_YEAR = PLAN_YEAR - 2;
 
 export const partB = {
   /** Standard monthly premium, before any IRMAA surcharge */
-  standardPremium: 202.9,
+  standardPremium: 209.4,
   /** Annual deductible */
-  deductible: 283,
+  deductible: 292,
   /** Coinsurance after the deductible, on Original Medicare with no supplement */
   coinsuranceRate: 0.2,
 };
 
 export const partA = {
   /** Inpatient hospital deductible, per benefit period */
-  deductible: 1736,
+  deductible: 1776,
   /** Daily coinsurance, hospital days 61–90 */
-  coinsurance61to90: 434,
+  coinsurance61to90: 444,
   /** Daily coinsurance, lifetime reserve days */
-  lifetimeReserve: 868,
+  lifetimeReserve: 888,
   /** Total lifetime reserve days available, once ever */
   lifetimeReserveDays: 60,
   /** Daily coinsurance, skilled nursing facility days 21–100 */
-  snf21to100: 217,
+  snf21to100: 222,
   /** Monthly premium for those without enough work quarters (most people pay $0) */
-  premiumIfUninsured: 565,
+  premiumIfUninsured: 597,
 
   /**
    * Part A premium by quarters of Medicare-covered employment.
    *
    * 40+ quarters is premium-free — that is how most people get Part A. Below
    * that there are two tiers: 30–39 quarters qualifies for a 45% reduction
-   * ($565 × 0.55 ≈ $311), and under 30 quarters pays the full amount.
+   * ($597 × 0.55 ≈ $328), and under 30 quarters pays the full amount.
    */
   premiumByQuarters: {
     /** 40 or more quarters */
     free: 0,
     /** 30–39 quarters — the 45%-reduced premium */
-    reduced: 311,
+    reduced: 328,
     /** Fewer than 30 quarters — full premium */
-    full: 565,
+    full: 597,
   },
   /** Quarters needed for premium-free Part A */
   quartersForFree: 40,
@@ -114,31 +124,29 @@ export const medigap = {
  */
 export const giveback = {
   /** A plan cannot give back more than the standard premium */
-  maxMonthly: 202.9,
+  maxMonthly: 209.4,
   reducesIrmaa: false,
 };
 
 export const partD = {
   /** Annual out-of-pocket cap on covered drugs (excludes premiums) */
-  outOfPocketCap: 2100,
+  outOfPocketCap: 2400,
   /** Maximum deductible a plan may charge */
-  maxDeductible: 615,
+  maxDeductible: 700,
   /**
    * National base beneficiary premium — the figure the Part D late enrollment
    * penalty is calculated against (NOT what any plan charges).
-   * Source: CMS, "2026 Medicare Part D Bid Information and Part D Premium
-   * Stabilization Demonstration Parameters" (released 2025-07-28):
-   * https://www.cms.gov/newsroom/fact-sheets/2026-medicare-part-d-bid-information-and-part-d-premium-stabilization-demonstration-parameters
-   * — "For 2026, the base beneficiary premium will be $38.99." Also the figure
-   * in Medicare.gov's own worked example (avoid-penalties page). Verified
-   * 2026-10-16. CY2027 is $41.33 (CMS, 2026-07-28) — swap in at the annual update.
+   * Source: CMS, "Medicare Part D 2027 National Average Monthly Bid Amount
+   * Information" (released 2026-07-28):
+   * https://www.cms.gov/newsroom/fact-sheets/medicare-part-d-2027-national-average-monthly-bid-amount-information
+   * — CY2027 BBP = $38.99 (2026) × 1.06 = $41.33. Updated 2026-11-17.
    */
-  baseBeneficiaryPremium: 38.99,
+  baseBeneficiaryPremium: 41.33,
 };
 
 /**
  * IRMAA brackets. Thresholds are inclusive at the top of each band — i.e. a
- * single filer at exactly $109,000 pays the standard premium; $109,001 lands in
+ * single filer at exactly $112,000 pays the standard premium; $112,001 lands in
  * tier 1. `singleMax`/`jointMax` of `null` means "no upper bound".
  */
 export interface IrmaaBracket {
@@ -156,12 +164,12 @@ export interface IrmaaBracket {
 }
 
 export const irmaaBrackets: IrmaaBracket[] = [
-  { tier: 0, singleMin: 0,       singleMax: 109_000, jointMin: 0,       jointMax: 218_000, partBSurcharge: 0,      partBTotal: 202.9, partDSurcharge: 0 },
-  { tier: 1, singleMin: 109_000, singleMax: 137_000, jointMin: 218_000, jointMax: 274_000, partBSurcharge: 81.2,   partBTotal: 284.1, partDSurcharge: 14.5 },
-  { tier: 2, singleMin: 137_000, singleMax: 171_000, jointMin: 274_000, jointMax: 342_000, partBSurcharge: 202.9,  partBTotal: 405.8, partDSurcharge: 37.5 },
-  { tier: 3, singleMin: 171_000, singleMax: 205_000, jointMin: 342_000, jointMax: 410_000, partBSurcharge: 324.6,  partBTotal: 527.5, partDSurcharge: 60.4 },
-  { tier: 4, singleMin: 205_000, singleMax: 500_000, jointMin: 410_000, jointMax: 750_000, partBSurcharge: 446.3,  partBTotal: 649.2, partDSurcharge: 83.3 },
-  { tier: 5, singleMin: 500_000, singleMax: null,    jointMin: 750_000, jointMax: null,    partBSurcharge: 487.0,  partBTotal: 689.9, partDSurcharge: 91.0 },
+  { tier: 0, singleMin: 0,       singleMax: 112_000, jointMin: 0,       jointMax: 224_000, partBSurcharge: 0,      partBTotal: 209.4, partDSurcharge: 0 },
+  { tier: 1, singleMin: 112_000, singleMax: 141_000, jointMin: 224_000, jointMax: 282_000, partBSurcharge: 83.7,   partBTotal: 293.1, partDSurcharge: 15.4 },
+  { tier: 2, singleMin: 141_000, singleMax: 177_000, jointMin: 282_000, jointMax: 354_000, partBSurcharge: 209.4,  partBTotal: 418.8, partDSurcharge: 39.7 },
+  { tier: 3, singleMin: 177_000, singleMax: 212_000, jointMin: 354_000, jointMax: 424_000, partBSurcharge: 335.0,  partBTotal: 544.4, partDSurcharge: 64.0 },
+  { tier: 4, singleMin: 212_000, singleMax: 500_000, jointMin: 424_000, jointMax: 750_000, partBSurcharge: 460.6,  partBTotal: 670.0, partDSurcharge: 88.3 },
+  { tier: 5, singleMin: 500_000, singleMax: null,    jointMin: 750_000, jointMax: null,    partBSurcharge: 502.4,  partBTotal: 711.8, partDSurcharge: 96.4 },
 ];
 
 /**
@@ -170,9 +178,9 @@ export const irmaaBrackets: IrmaaBracket[] = [
  * wrong answers for a small but real group of people.
  */
 export const irmaaSeparate = [
-  { min: 0,       max: 109_000, partBTotal: 202.9, partDSurcharge: 0 },
-  { min: 109_000, max: 391_000, partBTotal: 649.2, partDSurcharge: 83.3 },
-  { min: 391_000, max: null,    partBTotal: 689.9, partDSurcharge: 91.0 },
+  { min: 0,       max: 112_000, partBTotal: 209.4, partDSurcharge: 0 },
+  { min: 112_000, max: 388_000, partBTotal: 670.0, partDSurcharge: 88.3 },
+  { min: 388_000, max: null,    partBTotal: 711.8, partDSurcharge: 96.4 },
 ];
 
 export type FilingStatus = 'single' | 'joint' | 'separate';
@@ -193,8 +201,8 @@ export interface IrmaaResult {
  * Look up an IRMAA bracket.
  *
  * Boundaries are exclusive at the bottom and inclusive at the top: a single
- * filer at exactly $109,000 pays the standard premium, and $109,001 is tier 1.
- * That matches how SSA states the thresholds ("greater than $109,000") and it
+ * filer at exactly $112,000 pays the standard premium, and $112,001 is tier 1.
+ * That matches how SSA states the thresholds ("greater than $112,000") and it
  * is the one place this calculation is easy to get wrong by a whole bracket.
  */
 export function lookupIrmaa(magi: number, filing: FilingStatus): IrmaaResult {

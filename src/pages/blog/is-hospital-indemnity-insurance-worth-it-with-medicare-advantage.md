@@ -57,7 +57,7 @@ Three things follow from that, and they are the things people most often get wro
 
 Original Medicare and Medicare Advantage bill a hospital stay in two entirely different ways, and this is why the same policy is a strong fit for one household and a duplicate for their neighbor.
 
-On Original Medicare, Part A charges a deductible per benefit period, {{partA.deductible}} in {{year}}, and then nothing for days 1 through 60. Days 61 through 90 cost {{partA.days61to90}} a day and lifetime reserve days cost {{partA.lifetimeReserve}} a day. A benefit period ends when you have been out of the hospital or a skilled nursing facility for 60 days in a row, so it is possible to owe that deductible more than once in a year. Medigap Plan G and Plan N both pay all of it, which is why someone with a standard supplement rarely has any reason to look at an indemnity policy.
+On Original Medicare, Part A charges a deductible per benefit period, {{partA.deductible}} in {{figYear}}, and then nothing for days 1 through 60. Days 61 through 90 cost {{partA.days61to90}} a day and lifetime reserve days cost {{partA.lifetimeReserve}} a day. A benefit period ends when you have been out of the hospital or a skilled nursing facility for 60 days in a row, so it is possible to owe that deductible more than once in a year. Medigap Plan G and Plan N both pay all of it, which is why someone with a standard supplement rarely has any reason to look at an indemnity policy.
 
 On a Medicare Advantage plan there is no Part A deductible. Instead the plan sets its own copay per day for a fixed number of days at the start of each admission, then covers the remainder of the stay in full. Medicare.gov describes the trade generally: plans "may have lower out-of-pocket costs than Original Medicare" for some services and higher for others, with a yearly limit on what you pay for covered Part A and Part B care. Under CMS rules that limit cannot exceed $9,250 in {{year}} for in-network care, and KFF puts the enrollment-weighted average across plans at about $5,421. The daily hospital copays are the piece of that limit you are most likely to hit in a single week.
 
@@ -108,9 +108,9 @@ Do not take a salesman's word for the gap, including mine. Open the Evidence of 
 Add the first line to whichever of the others worry you. Then compare that total against a year of premium for a policy whose daily benefit matches the copay. If the premium is a fraction of the exposure and the exposure is a number you would not want to write a check for in a bad month, the policy is doing real work. If your plan's inpatient copays are modest, or the money would not change anything about your year, it is not.
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">$9,250 — the most a Medicare Advantage plan may charge for in-network Part A and Part B care in {{year}}</p>
+  <p class="stat-callout__figure">$9,850 — the most a Medicare Advantage plan may charge for in-network Part A and Part B care in 2027</p>
   <p class="stat-callout__body">That is the ceiling, not the typical figure: KFF's enrollment-weighted average limit is about $5,421 in-network. Inpatient copays are the part of that limit a household can reach in a single admission, and they are what a hospital indemnity plan is built to offset. Original Medicare, by contrast, charges a {{partA.deductible}} Part A deductible per benefit period and has no annual limit on Part B's {{partB.coinsurance}} coinsurance at all.</p>
-  <p class="stat-callout__cite">Sources: KFF, "Medicare Advantage in 2026"; Medicare.gov, "Inpatient hospital care"; CMS {{year}} Parts A &amp; B deductibles. Verified September 2026.</p>
+  <p class="stat-callout__cite">Sources: KFF, "Medicare Advantage in 2026"; Medicare.gov, "Inpatient hospital care"; CMS {{figYear}} Parts A &amp; B deductibles. Verified September 2026.</p>
 </div>
 
 ## The north Peoria version of this question

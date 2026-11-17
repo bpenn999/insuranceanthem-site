@@ -29,8 +29,8 @@ sources:
     url: https://www.ssa.gov/forms/ssa-44.pdf
   - label: 'Social Security — Medicare premiums: rules for higher-income beneficiaries'
     url: https://www.ssa.gov/benefits/medicare/medicare-premiums.html
-  - label: 'CMS — 2026 Medicare Parts A & B premiums and deductibles, and Part D income-related amounts'
-    url: https://www.cms.gov/newsroom/fact-sheets/2026-medicare-parts-b-premiums-deductibles
+  - label: 'CMS — 2027 Medicare Parts A & B premiums and deductibles, and Part D income-related amounts'
+    url: https://www.cms.gov/newsroom/fact-sheets/2027-medicare-parts-b-premiums-deductibles
   - label: 'Medicare.gov — Medicare costs, including the Part B premium by income'
     url: https://www.medicare.gov/basics/costs/medicare-costs
 ---
@@ -41,9 +41,9 @@ The reason it matters right now is the calendar. If you retired in 2026, the let
 
 ## Why a retiree gets a surcharge in the first place
 
-IRMAA — the income-related monthly adjustment amount — is the extra Medicare charges above the standard premium when your income is over a line. For {{year}} the line is {{irmaa.singleStart}} of modified adjusted gross income for a single filer and {{irmaa.jointStart}} for a couple filing jointly. Cross it by a dollar and the Part B premium goes from {{partB.premium}} to {{irmaa.t1.partB}} a month, and Part D picks up its own surcharge of {{irmaa.t1.partD}} on top. Both are per person, so a married couple pays it twice. If you want the full mechanics, [IRMAA explained](/learn/irmaa-explained/) covers the brackets and the cliff.
+IRMAA — the income-related monthly adjustment amount — is the extra Medicare charges above the standard premium when your income is over a line. For {{figYear}} the line is {{irmaa.singleStart}} of modified adjusted gross income for a single filer and {{irmaa.jointStart}} for a couple filing jointly. Cross it by a dollar and the Part B premium goes from {{partB.premium}} to {{irmaa.t1.partB}} a month, and Part D picks up its own surcharge of {{irmaa.t1.partD}} on top. Both are per person, so a married couple pays it twice. If you want the full mechanics, [IRMAA explained](/learn/irmaa-explained/) covers the brackets and the cliff.
 
-The part that catches retirees is the lookback. Social Security does not ask what you earn now. It takes the most recent tax return the IRS has processed — normally the one from two years earlier — and uses that. Your {{year}} premium was set from your {{irmaaTaxYear}} return. The 2027 premium, announced in a letter that usually lands in late November or December, will be set from your 2025 return.
+The part that catches retirees is the lookback. Social Security does not ask what you earn now. It takes the most recent tax return the IRS has processed — normally the one from two years earlier — and uses that. Your {{figYear}} premium was set from your {{irmaaTaxYear}} return. The 2027 premium, announced in a letter that usually lands in late November or December, will be set from your 2025 return.
 
 So picture someone who worked all of 2025, retired in the spring of 2026, and now lives on Social Security and a modest draw from an IRA. Their 2025 return shows a full salary. Their 2027 Medicare premium will be priced as though they still earned it. And 2028 is set from the 2026 return — the one with a quarter of a salary and the payout of unused leave in it — which can hold them over the line for a second year. Up to two years of surcharge on income that stopped.
 
@@ -120,13 +120,13 @@ Then there is the year after. The estimate you gave is exactly that, and Social 
 
 And it does not have to be repeated forever. Once your first full retired-income return has been filed and worked through the IRS, Social Security picks it up on the ordinary two-year cycle and the surcharge disappears without another form, provided that income is under the line. SSA-44 bridges the gap years. It is not an annual chore.
 
-## The {{year}} brackets, so you can see what is at stake
+## The {{figYear}} brackets, so you can see what is at stake
 
-These are the {{year}} figures, per person, per month. CMS publishes the 2027 brackets in mid-November, and they usually move up a little.
+These are the {{figYear}} figures CMS published on November 17, 2026, per person, per month.
 
 <div class="table-scroll">
 <table>
-  <caption class="sr-only">{{year}} IRMAA brackets for single filers with the total Part B premium and the Part D surcharge per person per month</caption>
+  <caption class="sr-only">{{figYear}} IRMAA brackets for single filers with the total Part B premium and the Part D surcharge per person per month</caption>
   <thead>
     <tr><th scope="col">Single filer MAGI ({{irmaaTaxYear}} return)</th><th scope="col">Part B, total</th><th scope="col">Part D surcharge</th></tr>
   </thead>

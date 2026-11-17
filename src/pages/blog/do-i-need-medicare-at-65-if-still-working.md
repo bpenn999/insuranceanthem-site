@@ -127,7 +127,7 @@ That third row is the one nobody warns you about, because it is not a penalty an
 <div class="stat-callout">
   <p class="stat-callout__figure">10% extra Part B premium for every 12 months you could have enrolled and did not — for life</p>
   <p class="stat-callout__body">The standard Part B premium is {{partB.premium}} a month, with a {{partB.deductible}} annual deductible. Two full years late and you are paying that 10% twice over, permanently. And if you are still working at 65, there is a second premium factor worth checking: IRMAA, the income surcharge, starts above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} for a couple filing jointly, based on your {{irmaaTaxYear}} return — which for someone who worked through their early sixties is often a full salary year.</p>
-  <p class="stat-callout__cite">Source: Medicare.gov late enrollment penalty guidance and the CMS {{year}} Part B premium and IRMAA figures.</p>
+  <p class="stat-callout__cite">Source: Medicare.gov late enrollment penalty guidance and the CMS {{figYear}} Part B premium and IRMAA figures.</p>
 </div>
 
 The IRMAA half of that catches high earners who retire mid-year and then find their first Medicare premium priced off the salary they no longer have. That is appealable — retirement is a recognized life-changing event on Form SSA-44 — and it is worth doing with your tax advisor rather than guessing. You can [see where your income lands](/tools/irmaa-estimator/) first, and [the full explanation is here](/learn/irmaa-explained/).

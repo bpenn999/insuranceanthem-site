@@ -115,9 +115,9 @@ CMS released the 2027 Star Ratings on October 8. In Maricopa County four contrac
 ## The numbers that do not move this week
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partB.premium}} a month — the {{year}} standard Part B premium</p>
-  <p class="stat-callout__body">CMS usually publishes the {{nextYear}} Part B premium and deductibles in November, partway through this window, so they aren't out yet. For {{year}}, the Part B deductible is {{partB.deductible}} and the Part A hospital deductible is {{partA.deductible}}. IRMAA starts above {{irmaa.singleStart}} for a single filer, based on your {{irmaaTaxYear}} return. Changing plans doesn't change any of these, and a forced plan switch doesn't change IRMAA.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Parts A &amp; B premiums and deductibles. Verified against cms.gov.</p>
+  <p class="stat-callout__figure">{{partB.premium}} a month — the {{figYear}} standard Part B premium</p>
+  <p class="stat-callout__body">CMS published the {{figYear}} Part B premium and deductibles on November 17, partway through this window. For {{figYear}}, the Part B deductible is {{partB.deductible}} and the Part A hospital deductible is {{partA.deductible}}. IRMAA starts above {{irmaa.singleStart}} for a single filer, based on your {{irmaaTaxYear}} return. Changing plans doesn't change any of these, and a forced plan switch doesn't change IRMAA.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Parts A &amp; B premiums and deductibles. Verified against cms.gov.</p>
 </div>
 
 If a home sale or Roth conversion two years ago raised your premium, the [IRMAA estimator](/tools/irmaa-estimator/) shows where you land. That's a conversation for your tax advisor, separate from anything you choose this fall.

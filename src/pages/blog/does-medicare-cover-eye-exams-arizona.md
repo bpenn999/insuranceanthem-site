@@ -70,9 +70,9 @@ Vision care is not a separate Medicare benefit. Part B covers "medically necessa
 <p class="table-source">Source: Medicare.gov coverage pages for routine eye exams, eyeglasses and contact lenses, glaucoma screenings, eye exams for diabetes, and macular degeneration. Federal rules, identical in Peoria, Anthem and everywhere else. A Medicare Advantage plan must cover everything on the "Yes" lines, at its own copays and inside its own network.</p>
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium in {{year}}, which buys medical eye care and no routine vision care at all</p>
+  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium in {{figYear}}, which buys medical eye care and no routine vision care at all</p>
   <p class="stat-callout__body">The Part B annual deductible is {{partB.deductible}}, and after it you pay {{partB.coinsurance}} of the approved amount for a covered eye exam, test or treatment. For the routine exam and the glasses, Original Medicare's share is zero, so that cost is either an Advantage plan's supplemental benefit, a separate policy, or your own money.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Parts A &amp; B premiums and deductibles; Medicare.gov eye care coverage pages.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Parts A &amp; B premiums and deductibles; Medicare.gov eye care coverage pages.</p>
 </div>
 
 ## The four medical exams Part B does pay for

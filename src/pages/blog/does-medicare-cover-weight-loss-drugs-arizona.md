@@ -57,7 +57,7 @@ The Bridge is a demonstration, and it is built differently from everything else 
 
 Four consequences follow from that, and each one is stated in Medicare's own materials:
 
-- **The $50 does not count toward your deductible or your out-of-pocket cap.** The cap is {{partD.cap}} in {{year}} and [$2,400 in 2027](/blog/medicare-part-d-out-of-pocket-cap-2027/). A Bridge prescription sits beside it, not inside it.
+- **The $50 does not count toward your deductible or your out-of-pocket cap.** The cap is [{{partD.cap}} in {{figYear}}](/blog/medicare-part-d-out-of-pocket-cap-2027/). A Bridge prescription sits beside it, not inside it.
 - **The Medicare Prescription Payment Plan does not apply.** You cannot spread these payments across the year.
 - **Extra Help does not lower the copay**, and coupons and discount programs cannot be applied to it.
 - **You get one month at a time.** A fill is a 28- or 30-day supply. There is no 90-day option.

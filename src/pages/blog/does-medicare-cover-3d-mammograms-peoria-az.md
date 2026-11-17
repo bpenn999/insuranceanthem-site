@@ -39,7 +39,7 @@ sources:
     url: https://www.cms.gov/data-research/statistics-trends-and-reports/medicare-advantagepart-d-contract-and-enrollment-data/benefits-data
 ---
 
-**Yes. Medicare covers 3D mammograms, which CMS calls digital breast tomosynthesis, as an add-on to the standard mammogram. A 3D screening mammogram is covered once every 12 months for women 40 and older, and you pay nothing if the facility accepts assignment: no Part B deductible and no coinsurance. A 3D diagnostic mammogram is covered whenever it is medically necessary, and you pay {{partB.coinsurance}} of the Medicare-approved amount after the Part B deductible ({{partB.deductible}} in {{year}}).**
+**Yes. Medicare covers 3D mammograms, which CMS calls digital breast tomosynthesis, as an add-on to the standard mammogram. A 3D screening mammogram is covered once every 12 months for women 40 and older, and you pay nothing if the facility accepts assignment: no Part B deductible and no coinsurance. A 3D diagnostic mammogram is covered whenever it is medically necessary, and you pay {{partB.coinsurance}} of the Medicare-approved amount after the Part B deductible ({{partB.deductible}} in {{figYear}}).**
 
 That is the national rule from Medicare.gov and the federal regulation, and it applies the same way at an imaging center off Lake Pleasant Parkway as anywhere else in the country. The 3D part does not change the price; the word in front of "mammogram" does. Almost every surprise bill I hear about from women in Peoria comes from a visit that started as a screening and ended up partly diagnostic.
 

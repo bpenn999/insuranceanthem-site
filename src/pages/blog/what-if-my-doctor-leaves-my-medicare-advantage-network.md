@@ -158,9 +158,9 @@ The obvious one: out-of-network care. In an HMO, non-emergency care outside the 
 The quieter one: you keep the doctor and pay for it, or you keep the plan and change doctors. People in their late seventies with a twenty-year relationship with a physician overwhelmingly choose the first, quietly, without running the numbers — and by March they have spent more than the premium difference on any of the alternatives would have been.
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium in {{year}}, which you pay no matter whose network your doctor is in</p>
+  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium in {{figYear}}, which you pay no matter whose network your doctor is in</p>
   <p class="stat-callout__body">Original Medicare's own numbers do not move with a network change: the Part B annual deductible is {{partB.deductible}}, the Part A hospital deductible is {{partA.deductible}} per benefit period, and Part D has a hard annual out-of-pocket cap of {{partD.cap}} on covered drugs. What a network change moves is the Advantage plan's own cost sharing — the copays, the out-of-pocket maximum, and whether a given visit counts as in network at all.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Parts A &amp; B premiums and deductibles, and the CMS Part D {{year}} figures. Verified against cms.gov.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Parts A &amp; B premiums and deductibles, and the CMS Part D {{figYear}} figures. Verified against cms.gov.</p>
 </div>
 
 Higher income adds its own layer on top of that, and it has nothing to do with networks: IRMAA begins above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} filing jointly, based on your {{irmaaTaxYear}} return. If a one-off event pushed you over — a home sale, a Roth conversion, the year you retired — that is appealable on Form SSA-44, and worth raising with your tax advisor. You can [see where your income lands](/tools/irmaa-estimator/) in about a minute.

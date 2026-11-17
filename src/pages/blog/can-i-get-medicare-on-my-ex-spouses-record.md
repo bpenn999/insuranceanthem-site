@@ -41,7 +41,7 @@ sources:
     url: https://www.medicare.gov/basics/costs/medicare-costs/avoid-penalties
 ---
 
-**Yes. If you were married at least ten years, you are not married now, and your former spouse is 62 or older with about 40 quarters of Medicare-covered work, their record makes your Part A premium-free at 65.** You do not need their permission, your claim takes nothing from their benefits, and they do not even have to be retired. What the record does not do is pay for Part B: that {{partB.premium}} a month in {{year}} is yours, the same as for every other enrollee.
+**Yes. If you were married at least ten years, you are not married now, and your former spouse is 62 or older with about 40 quarters of Medicare-covered work, their record makes your Part A premium-free at 65.** You do not need their permission, your claim takes nothing from their benefits, and they do not even have to be retired. What the record does not do is pay for Part B: that {{partB.premium}} a month in {{figYear}} is yours, the same as for every other enrollee.
 
 I get this question more than people might guess in [Peoria](/service-area/peoria-az/). A good share of the people I meet in Vistancia, Trilogy and the newer streets off Lake Pleasant Parkway moved here after a divorce, or after a long marriage ended and the house back east was sold. Many of them, more often women, spent years raising children or running a family business that never put them on the payroll. They are the ones who reach 65 assuming they will owe the full Part A premium of {{partA.premiumIfUninsured}} a month, when a marriage that ended fifteen years ago has already paid for it.
 
@@ -96,7 +96,7 @@ Survivors get a more generous version of the rule:
 
 Sometimes neither record reaches 40 quarters. Your own work stopped at 22, say, and your former spouse had 34 when you divorced. Social Security will not add the two together, but it does have a middle step: if you were married at least ten years and your former spouse had **30 or more quarters at the time of the divorce**, you pay the reduced Part A premium rather than the full one. Social Security's own manual says remarriage does not end that eligibility, which is the opposite of the premium-free rule above.
 
-On {{year}}'s numbers, the reduced rate is roughly 45 percent less than {{partA.premiumIfUninsured}} a month, which adds up to thousands of dollars a year. The [Part A premium checker](/tools/part-a-premium/) runs the quarters test, and it is worth running for each record you might use.
+On {{figYear}}'s numbers, the reduced rate is roughly 45 percent less than {{partA.premiumIfUninsured}} a month, which adds up to thousands of dollars a year. The [Part A premium checker](/tools/part-a-premium/) runs the quarters test, and it is worth running for each record you might use.
 
 ## The IRMAA notice after a recent divorce
 

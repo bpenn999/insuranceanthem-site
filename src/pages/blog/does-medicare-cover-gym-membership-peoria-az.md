@@ -157,9 +157,9 @@ Worth repeating for Arizona specifically: outside the federal guaranteed-issue p
 Put a fitness benefit next to the money and it shrinks fast.
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium in {{year}}, which you pay whether or not your plan includes a gym</p>
+  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium in {{figYear}}, which you pay whether or not your plan includes a gym</p>
   <p class="stat-callout__body">Underneath every Advantage plan sit the same federal numbers: the Part B annual deductible is {{partB.deductible}}, the Part A hospital deductible is {{partA.deductible}} per benefit period, and Part D carries a hard annual out-of-pocket cap of {{partD.cap}} on covered drugs. What changes between two plans is the cost sharing, the network and the formulary. The fitness program is a rounding error next to any one of them.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Parts A &amp; B premiums and deductibles, and the CMS Part D {{year}} figures. Verified against cms.gov.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Parts A &amp; B premiums and deductibles, and the CMS Part D {{figYear}} figures. Verified against cms.gov.</p>
 </div>
 
 For higher-income households there is a further layer that has nothing to do with any of this: IRMAA starts above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} filing jointly, assessed on your {{irmaaTaxYear}} return. A Roth conversion or a property sale two years back can add more to your monthly Medicare cost than every supplemental benefit in the plan is worth. If that is you, it is a question for your tax advisor, and you can [see where your income lands](/tools/irmaa-estimator/) in about a minute.

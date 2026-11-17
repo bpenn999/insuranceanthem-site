@@ -161,9 +161,9 @@ If December 7 passes, a discontinued plan gives you a **Special Enrollment Perio
 ## The numbers that do not change with your plan
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium in {{year}}, which you keep paying whichever door you take</p>
-  <p class="stat-callout__body">The {{year}} Part B deductible is {{partB.deductible}}, the Part A hospital deductible is {{partA.deductible}} per benefit period, and Part D carries an annual out-of-pocket cap of {{partD.cap}} on covered drugs. CMS resets these for {{nextYear}} on its own schedule, separately from any plan's letter. A discontinued plan changes which private contract sits on top of these figures; it does not change the figures.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Parts A &amp; B premiums and deductibles, and the CMS Part D {{year}} figures. Verified against cms.gov.</p>
+  <p class="stat-callout__figure">{{partB.premium}} a month — the standard Part B premium in {{figYear}}, which you keep paying whichever door you take</p>
+  <p class="stat-callout__body">The {{figYear}} Part B deductible is {{partB.deductible}}, the Part A hospital deductible is {{partA.deductible}} per benefit period, and Part D carries an annual out-of-pocket cap of {{partD.cap}} on covered drugs. CMS resets these for {{nextYear}} on its own schedule, separately from any plan's letter. A discontinued plan changes which private contract sits on top of these figures; it does not change the figures.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Parts A &amp; B premiums and deductibles, and the CMS Part D {{figYear}} figures. Verified against cms.gov.</p>
 </div>
 
 Higher-income households have one more thing to carry across a plan change: IRMAA, the income-related surcharge on Part B and Part D, follows you to any plan, and the {{nextYear}} determination is Social Security's, not the plan's. [IRMAA explained](/learn/irmaa-explained/) covers the appeal if a one-time event pushed your income up.

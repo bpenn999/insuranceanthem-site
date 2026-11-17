@@ -41,7 +41,7 @@ sources:
     url: https://www.medicare.gov/health-drug-plans/part-d/basics/creditable-coverage
 ---
 
-**CHAMPVA does not end at 65. It moves to second place. Once you are entitled to Medicare, the VA keeps your CHAMPVA going only while you are enrolled in Part A and Part B, and from then on Medicare pays first and CHAMPVA pays what is left, usually up to 100% of its allowed amount.** Cancel Part B and CHAMPVA ends the same day. The Part B premium, {{partB.premium}} a month in {{year}} before any income surcharge, is yours to pay; CHAMPVA does not cover it.
+**CHAMPVA does not end at 65. It moves to second place. Once you are entitled to Medicare, the VA keeps your CHAMPVA going only while you are enrolled in Part A and Part B, and from then on Medicare pays first and CHAMPVA pays what is left, usually up to 100% of its allowed amount.** Cancel Part B and CHAMPVA ends the same day. The Part B premium, {{partB.premium}} a month in {{figYear}} before any income surcharge, is yours to pay; CHAMPVA does not cover it.
 
 The people this applies to are the spouses and survivors of veterans the VA has rated permanently and totally disabled from a service-connected condition, or who died from one. There are more of them in the north Valley than most people assume. In [Peoria](/service-area/peoria-az/), and especially along the Lake Pleasant Parkway and Happy Valley Road corridor in 85383, I meet couples where the veteran has used the VA for decades and the spouse has quietly carried CHAMPVA through every job change. Turning 65 is the first time the two programs have to be lined up on purpose. Get it right and almost everything that is marketed to a 64-year-old becomes optional. Get the timing wrong and there is a gap.
 

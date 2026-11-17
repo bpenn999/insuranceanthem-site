@@ -41,7 +41,7 @@ I have this conversation every fall, usually with someone who drove down in Octo
 
 ## Does it matter which state I am in when I enroll in Part A and Part B?
 
-No. You enroll through Social Security, online or by phone, and there is no Arizona version or Wisconsin version of the application. The premium is the same too: {{partB.premium}} a month for Part B in {{year}}, with the same income surcharge above {{irmaa.singleStart}} for a single filer or {{irmaa.jointStart}} for a couple, wherever you file.
+No. You enroll through Social Security, online or by phone, and there is no Arizona version or Wisconsin version of the application. The premium is the same too: {{partB.premium}} a month for Part B in {{figYear}}, with the same income surcharge above {{irmaa.singleStart}} for a single filer or {{irmaa.jointStart}} for a couple, wherever you file.
 
 What Social Security does want is your address, and that field matters more than the rest of the form. It is the address Medicare uses to decide which plans you may join, and it is where your card goes. So before you enroll, settle two things:
 

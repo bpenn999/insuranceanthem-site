@@ -67,7 +67,7 @@ A health share is not a group health plan, and membership is not tied to anyone'
 
 - **Your window is the seven-month Initial Enrollment Period** around your 65th birthday. Someone turning 65 in February 2027 has a window from November 1, 2026 to May 31, 2027, and signing up by January 31 starts Part A and Part B on February 1. The [enrollment timeline tool](/tools/enrollment-timeline/) works out your own dates.
 - **Miss it, and the only door is the General Enrollment Period**, January 1 to March 31 each year, with Part B starting the month after you sign up.
-- **The penalty is 10% of the standard premium** (now {{partB.premium}} a month in {{year}}) for each full 12 months you could have had Part B and did not. It is added to every Part B bill for as long as you have Part B. The [late enrollment penalty calculator](/tools/late-enrollment-penalty-calculator/) shows what a given delay adds up to.
+- **The penalty is 10% of the standard premium** (now {{partB.premium}} a month in {{figYear}}) for each full 12 months you could have had Part B and did not. It is added to every Part B bill for as long as you have Part B. The [late enrollment penalty calculator](/tools/late-enrollment-penalty-calculator/) shows what a given delay adds up to.
 
 This is the same trap that catches people with an individual policy they bought themselves, which I covered from the business-owner side in [do I need Medicare at 65 if I'm self-employed](/blog/do-i-need-medicare-at-65-if-im-self-employed/). A health share is one step further from qualifying, because it is not insurance of any kind.
 

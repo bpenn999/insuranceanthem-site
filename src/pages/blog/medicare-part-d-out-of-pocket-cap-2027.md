@@ -39,7 +39,7 @@ sources:
     url: https://www.medicare.gov/plan-compare/
 ---
 
-**The Medicare Part D out-of-pocket cap for 2027 is $2,400, up from {{partD.cap}} in {{year}}.** Once what you have paid for covered drugs in the calendar year reaches that figure, your covered prescriptions cost you nothing for the rest of the year. CMS set the number on April 6, 2026 in its Calendar Year 2027 Rate Announcement, alongside a new deductible ceiling of $700, up from {{partD.maxDeductible}}.
+**The Medicare Part D out-of-pocket cap for 2027 is {{partD.cap}}, up from $2,100 in 2026.** Once what you have paid for covered drugs in the calendar year reaches that figure, your covered prescriptions cost you nothing for the rest of the year. CMS set the number on April 6, 2026 in its Calendar Year 2027 Rate Announcement, alongside a new deductible ceiling of $700, up from {{partD.maxDeductible}}.
 
 If you live in north Peoria and your Annual Notice of Change arrived last week, that $2,400 is the figure it is quoting. The plan has known it since spring. What the plan decided to do with its own premium and its own formulary in response is the part of the letter worth reading, and it is the part most people skip.
 
@@ -49,7 +49,7 @@ I will take the cap first, because it is the question people type, and then the 
 
 Part D has had a hard annual ceiling on drug spending since 2025, when the Inflation Reduction Act's redesign of the benefit took full effect. Before that, the catastrophic phase still charged 5 percent coinsurance with no upper limit, and a specialty drug could run into five figures of coinsurance in a single year. The redesign removed the cost sharing in that phase entirely and put a dollar figure on the threshold that gets you there.
 
-The threshold is indexed. Each year CMS increases it by the growth in average Part D drug spending per person and rounds to the nearest $50 — which is how $2,000 in 2025 became {{partD.cap}} in {{year}} and $2,400 for 2027. The deductible ceiling moves on the same index, rounded to the nearest $5.
+The threshold is indexed. Each year CMS increases it by the growth in average Part D drug spending per person and rounds to the nearest $50 — which is how $2,000 in 2025 became $2,100 in 2026 and {{partD.cap}} for {{figYear}}. The deductible ceiling moves on the same index, rounded to the nearest $5.
 
 What **counts** toward the cap is the money you spend on drugs your plan covers:
 
@@ -60,7 +60,7 @@ What **counts** toward the cap is the money you spend on drugs your plan covers:
 What **does not** count is a longer list, and it is where people miscalculate:
 
 - **Your monthly premium.** Never. A plan with a $100 premium and a plan with a $0 premium have the same $2,400 cap on top of it.
-- **An IRMAA surcharge.** The income-related amount added to Part D for higher earners — {{irmaa.t1.partD}} a month at the first tier in {{year}} — is paid to Medicare, not to the plan, and is not drug spending.
+- **An IRMAA surcharge.** The income-related amount added to Part D for higher earners — {{irmaa.t1.partD}} a month at the first tier in {{figYear}} — is paid to Medicare, not to the plan, and is not drug spending.
 - **A drug that is not on your plan's formulary.** If the plan does not cover it, what you pay for it is not Part D spending and does not move the meter. This is the single most common way a household that "should have hit the cap" did not.
 - **Drugs billed under Part B** — chemotherapy infused at a clinic, injections given in the office, most drugs used with durable medical equipment. Those sit under Part B's {{partB.coinsurance}} coinsurance and, on Original Medicare, have no cap at all unless you hold a supplement.
 - **The discount the manufacturer gives on a brand-name drug.** Under the redesigned benefit, that discount is paid behind the scenes and no longer counts toward your threshold the way the old coverage-gap discount did.
@@ -73,18 +73,18 @@ The practical consequence: the cap is a ceiling on **covered** drugs at **networ
 <table>
   <caption class="sr-only">Medicare Part D standard benefit parameters, {{year}} versus 2027</caption>
   <thead>
-    <tr><th scope="col">&nbsp;</th><th scope="col">{{year}}</th><th scope="col">2027</th></tr>
+    <tr><th scope="col">&nbsp;</th><th scope="col">2026</th><th scope="col">2027</th></tr>
   </thead>
   <tbody>
     <tr>
       <td>Annual out-of-pocket cap on covered drugs</td>
-      <td>{{partD.cap}}</td>
-      <td><strong>$2,400</strong></td>
+      <td>$2,100</td>
+      <td><strong>{{partD.cap}}</strong></td>
     </tr>
     <tr>
       <td>Maximum deductible a plan may charge</td>
-      <td>{{partD.maxDeductible}}</td>
-      <td><strong>$700</strong></td>
+      <td>$615</td>
+      <td><strong>{{partD.maxDeductible}}</strong></td>
     </tr>
     <tr>
       <td>National base beneficiary premium, per month</td>
@@ -105,7 +105,7 @@ The practical consequence: the cap is a ceiling on **covered** drugs at **networ
 </table>
 </div>
 
-<p class="table-source">Sources: CMS, Announcement of Calendar Year 2027 Medicare Advantage Capitation Rates and Part C and Part D Payment Policies, April 6, 2026 (Attachment VI); CMS, annual release of the CY 2027 Part D national average monthly bid amount, July 28, 2026. The {{year}} figures are the current CMS amounts.</p>
+<p class="table-source">Sources: CMS, Announcement of Calendar Year 2027 Medicare Advantage Capitation Rates and Part C and Part D Payment Policies, April 6, 2026 (Attachment VI); CMS, annual release of the CY 2027 Part D national average monthly bid amount, July 28, 2026. The {{figYear}} figures are the current CMS amounts.</p>
 
 Two things about that table. The cap rose by $300, or a little over 14 percent, which is a bigger jump than the $100 step from 2025 and reflects that Part D spending per person is climbing quickly. And the base premium rose by exactly 6 percent — not because costs rose 6 percent, but because 6 percent is the most the law allows the base figure to rise in a year through 2029. CMS's own arithmetic put the uncapped figure at $94.06. The gap between those two numbers is the pressure the rest of this article is about.
 
@@ -118,11 +118,11 @@ For 2025 and 2026, CMS ran a voluntary **Part D Premium Stabilization Demonstrat
 What that means for you depends entirely on the plan you hold, and the only document that answers it is the Annual Notice of Change. A few things to expect when you open it:
 
 1. **The premium line may move by more than 6 percent.** The 6 percent limit applies to the national base figure. An individual plan's premium is the base adjusted by its own bid, its supplemental benefits and its rebates, and can move in either direction by more than that.
-2. **The deductible may go to $700.** A plan that sat at {{partD.maxDeductible}} this year will very likely follow the ceiling up, because that is what a ceiling invites.
+2. **The deductible may go to $700.** A plan that sat at $615 this year will very likely follow the ceiling up, because that is what a ceiling invites.
 3. **The formulary and the tiers may have moved.** Plans facing higher costs tend to solve them on the drug list before they solve them on the premium, because the premium is the number people compare.
 4. **A plan may have been withdrawn or merged.** If your letter says the plan is ending, you have a guaranteed path to a new one, but you also have a decision to make, and December 7 is the last day to make it cleanly.
 
-On the standalone menu here, the range is wide. For {{year}} the Part D region that covers every Arizona county lists ten standalone drug plans, with monthly premiums running from $0 to just under $120 — and deductibles from $0 up to the {{partD.maxDeductible}} ceiling — according to the CMS plan landscape data behind the Medicare Plan Finder. The same cap sits on top of all ten. What separates them is the premium, the deductible, the formulary and the pharmacy network, in roughly reverse order of how much attention each gets.
+On the standalone menu here, the range is wide. For {{figYear}} the Part D region that covers every Arizona county lists ten standalone drug plans, with monthly premiums running from $0 to just under $120 — and deductibles from $0 up to the {{partD.maxDeductible}} ceiling — according to the CMS plan landscape data behind the Medicare Plan Finder. The same cap sits on top of all ten. What separates them is the premium, the deductible, the formulary and the pharmacy network, in roughly reverse order of how much attention each gets.
 
 ## Does the cap apply to a Medicare Advantage plan with drug coverage?
 
@@ -167,8 +167,8 @@ The [Annual Enrollment Period](/learn/medicare-enrollment-periods/) opens Octobe
 
 ## The short version
 
-- **The 2027 Part D out-of-pocket cap is $2,400**, up from {{partD.cap}} in {{year}}. CMS set it on April 6, 2026.
-- **The deductible ceiling rises to $700**, from {{partD.maxDeductible}}. Plans may charge less, or nothing.
+- **The 2027 Part D out-of-pocket cap is {{partD.cap}}**, up from $2,100 in 2026. CMS set it on April 6, 2026.
+- **The deductible ceiling rises to {{partD.maxDeductible}}**, from $615. Plans may charge less, or nothing.
 - **Premiums never count toward the cap.** Nor do IRMAA, non-formulary drugs or Part B drugs.
 - **The base premium rises 6 percent to $41.33** — the legal maximum — and the federal demonstration that held standalone premiums down ends December 31, 2026.
 - **Your own plan's 2027 premium, deductible and formulary are in the Annual Notice of Change**, and they can move by more than the national figures.

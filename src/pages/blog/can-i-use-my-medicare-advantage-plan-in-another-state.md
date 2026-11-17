@@ -134,9 +134,9 @@ There is a north-valley version of this that has nothing to do with leaving Ariz
 A few figures that do not change with geography, because they are federal:
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partD.cap}} — the {{year}} annual out-of-pocket cap on covered drugs</p>
+  <p class="stat-callout__figure">{{partD.cap}} — the {{figYear}} annual out-of-pocket cap on covered drugs</p>
   <p class="stat-callout__body">It applies to Part D coverage whether it is standalone or bundled inside a Medicare Advantage plan, and it applies at any in-network pharmacy in the country. Original Medicare, by contrast, leaves you {{partB.coinsurance}} coinsurance with no annual cap at all — which is the gap a supplement is built to close.</p>
-  <p class="stat-callout__cite">Source: CMS {{year}} Part D fact sheet and the {{year}} Parts A &amp; B premiums and deductibles fact sheet. Figures verified against cms.gov.</p>
+  <p class="stat-callout__cite">Source: CMS {{figYear}} Part D fact sheet and the {{figYear}} Parts A &amp; B premiums and deductibles fact sheet. Figures verified against cms.gov.</p>
 </div>
 
 One more that is worth knowing before a trip abroad rather than after: Original Medicare generally does not cover care outside the United States. Several standardized Medigap plans include a limited foreign travel emergency benefit, subject to a deductible and a lifetime maximum. It is a real benefit and it is not a travel insurance policy — read the specifics before you rely on it.

@@ -2,7 +2,7 @@
 layout: ../../layouts/BlogLayout.astro
 title: "Which year's income does Medicare use for IRMAA when I turn 65?"
 seoTitle: "IRMAA at 65: Which Year's Income Counts in 2027?"
-description: 'Income from two years back. Turn 65 in 2027 and your 2025 return sets the premium; over $109,000 single or $218,000 joint (2026 lines) adds a surcharge.'
+description: 'Income from two years back. Turn 65 in 2027 and your 2025 return sets the premium; over $112,000 single or $224,000 joint (2027 lines) adds a surcharge.'
 summary: "Social Security prices your first Medicare premium from the tax return you filed two years earlier, which for most people turning 65 is the year they turned 63. Here is which return applies to a 2027 or 2028 birthday, when Social Security actually pulls it, what happens if your return is still on extension, and the one calendar fact that matters for anyone turning 65 in 2028: the income year that sets their first premium closes on December 31."
 category: Turning 65
 publishedAt: 2026-11-16
@@ -31,15 +31,15 @@ sources:
     url: https://secure.ssa.gov/poms.nsf/lnx/0601101020
   - label: 'Social Security POMS HI 01120.005 — Life-changing events and new initial determinations'
     url: https://secure.ssa.gov/poms.nsf/lnx/0601120005
-  - label: 'CMS — 2026 Medicare Parts A and B premiums and deductibles'
-    url: https://www.cms.gov/newsroom/fact-sheets/2026-medicare-parts-b-premiums-deductibles
+  - label: 'CMS — 2027 Medicare Parts A and B premiums and deductibles'
+    url: https://www.cms.gov/newsroom/fact-sheets/2027-medicare-parts-b-premiums-deductibles
   - label: 'CMS — CY2027 Medicare Advantage and Part D landscape files'
     url: https://www.cms.gov/files/zip/cy2027-landscape-202609-1.zip
   - label: 'Medicare.gov — Medicare costs'
     url: https://www.medicare.gov/basics/costs/medicare-costs
 ---
 
-**Medicare uses your income from two years earlier. If you turn 65 in 2027, Social Security sets your first Part B and Part D premiums from your 2025 federal tax return, the year you turned 63.** Its own manual says it uses "the most recent tax information that IRS is able to provide," generally from two years before the premium year and never more than three. For {{year}}, a surcharge starts above {{irmaa.singleStart}} of modified adjusted gross income for a single filer and {{irmaa.jointStart}} for a married couple filing jointly. The 2027 lines have not been published yet.
+**Medicare uses your income from two years earlier. If you turn 65 in 2027, Social Security sets your first Part B and Part D premiums from your 2025 federal tax return, the year you turned 63.** Its own manual says it uses "the most recent tax information that IRS is able to provide," generally from two years before the premium year and never more than three. For {{figYear}}, a surcharge starts above {{irmaa.singleStart}} of modified adjusted gross income for a single filer and {{irmaa.jointStart}} for a married couple filing jointly.
 
 That answer is the same in Peoria as anywhere else; IRMAA is federal. What is local is who it lands on. In north Peoria, in Vistancia, Blackstone and the 85383 corridor, I meet a lot of people whose last full working year falls in exactly the wrong spot: a final bonus, a deferred-compensation payout, or the sale of a house in Illinois or Minnesota before the move. All of it sits on the return that prices their first year of Medicare.
 
@@ -95,8 +95,8 @@ Here is where that matters for a January–March 2027 birthday. Many households 
 
 Two separate surcharges, two separate triggers:
 
-- **Part B surcharge.** Owed once you have Part B. In {{year}}, the first tier takes the Part B premium from {{partB.premium}} to {{irmaa.t1.partB}} a month, and the top tier reaches {{irmaa.t5.partB}}.
-- **Part D surcharge.** Owed once you have any Medicare drug coverage, whether that is a stand-alone drug plan alongside a supplement or a Medicare Advantage plan with drugs built in. In {{year}} it runs from {{irmaa.t1.partD}} to {{irmaa.t5.partD}} a month on top of the plan's own premium.
+- **Part B surcharge.** Owed once you have Part B. In {{figYear}}, the first tier takes the Part B premium from {{partB.premium}} to {{irmaa.t1.partB}} a month, and the top tier reaches {{irmaa.t5.partB}}.
+- **Part D surcharge.** Owed once you have any Medicare drug coverage, whether that is a stand-alone drug plan alongside a supplement or a Medicare Advantage plan with drugs built in. In {{figYear}} it runs from {{irmaa.t1.partD}} to {{irmaa.t5.partD}} a month on top of the plan's own premium.
 
 Choosing an Advantage plan does not make either one go away. According to CMS's 2027 plan landscape files, 67 of the 85 Medicare Advantage plans with drug coverage offered in Maricopa County for 2027 carry a $0 premium, counting special needs plans (39 of the 45 general plans). A higher-income Peoria household on one of them still pays the Part B surcharge and, if the plan includes drugs, the Part D surcharge. A Part B giveback plan reduces the standard premium only. It never touches the income-related part.
 

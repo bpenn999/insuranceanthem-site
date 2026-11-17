@@ -45,7 +45,7 @@ sources:
     url: https://www.cancer.org/cancer/financial-insurance-matters/understanding-health-insurance/medicare.html
 ---
 
-**Most people on Medicare do not need cancer insurance, and the state regulators who write the consumer guides say so directly: "If you have Medicare and want more insurance, a comprehensive Medicare supplement policy is what you need."** Medicare already pays for chemotherapy, radiation, surgery and cancer drugs. With a Medigap Plan G on top, your share of a cancer year comes down to the Part B deductible ({{partB.deductible}} in {{year}}) and your drug costs, which Part D caps at {{partD.cap}} this year and $2,400 in 2027. The case for a separate cancer policy is narrower: a Medicare Advantage plan with a high out-of-pocket limit, a Medigap door that has already closed, or a household that wants cash for the costs no health plan touches.
+**Most people on Medicare do not need cancer insurance, and the state regulators who write the consumer guides say so directly: "If you have Medicare and want more insurance, a comprehensive Medicare supplement policy is what you need."** Medicare already pays for chemotherapy, radiation, surgery and cancer drugs. With a Medigap Plan G on top, your share of a cancer year comes down to the Part B deductible ({{partB.deductible}} in {{figYear}}) and your drug costs, which Part D caps at {{partD.cap}} in {{figYear}}. The case for a separate cancer policy is narrower: a Medicare Advantage plan with a high out-of-pocket limit, a Medigap door that has already closed, or a household that wants cash for the costs no health plan touches.
 
 I get this question most from north Peoria, usually from someone in Vistancia or along the Happy Valley corridor who just watched a neighbor go through treatment. The worry is fair. The answer depends almost entirely on which kind of Medicare you have, so that is where to start.
 
@@ -79,7 +79,7 @@ So the worst-case medical year on an Advantage plan is the out-of-pocket limit p
 
 <div class="table-scroll">
 <table>
-  <caption class="sr-only">In-network out-of-pocket limits on Maricopa County Medicare Advantage plans with drug coverage, {{year}} and 2027, from the CMS landscape files</caption>
+  <caption class="sr-only">In-network out-of-pocket limits on Maricopa County Medicare Advantage plans with drug coverage, {{figYear}} and 2027, from the CMS landscape files</caption>
   <thead>
     <tr><th scope="col">Maricopa County, plans with drug coverage</th><th scope="col">{{year}}</th><th scope="col">2027</th></tr>
   </thead>

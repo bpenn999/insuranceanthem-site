@@ -69,7 +69,7 @@ The out-of-pocket maximum is narrower than most people assume.
 
 **Does not count:**
 
-- Your monthly plan premium and your Part B premium ({{partB.premium}} a month in {{year}}; the 2027 amount is announced in November).
+- Your monthly plan premium and your Part B premium ({{partB.premium}} a month in {{figYear}}).
 - Any IRMAA surcharge. It is billed by Social Security, not by the plan.
 - Prescriptions filled at a pharmacy. Those fall under Part D, which has its own separate cap of $2,400 in 2027. See [the Part D cap for 2027](/blog/medicare-part-d-out-of-pocket-cap-2027/).
 - Dental, vision and hearing extras, and anything the plan does not cover at all.

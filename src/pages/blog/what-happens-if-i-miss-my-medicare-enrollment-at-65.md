@@ -69,7 +69,7 @@ Any day you are uninsured is a day a fall on a trail at Lake Pleasant or an ER v
 
 ## The penalty count, and why January can matter
 
-The Part B late-enrollment surcharge is set by [42 CFR §408.24(b)](https://www.law.cornell.edu/cfr/text/42/408.24): for anyone enrolling from 2023 on, Social Security counts the months from the close of your Initial Enrollment Period to **the close of the month you enroll**. Every full 12 months in that count adds 10% of the standard Part B premium, which is {{partB.premium}} a month in {{year}}. A count of 11 adds nothing.
+The Part B late-enrollment surcharge is set by [42 CFR §408.24(b)](https://www.law.cornell.edu/cfr/text/42/408.24): for anyone enrolling from 2023 on, Social Security counts the months from the close of your Initial Enrollment Period to **the close of the month you enroll**. Every full 12 months in that count adds 10% of the standard Part B premium, which is {{partB.premium}} a month in {{figYear}}. A count of 11 adds nothing.
 
 Here is how that plays out for the birthdays most likely to be reading this. These assume a birthday on any day but the 1st; a birthday on the 1st moves everything a month earlier.
 

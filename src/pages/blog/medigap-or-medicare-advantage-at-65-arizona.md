@@ -17,7 +17,7 @@ faqs:
   - q: What are the disadvantages of a Medicare Advantage plan?
     a: The main ones are the network, prior authorization for some services, and copays that add up in a heavy year. In Maricopa County for 2027, 33 of the 45 general Advantage plans with drug coverage are HMO or HMO-POS plans, which cover routine care only inside their network, and the in-network out-of-pocket limits run from $2,000 to $8,900 a year according to CMS's 2027 plan landscape files.
   - q: Do I still pay the Part B premium with Medicare Advantage?
-    a: Yes. Everyone on either route keeps paying the Part B premium, which is $202.90 a month in 2026, plus any income-related surcharge (IRMAA). A $0-premium Advantage plan means the plan itself adds nothing on top. A few plans include a Part B giveback that returns part of that premium, usually in exchange for higher copays or a narrower network.
+    a: Yes. Everyone on either route keeps paying the Part B premium, which is $209.40 a month in 2027, plus any income-related surcharge (IRMAA). A $0-premium Advantage plan means the plan itself adds nothing on top. A few plans include a Part B giveback that returns part of that premium, usually in exchange for higher copays or a narrower network.
   - q: Does Medigap cover prescription drugs?
     a: No. Medigap policies sold today do not include drug coverage, so the Medigap route needs a separate Part D plan. In Arizona there are nine stand-alone Part D plans for 2027 and none has a $0 premium, so that monthly cost is part of the comparison.
   - q: Which is better for snowbirds, Medigap or Medicare Advantage?
@@ -33,8 +33,8 @@ sources:
     url: https://www.medicare.gov/health-drug-plans/medigap/ready-to-buy/when
   - label: 'CMS — Choosing a Medigap Policy, 2026 guide (open enrollment, trial rights, guaranteed issue)'
     url: https://www.medicare.gov/publications/02110-medigap-guide-health-insurance.pdf
-  - label: 'CMS — 2026 Medicare Parts A and B premiums and deductibles fact sheet'
-    url: https://www.cms.gov/newsroom/fact-sheets/2026-medicare-parts-b-premiums-deductibles
+  - label: 'CMS — 2027 Medicare Parts A and B premiums and deductibles fact sheet'
+    url: https://www.cms.gov/newsroom/fact-sheets/2027-medicare-parts-b-premiums-deductibles
   - label: 'CMS — 2027 Medicare Advantage and Part D Rate Announcement fact sheet (2027 Part D out-of-pocket cap)'
     url: https://www.cms.gov/newsroom/fact-sheets/2027-medicare-advantage-part-d-rate-announcement
   - label: 'KFF — Medigap Enrollment and Consumer Protections Vary Across States'
@@ -47,7 +47,7 @@ So the question at 65 is less "which is better" and more "which mistake can I af
 
 ## What each route costs in a quiet year and a bad year
 
-Both routes start with the same bill: the Part B premium, {{partB.premium}} a month in {{year}}, plus IRMAA if your income two years back was over {{irmaa.singleStart}} single or {{irmaa.jointStart}} joint. Choosing Advantage does not remove that, and it does not remove IRMAA either. [Do you pay IRMAA with a Medicare Advantage plan?](/blog/do-you-pay-irmaa-with-a-medicare-advantage-plan/) walks through why.
+Both routes start with the same bill: the Part B premium, {{partB.premium}} a month in {{figYear}}, plus IRMAA if your income two years back was over {{irmaa.singleStart}} single or {{irmaa.jointStart}} joint. Choosing Advantage does not remove that, and it does not remove IRMAA either. [Do you pay IRMAA with a Medicare Advantage plan?](/blog/do-you-pay-irmaa-with-a-medicare-advantage-plan/) walks through why.
 
 What changes is everything on top.
 
@@ -68,7 +68,7 @@ What changes is everything on top.
 </table>
 </div>
 
-<p class="table-source">Sources: CMS CY2027 Medicare Advantage / Part D Landscape file, Maricopa County, general (non-Special Needs) plans with Part D; in-network maximum out-of-pocket amounts. Medicare.gov, Compare Medigap plan benefits. CMS 2027 Rate Announcement for the Part D cap. Part B figures are {{year}}; the {{nextYear}} Part B premium and deductible had not been announced when this was written.</p>
+<p class="table-source">Sources: CMS CY2027 Medicare Advantage / Part D Landscape file, Maricopa County, general (non-Special Needs) plans with Part D; in-network maximum out-of-pocket amounts. Medicare.gov, Compare Medigap plan benefits. CMS 2027 Rate Announcement for the Part D cap. Part B figures are {{figYear}}, from the CMS fact sheet of November 17, 2026.</p>
 
 Two notes on that table. The Advantage limit covers medical care only, not drugs, so a heavy year on an $8,900 plan with costly prescriptions can run past $11,000 before Part B premiums. And the Plan G premium itself is not in the table on purpose: it is priced by age, ZIP and carrier, and quoting one number for "Arizona" would be wrong for most readers. Price it for your own ZIP.
 

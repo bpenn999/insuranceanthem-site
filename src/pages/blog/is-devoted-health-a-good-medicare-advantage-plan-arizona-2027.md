@@ -85,7 +85,7 @@ A few things stand out once the plans are lined up.
 
 **The same brand, three report cards.** Devoted's Arizona HMOs are split across two contracts. The four plans members already know (Core 001, 020, 021 and Giveback 019) sit on H8173, which CMS rated 4 stars for 2027, up from 3.5. The three new general HMOs sit on H7993, rated 4.5 overall, but that contract's name in CMS's files is Devoted Health Plan of Texas, and its rating was earned on members in other states before it sold anything here. Its drug-plan summary is 3 stars, lower than the 4 on the older Arizona contract. The PPO contract, H6586, rose from 3 to 3.5. If a sales sheet says "4.5-star Devoted plan," it is describing H7993 and only H7993.
 
-**Most drug deductibles went down, not up.** Across the Maricopa market the standard Part D deductible rises from {{partD.maxDeductible}} this year to $700 for {{nextYear}}, a figure CMS set in July, and [many Advantage plans are adding or raising a drug deductible](/blog/does-medicare-advantage-have-a-drug-deductible-2027/). Three existing Devoted HMOs moved the other way, from roughly $600 to roughly $460. Core 001 is the exception, going from $430 to $650.
+**Most drug deductibles went down, not up.** Across the Maricopa market the standard Part D deductible rises from $615 this year to {{partD.maxDeductible}} for {{figYear}}, a figure CMS set in April, and [many Advantage plans are adding or raising a drug deductible](/blog/does-medicare-advantage-have-a-drug-deductible-2027/). Three existing Devoted HMOs moved the other way, from roughly $600 to roughly $460. Core 001 is the exception, going from $430 to $650.
 
 **Two chronic-condition plans dropped their premium.** Devoted C-SNP 014 and C-SNP 022 each charged $17 a month in 2026 and are $0 for 2027. Those plans are only open to people with a qualifying condition such as diabetes or heart failure; [what a C-SNP is](/blog/what-is-a-c-snp-medicare-plan-arizona-2027/) explains who qualifies.
 
@@ -120,7 +120,7 @@ The catch in Arizona is underwriting. There is no birthday rule here, and no Dev
 - **January 1, 2027:** the new networks, formularies, deductibles and caps take effect.
 - **January 1 through March 31, 2027:** Medicare Advantage Open Enrollment. If you are in an Advantage plan on January 1, you can make one change to another Advantage plan or to Original Medicare.
 
-Your Part B premium of {{partB.premium}} a month in {{year}} continues whichever plan you pick; a $0 plan premium sits on top of it, not instead of it.
+Your Part B premium of {{partB.premium}} a month in {{figYear}} continues whichever plan you pick; a $0 plan premium sits on top of it, not instead of it.
 
 ## Talking it through
 

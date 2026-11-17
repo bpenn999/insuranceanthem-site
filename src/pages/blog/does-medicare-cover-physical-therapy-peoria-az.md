@@ -55,7 +55,7 @@ Medicare covers physical therapy in three different settings, and the setting de
     <tr>
       <td>Outpatient clinic, therapist's office, hospital outpatient department, or a therapist who visits when you are not homebound</td>
       <td>Part B</td>
-      <td>The Part B deductible ({{partB.deductible}} in {{year}}), then {{partB.coinsurance}} of the Medicare-approved amount per visit</td>
+      <td>The Part B deductible ({{partB.deductible}} in {{figYear}}), then {{partB.coinsurance}} of the Medicare-approved amount per visit</td>
     </tr>
     <tr>
       <td>At home under the home health benefit, when you are homebound and a doctor has certified the need</td>
@@ -71,7 +71,7 @@ Medicare covers physical therapy in three different settings, and the setting de
 </table>
 </div>
 
-<p class="table-source">Source: Medicare.gov, "Physical therapy services" and "Home health services"; CMS 2026 Parts A and B fact sheet. Figures apply identically in Maricopa County.</p>
+<p class="table-source">Source: Medicare.gov, "Physical therapy services" and "Home health services"; CMS {{figYear}} Parts A and B fact sheet. Figures apply identically in Maricopa County.</p>
 
 For most people reading this, the first row is the one that matters. You strain something, or you come home from surgery, and you go to a clinic two or three times a week for six or eight weeks. Every one of those visits is a Part B claim at {{partB.coinsurance}} after the deductible, and every one of them is covered for as long as the therapy is, in Medicare's words, reasonable and necessary.
 

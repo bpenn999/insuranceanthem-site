@@ -47,7 +47,7 @@ Medicare's own definition is short: urgently needed care treats "a sudden illnes
 
 On Original Medicare the arithmetic is the one that governs almost everything in Part B:
 
-- You pay the annual Part B deductible first if you have not already met it. For {{year}} that is {{partB.deductible}}.
+- You pay the annual Part B deductible first if you have not already met it. For {{figYear}} that is {{partB.deductible}}.
 - After that you pay {{partB.coinsurance}} of the Medicare-approved amount for the visit and for whatever gets done during it, such as an X-ray, a strep test or a splint.
 - If the urgent care is operated as a hospital outpatient department, Medicare says you also pay a hospital copayment. Clinics owned by a hospital system sometimes bill this way and independent ones generally do not. You are allowed to ask.
 
@@ -101,9 +101,9 @@ A freestanding emergency center is not a big urgent care. It is a hospital emerg
 The combined building is the more interesting case. The hospital system that runs it says the point of the design is that you "avoid the higher cost of an ER visit when urgent care is all you need." That is a sensible model. It also means the level of care you are registered for is what sets the bill, so ask at the desk which side you are being seen on, and ask again if they move you.
 
 <div class="stat-callout">
-  <p class="stat-callout__figure">{{partB.coinsurance}} after a {{partB.deductible}} deductible — what Original Medicare leaves you for urgent care in {{year}}</p>
+  <p class="stat-callout__figure">{{partB.coinsurance}} after a {{partB.deductible}} deductible — what Original Medicare leaves you for urgent care in {{figYear}}</p>
   <p class="stat-callout__body">An emergency department visit adds a copayment for the visit and another for each hospital service on top of that {{partB.coinsurance}}. Medicare waives those emergency copayments when your doctor admits you to the same hospital for a related condition within 3 days, because the visit is then treated as part of the inpatient stay — which is billed under Part A, with its {{partA.deductible}} deductible per benefit period.</p>
-  <p class="stat-callout__cite">Source: Medicare.gov, "Urgently needed care" and "Emergency department services", and the CMS {{year}} Parts A &amp; B deductibles. Verified September 2026.</p>
+  <p class="stat-callout__cite">Source: Medicare.gov, "Urgently needed care" and "Emergency department services", and the CMS {{figYear}} Parts A &amp; B deductibles. Verified September 2026.</p>
 </div>
 
 None of this is an argument for avoiding the emergency room when you need one. Chest pain, signs of a stroke, trouble breathing, a head injury on a blood thinner: that is a 911 call or the nearest emergency department, and Medicare covers it on every kind of plan. The argument is only that the sign on the building is a billing fact as well as a medical one, and it is worth two seconds of reading.

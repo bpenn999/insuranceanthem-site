@@ -29,8 +29,8 @@ sources:
     url: https://www.medicare.gov/coverage/skilled-nursing-facility-snf-care
   - label: 'Medicare.gov — Home health services'
     url: https://www.medicare.gov/coverage/home-health-services
-  - label: 'CMS — 2026 Medicare Parts A & B premiums, deductibles and coinsurance'
-    url: https://www.cms.gov/newsroom/fact-sheets/2026-medicare-parts-b-premiums-deductibles
+  - label: 'CMS — 2027 Medicare Parts A & B premiums, deductibles and coinsurance'
+    url: https://www.cms.gov/newsroom/fact-sheets/2027-medicare-parts-b-premiums-deductibles
   - label: 'CareScout — 2025 Cost of Care Survey results (published March 2026)'
     url: https://investor.genworth.com/news-events/press-releases/detail/1054/carescout-releases-2025-cost-of-care-survey-results
   - label: 'AHCCCS — Arizona Long Term Care System (ALTCS)'
@@ -81,7 +81,7 @@ Three conditions have to hold, all at once:
 2. **A need for daily skilled care**, certified by a doctor.
 3. **A Medicare-certified facility.**
 
-And the coverage tapers. Days 1–20 carry no coinsurance. Days 21–100 carry a daily coinsurance of {{partA.snf}} in {{year}} — a full eighty days of that is roughly {{partA.snfTotal}} out of pocket, which a Medicare Supplement will generally cover and most Advantage plans handle with their own daily copay schedule instead. Past day 100, Medicare pays nothing.
+And the coverage tapers. Days 1–20 carry no coinsurance. Days 21–100 carry a daily coinsurance of {{partA.snf}} in {{figYear}} — a full eighty days of that is roughly {{partA.snfTotal}} out of pocket, which a Medicare Supplement will generally cover and most Advantage plans handle with their own daily copay schedule instead. Past day 100, Medicare pays nothing.
 
 The part that catches people: **coverage stops the moment skilled care is no longer needed**, whatever day that lands on. When rehab plateaus, the benefit ends — even though the person still cannot safely live alone. That gap, between "no longer needs skilled care" and "still cannot manage at home", is where assisted living decisions actually get made, usually in a hurry.
 
@@ -131,7 +131,7 @@ The part that catches people: **coverage stops the moment skilled care is no lon
 </table>
 </div>
 
-<p class="table-source">Sources: Medicare.gov long-term care, skilled nursing facility and home health coverage pages; CMS {{year}} Parts A &amp; B coinsurance amounts; CareScout {{care.surveyYear}} Cost of Care Survey for the Arizona hourly figure.</p>
+<p class="table-source">Sources: Medicare.gov long-term care, skilled nursing facility and home health coverage pages; CMS {{figYear}} Parts A &amp; B coinsurance amounts; CareScout {{care.surveyYear}} Cost of Care Survey for the Arizona hourly figure.</p>
 
 ## What it actually costs around Peoria and the north Valley
 

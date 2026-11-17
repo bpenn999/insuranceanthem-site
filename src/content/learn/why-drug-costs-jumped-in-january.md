@@ -5,6 +5,7 @@ description: "Formulary tiers, pharmacy status and your deductible all reset on 
 summary: "Your plan did not make a mistake and your pharmacy did not overcharge you. Three things reset every 1 January, and any one of them can add hundreds to your year without your premium moving a cent."
 category: Part D
 publishedAt: 2026-07-09
+updatedAt: 2026-11-17
 readMinutes: 7
 relatedProducts: [part-d, medicare-supplement]
 relatedTools: [medicare-cost-estimator, enrollment-timeline]
@@ -14,7 +15,7 @@ faqs:
   - q: "Can I switch drug plans in the middle of the year?"
     a: "Usually not. The Annual Enrollment Period runs 15 October to 7 December. Mid-year changes need a Special Enrollment Period, Extra Help eligibility, or a Medicare Advantage Open Enrollment switch between 1 January and 31 March."
   - q: "What is the Part D out-of-pocket cap?"
-    a: "For 2026 it is $2,100. Once your out-of-pocket spending on covered drugs reaches it, the plan pays 100% of covered drugs for the rest of the year. Premiums do not count toward the cap."
+    a: "For 2027 it is $2,400, up from $2,100 in 2026. Once your out-of-pocket spending on covered drugs reaches it, the plan pays 100% of covered drugs for the rest of the year. Premiums do not count toward the cap."
 sources:
   - label: "Costs for Medicare drug coverage"
     url: "https://www.medicare.gov/drug-coverage-part-d/costs-for-medicare-drug-coverage"
@@ -58,7 +59,7 @@ This one is temporary. The other two are not.
 
 ## The part that genuinely improved
 
-There is now an annual cap on what you can pay out of pocket for covered Part D drugs. For **plan year 2026 that cap is $2,100**. Once your out-of-pocket spending on covered drugs reaches it, the plan pays 100% of covered drugs for the rest of the year. Premiums do not count toward it.
+There is now an annual cap on what you can pay out of pocket for covered Part D drugs. For **plan year 2027 that cap is $2,400** (it was $2,100 in 2026). Once your out-of-pocket spending on covered drugs reaches it, the plan pays 100% of covered drugs for the rest of the year. Premiums do not count toward it.
 
 This is a real improvement, and for people with expensive medications it is transformative. Before the cap existed, catastrophic drug costs had no ceiling at all.
 
@@ -94,7 +95,7 @@ It is also, more or less, my entire job in October and November.
 - Your costs changed because tiers, pharmacy status or your deductible reset — not because anyone made a mistake.
 - Check a different in-network pharmacy first. It is free and it sometimes solves the whole thing.
 - Mid-year changes are limited, but the exceptions are real — check whether one applies to you.
-- The $2,100 cap for 2026 protects your downside, but plan choice decides how fast you reach it.
+- The $2,400 cap for 2027 protects your downside, but plan choice decides how fast you reach it.
 - Re-price your drug plan every autumn. Every single year.
 
 If your costs jumped and you want somebody to actually look at the list rather than guess, [that is a free phone call](/contact/). Bring the bottle labels — the dosages matter.

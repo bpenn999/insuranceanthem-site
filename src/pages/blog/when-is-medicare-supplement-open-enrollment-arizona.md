@@ -110,7 +110,7 @@ It matters most at the north end of the city. Households in Vistancia, Trilogy a
 
 Premiums are a local question too. Supplement pricing is filed by ZIP area, and plan line-ups along the Peoria, Glendale and Sun City seam change within a mile, which I covered in [Do Medicare plans change by ZIP code in Peoria?](/blog/medicare-plans-by-zip-code-peoria-az/) Price your own ZIP, not a neighbor's. The [Peoria service-area page](/service-area/peoria-az/) has the north and south picture, and the [Glendale page](/service-area/glendale-az/) covers the other side of the seam.
 
-If the choice inside the window comes down to two letters, it is usually G and N. Plan G leaves you the {{year}} Part B deductible of {{partB.deductible}} and little else. Plan N trades a lower premium for small copays and exposure to excess charges, which are legal in Arizona. [Plan G vs. Plan N in Arizona](/blog/plan-g-vs-plan-n-arizona-which-should-i-choose/) runs that comparison, and [Medicare Advantage vs. Medigap](/learn/medicare-advantage-vs-medigap/) is the evergreen version of the bigger fork.
+If the choice inside the window comes down to two letters, it is usually G and N. Plan G leaves you the {{figYear}} Part B deductible of {{partB.deductible}} and little else. Plan N trades a lower premium for small copays and exposure to excess charges, which are legal in Arizona. [Plan G vs. Plan N in Arizona](/blog/plan-g-vs-plan-n-arizona-which-should-i-choose/) runs that comparison, and [Medicare Advantage vs. Medigap](/learn/medicare-advantage-vs-medigap/) is the evergreen version of the bigger fork.
 
 ## What to do if your window opens in the next six months
 

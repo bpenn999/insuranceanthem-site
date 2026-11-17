@@ -11,7 +11,7 @@ image: /blog/does-medicare-cover-cancer-treatment-peoria-az-photo.jpg
 imageAlt: 'Close view of an older couple holding hands as they walk together outdoors, one in a pink shirt and one in cream.'
 faqs:
   - q: Does Medicare cover 100% of cancer treatment?
-    a: No. Original Medicare pays 80 percent of the Medicare-approved amount for outpatient chemotherapy, radiation and doctor visits after the $283 Part B deductible in 2026, and you owe the other 20 percent with no annual limit. A hospital admission costs the $1,736 Part A deductible per benefit period. A Medicare Supplement such as Plan G pays nearly all of that, and a Medicare Advantage plan limits it with a yearly out-of-pocket maximum that may be set as high as $9,250 in network in 2026.
+    a: No. Original Medicare pays 80 percent of the Medicare-approved amount for outpatient chemotherapy, radiation and doctor visits after the $292 Part B deductible in 2027, and you owe the other 20 percent with no annual limit. A hospital admission costs the $1,776 Part A deductible per benefit period. A Medicare Supplement such as Plan G pays nearly all of that, and a Medicare Advantage plan limits it with a yearly out-of-pocket maximum that may be set as high as $9,250 in network in 2026.
   - q: Does Medicare fully cover chemotherapy?
     a: It covers chemotherapy, but not in full. Part A covers chemotherapy you receive as a hospital inpatient. Part B covers chemotherapy given in a doctor's office, a freestanding clinic or a hospital outpatient department, and after the Part B deductible you typically pay 20 percent of the Medicare-approved amount. Chemotherapy pills you take at home usually fall under Part D, where what you pay for covered drugs stops at $2,100 for 2026.
   - q: Does Medicare pay for cancer radiation treatments?
@@ -47,7 +47,7 @@ sources:
     url: https://www.medicare.gov/prescription-payment-plan
 ---
 
-**Yes. Medicare covers cancer treatment, including surgery, chemotherapy, radiation and cancer drugs, and on Original Medicare you pay the Part B deductible and then {{partB.coinsurance}} of the Medicare-approved amount for outpatient treatment, with no annual limit on that {{partB.coinsurance}}.** A Medicare Supplement pays most or all of it. A Medicare Advantage plan limits it with a yearly out-of-pocket maximum and adds a network. Cancer pills you take at home fall under Part D, where your spending on covered drugs stops at {{partD.cap}} in {{year}}.
+**Yes. Medicare covers cancer treatment, including surgery, chemotherapy, radiation and cancer drugs, and on Original Medicare you pay the Part B deductible and then {{partB.coinsurance}} of the Medicare-approved amount for outpatient treatment, with no annual limit on that {{partB.coinsurance}}.** A Medicare Supplement pays most or all of it. A Medicare Advantage plan limits it with a yearly out-of-pocket maximum and adds a network. Cancer pills you take at home fall under Part D, where your spending on covered drugs stops at {{partD.cap}} in {{figYear}}.
 
 That is the federal answer and it is the same in Peoria as in Pittsburgh. The local part is where the treatment happens and how you get there. From Vistancia or Trilogy, an infusion chair is a drive to Arrowhead or into Sun City, and a course of radiation can mean that drive five days a week for six weeks. A good number of households in 85383 also spend the summer somewhere cooler, and cancer treatment does not pause for the season. Which kind of Medicare you carry decides who can treat you, in which state, and what the year costs.
 
@@ -70,7 +70,7 @@ Medicare splits cancer care across three parts, and the setting decides which on
     <tr>
       <td>Chemotherapy or immunotherapy infused in a doctor's office, freestanding clinic or hospital outpatient department</td>
       <td>Part B</td>
-      <td>The Part B deductible ({{partB.deductible}} in {{year}}), then {{partB.coinsurance}} of the Medicare-approved amount</td>
+      <td>The Part B deductible ({{partB.deductible}} in {{figYear}}), then {{partB.coinsurance}} of the Medicare-approved amount</td>
     </tr>
     <tr>
       <td>Radiation therapy as an outpatient or in a freestanding clinic</td>
@@ -85,7 +85,7 @@ Medicare splits cancer care across three parts, and the setting decides which on
     <tr>
       <td>Cancer drugs you take by mouth at home, anti-nausea and pain medication from the pharmacy</td>
       <td>Part D, with some exceptions under Part B</td>
-      <td>Your plan's deductible and copays, up to {{partD.cap}} on covered drugs in {{year}}, then nothing</td>
+      <td>Your plan's deductible and copays, up to {{partD.cap}} on covered drugs in {{figYear}}, then nothing</td>
     </tr>
     <tr>
       <td>Hospice care</td>
@@ -96,7 +96,7 @@ Medicare splits cancer care across three parts, and the setting decides which on
 </table>
 </div>
 
-<p class="table-source">Source: Medicare.gov, "Chemotherapy" and "Radiation therapy"; CMS, "Medicare Coverage of Cancer Treatment Services" (Product No. 11931); CMS {{year}} Parts A and B fact sheet. Figures apply identically in Maricopa County.</p>
+<p class="table-source">Source: Medicare.gov, "Chemotherapy" and "Radiation therapy"; CMS, "Medicare Coverage of Cancer Treatment Services" (Product No. 11931); CMS {{figYear}} Parts A and B fact sheet. Figures apply identically in Maricopa County.</p>
 
 Two details in that table catch people out.
 
@@ -130,7 +130,7 @@ Both, and which one depends on how the drug gets into you.
 
 **Taken by mouth at home: usually Part D.** Medicare.gov says Part B covers some oral cancer drugs, but only if the same drug is available in an injectable form or is a prodrug of one. It also covers oral anti-nausea drugs taken before, during or within 48 hours of chemotherapy. Everything else you swallow at home, including most of the newer targeted therapies, goes through your [Part D](/part-d/) plan.
 
-That second group is where the Part D cap changed things. Oral cancer drugs are among the most expensive prescriptions a pharmacy fills, and until recently there was no hard ceiling on what a patient could owe for them. Now there is: {{partD.cap}} in {{year}}, rising to $2,400 for 2027. A single fill of a specialty cancer drug can take you most of the way there in January, which is what the Medicare Prescription Payment Plan is for. It spreads the year's drug costs into monthly bills from the plan. It does not reduce what you owe. The [2027 Part D cap post](/blog/medicare-part-d-out-of-pocket-cap-2027/) covers both.
+That second group is where the Part D cap changed things. Oral cancer drugs are among the most expensive prescriptions a pharmacy fills, and until recently there was no hard ceiling on what a patient could owe for them. Now there is: {{partD.cap}} in {{figYear}}, up from $2,100 in 2026. A single fill of a specialty cancer drug can take you most of the way there in January, which is what the Medicare Prescription Payment Plan is for. It spreads the year's drug costs into monthly bills from the plan. It does not reduce what you owe. The [2027 Part D cap post](/blog/medicare-part-d-out-of-pocket-cap-2027/) covers both.
 
 The cap applies only to drugs on your plan's formulary. If you are prescribed a drug your plan does not list, your doctor can ask the plan for an exception, and you can appeal if it is refused. During open enrollment, checking that a drug you already take is on next year's list is the single most useful ten minutes you can spend.
 
@@ -193,8 +193,8 @@ Open enrollment runs October 15 to December 7. Nobody picks a plan expecting can
 
 - **Medicare covers cancer treatment.** Part A covers inpatient care, Part B covers outpatient chemotherapy, radiation, doctor visits and scans, and Part D covers most cancer drugs taken at home.
 - **Original Medicare alone leaves you {{partB.coinsurance}} with no annual limit** on the outpatient side. A supplement such as Plan G pays it.
-- **Medicare Advantage plans often charge {{partB.coinsurance}} on chemotherapy too**, up to a yearly out-of-pocket maximum of no more than $9,250 in network in {{year}} and $9,850 in 2027. It resets each January 1.
-- **Part D spending on covered drugs stops at {{partD.cap}} in {{year}}** and $2,400 in 2027.
+- **Medicare Advantage plans often charge {{partB.coinsurance}} on chemotherapy too**, up to a yearly out-of-pocket maximum of no more than $9,850 in network in 2027 (up from $9,250 in 2026). It resets each January 1.
+- **Part D spending on covered drugs stops at {{partD.cap}} in {{figYear}}** (it was $2,100 in 2026).
 - **Where you can be treated depends on your coverage.** Original Medicare works with any provider in the country that accepts Medicare. An Advantage plan works inside its network.
 - **After a diagnosis, moving to a supplement in Arizona is difficult.** The decision is easier to make while you are well.
 

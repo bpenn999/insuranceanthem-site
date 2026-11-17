@@ -11,7 +11,7 @@ image: /blog/does-medicare-cover-an-mri-peoria-az-photo.jpg
 imageAlt: 'A gray-haired man in glasses holds a coffee mug and works on a puzzle magazine while seated in a quiet room.'
 faqs:
   - q: How much does an MRI cost with Medicare?
-    a: On Original Medicare you pay the Part B deductible, which is $283 in 2026, and then 20 percent of the Medicare-approved amount when the scan is done in a doctor's office or an independent imaging center. In a hospital outpatient department you pay the hospital a copayment instead, which can be more than 20 percent but in most cases cannot exceed the Part A hospital deductible of $1,736. The approved amount differs by body part, by whether contrast is used and by setting, so Medicare.gov's Procedure Price Lookup is the place to see the national averages for the exact scan you have been ordered.
+    a: On Original Medicare you pay the Part B deductible, which is $292 in 2027, and then 20 percent of the Medicare-approved amount when the scan is done in a doctor's office or an independent imaging center. In a hospital outpatient department you pay the hospital a copayment instead, which can be more than 20 percent but in most cases cannot exceed the Part A hospital deductible of $1,776 in 2027. The approved amount differs by body part, by whether contrast is used and by setting, so Medicare.gov's Procedure Price Lookup is the place to see the national averages for the exact scan you have been ordered.
   - q: How often will Medicare pay for an MRI?
     a: Medicare sets no fixed number of MRI scans per year. It pays for each scan a treating doctor orders to diagnose or manage a medical problem, as long as the record shows why that scan is needed. A repeat scan with no new clinical reason is the one that gets denied.
   - q: Does Medicare require prior authorization for an MRI?
@@ -66,11 +66,11 @@ Where you have the scan changes what you pay, and it changes it before any suppl
   <tbody>
     <tr>
       <td>Doctor's office or independent imaging center</td>
-      <td>The Part B deductible ({{partB.deductible}} in {{year}}), then {{partB.coinsurance}} of the Medicare-approved amount</td>
+      <td>The Part B deductible ({{partB.deductible}} in {{figYear}}), then {{partB.coinsurance}} of the Medicare-approved amount</td>
     </tr>
     <tr>
       <td>Hospital outpatient department</td>
-      <td>The Part B deductible, then a hospital copayment that may be more than {{partB.coinsurance}}, capped in most cases at the Part A deductible ({{partA.deductible}} in {{year}})</td>
+      <td>The Part B deductible, then a hospital copayment that may be more than {{partB.coinsurance}}, capped in most cases at the Part A deductible ({{partA.deductible}} in {{figYear}})</td>
     </tr>
     <tr>
       <td>During an inpatient hospital stay</td>
@@ -80,7 +80,7 @@ Where you have the scan changes what you pay, and it changes it before any suppl
 </table>
 </div>
 
-<p class="table-source">Source: Medicare.gov, "Diagnostic non-laboratory tests". Dollar figures are the {{year}} Part A and Part B deductibles from the CMS fact sheet; the {{nextYear}} figures are announced in November.</p>
+<p class="table-source">Source: Medicare.gov, "Diagnostic non-laboratory tests". Dollar figures are the {{figYear}} Part A and Part B deductibles from the CMS fact sheet.</p>
 
 The hospital row is the one that surprises people. The Medicare-approved amount for the same scan is higher in a hospital outpatient department than in a freestanding center, and the hospital bills a copayment rather than a flat {{partB.coinsurance}}. Medicare.gov's Procedure Price Lookup shows the two side by side for any scan code, and for most MRI codes the patient's share at the hospital is roughly double the share at an imaging center.
 
@@ -136,12 +136,12 @@ Open enrollment for {{nextYear}} runs October 15 through December 7, and if you 
 - whether prior authorization still applies to imaging
 - whether the imaging center and the specialist who sends you there are still in the network for {{nextYear}}
 
-If you are on Original Medicare with a supplement, nothing in your MRI coverage changes in January except the deductible amount, and that is announced in November.
+If you are on Original Medicare with a supplement, nothing in your MRI coverage changes in January except the deductible amount, which CMS has set at $292 for 2027.
 
 ## The short version
 
 - **Medicare covers an MRI a doctor orders** to find or treat a medical problem, with no yearly limit on scans.
-- **At an imaging center you pay the Part B deductible, {{partB.deductible}} in {{year}}, then {{partB.coinsurance}}.** At a hospital outpatient department the copayment can be more than that.
+- **At an imaging center you pay the Part B deductible, {{partB.deductible}} in {{figYear}}, then {{partB.coinsurance}}.** At a hospital outpatient department the copayment can be more than that.
 - **Plan G and Plan N pay that share**, so the setting stops mattering to your wallet once the deductible is met.
 - **An Advantage plan charges a copay, usually needs approval first and keeps you in its network.** The copay is often lower at a freestanding center.
 - **Original Medicare needs no prior authorization for an MRI**, and the Arizona pilot that started in January 2026 does not cover imaging.

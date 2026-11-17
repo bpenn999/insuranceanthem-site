@@ -94,7 +94,7 @@ Here is a rough illustration for Trelegy, using CMS's 2024 list price as a stand
 
 ## The deductible is where the drop shows up first
 
-When a drug falls inside your Part D deductible, you pay the plan's price for it until the deductible is met. For these 15 drugs that price is now built on the negotiated price. A drug that used to clear most of the deductible in one January fill now takes several months to work through it. The deductible itself is no smaller. For 2027 a plan can charge up to $700, up from {{partD.maxDeductible}} in {{year}}. You pay it in smaller pieces, and the drop shows up as a lower pharmacy bill in January.
+When a drug falls inside your Part D deductible, you pay the plan's price for it until the deductible is met. For these 15 drugs that price is now built on the negotiated price. A drug that used to clear most of the deductible in one January fill now takes several months to work through it. The deductible itself is no smaller. For 2027 a plan can charge up to {{partD.maxDeductible}}, up from $615 in 2026. You pay it in smaller pieces, and the drop shows up as a lower pharmacy bill in January.
 
 Here is the local fact that makes this matter in the Valley. I counted the deductibles in CMS's 2027 plan landscape files:
 
@@ -106,7 +106,7 @@ Many plans exempt their generic tiers from the deductible, so the deductible usu
 
 ## Specialty drugs: the cap still sets the total
 
-For the cancer and rare-disease drugs on the list (Xtandi, Pomalyst, Ibrance, Calquence, Ofev and Austedo), the negotiated price is still several thousand dollars a month. Anyone taking one of them reaches the Part D out-of-pocket cap early in the year with or without negotiation. The cap is $2,400 for 2027, up from {{partD.cap}} in {{year}}, and once you reach it you pay nothing more for covered drugs that calendar year.
+For the cancer and rare-disease drugs on the list (Xtandi, Pomalyst, Ibrance, Calquence, Ofev and Austedo), the negotiated price is still several thousand dollars a month. Anyone taking one of them reaches the Part D out-of-pocket cap early in the year with or without negotiation. The cap is {{partD.cap}} for {{figYear}}, up from $2,100 in 2026, and once you reach it you pay nothing more for covered drugs that calendar year.
 
 So for a north Peoria retiree on Xtandi through an oncologist near Arrowhead, the negotiation changes the timing, not the total. At the lower price it may take two fills instead of one to reach the cap. The year still costs $2,400 out of pocket, which is $300 more than this year because the cap itself rose. If spreading that over the year helps, the Medicare Prescription Payment Plan does it. My [post on the 2027 cap](/blog/medicare-part-d-out-of-pocket-cap-2027/) explains what counts toward it.
 

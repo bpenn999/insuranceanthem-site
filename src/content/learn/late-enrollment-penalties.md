@@ -5,12 +5,13 @@ description: "How the Part B and Part D late penalties are calculated, why they 
 summary: "Both penalties are permanent, both are avoidable, and both catch people who thought they were covered. Here is the arithmetic, the exceptions that genuinely work, and the two that do not."
 category: "Enrollment"
 publishedAt: 2026-08-02
+updatedAt: 2026-11-17
 readMinutes: 9
 relatedProducts: [part-d, medicare-supplement]
 relatedTools: [late-enrollment-penalty-calculator, enrollment-timeline, irmaa-estimator]
 faqs:
   - q: "How much is the Part B late enrollment penalty?"
-    a: "10% of the standard Part B premium for every full 12-month period you could have had Part B and did not, added to your premium for as long as you have Medicare. On the 2026 standard premium of $202.90, each full year of delay adds about $20.29 a month permanently."
+    a: "10% of the standard Part B premium for every full 12-month period you could have had Part B and did not, added to your premium for as long as you have Medicare. On the 2027 standard premium of $209.40, each full year of delay adds about $20.94 a month permanently."
   - q: "How is the Part D late enrollment penalty calculated?"
     a: "1% of the national base beneficiary premium for every month you went without creditable drug coverage after your Initial Enrollment Period, rounded to the nearest 10 cents and added to your Part D premium permanently. Because it is tied to the national base premium, the penalty amount rises each year even though the percentage stays fixed."
   - q: "Does COBRA count as creditable coverage for Medicare?"
@@ -32,7 +33,7 @@ Medicare's late enrollment penalties get used as a scare tactic, which is a sham
 
 If you could have enrolled in Part B and did not, and you did not have qualifying coverage in the meantime, Medicare adds **10% of the standard premium for every full 12-month period you went without**.
 
-On the {{year}} standard premium of {{partB.premium}}, one full year of delay adds roughly $20 a month. Three years adds roughly $61 a month. And it is added **for as long as you have Medicare** — not for a year, not until you have made up the difference. Permanently.
+On the {{figYear}} standard premium of {{partB.premium}}, one full year of delay adds roughly $21 a month. Three years adds roughly $63 a month. And it is added **for as long as you have Medicare** — not for a year, not until you have made up the difference. Permanently.
 
 Two details that make it worse than it first sounds.
 
@@ -82,7 +83,7 @@ If you are approaching 65 and still working, ask your benefits administrator one
 
 Abstract percentages do not convey this well, so here is what it actually looks like. Run your own numbers in our [late enrollment penalty calculator](/tools/late-enrollment-penalty-calculator/).
 
-**Someone who delays Part B by three years** with no qualifying coverage adds 30% to their premium. On the {{year}} standard premium of {{partB.premium}}, that is about $61 a month, or roughly $730 a year. If they live another 20 years on Medicare, and the standard premium rises as it historically has, the cumulative cost runs well into five figures — for three years of coverage they chose not to buy.
+**Someone who delays Part B by three years** with no qualifying coverage adds 30% to their premium. On the {{figYear}} standard premium of {{partB.premium}}, that is about $63 a month, or roughly $750 a year. If they live another 20 years on Medicare, and the standard premium rises as it historically has, the cumulative cost runs well into five figures — for three years of coverage they chose not to buy.
 
 **Someone who delays Part D by five years** adds 60% of the national base beneficiary premium. That is a smaller monthly figure than the Part B penalty, but it behaves identically: permanent, recalculated annually, and payable on top of whatever their plan charges.
 

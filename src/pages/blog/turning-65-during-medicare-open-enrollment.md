@@ -100,7 +100,7 @@ So before choosing anything, check each doctor by name, not the clinic, not the 
 
 ## What the first year costs, and what is not published yet
 
-The standard Part B premium is {{partB.premium}} a month in {{year}}, with a {{partB.deductible}} deductible. CMS has not yet released the 2027 Part B premium and deductible as of today. It normally publishes them later in the fall, and January starters will pay the 2027 figure. The Part D out-of-pocket cap is {{partD.cap}} in {{year}}. The 2027 cap is also set annually, so confirm it on the plan you pick.
+The standard Part B premium is {{partB.premium}} a month in {{figYear}}, with a {{partB.deductible}} deductible. Those are the 2027 amounts CMS published on November 17, 2026, so January starters pay them. The Part D out-of-pocket cap is {{partD.cap}} in {{figYear}}.
 
 For higher-income households, the income-related surcharge (IRMAA) on a 2027 start is based on your 2025 tax return, which often shows your last full year of salary. If you are retiring at 65, that is a life-changing event Social Security can reconsider using Form SSA-44, and [the appeal is worth knowing about before your first bill arrives](/blog/how-do-i-appeal-irmaa-after-retirement/).
 

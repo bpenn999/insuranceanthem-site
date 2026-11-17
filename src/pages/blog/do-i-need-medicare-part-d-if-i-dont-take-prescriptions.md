@@ -13,7 +13,7 @@ faqs:
   - q: Is Medicare Part D mandatory?
     a: 'No. Medicare says plainly that drug coverage is optional and offered to everyone with Medicare by private companies approved by Medicare. Nobody makes you buy it. What is not optional is the consequence: if you go 63 days or more in a row without Medicare drug coverage or other creditable drug coverage after becoming eligible, a late enrollment penalty is added to your premium when you do sign up, and for most people that penalty lasts as long as they have drug coverage.'
   - q: What is the Medicare Part D late enrollment penalty and how much is it?
-    a: 'It is an extra 1% for each month you went without creditable drug coverage — 12% for a year — calculated against the national base beneficiary premium, which is $38.99 for 2026. Medicare''s own worked example: wait 14 months and the penalty is 14% of $38.99, or $5.46, rounded to $5.50 a month, added on top of whatever your plan charges. The base premium changes each year, so the dollar amount moves with it.'
+    a: 'It is an extra 1% for each month you went without creditable drug coverage — 12% for a year — calculated against the national base beneficiary premium, which is $41.33 for 2027. Medicare''s own worked example uses 14 months: the penalty is 14% of $41.33, or $5.79, rounded to $5.80 a month, added on top of whatever your plan charges. The base premium changes each year, so the dollar amount moves with it.'
   - q: I skipped Part D when I turned 65. Can I sign up during open enrollment?
     a: 'Yes. If you did not enroll when you were first eligible and no Special Enrollment Period applies, the ordinary way in is the Annual Enrollment Period, October 15 to December 7, with coverage starting January 1. You can join a stand-alone Part D plan or an Advantage plan that includes drug coverage. Signing up then does not erase a penalty you already owe — but it stops the clock, and every month you wait adds another percent.'
   - q: Do I need Part D if I get my prescriptions through the VA?
@@ -45,27 +45,27 @@ From today, the next ordinary chance to add drug coverage opens on **October 15*
 
 ## What the penalty actually costs
 
-Medicare publishes the arithmetic, so there is no need to guess at it. The penalty is **1% for each month you went without creditable drug coverage**, and the percentage is applied to the *national base beneficiary premium* — a figure Medicare sets each year, **$38.99 for 2026**. It is added to whatever your plan's own premium is, and it is recalculated every year against the new base figure.
+Medicare publishes the arithmetic, so there is no need to guess at it. The penalty is **1% for each month you went without creditable drug coverage**, and the percentage is applied to the *national base beneficiary premium* — a figure Medicare sets each year, **$41.33 for 2027** (up from $38.99 in 2026). It is added to whatever your plan's own premium is, and it is recalculated every year against the new base figure.
 
-Medicare's own example: wait 14 months, owe a 14% penalty. That is $38.99 × 0.14 = $5.46, rounded to the nearest ten cents, so **$5.50 a month** on top of the plan premium in 2026.
+Medicare's own example: wait 14 months, owe a 14% penalty. In 2027 that is $41.33 × 0.14 = $5.79, rounded to the nearest ten cents, so **$5.80 a month** on top of the plan premium.
 
 <div class="table-scroll">
 <table>
-  <caption class="sr-only">Part D late enrollment penalty by length of delay, calculated against the 2026 national base beneficiary premium of $38.99</caption>
+  <caption class="sr-only">Part D late enrollment penalty by length of delay, calculated against the 2027 national base beneficiary premium of $41.33</caption>
   <thead>
-    <tr><th scope="col">Months without creditable coverage</th><th scope="col">Penalty</th><th scope="col">Added per month in 2026</th><th scope="col">Over a year</th></tr>
+    <tr><th scope="col">Months without creditable coverage</th><th scope="col">Penalty</th><th scope="col">Added per month in 2027</th><th scope="col">Over a year</th></tr>
   </thead>
   <tbody>
-    <tr><td>12 months (1 year)</td><td>12%</td><td>$4.70</td><td>about $56</td></tr>
-    <tr><td>24 months (2 years)</td><td>24%</td><td>$9.40</td><td>about $113</td></tr>
-    <tr><td>36 months (3 years)</td><td>36%</td><td>$14.00</td><td>about $168</td></tr>
-    <tr><td>60 months (5 years)</td><td>60%</td><td>$23.40</td><td>about $281</td></tr>
-    <tr><td>84 months (7 years)</td><td>84%</td><td>$32.80</td><td>about $394</td></tr>
+    <tr><td>12 months (1 year)</td><td>12%</td><td>$5.00</td><td>about $60</td></tr>
+    <tr><td>24 months (2 years)</td><td>24%</td><td>$9.90</td><td>about $119</td></tr>
+    <tr><td>36 months (3 years)</td><td>36%</td><td>$14.90</td><td>about $179</td></tr>
+    <tr><td>60 months (5 years)</td><td>60%</td><td>$24.80</td><td>about $298</td></tr>
+    <tr><td>84 months (7 years)</td><td>84%</td><td>$34.70</td><td>about $416</td></tr>
   </tbody>
 </table>
 </div>
 
-<p class="table-source">Penalty percentages and the $38.99 national base beneficiary premium: Medicare.gov, "Avoid late enrollment penalties," 2026. Monthly amounts are that base multiplied by the penalty percentage and rounded to the nearest ten cents, as Medicare does. The base premium changes annually, so these figures move with it.</p>
+<p class="table-source">Penalty percentages: Medicare.gov, "Avoid late enrollment penalties." The $41.33 national base beneficiary premium for 2027: CMS, July 28, 2026. Monthly amounts are that base multiplied by the penalty percentage and rounded to the nearest ten cents, as Medicare does. The base premium changes annually, so these figures move with it.</p>
 
 Read the bottom row honestly and you will see why people talk themselves into skipping it. Seven years of no drug plan buys a penalty of about thirty-three dollars a month — real money, but not catastrophic, and less than seven years of premiums would have been.
 
@@ -150,8 +150,8 @@ If you have no drug coverage today and no creditable coverage protecting you, th
 
 <div class="stat-callout">
   <p class="stat-callout__figure">1% a month, for life — the price of going 63 days without creditable drug coverage</p>
-  <p class="stat-callout__body">The rest of the Original Medicare figures do not move with your drug decision: the standard Part B premium is {{partB.premium}} a month in {{year}}, the Part B annual deductible is {{partB.deductible}}, and the Part A hospital deductible is {{partA.deductible}} per benefit period. What the drug decision moves is the annual ceiling on your prescriptions — {{partD.cap}} with a plan, unlimited without one.</p>
-  <p class="stat-callout__cite">Sources: Medicare.gov late enrollment penalty guidance and the CMS {{year}} Parts A &amp; B and Part D figures. Verified against medicare.gov and cms.gov.</p>
+  <p class="stat-callout__body">The rest of the Original Medicare figures do not move with your drug decision: the standard Part B premium is {{partB.premium}} a month in {{figYear}}, the Part B annual deductible is {{partB.deductible}}, and the Part A hospital deductible is {{partA.deductible}} per benefit period. What the drug decision moves is the annual ceiling on your prescriptions — {{partD.cap}} with a plan, unlimited without one.</p>
+  <p class="stat-callout__cite">Sources: Medicare.gov late enrollment penalty guidance and the CMS {{figYear}} Parts A &amp; B and Part D figures. Verified against medicare.gov and cms.gov.</p>
 </div>
 
 Higher income adds a separate layer, and it applies to drug coverage as well as to Part B: above {{irmaa.singleStart}} for a single filer and {{irmaa.jointStart}} filing jointly, based on your {{irmaaTaxYear}} tax return, IRMAA adds a surcharge to both. If a one-off event pushed you over — a home sale, a Roth conversion, the year you retired — that is appealable on Form SSA-44, and worth raising with your tax advisor. You can [see where your income lands](/tools/irmaa-estimator/) in about a minute, and the [full picture of what Medicare costs](/tools/medicare-cost-estimator/) puts the drug plan next to everything else.

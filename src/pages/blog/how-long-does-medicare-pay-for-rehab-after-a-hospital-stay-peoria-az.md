@@ -39,7 +39,7 @@ sources:
     url: https://www.medicare.gov/health-drug-plans/medigap/basics/compare-plan-benefits
 ---
 
-**Up to 100 days per benefit period in a skilled nursing facility — and every word in that sentence is doing work.** The first 20 days are paid in full. Days 21 through 100 cost you {{partA.snf}} a day in {{year}}. Day 101 is entirely yours. None of it starts unless you were a hospital *inpatient* for three days in a row first, and it stops the day you no longer need daily skilled care, which for most people is long before day 100.
+**Up to 100 days per benefit period in a skilled nursing facility — and every word in that sentence is doing work.** The first 20 days are paid in full. Days 21 through 100 cost you {{partA.snf}} a day in {{figYear}}. Day 101 is entirely yours. None of it starts unless you were a hospital *inpatient* for three days in a row first, and it stops the day you no longer need daily skilled care, which for most people is long before day 100.
 
 That is the answer for a stay in a skilled nursing facility, which is what most people mean when they say "rehab." But "rehab" is three different things to Medicare, paid on three different rules, and a north Peoria household coming out of Banner Thunderbird or Abrazo Arrowhead is usually told which one it is getting about an hour before it happens. Here is how the days count, the two myths that cost people the most, what a Medicare Advantage plan changes, and what to check on your Annual Notice of Change before December 7.
 
@@ -61,7 +61,7 @@ The word covers three settings, and the bill depends on which one you land in.
 </table>
 </div>
 
-<p class="table-source">Source: Medicare.gov, "Skilled nursing facility (SNF) care" and "Inpatient rehabilitation care," {{year}} amounts. Medicare Advantage plans set their own cost sharing for each setting.</p>
+<p class="table-source">Source: Medicare.gov, "Skilled nursing facility (SNF) care" and "Inpatient rehabilitation care," {{figYear}} amounts. Medicare Advantage plans set their own cost sharing for each setting.</p>
 
 Two things to take from that table. The **100-day question only applies to the first row.** An inpatient rehab hospital is paid like a hospital, and outpatient therapy has no day cap at all — it has a documentation threshold your therapist attests past, which is paperwork, not a stop. And the **three settings have three different entry rules.** A rehab hospital has to certify that you need intensive therapy with a physician supervising it. A skilled nursing facility has to be reached through the three-day rule, which is where most of the trouble starts.
 
@@ -83,7 +83,7 @@ For the skilled nursing facility, here is the {{year}} arithmetic on Original Me
 </table>
 </div>
 
-<p class="table-source">Source: Medicare.gov, "Skilled nursing facility (SNF) care," {{year}} amounts. A Medicare Supplement Plan G or Plan N pays the days 21–100 coinsurance in full.</p>
+<p class="table-source">Source: Medicare.gov, "Skilled nursing facility (SNF) care," {{figYear}} amounts. A Medicare Supplement Plan G or Plan N pays the days 21–100 coinsurance in full.</p>
 
 The word to hold onto is **benefit period**, because it is not a calendar year. A benefit period starts the day you are admitted as an inpatient and ends only after you have been out of every hospital and skilled nursing facility for 60 consecutive days. Three consequences:
 
