@@ -12,10 +12,10 @@ import site from '../config/site';
  */
 /**
  * Organization/product counts for the TPMO line. Source: Brian's X book of business
- * (11/16/2026 — 10 Medicare carriers, ~159 distinct plans). Same numbers fleet-wide.
+ * (Brian 11/16/2026, Phoenix ZIP: UHC, Healthspring, SCAN, Wellcare, Humana, Aetna, Devoted). Same numbers fleet-wide.
  */
-export const ORG_COUNT = 10;
-export const PRODUCT_COUNT = 150;
+export const ORG_COUNT = 7;
+export const PRODUCT_COUNT = 38;
 
 export const tpmoDisclaimer = `We do not offer every plan available in your area. Currently, we represent ${ORG_COUNT} organizations which offer ${PRODUCT_COUNT} products in your area. Please contact Medicare.gov or 1-800-MEDICARE to get information on all of your options.`;
 
