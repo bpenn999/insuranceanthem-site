@@ -1,0 +1,381 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import site, { abs } from '../config/site';
+import { PLAN_YEAR, IRMAA_TAX_YEAR, irmaaBrackets, irmaaSeparate, partB } from '../data/medicare-figures';
+
+/**
+ * IRMAA appeal: form SSA-44 (Brian, 2026-11-18: "same type of thing we did with
+ * the pre-filled form ... they fill it out or we fill it out and it's in X").
+ *
+ * Two paths, same as /enroll-in-medicare/forms/:
+ *  1. "Have us fill it out" → the X form (X_FORM below). partb-run.sh's
+ *     irmaa-forms.mjs fills the SSA-44 server-side and files it in X Documents.
+ *  2. Do it yourself → pdf-lib fills /forms/ssa-44.pdf IN THE BROWSER.
+ *
+ * ⚠️ PRIVACY IS THE DESIGN for path 2: the SSN and income are written into the
+ * PDF on the visitor's device. The only network call is /api/lead with name,
+ * contact and the event TYPE. Never add income, SSN or dates to that payload.
+ *
+ * /forms/ssa-44.pdf is SSA's 12-2025 edition with its owner-password encryption
+ * removed (pypdf, 2026-11-18) so pdf-lib can write it. Field names were read the
+ * same day. The money boxes are 8-digit comb fields (6 dollars + 2 cents).
+ */
+
+/** X form for "have us fill it out". Empty = fall back to booking a call. */
+const X_FORM = '';
+
+const PATH = '/irmaa-appeal/';
+const title = `How to Appeal IRMAA: Form SSA-44 Help (${PLAN_YEAR})`;
+const description = `Paying IRMAA after retiring? Form SSA-44 asks Social Security to use your lower income. The ${PLAN_YEAR} brackets, the 8 events, and free help filing.`;
+const published = '2026-11-18';
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'IRMAA appeal (SSA-44)', path: PATH },
+];
+const BOOK = `${site.consult.url}?topic=irmaa`;
+const usd = (n: number) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 });
+const usd2 = (n: number) => '$' + n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+const band = (min: number, max: number | null) => (min === 0 ? `${usd(max!)} or less` : max === null ? `${usd(min + 1)} and up` : `${usd(min + 1)} – ${usd(max)}`);
+const EVENTS = [
+  ['marriage', 'Marriage', ''],
+  ['divorce', 'Divorce or annulment', ''],
+  ['death', 'Death of your spouse', ''],
+  ['stoppage', 'Work stoppage', 'you retired or stopped working'],
+  ['reduction', 'Work reduction', 'fewer hours or lower pay'],
+  ['property', 'Loss of income-producing property', 'from a disaster, fraud or theft, not a sale'],
+  ['pension', 'Loss of pension income', 'a pension ended or was cut'],
+  ['settlement', 'Employer settlement payment', 'from a former employer that closed or went bankrupt'],
+];
+const sep1 = irmaaSeparate[1];
+const schemaNodes = [
+  {
+    '@type': 'WebPage',
+    '@id': `${abs(PATH)}#webpage`,
+    url: abs(PATH),
+    name: title,
+    description,
+    isPartOf: { '@id': `${site.origin}/#website` },
+    inLanguage: 'en-US',
+    datePublished: published,
+    dateModified: published,
+    publisher: { '@id': `${site.origin}/#organization` },
+  },
+];
+---
+<BaseLayout title={title} description={description} path={PATH} breadcrumbs={breadcrumbs}
+  schemaNodes={schemaNodes} publishedAt={published} modifiedAt={published}>
+  <PageHero
+    eyebrow="Medicare IRMAA"
+    title="Lower your IRMAA with form SSA-44"
+    lede={`Retired, or had another big life change? If your income dropped, Social Security can stop charging the surcharge on your ${PLAN_YEAR} Part B and Part D premiums. We’ll help you ask.`}
+    breadcrumbs={breadcrumbs}
+  >
+    <div class="fx__choose">
+      <p class="fx__choose-h">Have us fill it out for you</p>
+      {X_FORM ? (
+        <>
+          <p class="fx__choose-p">Answer a few questions and 602Medicare fills out your SSA-44, then calls to go over it before you sign. Free.</p>
+          <a class="btn" href={X_FORM} target="_blank" rel="noopener">Fill out my SSA-44 for me ↗</a>
+        </>
+      ) : (
+        <>
+          <p class="fx__choose-p">Book a free call and we’ll fill out your SSA-44 with you, then tell you exactly what proof to attach.</p>
+          <a class="btn" href={BOOK}>Book my free IRMAA call</a>
+        </>
+      )}
+    </div>
+    <p class="fx__private"><span aria-hidden="true">🔒</span> <strong>Or do it yourself below, privately:</strong> your Social Security number and income stay on this device. We only get your name and how to reach you, so we can help if you get stuck.</p>
+  </PageHero>
+
+  <section class="section">
+    <div class="wrap ia">
+      <h2>The {PLAN_YEAR} IRMAA brackets</h2>
+      <p>IRMAA (income-related monthly adjustment amount) is a surcharge on Part B and Part D for higher incomes. Your {PLAN_YEAR} amount is based on the modified adjusted gross income (AGI plus tax-exempt interest) on your <strong>{IRMAA_TAX_YEAR}</strong> tax return. That two-year lookback is why people get hit after they’ve already retired.</p>
+      <div class="ia__tbl">
+        <table>
+          <thead><tr><th>{IRMAA_TAX_YEAR} income, single</th><th>{IRMAA_TAX_YEAR} income, joint</th><th>Part B / month</th><th>Part D added / month</th></tr></thead>
+          <tbody>
+            {irmaaBrackets.map((b) => (
+              <tr><td>{band(b.singleMin, b.singleMax)}</td><td>{band(b.jointMin, b.jointMax)}</td><td>{usd2(b.partBTotal)}{b.tier === 0 ? ' (standard)' : ''}</td><td>{b.partDSurcharge ? '+' + usd2(b.partDSurcharge) : '$0'}</td></tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p class="ia__small">Per person. Married filing separately (and lived with your spouse): {usd2(partB.standardPremium)} up to {usd(sep1.min)}, then {usd2(sep1.partBTotal)} (+{usd2(sep1.partDSurcharge)} Part D) up to {usd(sep1.max!)}, and {usd2(irmaaSeparate[2].partBTotal)} (+{usd2(irmaaSeparate[2].partDSurcharge)}) above that. Source: CMS {PLAN_YEAR} Medicare Parts A &amp; B premiums and deductibles.</p>
+
+      <h2>The 8 life-changing events that qualify</h2>
+      <p>Form SSA-44 asks Social Security to use your newer, lower income instead of the old tax return, but only if the drop came from one of these:</p>
+      <ol class="ia__ev">
+        {EVENTS.map(([, t, d]) => <li><strong>{t}</strong>{d && <span> ({d})</span>}</li>)}
+      </ol>
+      <p class="ia__small">Selling a house, a one-time capital gain or a big IRA withdrawal is not on the list. Those need planning ahead, not an appeal. Talk to your tax professional about timing.</p>
+
+      <h2>How the appeal works</h2>
+      <ol class="ia__steps">
+        <li><strong>Fill out form SSA-44.</strong> Check your event and its date, then give your lower income: the actual amount if the year is done, or your best estimate if it isn’t.</li>
+        <li><strong>Attach proof of the event.</strong> Retired? A letter from your employer with your last day or new hours. Spouse passed? The death certificate. Divorce? The decree.</li>
+        <li><strong>Attach proof of the lower income.</strong> Your newest tax return, or your estimate for this year. Social Security checks it against the IRS later.</li>
+        <li><strong>Send it to Social Security.</strong> Mail it or bring it to your local office, or call 1-800-772-1213 for an appointment. If it’s approved, your premium drops and they refund what you overpaid. If it’s denied, you can ask them to reconsider.</li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="section" data-caustics="0.2">
+    <div class="wrap fx">
+      <h2 class="fx__h">Fill out your SSA-44 yourself</h2>
+      <form id="fx" class="fx__form" autocomplete="on" novalidate>
+        <fieldset>
+          <legend><span class="fx__n">1</span> About you</legend>
+          <div class="fx__grid fx__grid--name">
+            <label>First name<input name="first" required autocomplete="given-name" /></label>
+            <label>Middle<input name="middle" autocomplete="additional-name" /></label>
+            <label>Last name<input name="last" required autocomplete="family-name" /></label>
+            <label>Suffix<input name="suffix" placeholder="Jr., Sr." autocomplete="honorific-suffix" /></label>
+          </div>
+          <label>Social Security number <span class="fx__hint">It never leaves this device.</span>
+            <input name="ssn" required inputmode="numeric" maxlength="11" placeholder="123-45-6789" autocomplete="off" /></label>
+          <div class="fx__grid fx__grid--addr">
+            <label>Mailing address<input name="street" required autocomplete="address-line1" /></label>
+            <label>Apt <span class="fx__hint">optional</span><input name="apt" autocomplete="address-line2" /></label>
+          </div>
+          <div class="fx__grid fx__grid--city">
+            <label>City<input name="city" required autocomplete="address-level2" /></label>
+            <label>State<input name="state" required maxlength="2" value="AZ" autocomplete="address-level1" style="text-transform:uppercase" /></label>
+            <label>ZIP<input name="zip" required inputmode="numeric" maxlength="5" autocomplete="postal-code" /></label>
+          </div>
+          <div class="fx__grid fx__grid--2">
+            <label>Phone<input name="phone" required inputmode="tel" autocomplete="tel" placeholder="10-digit number" /></label>
+            <label>Email <span class="fx__hint">optional</span><input name="email" type="email" autocomplete="email" /></label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend><span class="fx__n">2</span> What changed?</legend>
+          <div class="fx__checks">
+            {EVENTS.map(([v, t, d]) => (
+              <label><input type="checkbox" name="ev" value={v} /> <span><strong>{t}</strong>{d && <span class="fx__hint"> ({d})</span>}</span></label>
+            ))}
+          </div>
+          <label>When did it happen? <span class="fx__hint">month/year, for example 06/2026. More than one event? List each date.</span>
+            <input name="evDate" required placeholder="06/2026" maxlength="60" /></label>
+        </fieldset>
+
+        <fieldset>
+          <legend><span class="fx__n">3</span> Your income since the change</legend>
+          <p class="fx__p">Use the year your income went down (the year you retired, for example). If you haven’t filed that year’s return yet, your best estimate is fine. AGI is line 11 of Form 1040; tax-exempt interest is line 2a.</p>
+          <div class="fx__grid fx__grid--3">
+            <label>Tax year<input name="y2" required inputmode="numeric" maxlength="4" placeholder={String(PLAN_YEAR - 1)} /></label>
+            <label>Adjusted gross income<input name="agi2" required inputmode="decimal" placeholder="$85,000" /></label>
+            <label>Tax-exempt interest<input name="tei2" inputmode="decimal" placeholder="$0" /></label>
+          </div>
+          <div class="fx__radio" role="radiogroup">
+            <span>Tax filing status for that year</span>
+            <label><input type="radio" name="fs2" value="1" checked /> Single</label>
+            <label><input type="radio" name="fs2" value="2" /> Married, filing jointly</label>
+            <label><input type="radio" name="fs2" value="3" /> Head of household</label>
+            <label><input type="radio" name="fs2" value="4" /> Married, filing separately</label>
+            <label><input type="radio" name="fs2" value="5" /> Qualifying widow(er)</label>
+          </div>
+        </fieldset>
+
+        <fieldset>
+          <legend><span class="fx__n">4</span> Will next year be even lower?</legend>
+          <p class="fx__p">For example: you retired partway through the year, so next year has no paycheck at all.</p>
+          <div class="fx__radio" role="radiogroup">
+            <label><input type="radio" name="s3" value="no" checked /> No</label>
+            <label><input type="radio" name="s3" value="yes" /> Yes</label>
+          </div>
+          <div class="fx__s3" hidden>
+            <div class="fx__grid fx__grid--3">
+              <label>Tax year<input name="y3" inputmode="numeric" maxlength="4" placeholder={String(PLAN_YEAR)} /></label>
+              <label>Estimated AGI<input name="agi3" inputmode="decimal" placeholder="$60,000" /></label>
+              <label>Estimated tax-exempt interest<input name="tei3" inputmode="decimal" placeholder="$0" /></label>
+            </div>
+            <div class="fx__radio" role="radiogroup">
+              <span>Expected filing status</span>
+              <label><input type="radio" name="fs3" value="1" checked /> Single</label>
+              <label><input type="radio" name="fs3" value="2" /> Married, filing jointly</label>
+              <label><input type="radio" name="fs3" value="3" /> Head of household</label>
+              <label><input type="radio" name="fs3" value="4" /> Married, filing separately</label>
+              <label><input type="radio" name="fs3" value="5" /> Qualifying widow(er)</label>
+            </div>
+          </div>
+        </fieldset>
+
+        <p class="fx__err" role="alert" hidden></p>
+        <button type="submit" class="btn btn--lg">Fill out my SSA-44</button>
+        <p class="fx__tcpa">By clicking, you agree 602Medicare may call, text or email you about your Medicare premiums. Not required to buy anything. Msg &amp; data rates may apply; reply STOP to opt out.</p>
+      </form>
+
+      <aside class="fx__out" id="fx-out" hidden tabindex="-1">
+        <h2>Your SSA-44 is ready</h2>
+        <div class="fx__dl"><a class="btn btn--lg" id="dl-44" download="SSA-44-filled.pdf">Download my SSA-44</a></div>
+        <ol class="fx__next">
+          <li><strong>Sign it</strong> on page 3 (Step 5).</li>
+          <li><strong>Attach your proof:</strong> something showing the event and its date (like a letter from your employer with your last day), plus your newest tax return or your income estimate.</li>
+          <li><strong>Send it to Social Security:</strong> mail it or take it to your local office, or call 1-800-772-1213 to set up an appointment.
+            <div class="fx__links"><a class="link" href="https://www.ssa.gov/locator" target="_blank" rel="noopener">Find your local office ↗</a></div>
+          </li>
+        </ol>
+        <div class="fx__check">
+          <p><strong>Want us to check it before you send it?</strong> A missing date or the wrong year can get it sent back. Book a free call and we’ll go over it with you.</p>
+          <a class="btn" href={BOOK}>Book my free call</a>
+          <p class="fx__or">or call <a class="link" href={site.phone.href}>{site.phone.display}</a></p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  import { PDFDocument, PDFName } from 'pdf-lib';
+
+  const form = document.getElementById('fx') as HTMLFormElement;
+  const out = document.getElementById('fx-out') as HTMLElement;
+  const err = form.querySelector('.fx__err') as HTMLElement;
+  const s3 = form.querySelector('.fx__s3') as HTMLElement;
+  let url = '';
+  form.addEventListener('change', () => { s3.hidden = new FormData(form).get('s3') !== 'yes'; });
+
+  const digits = (v: string) => String(v || '').replace(/\D/g, '');
+  const money = (v: string, label: string, required = true) => {
+    const s = String(v || '').replace(/[$,\s]/g, '');
+    if (!s) { if (required) throw new Error(`${label}: enter an amount.`); return 0; }
+    if (!/^\d+(\.\d{1,2})?$/.test(s)) throw new Error(`${label}: enter a dollar amount like 85000.`);
+    const n = Number(s); if (n >= 1_000_000) throw new Error(`${label}: the form only fits amounts under $1,000,000. Call us and we’ll help.`);
+    return n;
+  };
+  const year = (v: string, label: string) => { const y = digits(v); if (!/^20\d\d$/.test(y)) throw new Error(`${label}: enter a 4-digit year like 2026.`); return y.slice(2); };
+  const EV: Record<string, number> = { marriage: 1, divorce: 2, death: 3, stoppage: 4, reduction: 5, property: 6, pension: 7, settlement: 8 };
+  const EVLBL: Record<string, string> = { marriage: 'marriage', divorce: 'divorce/annulment', death: 'death of spouse', stoppage: 'work stoppage (retired)', reduction: 'work reduction', property: 'loss of income-producing property', pension: 'loss of pension income', settlement: 'employer settlement payment' };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    err.hidden = true;
+    try {
+      const fd = new FormData(form);
+      const d = Object.fromEntries(fd) as Record<string, string>;
+      const evs = fd.getAll('ev').map(String);
+      const need = ['first', 'last', 'ssn', 'street', 'city', 'state', 'zip', 'phone', 'evDate', 'y2', 'agi2'];
+      if (need.some((k) => !String(d[k] || '').trim())) throw new Error('Please fill in every field that isn’t marked optional.');
+      if (!evs.length) throw new Error('Check at least one life-changing event.');
+      const ssn = digits(d.ssn); if (ssn.length !== 9) throw new Error('Your Social Security number should be 9 digits.');
+      const ph = digits(d.phone).replace(/^1(?=\d{10}$)/, ''); if (ph.length !== 10) throw new Error('Please enter a 10-digit phone number.');
+      const y2 = year(d.y2, 'Tax year'); const agi2 = money(d.agi2, 'Adjusted gross income'); const tei2 = money(d.tei2, 'Tax-exempt interest', false);
+      const yes3 = d.s3 === 'yes';
+      const y3 = yes3 ? year(d.y3, 'Next year') : ''; const agi3 = yes3 ? money(d.agi3, 'Estimated AGI') : 0; const tei3 = yes3 ? money(d.tei3, 'Estimated tax-exempt interest', false) : 0;
+      const name = [d.first, d.middle, d.last, d.suffix].map((s) => (s || '').trim()).filter(Boolean).join(' ');
+
+      const doc = await PDFDocument.load(await (await fetch('/forms/ssa-44.pdf')).arrayBuffer());
+      const af = doc.catalog.get(PDFName.of('AcroForm'));
+      const afd = af ? (doc.context.lookup(af) as any) : null;
+      if (afd?.delete) afd.delete(PDFName.of('XFA'));
+      const f = doc.getForm();
+      const P = (n: number, k: string) => `topmostSubform[0].BodyPage${n}[0].${k}[0]`;
+      const t = (k: string, v: string) => { const x = f.getTextField(k); x.setMaxLength(undefined); x.setText(v); };
+      const m = (k: string, n: number) => { const x = f.getTextField(k); x.setMaxLength(8); x.enableCombing(); x.setText(String(Math.round(n * 100)).padStart(3, '0').padStart(8, ' ')); };
+      const c = (k: string) => f.getCheckBox(k).check();
+      t(P(1, 'Name_FLD'), name);
+      t(P(1, 'SSN_FLD'), `${ssn.slice(0, 3)}-${ssn.slice(3, 5)}-${ssn.slice(5)}`);
+      evs.forEach((v) => c(P(2, `Step1_CB${EV[v]}`)));
+      t(P(2, 'Step1_Date'), d.evDate.trim());
+      t(P(2, 'Step2taxyear_FLD'), y2); m(P(2, 'Step2AdjustGrossInc_FLD'), agi2); m(P(2, 'Step2TaxExempt_FLD'), tei2);
+      c(P(2, `Step2FilingStatus_CB${d.fs2}`));
+      if (yes3) {
+        c(P(2, 'STEP3_CB2'));
+        t(P(2, 'Step3taxyear_FLD'), y3); m(P(2, 'Step3EstAdjGross_FLD'), agi3); m(P(2, 'EstimatedTaxExempt_FLD'), tei3);
+        c(P(2, `ExpectedTaxFilinStatus_CB${d.fs3}`));
+      } else c(P(2, 'STEP3_CB1'));
+      t(P(3, 'Step5Phone_FLD'), `(${ph.slice(0, 3)}) ${ph.slice(3, 6)}-${ph.slice(6)}`);
+      t(P(3, 'Step5Address_FLD'), d.street.trim());
+      if (d.apt?.trim()) t(P(3, 'Step5AptNo_FLD'), d.apt.trim());
+      t(P(3, 'Step5City_FLD'), d.city.trim());
+      t(P(3, 'Step5State_FLD'), d.state.trim().toUpperCase().slice(0, 2));
+      t(P(3, 'Step5Zip_FLD'), digits(d.zip).slice(0, 5));
+
+      if (url) URL.revokeObjectURL(url);
+      url = URL.createObjectURL(new Blob([(await doc.save()) as BlobPart], { type: 'application/pdf' }));
+      (document.getElementById('dl-44') as HTMLAnchorElement).href = url;
+      out.hidden = false;
+      // Lead: name + contact + event TYPE only. Never SSN, income or dates.
+      fetch('/api/lead', { method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({
+        first: d.first.trim(), last: d.last.trim(), phone: d.phone.trim(), email: (d.email || '').trim(), zip: digits(d.zip).slice(0, 5),
+        source: '602medicare.com IRMAA appeal (did it themselves)', consent: 'yes',
+        message: `Filled out their own SSA-44 IRMAA appeal on 602medicare.com/irmaa-appeal/. Event: ${evs.map((v) => EVLBL[v]).join(', ')}. Call to help them attach proof and send it to Social Security.`,
+      }) }).catch(() => {});
+      out.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      out.focus({ preventScroll: true });
+    } catch (x) {
+      err.textContent = (x as Error).message || 'Something went wrong. Please call us and we’ll fill it out with you.';
+      err.hidden = false;
+      err.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  });
+</script>
+
+<style>
+  .fx [hidden], .ia [hidden] { display: none !important; }
+  .ia { max-width: 52rem; }
+  .ia h2 { margin: var(--s-6) 0 var(--s-3); color: var(--navy); }
+  .ia h2:first-child { margin-top: 0; }
+  .ia p { line-height: 1.65; }
+  .ia__tbl { overflow-x: auto; margin: var(--s-4) 0 var(--s-2); }
+  .ia__tbl table { width: 100%; min-width: 34rem; border-collapse: collapse; font-size: var(--t-sm); }
+  .ia__tbl th { background: var(--navy); color: #fff; text-align: left; padding: 0.6rem 0.8rem; }
+  .ia__tbl td { padding: 0.55rem 0.8rem; border-bottom: 1px solid var(--rule-soft); }
+  .ia__tbl td:first-child { font-weight: 700; color: var(--navy); }
+  .ia__tbl tr:nth-child(even) td { background: var(--surface); }
+  .ia__small { font-size: var(--t-sm); color: var(--ink-muted); }
+  .ia__ev { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2) var(--s-6); padding-left: 1.4rem; }
+  .ia__ev span { color: var(--ink-muted); font-size: var(--t-sm); }
+  .ia__steps { display: grid; gap: var(--s-3); padding-left: 1.4rem; line-height: 1.6; }
+  .fx__h { margin: 0; color: var(--navy); }
+  .fx__choose { max-width: 46rem; margin-bottom: var(--s-4); padding: var(--s-5); border-radius: 14px; background: var(--navy); color: #fff; }
+  .fx__choose-h { margin: 0 0 var(--s-2); font-family: var(--font-display); font-size: var(--t-xl); color: #fff; }
+  .fx__choose-p { margin: 0 0 var(--s-4); color: #dfe5f2; line-height: 1.6; }
+  .fx { display: grid; gap: var(--s-6); max-width: 46rem; }
+  .fx__tcpa { margin-top: var(--s-3); max-width: 40rem; font-size: var(--t-xs, 0.8rem); color: var(--ink-muted, #5b6472); line-height: 1.5; }
+  .fx__private { display: inline-block; padding: var(--s-3) var(--s-4); border-radius: 10px; background: var(--surface); border: 1px solid var(--rule-soft); font-size: var(--t-sm); }
+  .fx__form fieldset { margin: 0 0 var(--s-5); padding: var(--s-5); border: 1px solid var(--rule-soft); border-radius: 14px; background: var(--surface); display: grid; gap: var(--s-4); }
+  .fx__form legend { padding: 0 var(--s-2); font-family: var(--font-display); font-size: var(--t-xl); color: var(--navy); display: flex; align-items: center; gap: var(--s-2); }
+  .fx__n { display: inline-grid; place-items: center; width: 2rem; height: 2rem; border-radius: 50%; background: var(--navy); color: #fff; font-family: var(--font-body, inherit); font-size: var(--t-sm); font-weight: 700; }
+  .fx__form label { display: grid; gap: 0.35rem; font-weight: 600; font-size: var(--t-sm); color: var(--ink); }
+  .fx__form input:not([type=radio]):not([type=checkbox]) {
+    width: 100%; padding: 0.75rem 0.85rem; border: 1px solid var(--rule); border-radius: 10px; background: #fff;
+    font: inherit; font-weight: 400; font-size: var(--t-base); color: var(--ink);
+  }
+  .fx__form input:focus { outline: 3px solid color-mix(in srgb, var(--navy) 30%, transparent); border-color: var(--navy); }
+  .fx__hint { font-weight: 400; color: var(--ink-muted); font-size: var(--t-xs); }
+  .fx__grid { display: grid; gap: var(--s-3); }
+  .fx__grid--name { grid-template-columns: 2fr 1fr 2fr 1fr; }
+  .fx__grid--addr { grid-template-columns: 4fr 1fr; }
+  .fx__grid--city { grid-template-columns: 3fr 1fr 1.5fr; }
+  .fx__grid--2 { grid-template-columns: 1fr 1fr; }
+  .fx__grid--3 { grid-template-columns: 1fr 2fr 2fr; }
+  .fx__checks { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s-2) var(--s-4); }
+  .fx__checks label { display: flex; align-items: flex-start; gap: 0.55rem; font-weight: 400; font-size: var(--t-base); }
+  .fx__checks input { width: 1.2rem; height: 1.2rem; margin-top: 0.2rem; accent-color: var(--navy); flex: none; }
+  .fx__radio { display: flex; flex-wrap: wrap; gap: var(--s-2) var(--s-5); align-items: center; font-size: var(--t-base); }
+  .fx__radio > span { width: 100%; font-weight: 600; font-size: var(--t-sm); }
+  .fx__radio label { display: inline-flex; align-items: center; gap: 0.5rem; font-weight: 400; font-size: var(--t-base); }
+  .fx__radio input[type=radio] { width: 1.2rem; height: 1.2rem; accent-color: var(--navy); }
+  .fx__s3 { display: grid; gap: var(--s-4); }
+  .fx__p { margin: 0; font-size: var(--t-sm); color: var(--ink-body); line-height: 1.6; }
+  .fx__err { padding: var(--s-3) var(--s-4); border-radius: 10px; background: color-mix(in srgb, var(--red) 8%, #fff); border-left: 4px solid var(--red); color: var(--ink); font-weight: 600; }
+  .fx__out { padding: var(--s-6); border-radius: 16px; border: 2px solid var(--navy); background: var(--surface); box-shadow: 0 14px 34px rgb(1 20 89 / 0.14); }
+  .fx__out h2 { margin: 0 0 var(--s-4); color: var(--navy); }
+  .fx__dl { display: flex; flex-wrap: wrap; gap: var(--s-3); margin-bottom: var(--s-5); }
+  .fx__next { display: grid; gap: var(--s-3); padding-left: 1.3rem; font-size: var(--t-base); line-height: 1.6; }
+  .fx__links { display: flex; flex-wrap: wrap; gap: var(--s-4); margin-top: var(--s-2); }
+  .fx__check { margin-top: var(--s-5); padding: var(--s-5); border-radius: 12px; background: color-mix(in srgb, var(--red) 5%, var(--surface)); border: 2px solid var(--red); }
+  .fx__check p { margin: 0 0 var(--s-3); line-height: 1.6; }
+  .fx__or { margin: var(--s-3) 0 0 !important; font-size: var(--t-sm); }
+  @media (max-width: 640px) {
+    .fx__grid--name, .fx__grid--city, .fx__grid--2 { grid-template-columns: 1fr 1fr; }
+    .fx__grid--city label:first-child, .fx__grid--3 label:first-child { grid-column: 1 / -1; }
+    .fx__grid--3 { grid-template-columns: 1fr 1fr; }
+    .fx__grid--addr, .fx__checks, .ia__ev { grid-template-columns: 1fr; }
+    .fx__form fieldset { padding: var(--s-4); }
+  }
+</style>

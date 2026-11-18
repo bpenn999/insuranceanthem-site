@@ -96,7 +96,7 @@ Social Security recognizes exactly eight events:
 
 Think about the timing. Someone who retired in {{irmaaFiledYear}} had a full working salary on their {{irmaaTaxYear}} return. Social Security uses that return to set their {{figYear}} premium. They are now retired, living on a fraction of that income, paying a surcharge calculated on a salary they no longer earn.
 
-That is precisely what SSA-44 exists for. You file it with proof of the event — a letter from your employer, a retirement date — and an estimate of your current income. It is a two-page form and it is worth real money.
+That is precisely what SSA-44 exists for. You file it with proof of the event — a letter from your employer, a retirement date — and an estimate of your current income. It is a two-page form and it is worth real money. [We'll fill out your SSA-44 for you](/irmaa-appeal/), or you can fill it out yourself on your own device.
 
 What does **not** qualify: simply having had a good year followed by a worse one, or a one-off capital gain. The event has to be one of the eight.
 

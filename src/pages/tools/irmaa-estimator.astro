@@ -139,6 +139,7 @@ const standard = irmaaBrackets[0];
         you retired and your income is now a fraction of what your {IRMAA_TAX_YEAR} return showed,
         you are very likely paying a surcharge you do not owe. Filing SSA-44 with proof of the
         event and your current income is usually straightforward — and it is worth real money.
+        <a class="link" href="/irmaa-appeal/">Get help with your SSA-44</a>.
       </p>
       <p>
         Simply having a good year in {IRMAA_TAX_YEAR} and a worse one since is <em>not</em> on the
@@ -215,7 +216,7 @@ const standard = irmaaBrackets[0];
           `<p>On a ${IRMAA_TAX_YEAR} MAGI of ${usd(magi)}, your ${PLAN_YEAR} Part B premium is <strong>${usd(partBTotal, 2)}</strong> a month rather than the standard ${usd(partB.standardPremium, 2)}${partDSurcharge ? `, and a further <strong>${usd(partDSurcharge, 2)}</strong> a month is added to whatever your Part D plan charges` : ''}. That is <strong>${usd(monthlyExtra * 12)}</strong> more over the year than somebody in the standard bracket.</p>`
         );
         paras.push(
-          `<p><strong>If you have retired since ${IRMAA_TAX_YEAR}, read this bit.</strong> Retirement is one of Social Security's eight qualifying life-changing events. Filing form SSA-44 with proof of the event and your current income can move you down — sometimes all the way to standard. It is one of the most under-used forms in Medicare, and for a bracket like yours it is worth real money.</p>`
+          `<p><strong>If you have retired since ${IRMAA_TAX_YEAR}, read this bit.</strong> Retirement is one of Social Security's eight qualifying life-changing events. Filing form SSA-44 with proof of the event and your current income can move you down — sometimes all the way to standard. It is one of the most under-used forms in Medicare, and for a bracket like yours it is worth real money. <a class="link" href="/irmaa-appeal/">We can fill it out for you</a>.</p>`
         );
       } else {
         paras.push(
