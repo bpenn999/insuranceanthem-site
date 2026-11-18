@@ -1,0 +1,121 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageHero from '../components/PageHero.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Faq from '../components/Faq.astro';
+import site, { abs } from '../config/site';
+import { partners } from '../config/partners';
+
+/**
+ * Dental insurance: the page behind the footer link. Its job is to send
+ * Valley seniors to Brian's online dental enrollment link (partners.ncdDental).
+ * Brian's rule (11/11): no plan or carrier names in benefit copy. Use
+ * "up to $X" with "select plans" fine print. The figures come from the
+ * carrier's published plan summaries, checked 2026-11-18 (see partners.ts).
+ * No TPMO line in the body: the footer renders it exactly once (audit.mjs).
+ */
+
+const PATH = '/dental-insurance/';
+const dental = partners.ncdDental;
+const title = 'Dental Insurance for Seniors in Phoenix | Up to $10,000/yr';
+const description =
+  'Medicare skips routine dental care. Valley seniors can compare dental plans with up to $10,000 a year in benefits and 100% cleanings, and enroll online.';
+const published = '2026-11-18';
+
+const breadcrumbs = [
+  { name: 'Home', path: '/' },
+  { name: 'Dental Insurance', path: PATH },
+];
+
+const figures = [
+  { n: 'Up to $10,000', l: 'a year in dental benefits, per person, on select plans' },
+  { n: '100%', l: 'coverage for cleanings and exams' },
+  { n: 'No wait', l: 'for preventive, basic or major care on select plans' },
+  { n: 'Implants', l: 'covered on select plans, up to $3,000 a year' },
+];
+
+const why = [
+  { t: 'Medicare leaves your teeth out', d: 'Original Medicare does not pay for cleanings, fillings, extractions, crowns, dentures or implants, and a Medigap plan does not add them. A separate dental plan fills the gap.' },
+  { t: 'Benefits big enough for real work', d: 'Lower-priced dental plans often cap out at $750 to $1,500 a year, and a single crown with a root canal can use that up. These plans go as high as $10,000 a year per person.' },
+  { t: 'Use it right away', d: 'On select plans, preventive, basic and major services are covered without the usual 6- or 12-month wait.' },
+  { t: 'Fits next to any Medicare plan', d: 'A dental plan works alongside Original Medicare, a Medigap plan or a Medicare Advantage plan. If your Advantage plan has a small dental allowance, this sits on top of it.' },
+];
+
+const faqs = [
+  { q: 'Does Medicare cover dental care?', a: 'Original Medicare generally does not cover routine dental care: cleanings, fillings, extractions, dentures or most other dental work. It covers dental services only in limited cases tied to a covered medical treatment. Medigap plans follow Original Medicare and do not add dental. Some Medicare Advantage plans include dental benefits, often with a lower annual limit.' },
+  { q: 'How much do these dental plans cost?', a: 'Plans start at $35 a month, and plans with higher annual maximums cost more. You will see exact Arizona prices before you enroll. Prices and availability vary by state.' },
+  { q: 'Is there a waiting period?', a: 'On select plans there is no waiting period for preventive, basic or major services. Lower-priced plans may have a waiting period for major work, and implant coverage can have its own waiting period or limit. Each plan summary on the enrollment site lists its waiting periods.' },
+  { q: 'Can I add dental if I already have a Medicare Advantage plan?', a: 'Yes. A stand-alone dental plan is separate insurance, so you can keep your Medicare Advantage plan and add one on top of it.' },
+  { q: 'Can someone help me pick a plan?', a: `Yes. Call ${site.agent.name} at ${site.phone.display}. Brian works from Anthem, can compare the plans with you and will help you enroll. There is no cost for his help.` },
+];
+
+const schemaNodes = [
+  {
+    '@type': 'WebPage',
+    '@id': `${abs(PATH)}#webpage`,
+    url: abs(PATH),
+    name: title,
+    description,
+    isPartOf: { '@id': `${site.origin}/#website` },
+    inLanguage: 'en-US',
+    datePublished: published,
+    dateModified: published,
+    author: { '@id': `${site.origin}/#organization` },
+    reviewedBy: { '@id': `${site.origin}/#brian-penner` },
+    publisher: { '@id': `${site.origin}/#organization` },
+  },
+  {
+    '@type': 'FAQPage',
+    mainEntity: faqs.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
+  },
+];
+---
+<BaseLayout title={title} description={description} path={PATH} breadcrumbs={breadcrumbs} schemaNodes={schemaNodes} publishedAt={published} modifiedAt={published}>
+  <PageHero
+    eyebrow="Dental insurance · Enroll online today"
+    title="Dental coverage with up to $10,000 a year in benefits"
+    lede="Medicare does not cover cleanings, fillings, crowns, dentures or implants. Add a dental plan with 100% cleanings, implant coverage and, on select plans, no waiting period for major work. Compare plans and enroll online in a few minutes."
+    breadcrumbs={breadcrumbs}
+  >
+    <div class="dn__actions">
+      <a href={dental.url} target="_blank" rel="sponsored noopener" class="btn dn__big">See dental plans &amp; enroll online →</a>
+      <a href={site.phone.href} class="btn btn--ghost">Questions? {site.phone.display}</a>
+    </div>
+    <p class="dn__note">Plans start at $35/month. Prices and benefits vary by state and plan.</p>
+    <ul class="dn__stats">
+      {figures.map((f) => (<li><span class="dn__n">{f.n}</span><span class="dn__l">{f.l}</span></li>))}
+    </ul>
+  </PageHero>
+
+  <section class="section band--tint">
+    <div class="wrap">
+      <SectionHead eyebrow="Why add a dental plan" title="The coverage Medicare skips." />
+      <div class="grid dn__grid">
+        {why.map((c) => (<div class="card"><h3>{c.t}</h3><p>{c.d}</p></div>))}
+      </div>
+      <div class="dn__actions" style="margin-top: var(--s-6);">
+        <a href={dental.url} target="_blank" rel="sponsored noopener" class="btn dn__big">Compare plans &amp; enroll →</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="wrap">
+      <SectionHead eyebrow="Good questions" title="Dental coverage, answered." />
+      <Faq items={faqs} openFirst />
+      <p class="dn__fine">{dental.disclosure} Benefit details are from the carrier's published plan summaries (November 2026). The plan certificate governs. Medicare's dental coverage rules are at <a href="https://www.medicare.gov/coverage/dental-services">Medicare.gov</a>.</p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .dn__actions { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
+  .dn__big { font-size: 1.08rem; }
+  .dn__note { margin-top: var(--s-3); font-size: var(--t-sm); color: var(--ink-muted); }
+  .dn__stats { list-style: none; padding: 0; margin-top: var(--s-6); display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: var(--s-3); max-width: 56rem; }
+  .dn__stats li { display: grid; gap: 0.25rem; padding: var(--s-4); border: 1px solid var(--rule-soft); border-radius: 12px; background: color-mix(in srgb, var(--surface) 94%, transparent); }
+  .dn__n { font-family: var(--font-display); font-size: var(--t-xl); line-height: 1.05; color: var(--navy); }
+  .dn__l { font-size: var(--t-xs); color: var(--ink-muted); }
+  .dn__grid { grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); margin-top: var(--s-5); }
+  .dn__fine { margin-top: var(--s-6); font-size: var(--t-xs); color: var(--ink-muted); max-width: 62rem; }
+</style>
