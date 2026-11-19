@@ -214,7 +214,12 @@ const faqs = [
             if (s && s.soon) done.querySelector('[data-done-soon]').hidden = false;
             try { localStorage.setItem('cx_reg', b.id); } catch (e) {}
             window.dataLayer = window.dataLayer || []; window.dataLayer.push({ event: 'class_registered' });
-            if (typeof window.fbq === 'function') window.fbq('track', 'CompleteRegistration');
+            if (typeof window.fbq === 'function') {
+              var ph = (f.phone || '').replace(/\D/g, ''); if (ph.length === 10) ph = '1' + ph;
+              window.fbq('init', '1480958159463999', { em: String(f.email).trim().toLowerCase(), ph: ph, fn: String(f.first).trim().toLowerCase(), ln: String(f.last).trim().toLowerCase(), zp: String(f.zip || '').slice(0, 5) });
+              window.fbq('track', 'Lead', { content_name: 'Medicare 101 Class' }, { eventID: 'lead-' + b.id });
+              window.fbq('track', 'CompleteRegistration', { content_name: 'Medicare 101 Class' }, { eventID: 'reg-' + b.id });
+            }
             done.scrollIntoView({ behavior: 'smooth', block: 'center' });
           })
           .catch(function (x) {
@@ -225,6 +230,15 @@ const faqs = [
         function show(m, html) { if (html) err.innerHTML = m; else err.textContent = m; err.hidden = false; }
       });
     })();
+  </script>
+  <script is:inline>
+    /* Meta pixel "Turning 65" (1480958159463999), act_42845669 — Medicare 101 Class ads (2026-11-19) */
+    !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+    n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+    n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+    t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+    document,'script','https://connect.facebook.net/en_US/fbevents.js');
+    fbq('init','1480958159463999');fbq('track','PageView');
   </script>
 </BaseLayout>
 
