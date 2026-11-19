@@ -338,6 +338,9 @@ const weekdays = [
     // card to Appointment Set and stops the no-show/replay texts.
     const qs = new URLSearchParams(location.search);
     const classTopic = qs.get('topic') === 'webinar';
+    // topic="rate-reset" (/medicare-supplement-quote/, 2026-11-19): label the booking and
+    // carry the rate the visitor was just shown (window.__rateQuote, set by that page).
+    const rateTopic = root.dataset.topic === 'rate-reset';
     const classReg = (qs.get('r') || '').replace(/[^a-z0-9]/g, '').slice(0, 12);
     const carried = surveyReadBack(survey);
     if (carried) {
@@ -921,7 +924,7 @@ const weekdays = [
         locationType: cfg.locationType,
         // The home-page survey's answers, when the visitor came through it.
         // …and how they found the site, so it is on the appointment itself.
-        notes: (classTopic ? 'MEDICARE 101 CLASS — ' : '') + (t65 ? 'TURNING 65 — ' : '') + [notesWithSurvey(details.notes, survey), attributionNote(readAttribution(document.cookie)).join(' · ')]
+        notes: (rateTopic ? 'MEDIGAP RATE RESET — ' + (((window as unknown as { __rateQuote?: string }).__rateQuote) || 'no quote shown') + ' — ' : '') + (classTopic ? 'MEDICARE 101 CLASS — ' : '') + (t65 ? 'TURNING 65 — ' : '') + [notesWithSurvey(details.notes, survey), attributionNote(readAttribution(document.cookie)).join(' · ')]
           .filter(Boolean).join(' — '),
       };
 

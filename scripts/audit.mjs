@@ -47,6 +47,7 @@ const STANDALONE_DOCS = new Set([
   '/turning-65-medicare-help/',       // Google Ads landing page (2026-10-23): noindex, own slim chrome
   '/medicare-101-class/',             // evergreen class registration (2026-11-19): noindex, own slim chrome
   '/medicare-101-class/watch/',       // class room (2026-11-19): noindex, own slim chrome
+  '/medicare-supplement-quote/',      // Medigap rate-check landing (2026-11-19): noindex, own slim chrome
   '/medicare-101-seminar/',           // in-person seminar registration (2026-11-11): noindex, own slim chrome
 ]);
 const isStandaloneDoc = (f) =>

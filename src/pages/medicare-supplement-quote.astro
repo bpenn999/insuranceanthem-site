@@ -1,0 +1,264 @@
+---
+/**
+ * /medicare-supplement-quote/ — Medigap rate-check landing page (built 2026-11-19).
+ *
+ * The ad angle: the official "Medicare & You 2027" handbook, page 79, says all
+ * Medigap plans with the same letter offer the same basic benefits no matter
+ * which company sells them — so if your rate keeps going up, shop it.
+ *
+ * The quoter shows ONE monthly rate for Plan G or Plan N with NO carrier name
+ * (Brian 11/19: "don't quote AARP… just the rate"). Rates come from
+ * public/data/medigap-rates-az.json, built offline by
+ * ~/Claude/Projects/medsupp-quoter (harvest.mjs pulls CSG rates through X,
+ * build.mjs keeps the lowest approved-carrier rate per ZIP3/age/gender and that
+ * carrier's household-discount %). AARP/UHC, Bankers and Select Health are
+ * excluded at build time. X's own household-rate math is wrong (returned 70%
+ * for a 7% discount), so the discount is computed here from the % alone.
+ *
+ * Lead step = booking (Brian 11/19: "schedule your appointment and reset your rate"):
+ * BookingPicker topic="rate-reset" prefixes the appointment notes with
+ * MEDIGAP RATE RESET + the quote shown (window.__rateQuote). Same calendar as
+ * /book/ until Brian creates a separate rate-reset calendar in X.
+ * `landing` = noindex, no site chrome; out of the sitemap; in audit STANDALONE_DOCS.
+ */
+import BaseLayout from '../layouts/BaseLayout.astro';
+import BookingPicker from '../components/BookingPicker.astro';
+import site from '../config/site';
+import { tpmoText, nonAffiliation } from '../data/compliance';
+
+const title = 'Check Your Medicare Supplement Rate — Same Letter, Same Benefits';
+const description =
+  'Same Medigap letter, same benefits. See an Arizona Plan G or Plan N rate in seconds, then get a free quote from a licensed local agent.';
+const tel = site.phone.href;
+const phone = site.phone.display;
+const ages = Array.from({ length: 26 }, (_, i) => 65 + i);
+
+const faqs = [
+  { q: 'Is a Plan G from one company really the same as another company’s Plan G?', a: 'Yes. Medigap plans are standardized by federal law. The official Medicare & You 2027 handbook (page 79) says all Medigap plans with the same letter offer the same basic benefits, no matter where you live or which insurance company you buy the policy from. What differs is the price, how the company raises rates over time, and extras like household discounts.' },
+  { q: 'Will I have to answer health questions to switch?', a: 'Usually, yes. Outside your first six-month Medigap open enrollment, most companies in Arizona ask health questions before approving a new policy. We check that with you first, and you keep your current plan until the new one is approved — so there is no gap.' },
+  { q: 'What is a household discount?', a: 'Many companies take a percentage off your premium when you live with another adult — often a spouse — and sometimes only if they also have a policy with the same company. The percentage and the rules differ by company, so we confirm whether you qualify before you apply.' },
+  { q: 'Why don’t you show the company name?', a: 'Because the benefits are identical by letter, the price is what matters first. When we talk, we show you the companies, their rate-increase history and their discounts side by side, and you pick.' },
+  { q: 'What does this cost me?', a: 'Nothing. We are paid by the insurance company you choose, and the premium is the same whether you buy through us or directly. There is no obligation.' },
+];
+---
+
+<BaseLayout {title} {description} path="/medicare-supplement-quote/" density="light" landing>
+  <header class="lp-head">
+    <div class="wrap lp-head__row">
+      <a class="lp-brand" href="/" aria-label={`${site.name} home`}>
+        <img src="/logo/badge-128.webp" width="52" height="52" alt="" />
+        <span class="lp-word"><span class="lp-word__mark">{site.wordmark.mark}</span>{site.wordmark.product}</span>
+      </a>
+      <a class="lp-head__call" href={tel}>📞 {phone}</a>
+    </div>
+  </header>
+
+  <section class="lp-hero">
+    <div class="wrap lp-hero__grid">
+      <div class="lp-copy">
+        <p class="eyebrow">Medicare Supplement rate check · Arizona</p>
+        <h1>Same letter. Same benefits. <span class="lp-hl">Why pay more?</span></h1>
+        <p class="lp-lede">If your Medicare Supplement premium goes up year after year, read what Medicare’s own handbook says — then see what Plan G or Plan N costs today.</p>
+      </div>
+
+      <figure class="hb">
+        <img class="hb__cover" src="/img/medicare-you-2027-cover.webp" width="360" height="467" alt="Cover of the official Medicare & You 2027 handbook" />
+        <div>
+          <img class="hb__page" src="/img/medicare-you-2027-p79b.webp" width="900" height="189" alt="Medicare & You 2027, page 79: All Medigap plans with the same letter offer the same basic benefits, no matter where you live or which insurance company you buy the policy from." />
+          <figcaption>“Medicare &amp; You 2027,” the official U.S. government Medicare handbook, page 79.</figcaption>
+        </div>
+      </figure>
+
+      <div class="qt" id="quote">
+        <h2 class="qt__h">See your rate in 10 seconds</h2>
+        <form class="qt__form" data-q novalidate>
+          <div class="qt__plans" role="radiogroup" aria-label="Plan">
+            <label><input type="radio" name="plan" value="G" checked /><span>Plan G</span></label>
+            <label><input type="radio" name="plan" value="N" /><span>Plan N</span></label>
+          </div>
+          <label class="qt__f">ZIP code
+            <input name="zip" inputmode="numeric" autocomplete="postal-code" maxlength="5" pattern="[0-9]{5}" required placeholder="85086" />
+          </label>
+          <div class="qt__row">
+            <label class="qt__f">Age
+              <select name="age" required>
+                {ages.map((a) => <option value={a} selected={a === 70}>{a === 90 ? '90+' : a}</option>)}
+              </select>
+            </label>
+            <label class="qt__f">Sex
+              <select name="gender" required><option value="F">Female</option><option value="M">Male</option></select>
+            </label>
+          </div>
+          <label class="qt__chk"><input type="checkbox" name="tobacco" /> I’ve used tobacco in the last 12 months</label>
+          <button class="qt__btn" type="submit">Show my rate</button>
+          <p class="qt__err" data-q-err hidden></p>
+        </form>
+
+        <div class="qt__res" data-q-res hidden>
+          <p class="qt__label" data-q-label></p>
+          <p class="qt__price"><span data-q-price></span><small>/mo</small></p>
+          <p class="qt__hh" data-q-hh></p>
+          <p class="qt__fine">Estimated non-tobacco monthly rate from one of the companies we represent, for your ZIP, age and sex. Your exact rate is set by the insurance company when you apply and may require health questions.</p>
+          <a class="qt__btn qt__btn--go" href="#book">Schedule my rate-reset call →</a>
+          <a class="qt__call" href={tel}>or call {phone}</a>
+          <button type="button" class="qt__again" data-q-again>Change my answers</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-sec lp-sec--soft" id="book">
+    <div class="wrap lp-narrow">
+      <h2>Schedule your free rate-reset call</h2>
+      <p class="lp-note lp-note--top">Pick a time and Brian calls you. He checks every company we represent in your ZIP, their rate-increase history and whether you qualify for a household discount, then shows you what you'd pay. No cost, no obligation, and you keep your current plan until a new one is approved. Times are Arizona time.</p>
+      <BookingPicker topic="rate-reset" />
+      <p class="lp-note">Rather not pick a time? Call or text <a href={tel}>{phone}</a>.</p>
+    </div>
+  </section>
+
+  <section class="lp-sec">
+    <div class="wrap lp-narrow">
+      <h2>Why rates climb — and what you can do</h2>
+      <div class="lp-two">
+        <div class="lp-card">
+          <p class="lp-card__tag">The benefits</p>
+          <h3>Fixed by law</h3>
+          <p>A Plan G pays the same Medicare-approved costs with every company. A Plan N does too. Switching companies doesn’t change your doctors either — any provider that takes Medicare takes your supplement.</p>
+        </div>
+        <div class="lp-card">
+          <p class="lp-card__tag">The price</p>
+          <h3>Set by each company</h3>
+          <p>Each company prices and raises its own rates. Two neighbors with the same Plan G can pay very different premiums. Shopping every couple of years is how you keep yours in check.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-sec lp-sec--soft">
+    <div class="wrap lp-narrow">
+      <h2>Common questions</h2>
+      <div class="lp-faq">
+        {faqs.map((f) => (<details><summary>{f.q}</summary><p>{f.a}</p></details>))}
+      </div>
+    </div>
+  </section>
+
+  <footer class="lp-foot">
+    <div class="wrap">
+      <p>{tpmoText()} {nonAffiliation} {site.agent.name} · NPN {site.agent.npn} · licensed independent insurance agent. Rates shown are estimates for illustration from quoting-service data and are not a guarantee of coverage or price; premiums, discounts and eligibility are determined by the insurance company. Household discount amounts and rules vary by company and state. Medicare Supplement insurance is not connected with or endorsed by the U.S. government or the federal Medicare program. The Medicare &amp; You handbook is a publication of the Centers for Medicare &amp; Medicaid Services.</p>
+      <p>© {new Date().getFullYear()} {site.legalName}, a DBA of {site.parentCompany} · {site.address.display} · <a href={`mailto:${site.email}`}>{site.email}</a></p>
+      <p class="lp-foot__links"><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/">602medicare.com</a></p>
+    </div>
+  </footer>
+
+  <script is:inline>
+    (function () {
+      var DATA = null, last = null;
+      var money = function (n) { return '$' + n.toFixed(2); };
+      function load() { return DATA ? Promise.resolve(DATA) : fetch('/data/medigap-rates-az.json').then(function (r) { return r.json(); }).then(function (j) { DATA = j; return j; }); }
+      var qf = document.querySelector('[data-q]'), res = document.querySelector('[data-q-res]'), err = document.querySelector('[data-q-err]');
+      function fail(msg) { err.textContent = msg; err.hidden = false; }
+      qf.addEventListener('submit', function (e) {
+        e.preventDefault(); err.hidden = true;
+        var f = new FormData(qf), zip = String(f.get('zip') || '').trim(), plan = f.get('plan'), age = +f.get('age'), g = f.get('gender');
+        if (!/^\d{5}$/.test(zip)) return fail('Please enter your 5-digit ZIP code.');
+        load().then(function (d) {
+          var row = d.z3[zip.slice(0, 3)];
+          var cell = row && row[plan] && row[plan][g] && row[plan][g][age - 65];
+          last = { zip: zip, plan: plan, age: age, gender: g, tobacco: !!f.get('tobacco') };
+          document.querySelector('[data-q-label]').textContent = 'Plan ' + plan + ' · ' + (age === 90 ? '90+' : age) + ' · ' + (g === 'F' ? 'female' : 'male') + ' · ' + zip;
+          var price = document.querySelector('[data-q-price]'), hh = document.querySelector('[data-q-hh]');
+          if (!cell || last.tobacco) {
+            price.textContent = 'Call for rate';
+            hh.textContent = last.tobacco ? 'Tobacco rates vary a lot by company — we’ll quote you exactly.' : 'We’ll pull every company for your ZIP and send you the numbers.';
+            last.rate = null;
+          } else {
+            last.rate = cell[0]; last.hh = cell[1];
+            price.textContent = money(cell[0]);
+            hh.innerHTML = cell[1] > 0
+              ? 'Possible household discount up to <strong>' + cell[1] + '%</strong> — as low as <strong>' + money(cell[0] * (1 - cell[1] / 100)) + '/mo</strong> if you qualify.'
+              : 'Ask us about household discounts with other companies.';
+          }
+          window.__rateQuote = 'Plan ' + plan + ', age ' + (age === 90 ? '90+' : age) + ', ' + g + ', ZIP ' + zip + (last.tobacco ? ', tobacco' : '') + (last.rate ? ' → shown $' + last.rate.toFixed(2) + '/mo (HH up to ' + last.hh + '%)' : ' → no rate shown');
+          qf.hidden = true; res.hidden = false;
+        }).catch(function () { fail('Rates did not load — please call ' + '<?>'.replace('<?>', document.querySelector('.lp-head__call').textContent.replace('📞', '').trim()) + '.'); });
+      });
+      document.querySelector('[data-q-again]').addEventListener('click', function () { res.hidden = true; qf.hidden = false; });
+
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  [hidden] { display: none !important; }
+  .lp-head { background: #fff; border-bottom: 1px solid var(--rule); }
+  .lp-head__row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 0.6rem; }
+  .lp-brand { display: flex; align-items: center; gap: 0.6rem; text-decoration: none; }
+  .lp-brand img { width: 52px; height: 52px; display: block; }
+  .lp-word { font-family: var(--font-display, inherit); font-weight: 800; font-size: 1.45rem; color: var(--navy); letter-spacing: -0.01em; }
+  .lp-word__mark { color: var(--red); }
+  .lp-head__call { font-weight: 800; font-size: 1.05rem; white-space: nowrap; color: var(--navy); text-decoration: none; }
+  .lp-hero { padding: clamp(1.5rem, 4vw, 3.5rem) 0; background: #fff; }
+  .lp-hero__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(300px, 400px); grid-template-areas: 'copy quote' 'fig quote'; gap: 0 2.5rem; align-items: start; }
+  .lp-copy { grid-area: copy; } .hb { grid-area: fig; } .qt { grid-area: quote; }
+  .lp-hero h1 { font-size: clamp(1.9rem, 4.4vw, 3rem); margin: 0.3em 0 0.45em; color: var(--ink); line-height: 1.1; }
+  .lp-hl { color: var(--red); }
+  .lp-lede { font-size: clamp(1.05rem, 1.3vw, 1.2rem); max-width: 58ch; margin: 0 0 1.4rem; color: var(--ink-body); }
+  .hb { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: 1rem; align-items: center; margin: 0; padding: 1rem; border: 1px solid var(--rule); border-radius: 14px; background: var(--navy-wash); }
+  .hb__cover { width: 110px; height: auto; border-radius: 4px; box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18); transform: rotate(-3deg); }
+  .hb__page { width: 100%; height: auto; border-radius: 6px; background: #fff; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+  .hb figcaption { font-size: 0.85rem; color: var(--ink-muted); margin-top: 0.5rem; }
+  .qt { border: 2px solid var(--navy); border-radius: 16px; padding: 1.4rem; background: #fff; box-shadow: 0 10px 30px rgba(10, 30, 70, 0.12); }
+  .qt__h { font-size: 1.4rem; margin: 0 0 1rem; color: var(--navy); }
+  .qt__form { display: grid; gap: 0.85rem; }
+  .qt__plans { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+  .qt__plans label { position: relative; }
+  .qt__plans input { position: absolute; opacity: 0; }
+  .qt__plans span { display: flex; align-items: center; justify-content: center; min-height: 52px; border: 2px solid var(--rule); border-radius: 10px; font-weight: 800; font-size: 1.15rem; color: var(--ink); cursor: pointer; }
+  .qt__plans input:checked + span { border-color: var(--navy); background: var(--navy); color: #fff; }
+  .qt__plans input:focus-visible + span { outline: 3px solid var(--red); outline-offset: 2px; }
+  .qt__row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+  .qt__f { display: grid; gap: 0.3rem; font-weight: 700; font-size: 0.98rem; color: var(--ink); }
+  .qt input:not([type]), .qt input[inputmode], .qt select { min-height: 50px; padding: 0 0.8rem; border: 1.5px solid var(--rule-strong, #b8c0cc); border-radius: 8px; font-size: 1.1rem; background: #fff; color: var(--ink); width: 100%; box-sizing: border-box; }
+  .qt__chk { display: flex !important; grid-template-columns: none; align-items: flex-start; gap: 0.55rem; font-weight: 500 !important; font-size: 0.95rem !important; color: var(--ink-body) !important; }
+  .qt__chk input { width: 22px; height: 22px; margin-top: 2px; flex-shrink: 0; }
+  .qt__btn { display: flex; align-items: center; justify-content: center; width: 100%; min-height: 58px; border: 0; border-radius: 10px; background: var(--red); color: #fff; font-weight: 800; font-size: 1.2rem; cursor: pointer; text-decoration: none; }
+  .qt__btn:hover { background: var(--red-deep); color: #fff; }
+  .qt__btn[disabled] { opacity: 0.6; }
+  .qt__err { margin: 0; color: var(--red-deep); font-weight: 700; }
+  .qt__res { text-align: center; }
+  .qt__label { margin: 0; font-weight: 700; color: var(--ink-muted); }
+  .qt__price { margin: 0.2rem 0 0.4rem; font-family: var(--font-display, inherit); font-weight: 800; font-size: clamp(2.6rem, 7vw, 3.4rem); color: var(--navy); line-height: 1.1; }
+  .qt__price small { font-size: 1.1rem; color: var(--ink-muted); font-weight: 700; }
+  .qt__hh { margin: 0 0 0.8rem; padding: 0.7rem; border-radius: 10px; background: #fff6d6; color: var(--ink); font-size: 1.02rem; }
+  .qt__fine { font-size: 0.8rem; color: var(--ink-muted); margin: 0 0 1rem; }
+  .qt__call { display: block; margin-top: 0.7rem; font-weight: 700; color: var(--navy); }
+  .qt__again { margin-top: 0.6rem; background: none; border: 0; color: var(--navy); text-decoration: underline; font-size: 0.95rem; cursor: pointer; min-height: 44px; }
+  .lp-sec { padding: clamp(2rem, 5vw, 3.5rem) 0; background: #fff; }
+  .lp-sec--soft { background: var(--navy-wash); }
+  .lp-sec h2 { font-size: clamp(1.6rem, 3vw, 2.3rem); margin: 0 0 0.6em; color: var(--ink); }
+  .lp-narrow { max-width: 860px; }
+  .lp-note { margin: 1.2rem 0 0; max-width: 70ch; font-size: 1.05rem; color: var(--ink-body); }
+  .lp-note--top { margin: 0 0 1.2rem; }
+  .lp-two { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+  .lp-card { border: 1px solid var(--rule); border-radius: 14px; padding: 1.3rem; background: #fff; }
+  .lp-card__tag { margin: 0 0 0.3rem; font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--red); }
+  .lp-card h3 { font-size: 1.3rem; margin: 0 0 0.4rem; color: var(--ink); }
+  .lp-card p { margin: 0; font-size: 1.02rem; color: var(--ink-body); }
+  .lp-faq details { border-bottom: 1px solid var(--rule); padding: 0.9rem 0; }
+  .lp-faq summary { font-weight: 700; font-size: 1.1rem; cursor: pointer; color: var(--ink); }
+  .lp-faq p { margin: 0.6rem 0 0; font-size: 1.02rem; color: var(--ink-body); }
+  .lp-foot { padding: 2rem 0 3rem; border-top: 1px solid var(--rule); font-size: 0.85rem; color: var(--ink-muted); line-height: 1.6; background: #fff; }
+  .lp-foot a { color: inherit; }
+  @media (max-width: 860px) {
+    .lp-hero__grid, .lp-two { grid-template-columns: 1fr; }
+    .lp-hero__grid { grid-template-areas: 'copy' 'quote' 'fig'; gap: 1.4rem; }
+    .lp-word { font-size: 1.2rem; }
+    .lp-brand img { width: 42px; height: 42px; }
+    .lp-head__call { font-size: 0.95rem; }
+  }
+  @media (max-width: 520px) {
+    .hb { grid-template-columns: 1fr; justify-items: center; text-align: center; }
+    .hb__cover { width: 90px; }
+  }
+</style>
