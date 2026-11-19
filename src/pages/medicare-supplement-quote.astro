@@ -89,6 +89,14 @@ const faqs = [
               <select name="gender" required><option value="F">Female</option><option value="M">Male</option></select>
             </label>
           </div>
+          <div class="qt__row">
+            <label class="qt__f">Your plan today
+              <select name="current"><option value="">Choose…</option><option>Plan G</option><option>Plan N</option><option>Plan F</option><option>Other plan</option><option>No supplement</option><option>Not sure</option></select>
+            </label>
+            <label class="qt__f">What you pay now
+              <select name="paying"><option value="">Choose…</option><option value="0-150">Under $150</option><option value="150-200">$150–$200</option><option value="200-250">$200–$250</option><option value="250-300">$250–$300</option><option value="300-9999">Over $300</option><option value="?">Not sure</option></select>
+            </label>
+          </div>
           <label class="qt__chk"><input type="checkbox" name="tobacco" /> I’ve used tobacco in the last 12 months</label>
           <button class="qt__btn" type="submit">Show my rate</button>
           <p class="qt__err" data-q-err hidden></p>
@@ -97,6 +105,7 @@ const faqs = [
         <div class="qt__res" data-q-res hidden>
           <p class="qt__label" data-q-label></p>
           <p class="qt__price"><span data-q-price></span><small>/mo</small></p>
+          <p class="qt__save" data-q-save hidden></p>
           <p class="qt__hh" data-q-hh></p>
           <p class="qt__fine">Estimated non-tobacco monthly rate from one of the companies we represent, for your ZIP, age and sex. Your exact rate is set by the insurance company when you apply and may require health questions.</p>
           <a class="qt__btn qt__btn--go" href="#book">Schedule my rate-reset call →</a>
@@ -165,7 +174,9 @@ const faqs = [
         load().then(function (d) {
           var row = d.z3[zip.slice(0, 3)];
           var cell = row && row[plan] && row[plan][g] && row[plan][g][age - 65];
-          last = { zip: zip, plan: plan, age: age, gender: g, tobacco: !!f.get('tobacco') };
+          var cur = String(f.get('current') || ''), pay = String(f.get('paying') || '');
+          var payLabel = (qf.querySelector('[name=paying]').selectedOptions[0] || {}).text || '';
+          last = { zip: zip, plan: plan, age: age, gender: g, tobacco: !!f.get('tobacco'), current: cur, paying: pay };
           document.querySelector('[data-q-label]').textContent = 'Plan ' + plan + ' · ' + (age === 90 ? '90+' : age) + ' · ' + (g === 'F' ? 'female' : 'male') + ' · ' + zip;
           var price = document.querySelector('[data-q-price]'), hh = document.querySelector('[data-q-hh]');
           if (!cell || last.tobacco) {
@@ -179,8 +190,11 @@ const faqs = [
               ? 'Possible household discount up to <strong>' + cell[1] + '%</strong> — as low as <strong>' + money(cell[0] * (1 - cell[1] / 100)) + '/mo</strong> if you qualify.'
               : 'Ask us about household discounts with other companies.';
           }
-          window.__rateQuote = 'Plan ' + plan + ', age ' + (age === 90 ? '90+' : age) + ', ' + g + ', ZIP ' + zip + (last.tobacco ? ', tobacco' : '') + (last.rate ? ' → shown $' + last.rate.toFixed(2) + '/mo (HH up to ' + last.hh + '%)' : ' → no rate shown');
-          document.dispatchEvent(new CustomEvent('rate:shown', { detail: { plan: plan, rate: last.rate || 0 } }));
+          var save = document.querySelector('[data-q-save]'); save.hidden = true;
+          var lo = /^\d+-/.test(pay) ? +pay.split('-')[0] : 0;
+          if (last.rate && lo > last.rate) { save.innerHTML = 'You told us you pay <strong>' + payLabel + '</strong> a month. This rate is at least <strong>' + money(lo - last.rate) + '/mo</strong> less.'; save.hidden = false; }
+          window.__rateQuote = (cur ? 'Has ' + cur : 'Current plan not given') + (pay ? ', pays ' + payLabel + '/mo' : '') + ' | Quoted Plan ' + plan + ', age ' + (age === 90 ? '90+' : age) + ', ' + g + ', ZIP ' + zip + (last.tobacco ? ', tobacco' : '') + (last.rate ? ' → shown $' + last.rate.toFixed(2) + '/mo (HH up to ' + last.hh + '%)' : ' → no rate shown');
+          document.dispatchEvent(new CustomEvent('rate:shown', { detail: { plan: plan, rate: last.rate || 0, current: cur, paying: pay } }));
           qf.hidden = true; res.hidden = false;
         }).catch(function () { fail('Rates did not load — please call ' + '<?>'.replace('<?>', document.querySelector('.lp-head__call').textContent.replace('📞', '').trim()) + '.'); });
       });
@@ -244,6 +258,7 @@ const faqs = [
   .qt__label { margin: 0; font-weight: 700; color: var(--ink-muted); }
   .qt__price { margin: 0.2rem 0 0.4rem; font-family: var(--font-display, inherit); font-weight: 800; font-size: clamp(2.6rem, 7vw, 3.4rem); color: var(--navy); line-height: 1.1; }
   .qt__price small { font-size: 1.1rem; color: var(--ink-muted); font-weight: 700; }
+  .qt__save { margin: 0 0 0.6rem; padding: 0.7rem; border-radius: 10px; background: #e8f5ec; color: #11512a; font-size: 1.02rem; }
   .qt__hh { margin: 0 0 0.8rem; padding: 0.7rem; border-radius: 10px; background: #fff6d6; color: var(--ink); font-size: 1.02rem; }
   .qt__fine { font-size: 0.8rem; color: var(--ink-muted); margin: 0 0 1rem; }
   .qt__call { display: block; margin-top: 0.7rem; font-weight: 700; color: var(--navy); }
