@@ -74,3 +74,8 @@
 # originals live on cms.gov/ssa.gov. They are for visitors, not for search.
 /forms/*
   X-Robots-Tag: noindex
+
+# Medigap rate-check landing (2026-11-19): Meta pixel "Turning 65" + the /book/ picker APIs.
+/medicare-supplement-quote/
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://connect.facebook.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://www.facebook.com; connect-src 'self' https://roiypxggqlgbzrspkeoo.supabase.co https://backend.leadconnectorhq.com https://www.facebook.com https://connect.facebook.net; form-action 'self'; frame-src https://my.gogurux.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
