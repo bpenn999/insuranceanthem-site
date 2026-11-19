@@ -104,7 +104,7 @@ const faqs = [
 
         <div class="qt__res" data-q-res hidden>
           <p class="qt__label" data-q-label></p>
-          <p class="qt__price"><span data-q-price></span><small>/mo</small></p>
+          <p class="qt__price"><span data-q-price></span><small data-q-per>/mo</small></p>
           <p class="qt__save" data-q-save hidden></p>
           <p class="qt__hh" data-q-hh></p>
           <p class="qt__fine">Estimated non-tobacco monthly rate from one of the companies we represent, for your ZIP, age and sex. Your exact rate is set by the insurance company when you apply and may require health questions.</p>
@@ -180,12 +180,12 @@ const faqs = [
           document.querySelector('[data-q-label]').textContent = 'Plan ' + plan + ' · ' + (age === 90 ? '90+' : age) + ' · ' + (g === 'F' ? 'female' : 'male') + ' · ' + zip;
           var price = document.querySelector('[data-q-price]'), hh = document.querySelector('[data-q-hh]');
           if (!cell || last.tobacco) {
-            price.textContent = 'Call for rate';
+            price.textContent = 'Call for rate'; document.querySelector('[data-q-per]').hidden = true;
             hh.textContent = last.tobacco ? 'Tobacco rates vary a lot by company — we’ll quote you exactly.' : 'We’ll pull every company for your ZIP and send you the numbers.';
             last.rate = null;
           } else {
             last.rate = cell[0]; last.hh = cell[1];
-            price.textContent = money(cell[0]);
+            price.textContent = money(cell[0]); document.querySelector('[data-q-per]').hidden = false;
             hh.innerHTML = cell[1] > 0
               ? 'Possible household discount up to <strong>' + cell[1] + '%</strong> — as low as <strong>' + money(cell[0] * (1 - cell[1] / 100)) + '/mo</strong> if you qualify.'
               : 'Ask us about household discounts with other companies.';
