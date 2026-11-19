@@ -1,4 +1,5 @@
 ---
+import Testimonials from '../../components/Testimonials.astro';
 /**
  * /medicare-101-class/ — evergreen Medicare 101 Class registration (2026-11-19).
  *
@@ -11,7 +12,7 @@
  * medicareonmain.com — keep the two in step; only BRAND differs.
  *
  * The class is pre-recorded and plays at the chosen time — the page says so.
- * No testimonials (no fabricated reviews). noindex via `landing`, out of the
+ * Reviews = real verbatim Google reviews (src/data/testimonials.ts, with its disclosure). noindex via `landing`, out of the
  * sitemap, in scripts/audit.mjs STANDALONE_DOCS.
  */
 import BaseLayout from '../../layouts/BaseLayout.astro';
@@ -138,6 +139,14 @@ const faqs = [
           <p>He teaches it the way he’d explain it to his own parents: plain English, no pressure, and the honest trade-offs.</p>
           <p class="cx-small">{site.agent.title} · NPN {site.agent.npn}</p>
         </div>
+      </div>
+    </section>
+
+    <section class="cx-sec">
+      <div class="cx-wrap">
+        <p class="cx-eyebrow">What Brian's clients say</p>
+        <h2>5.0&nbsp;★ on Google</h2>
+        <Testimonials />
       </div>
     </section>
 
