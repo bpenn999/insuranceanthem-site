@@ -45,7 +45,8 @@ const STANDALONE_DOCS = new Set([
   '/tools/digital-quote-supplement/', // fillable Med Supp sheet (moved here 2026-10-17)
   '/tools/digital-quote-advantage/',
   '/turning-65-medicare-help/',       // Google Ads landing page (2026-10-23): noindex, own slim chrome
-  '/medicare-101-webinar/',           // webinar registration (2026-11-11): noindex, own slim chrome
+  '/medicare-101-class/',             // evergreen class registration (2026-11-19): noindex, own slim chrome
+  '/medicare-101-class/watch/',       // class room (2026-11-19): noindex, own slim chrome
   '/medicare-101-seminar/',           // in-person seminar registration (2026-11-11): noindex, own slim chrome
 ]);
 const isStandaloneDoc = (f) =>

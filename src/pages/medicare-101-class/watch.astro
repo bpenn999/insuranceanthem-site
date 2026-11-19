@@ -1,0 +1,320 @@
+---
+/**
+ * /medicare-101-class/watch/?r=<registration id> — the class room (2026-11-19).
+ *
+ * Before the chosen time: countdown. At the time: the recorded class plays
+ * "as live" from the right spot (no skipping ahead). Afterwards: a 48-hour
+ * replay with normal controls. The Book button and Shield Packages panel
+ * appear when the class reaches the Shield chapter (video.shieldAt) and at the
+ * end. Joins / progress / completion / questions go to /api/class → engine →
+ * X (showed / no-show / replay sequences). Video is HLS via /class-video/
+ * (same-origin proxy). Twin page on medicareonmain.com.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import site from '../../config/site';
+import { tpmoText, nonAffiliation } from '../../data/compliance';
+
+const BRAND = {
+  name: site.name, logo: '/logo/badge-128.webp', phone: site.phone.display, tel: site.phone.href,
+  navy: '#011459', accent: '#D10A0F', accentDeep: '#A00A0E', wash: '#EEF1F9',
+};
+---
+
+<BaseLayout title="Your Medicare 101 Class | 602Medicare" description="Your private Medicare 101 class room." path="/medicare-101-class/watch/" density="light" landing>
+  <div class="cw" style={`--cw-navy:${BRAND.navy};--cw-accent:${BRAND.accent};--cw-accent-deep:${BRAND.accentDeep};--cw-wash:${BRAND.wash}`}>
+    <header class="cw-head">
+      <div class="cw-wrap cw-head__row">
+        <a class="cw-brand" href="/" aria-label={`${BRAND.name} home`}><img src={BRAND.logo} width="40" height="40" alt="" /><span>{BRAND.name}</span></a>
+        <a class="cw-head__call" href={BRAND.tel}>📞 {BRAND.phone}</a>
+      </div>
+    </header>
+
+    <main class="cw-wrap cw-main">
+      <p class="cw-eyebrow">Medicare 101 Class</p>
+      <h1 data-title>Your class room</h1>
+      <p class="cw-sub" data-sub></p>
+
+      <div class="cw-stage" data-stage>
+        <video data-video playsinline preload="none"></video>
+        <div class="cw-cover" data-cover>
+          <div data-cover-before hidden>
+            <p class="cw-count-label">Your class starts in</p>
+            <p class="cw-count" data-count>—</p>
+            <p><a class="cw-link" data-cal href="#">📅 Add to my calendar</a></p>
+          </div>
+          <button class="cw-play" data-join hidden>▶ <span data-join-label>Join the class</span></button>
+          <div data-cover-msg hidden><p data-msg></p></div>
+        </div>
+        <div class="cw-bar" data-bar hidden>
+          <span class="cw-live" data-live-badge>● Playing now</span>
+          <button type="button" data-mute>🔊 Sound on</button>
+          <button type="button" data-fs>⛶ Full screen</button>
+        </div>
+      </div>
+
+      <div class="cw-book" data-book hidden>
+        <div>
+          <h2>Ready to build your plan?</h2>
+          <p>Book a free one-on-one call with Brian. He’ll check your doctors and prescriptions and show you real prices for your ZIP code. No obligation.</p>
+        </div>
+        <a class="cw-btn" data-book-link href="/book/?topic=webinar&src=class">Book my free call →</a>
+      </div>
+
+      <section class="cw-shield" data-shield hidden>
+        <h2>The Shield Packages</h2>
+        <p>A Medicare Supplement is the foundation. Then fill what’s left:</p>
+        <div class="cw-tiers">
+          <div class="cw-tier"><h3>Bronze</h3><ul><li>Medicare Supplement</li><li>Part D drug plan</li><li>Cancer, heart attack &amp; stroke protection</li></ul></div>
+          <div class="cw-tier"><h3>Silver</h3><ul><li>Everything in Bronze</li><li><strong>+ Short-term care</strong></li></ul></div>
+          <div class="cw-tier cw-tier--pop"><p class="cw-pop">Most popular</p><h3>Gold</h3><ul><li>Everything in Silver</li><li><strong>+ Dental, vision &amp; hearing</strong></li></ul></div>
+        </div>
+        <p class="cw-small">Prices depend on your age, ZIP code and health — Brian prices them on your call. Not every package fits every person.</p>
+      </section>
+
+      <section class="cw-q" data-q-wrap hidden>
+        <h2>Ask Brian a question</h2>
+        <p class="cw-small">Brian reads every question himself and gets back to you by text or phone — usually the same day.</p>
+        <form data-q>
+          <label for="cw-q-text" class="cw-sr">Your question</label>
+          <textarea id="cw-q-text" name="q" rows="3" maxlength="1000" placeholder="Type your question…" required></textarea>
+          <button class="cw-btn cw-btn--sm" type="submit">Send my question</button>
+          <p class="cw-ok" data-q-ok hidden>✅ Got it — Brian will get back to you.</p>
+        </form>
+      </section>
+
+      <p class="cw-help">Trouble watching? Call or text <a href={BRAND.tel}>{BRAND.phone}</a>.</p>
+    </main>
+
+    <footer class="cw-foot">
+      <div class="cw-wrap">
+        <p>This is an educational class. No plans are sold or enrolled during the class. {tpmoText()} {nonAffiliation} {site.agent.name} · NPN {site.agent.npn}.</p>
+        <p><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/">{BRAND.name}</a></p>
+      </div>
+    </footer>
+  </div>
+</BaseLayout>
+
+<script>
+  type Reg = {
+    id: string; first: string; tz: string; start: string; end: string; label: string; now: number;
+    phase: 'before' | 'live' | 'replay' | 'expired';
+    video: { src: string; poster: string; seconds: number; shieldAt: number };
+  };
+  const $ = <T extends HTMLElement = HTMLElement>(s: string) => document.querySelector<T>(s)!;
+  const video = $<HTMLVideoElement>('[data-video]');
+  const id = (new URLSearchParams(location.search).get('r') || (() => { try { return localStorage.getItem('cx_reg') || ''; } catch { return ''; } })())
+    .replace(/[^a-z0-9]/g, '').slice(0, 12);
+  let skew = 0; // server clock − browser clock
+  const now = () => Date.now() + skew;
+  let reg: Reg;
+  let mode: 'live' | 'replay' | null = null;
+  let joined = false;
+  let lastProgress = 0;
+  let revealed = false;
+
+  const send = (type: string, extra: Record<string, unknown> = {}) =>
+    fetch('/api/class', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ op: 'event', r: id, type, ...extra }), keepalive: true }).catch(() => {});
+
+  function msg(t: string) {
+    $('[data-cover-before]').hidden = true; $('[data-join]').hidden = true;
+    $('[data-cover-msg]').hidden = false; $('[data-msg]').innerHTML = t;
+  }
+
+  async function load() {
+    if (!id) return msg('We couldn’t find your class link. Please use the link we texted or emailed you.');
+    const r = await fetch(`/api/class?op=reg&r=${id}`).catch(() => null);
+    if (!r || !r.ok) return msg('We couldn’t find your class. Please use the link we texted or emailed you.');
+    reg = await r.json();
+    skew = reg.now - Date.now();
+    try { localStorage.setItem('cx_reg', id); } catch { /* private mode */ }
+    $('[data-title]').textContent = `Welcome, ${reg.first}!`;
+    $('[data-sub]').textContent = `Your class: ${reg.label}`;
+    $<HTMLAnchorElement>('[data-cal]').href = `/api/class?op=ics&r=${id}`;
+    $<HTMLAnchorElement>('[data-book-link]').href = `/book/?topic=webinar&src=class&r=${id}`;
+    video.poster = reg.video.poster;
+    $('[data-q-wrap]').hidden = false;
+    tick();
+  }
+
+  const elapsed = () => (now() - Date.parse(reg.start)) / 1000;
+
+  function tick() {
+    const e = elapsed();
+    const len = reg.video.seconds;
+    if (mode) return;
+    if (e < 0) {
+      $('[data-cover-before]').hidden = false;
+      const s = Math.ceil(-e);
+      const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60;
+      $('[data-count]').textContent = h > 0 ? `${h}h ${m}m` : `${m}:${String(sec).padStart(2, '0')}`;
+      // Let them in a minute early so the click (needed for sound) is done.
+      if (s <= 60) { $('[data-join]').hidden = false; $('[data-join-label]').textContent = 'Take my seat'; }
+      setTimeout(tick, 1000);
+    } else if (e < len) {
+      $('[data-cover-before]').hidden = true;
+      $('[data-join]').hidden = false;
+      $('[data-join-label]').textContent = 'Join the class — it’s playing now';
+      setTimeout(tick, 1000);
+    } else if (e < len + 48 * 3600) {
+      $('[data-cover-before]').hidden = true;
+      $('[data-join]').hidden = false;
+      $('[data-join-label]').textContent = 'Watch the replay';
+      $('[data-sub]').textContent = `Replay of your ${reg.label} class — available for 48 hours.`;
+    } else {
+      msg(`This replay has ended. Brian is happy to walk you through it one-on-one — <a href="/book/?topic=webinar&src=class&r=${id}">book a free call</a>.`);
+      reveal();
+    }
+  }
+
+  async function attach(start: number) {
+    const src = reg.video.src;
+    const mse = typeof (window as any).MediaSource === 'function' || typeof (window as any).ManagedMediaSource === 'function';
+    if (!mse && video.canPlayType('application/vnd.apple.mpegurl')) {
+      // iPhone Safari: native HLS. Start loading explicitly (preload=none
+      // otherwise never fetches metadata), then jump to the live position.
+      video.preload = 'auto';
+      video.src = src;
+      video.load();
+      await new Promise((ok) => {
+        video.addEventListener('loadedmetadata', ok, { once: true });
+        setTimeout(ok, 8000);
+      });
+      if (start > 0) video.currentTime = start;
+    } else {
+      const { default: Hls } = await import('hls.js/dist/hls.light.mjs');
+      const hls = new Hls({ startPosition: start, maxBufferLength: 30, enableWorker: false });
+      hls.loadSource(src);
+      hls.attachMedia(video);
+      await new Promise((ok) => hls.on(Hls.Events.MANIFEST_PARSED, ok));
+    }
+  }
+
+  const expected = () => Math.max(0, Math.min(reg.video.seconds, elapsed()));
+
+  $('[data-join]').addEventListener('click', async () => {
+    const e = elapsed();
+    if (e < -60) return;
+    const replay = e >= reg.video.seconds;
+    mode = replay ? 'replay' : 'live';
+    $('[data-cover]').hidden = true;
+    $('[data-bar]').hidden = false;
+    if (replay) { video.controls = true; $('[data-live-badge]').textContent = 'Replay'; }
+    let startAt = replay ? 0 : expected();
+    if (replay) { try { startAt = Number(localStorage.getItem(`cx_pos_${id}`)) || 0; } catch { /* */ } }
+    if (e < 0) { // took their seat early: hold at 0 until the start
+      await attach(0);
+      setTimeout(() => { video.currentTime = expected(); video.play().catch(() => {}); }, -e * 1000);
+    } else {
+      await attach(startAt);
+      video.play().catch(() => {});
+    }
+    if (!joined) { joined = true; send('join'); }
+  });
+
+  // "As live": no skipping ahead; resuming after a pause jumps back to live.
+  video.addEventListener('play', () => {
+    if (mode === 'live' && Math.abs(video.currentTime - expected()) > 4) video.currentTime = expected();
+  });
+  video.addEventListener('seeking', () => {
+    if (mode === 'live' && video.currentTime > expected() + 3) video.currentTime = expected();
+  });
+  video.addEventListener('timeupdate', () => {
+    const t = video.currentTime;
+    if (!revealed && t >= reg.video.shieldAt) reveal();
+    if (t - lastProgress >= 60) { lastProgress = t; send('progress', { pos: Math.round(t) }); }
+    if (mode === 'replay') { try { localStorage.setItem(`cx_pos_${id}`, String(Math.round(t))); } catch { /* */ } }
+  });
+  video.addEventListener('ended', () => { send('complete', { pos: Math.round(video.currentTime) }); reveal(); });
+
+  function reveal() {
+    revealed = true;
+    $('[data-book]').hidden = false;
+    $('[data-shield]').hidden = false;
+  }
+  $('[data-book-link]').addEventListener('click', () => send('book_click'));
+
+  $('[data-mute]').addEventListener('click', () => {
+    video.muted = !video.muted;
+    $('[data-mute]').textContent = video.muted ? '🔇 Sound off' : '🔊 Sound on';
+  });
+  $('[data-fs]').addEventListener('click', () => {
+    const el = $('[data-stage]') as any;
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (el.requestFullscreen) el.requestFullscreen();
+    else if ((video as any).webkitEnterFullscreen) (video as any).webkitEnterFullscreen();
+  });
+
+  $<HTMLFormElement>('[data-q]').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const ta = $<HTMLTextAreaElement>('#cw-q-text');
+    const text = ta.value.trim();
+    if (!text) return;
+    send('question', { text });
+    ta.value = '';
+    $('[data-q-ok]').hidden = false;
+  });
+
+  load();
+</script>
+
+<style>
+  .cw { --cw-ink: #14202e; --cw-body: #2f3b4a; --cw-muted: #5b6676; --cw-rule: #d9dee8; background: #fff; color: var(--cw-body); }
+  .cw-wrap { width: min(1040px, 100% - 32px); margin-inline: auto; }
+  .cw h1, .cw h2, .cw h3 { color: var(--cw-ink); line-height: 1.2; }
+  .cw-head { border-bottom: 1px solid var(--cw-rule); }
+  .cw-head__row { display: flex; justify-content: space-between; align-items: center; gap: 1rem; padding-block: 0.5rem; }
+  .cw-brand { display: flex; gap: 0.5rem; align-items: center; text-decoration: none; font-weight: 800; color: var(--cw-navy); font-size: 1.1rem; }
+  .cw-brand img { display: block; width: 40px; height: auto; }
+  .cw-head__call { font-weight: 800; color: var(--cw-navy); text-decoration: none; white-space: nowrap; }
+  .cw-main { padding: 1.2rem 0 2rem; }
+  .cw-eyebrow { margin: 0; font-size: 0.82rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.06em; color: var(--cw-accent); }
+  .cw-main h1 { font-size: clamp(1.5rem, 3.4vw, 2.2rem); margin: 0.2rem 0 0.3rem; }
+  .cw-sub { margin: 0 0 1rem; font-size: 1.05rem; }
+  .cw-stage { position: relative; background: #0b1324; border-radius: 12px; overflow: hidden; }
+  .cw-stage video { width: 100%; height: auto; aspect-ratio: 16 / 9; display: block; background: #0b1324; }
+  .cw-cover { position: absolute; inset: 0; display: grid; place-items: center; text-align: center; color: #fff; background: linear-gradient(rgba(11, 19, 36, 0.55), rgba(11, 19, 36, 0.8)); padding: 1rem; }
+  .cw-cover[hidden] { display: none; }
+  .cw-cover p { margin: 0.3rem 0; color: #fff; }
+  .cw-cover a { color: #fff; }
+  .cw-count-label { font-size: 1rem; }
+  .cw-count { font-size: clamp(2.2rem, 8vw, 4rem); font-weight: 900; letter-spacing: 0.02em; }
+  .cw-play { min-height: 60px; padding: 0 1.6rem; border: 0; border-radius: 999px; background: var(--cw-accent); color: #fff; font: inherit; font-size: clamp(1.05rem, 2.6vw, 1.3rem); font-weight: 800; cursor: pointer; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3); }
+  .cw-play:hover { background: var(--cw-accent-deep); }
+  .cw-bar { display: flex; gap: 0.5rem; align-items: center; padding: 0.5rem; background: #0b1324; }
+  .cw-bar[hidden] { display: none; }
+  .cw-bar button { pointer-events: auto; min-height: 36px; padding: 0 0.7rem; white-space: nowrap; border: 0; border-radius: 999px; background: rgba(255, 255, 255, 0.14); color: #fff; font: inherit; font-size: 0.85rem; font-weight: 700; cursor: pointer; }
+  .cw-live { margin-right: auto; white-space: nowrap; background: var(--cw-accent); color: #fff; padding: 0.3rem 0.7rem; border-radius: 999px; font-size: 0.8rem; font-weight: 800; }
+  .cw-book { margin: 1.2rem 0; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 1rem 1.5rem; align-items: center; padding: 1.2rem; border-radius: 12px; background: var(--cw-wash); border-left: 6px solid var(--cw-accent); }
+  .cw-book[hidden] { display: none; }
+  .cw-book h2 { margin: 0 0 0.3rem; font-size: 1.35rem; }
+  .cw-book p { margin: 0; }
+  .cw-btn, .cw-btn:visited { display: inline-flex; align-items: center; justify-content: center; min-height: 56px; padding: 0 1.4rem; border: 0; border-radius: 10px; background: var(--cw-accent); color: #fff; font: inherit; font-weight: 800; font-size: 1.1rem; text-decoration: none; cursor: pointer; }
+  .cw-btn:hover { background: var(--cw-accent-deep); }
+  .cw-btn--sm { min-height: 48px; font-size: 1rem; justify-self: start; }
+  .cw-shield { margin: 1.5rem 0; }
+  .cw-shield h2 { margin: 0 0 0.3rem; }
+  .cw-tiers { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.8rem; margin: 1rem 0; }
+  .cw-tier { position: relative; border: 1px solid var(--cw-rule); border-radius: 12px; padding: 1rem; }
+  .cw-tier h3 { margin: 0 0 0.4rem; font-size: 1.25rem; }
+  .cw-tier ul { margin: 0; padding-left: 1.1rem; display: grid; gap: 0.3rem; }
+  .cw-tier--pop { border: 2px solid var(--cw-navy); }
+  .cw-pop { position: absolute; top: -0.7rem; right: 0.8rem; margin: 0; background: var(--cw-navy); color: #fff; font-size: 0.72rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.15rem 0.5rem; border-radius: 999px; }
+  .cw-q { margin: 1.5rem 0; padding: 1.2rem; border: 1px solid var(--cw-rule); border-radius: 12px; }
+  .cw-q h2 { margin: 0 0 0.2rem; font-size: 1.3rem; }
+  .cw-q form { display: grid; gap: 0.6rem; margin-top: 0.6rem; }
+  .cw-q textarea { width: 100%; box-sizing: border-box; padding: 0.7rem; border: 1px solid #b9c0d4; border-radius: 8px; font: inherit; font-size: 1.05rem; }
+  .cw-ok { margin: 0; font-weight: 700; color: #1e7a46; }
+  .cw-small { font-size: 0.9rem; color: var(--cw-muted); }
+  .cw-help { text-align: center; color: var(--cw-muted); }
+  .cw-link { font-weight: 700; }
+  .cw-sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+  .cw-foot { border-top: 1px solid var(--cw-rule); padding: 1.5rem 0 2.5rem; font-size: 0.8rem; color: var(--cw-muted); line-height: 1.6; }
+  .cw-foot a { color: inherit; }
+  @media (max-width: 720px) {
+    .cw-book { grid-template-columns: 1fr; }
+    .cw-book .cw-btn { width: 100%; box-sizing: border-box; }
+    .cw-tiers { grid-template-columns: 1fr; }
+    .cw-brand span { font-size: 1rem; }
+    .cw-bar button, .cw-live { font-size: 0.72rem; min-height: 30px; padding: 0.2rem 0.55rem; }
+  }
+</style>

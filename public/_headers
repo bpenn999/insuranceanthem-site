@@ -27,6 +27,14 @@
   ! Content-Security-Policy
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://www.googleadservices.com https://*.doubleclick.net; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data: https://www.google.com https://www.googleadservices.com https://*.doubleclick.net https://www.googletagmanager.com; connect-src 'self' https://roiypxggqlgbzrspkeoo.supabase.co https://backend.leadconnectorhq.com https://www.google.com https://www.googleadservices.com https://*.doubleclick.net https://www.googletagmanager.com; form-action 'self'; frame-src https://my.gogurux.com https://td.doubleclick.net https://www.googletagmanager.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
 
+# Medicare 101 class room (2026-11-19): the class video is HLS played through
+# Media Source Extensions (hls.js), which hands the <video> a blob: URL. Only
+# this page gets `media-src blob:`; the stream itself is same-origin
+# (/class-video/ proxy), so no third-party host is added.
+/medicare-101-class/watch/*
+  ! Content-Security-Policy
+  Content-Security-Policy: default-src 'self'; media-src 'self' blob:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; font-src 'self'; img-src 'self' data:; connect-src 'self' https://roiypxggqlgbzrspkeoo.supabase.co https://backend.leadconnectorhq.com; form-action 'self'; frame-src https://my.gogurux.com; frame-ancestors 'self'; base-uri 'self'; object-src 'none'; upgrade-insecure-requests
+
 # Astro fingerprints these filenames, so they can be cached indefinitely.
 /_astro/*
   Cache-Control: public, max-age=31536000, immutable

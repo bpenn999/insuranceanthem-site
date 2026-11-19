@@ -28,3 +28,7 @@
 /contact-us                    /contact/          301
 /contact-us/                   /contact/          301
 /empty-inner-page              /                  301
+
+# The one-off Medicare 101 webinar page became the evergreen class (2026-11-19).
+/medicare-101-webinar/          /medicare-101-class/   301
+/medicare-101-webinar           /medicare-101-class/   301

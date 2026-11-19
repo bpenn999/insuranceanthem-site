@@ -1,0 +1,303 @@
+---
+/**
+ * /medicare-101-class/ — evergreen Medicare 101 Class registration (2026-11-19).
+ *
+ * Medigap-leaning, honest. Facebook reel ad → this page → pick a time → the
+ * class plays in our own watch room (/medicare-101-class/watch/?r=…) at that
+ * time, then the engine drives reminders / no-show / replay texts in X.
+ * Spec: ~/Claude/Projects/medigap-webinar/CONTRACT.md. Engine + timeline:
+ * ~/Documents/GitHub/medicare-class-engine. Sessions come from the engine in
+ * the visitor's own time zone (/api/class?op=sessions). Twin page on
+ * medicareonmain.com — keep the two in step; only BRAND differs.
+ *
+ * The class is pre-recorded and plays at the chosen time — the page says so.
+ * No testimonials (no fabricated reviews). noindex via `landing`, out of the
+ * sitemap, in scripts/audit.mjs STANDALONE_DOCS.
+ */
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import site from '../../config/site';
+import { tpmoText, nonAffiliation } from '../../data/compliance';
+
+const BRAND = {
+  name: site.name,
+  logo: '/logo/badge-128.webp',
+  phone: site.phone.display,
+  tel: site.phone.href,
+  photo: '/img/brian-penner-az-640.webp',
+  navy: '#011459',
+  accent: '#D10A0F',
+  accentDeep: '#A00A0E',
+  wash: '#EEF1F9',
+  defaultTz: 'America/Phoenix',
+  consent: `I agree that ${site.legalName} (${site.parentCompany}) and its licensed agents may contact me at the phone number and email above, including by automated calls and text messages, about this class and Medicare insurance products. Consent is not required to buy anything. Msg & data rates may apply; reply STOP to opt out, HELP for help.`,
+};
+
+const title = 'Turning 65? Free Medicare 101 Class | 602Medicare';
+const description =
+  'Turning 65? A free, plain-English Medicare 101 class from a licensed independent Arizona agent. Pick a time that works for you.';
+
+const learn = [
+  ['The gaps in Original Medicare', 'Why Parts A and B alone leave you with a 20% share of doctor bills — with no yearly cap.'],
+  ['Medigap vs. Medicare Advantage, honestly', 'Networks, prior authorization, travel, and what each one really costs you over a year.'],
+  ['Your one-time window', 'When you can get a Medicare Supplement with no health questions — and what can happen if you miss it.'],
+  ['Shield Packages', 'How to fill what’s left — prescriptions, dental, vision, hearing and big-diagnosis protection — so there are virtually no holes.'],
+];
+
+const faqs = [
+  ['How long is it?', 'About 30 minutes. Watch from your phone, tablet or computer — nothing to download.'],
+  ['Is it live?', 'It’s a recorded class that starts at the time you pick, so you can watch when it suits you. Type a question in the class room and Brian answers it personally — usually the same day.'],
+  ['Will someone try to sell me a plan?', 'No. This is an educational class. Nothing is sold or enrolled during it. If you want help afterward, you can book a free one-on-one call — your choice.'],
+  ['Is Medigap right for everyone?', 'No. A Medicare Supplement has a monthly premium, and Medicare Advantage can make sense for some people. The class lays out both sides so you can decide with your eyes open.'],
+];
+---
+
+<BaseLayout {title} {description} path="/medicare-101-class/" density="light" landing>
+  <div class="cx" style={`--cx-navy:${BRAND.navy};--cx-accent:${BRAND.accent};--cx-accent-deep:${BRAND.accentDeep};--cx-wash:${BRAND.wash}`}>
+    <header class="cx-head">
+      <div class="cx-wrap cx-head__row">
+        <a class="cx-brand" href="/" aria-label={`${BRAND.name} home`}>
+          <img src={BRAND.logo} width="48" height="48" alt="" />
+          <span>{BRAND.name}</span>
+        </a>
+        <a class="cx-head__call" href={BRAND.tel}>📞 {BRAND.phone}</a>
+      </div>
+    </header>
+
+    <section class="cx-hero">
+      <div class="cx-wrap cx-hero__grid">
+        <div class="cx-hero__copy">
+          <p class="cx-eyebrow">Free online class · about 30 minutes</p>
+          <h1>Turning 65? Before you pick a Medicare plan, <span>there’s something you should know.</span></h1>
+          <p class="cx-lede">Most Medicare ads steer you toward plans with networks and prior authorization. There’s another way — one that lets you see <strong>any doctor in the country who takes Medicare</strong>, with virtually no holes in your coverage. In this free, plain-English class, {site.agent.name} explains how it works, who it fits, and the one window when you can get it with no health questions.</p>
+          <ul class="cx-ticks">
+            <li>Pick a time that works for you</li>
+            <li>No pressure — nothing is sold during the class</li>
+            <li>Ask Brian your own questions</li>
+          </ul>
+        </div>
+
+        <div class="cx-card" id="register">
+          <div data-form-wrap>
+            <h2>Save your free seat</h2>
+            <form data-reg novalidate>
+              <fieldset class="cx-sessions">
+                <legend>1. Pick a time <span class="cx-tz" data-tz></span></legend>
+                <div data-session-radios><p class="cx-loading">Loading class times…</p></div>
+              </fieldset>
+              <p class="cx-step">2. Where should we send your class link?</p>
+              <div class="cx-row">
+                <label>First name<input name="first" autocomplete="given-name" required /></label>
+                <label>Last name<input name="last" autocomplete="family-name" required /></label>
+              </div>
+              <label>Mobile phone<input name="phone" type="tel" autocomplete="tel" inputmode="tel" required /></label>
+              <label>Email<input name="email" type="email" autocomplete="email" required /></label>
+              <div class="cx-row">
+                <label>ZIP code<input name="zip" inputmode="numeric" maxlength="5" autocomplete="postal-code" /></label>
+                <label>Birth month <span class="cx-opt">(optional)</span>
+                  <input name="birth" type="month" min="1940-01" max="1975-12" />
+                </label>
+              </div>
+              <input type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" class="cx-hp" />
+              <label class="cx-consent">
+                <input type="checkbox" name="consent" required />
+                <span>{BRAND.consent}</span>
+              </label>
+              <p class="cx-err" data-err role="alert" hidden></p>
+              <button type="submit" class="cx-btn">Save my seat — it’s free</button>
+            </form>
+          </div>
+          <div data-done hidden>
+            <h2>✅ You’re in, <span data-done-name></span>!</h2>
+            <p class="cx-when">Your class: <strong data-done-when></strong></p>
+            <p data-done-soon hidden><strong>It starts in just a few minutes.</strong></p>
+            <a class="cx-btn" data-done-link href="#">Go to my class room →</a>
+            <p class="cx-small">We’ll text and email this private link too, plus a reminder before it starts.</p>
+            <p><a class="cx-cal" data-done-cal href="#">📅 Add it to my calendar</a></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="cx-sec">
+      <div class="cx-wrap">
+        <h2>What you’ll learn</h2>
+        <ol class="cx-learn">
+          {learn.map(([h, p]) => <li><strong>{h}</strong><span>{p}</span></li>)}
+        </ol>
+        <p class="cx-center"><a class="cx-btn cx-btn--inline" href="#register">Pick my class time</a></p>
+      </div>
+    </section>
+
+    <section class="cx-sec cx-sec--wash">
+      <div class="cx-wrap cx-host">
+        <img class="cx-host__photo" src={BRAND.photo} alt={`${site.agent.name}, licensed independent Medicare advisor`} width="640" height="800" loading="lazy" />
+        <div>
+          <p class="cx-eyebrow">Your teacher</p>
+          <h2>{site.agent.name}</h2>
+          <p>Brian has been a licensed insurance agent for 22+ years and has helped more than 2,000 people with Medicare. He’s independent — not tied to one insurance company — so this class is about how Medicare actually works, not one company’s plan.</p>
+          <p>He teaches it the way he’d explain it to his own parents: plain English, no pressure, and the honest trade-offs.</p>
+          <p class="cx-small">{site.agent.title} · NPN {site.agent.npn}</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="cx-sec">
+      <div class="cx-wrap cx-narrow">
+        <h2>Good questions</h2>
+        {faqs.map(([q, a]) => <details class="cx-faq"><summary>{q}</summary><p>{a}</p></details>)}
+        <p class="cx-center"><a class="cx-btn cx-btn--inline" href="#register">Save my free seat</a></p>
+        <p class="cx-center cx-small">Rather talk now? Call or text <a href={BRAND.tel}>{BRAND.phone}</a>.</p>
+      </div>
+    </section>
+
+    <footer class="cx-foot">
+      <div class="cx-wrap">
+        <p>This is an educational class. No plans are sold or enrolled during the class, and there is no obligation. {tpmoText()} {nonAffiliation} {site.agent.name} · NPN {site.agent.npn} · licensed independent insurance agent. Not affiliated with or endorsed by Facebook or any social media platform.</p>
+        <p>© {new Date().getFullYear()} {site.legalName}, a DBA of {site.parentCompany} · {site.address.display}</p>
+        <p><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a> · <a href="/">{BRAND.name}</a></p>
+      </div>
+    </footer>
+  </div>
+
+  <script is:inline define:vars={{ DEFAULT_TZ: BRAND.defaultTz, PHONE: BRAND.phone, TEL: BRAND.tel }}>
+    (function () {
+      var tz = DEFAULT_TZ;
+      try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || DEFAULT_TZ; } catch (e) {}
+      var form = document.querySelector('[data-reg]');
+      var radios = document.querySelector('[data-session-radios]');
+      var err = form.querySelector('[data-err]');
+      var sessions = [];
+      var short = { 'America/Phoenix': 'Arizona time', 'America/Denver': 'Mountain time', 'America/Boise': 'Mountain time', 'America/Los_Angeles': 'Pacific time', 'America/Chicago': 'Central time', 'America/New_York': 'Eastern time' };
+      document.querySelector('[data-tz]').textContent = short[tz] ? '(' + short[tz] + ')' : '';
+
+      function draw() {
+        radios.innerHTML = '';
+        sessions.forEach(function (s, i) {
+          var l = document.createElement('label'); l.className = 'cx-radio';
+          var r = document.createElement('input'); r.type = 'radio'; r.name = 'session'; r.value = s.iso; r.required = true;
+          if (i === 0) r.checked = true;
+          var t = document.createElement('span');
+          t.textContent = s.soon ? 'Starting soon — ' + s.label.replace(/^.* at /, '') : s.label.replace(/ [A-Z]{3,4}$/, '');
+          if (s.soon) { var b = document.createElement('em'); b.textContent = 'Next class'; t.appendChild(b); }
+          l.appendChild(r); l.appendChild(t); radios.appendChild(l);
+        });
+      }
+      fetch('/api/class?op=sessions&tz=' + encodeURIComponent(tz)).then(function (r) { return r.json(); }).then(function (d) {
+        sessions = (d.sessions || []).slice(0, 4); draw();
+      }).catch(function () {
+        radios.innerHTML = '<p class="cx-err">Class times didn’t load. Call or text <a href="' + TEL + '">' + PHONE + '</a> and we’ll save you a seat.</p>';
+      });
+
+      form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        var f = Object.fromEntries(new FormData(form));
+        var bad = !f.first || !f.last || !/^\S+@\S+\.\S+$/.test(f.email || '') || (f.phone || '').replace(/\D/g, '').length < 10;
+        if (!f.session) return show('Please pick a class time.');
+        if (bad) return show('Please fill in your name, a 10-digit mobile number and your email.');
+        if (!f.consent) return show('Please check the box so we can send you your class link.');
+        err.hidden = true;
+        var s = sessions.filter(function (x) { return x.iso === f.session; })[0];
+        var btn = form.querySelector('button'); btn.disabled = true; btn.textContent = 'Saving your seat…';
+        var qs = new URLSearchParams(location.search);
+        var src = ['utm_source', 'utm_campaign', 'utm_content', 'fbclid'].filter(function (k) { return qs.get(k); }).map(function (k) { return k + '=' + qs.get(k).slice(0, 40); }).join('&');
+        fetch('/api/class', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ op: 'register', first: f.first, last: f.last, email: f.email, phone: f.phone, zip: f.zip || '', birth: f.birth || '', session_iso: f.session, tz: tz, src: src, page: location.pathname, website: f.website || '' }),
+        }).then(function (r) { return r.json().then(function (b) { if (!r.ok || !b.ok) throw new Error(b.error || r.status); return b; }); })
+          .then(function (b) {
+            document.querySelector('[data-form-wrap]').hidden = true;
+            var done = document.querySelector('[data-done]'); done.hidden = false;
+            done.querySelector('[data-done-name]').textContent = f.first;
+            done.querySelector('[data-done-when]').textContent = b.label;
+            done.querySelector('[data-done-link]').href = '/medicare-101-class/watch/?r=' + b.id;
+            done.querySelector('[data-done-cal]').href = '/api/class?op=ics&r=' + b.id;
+            if (s && s.soon) done.querySelector('[data-done-soon]').hidden = false;
+            try { localStorage.setItem('cx_reg', b.id); } catch (e) {}
+            window.dataLayer = window.dataLayer || []; window.dataLayer.push({ event: 'class_registered' });
+            if (typeof window.fbq === 'function') window.fbq('track', 'CompleteRegistration');
+            done.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          })
+          .catch(function (x) {
+            btn.disabled = false; btn.textContent = 'Save my seat — it’s free';
+            show(String(x.message) === 'session' ? 'That class time just passed — please pick another.' :
+              'Something went wrong saving your seat. Please call or text <a href="' + TEL + '">' + PHONE + '</a> and we’ll register you.', true);
+          });
+        function show(m, html) { if (html) err.innerHTML = m; else err.textContent = m; err.hidden = false; }
+      });
+    })();
+  </script>
+</BaseLayout>
+
+<style>
+  .cx { --cx-ink: #14202e; --cx-body: #2f3b4a; --cx-muted: #5b6676; --cx-rule: #d9dee8; color: var(--cx-body); background: #fff; }
+  .cx-wrap { width: min(1120px, 100% - 32px); margin-inline: auto; }
+  .cx-narrow { max-width: 760px; }
+  .cx h1, .cx h2 { color: var(--cx-ink); line-height: 1.15; }
+  .cx-head { border-bottom: 1px solid var(--cx-rule); background: #fff; }
+  .cx-head__row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 0.6rem; }
+  .cx-brand { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; font-weight: 800; font-size: 1.25rem; color: var(--cx-navy); }
+  .cx-brand img { display: block; width: 48px; height: auto; }
+  .cx-head__call { font-weight: 800; color: var(--cx-navy); text-decoration: none; white-space: nowrap; }
+  .cx-hero { background: var(--cx-wash); padding: clamp(1.5rem, 5vw, 3.5rem) 0; }
+  .cx-hero__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 460px); gap: 2.5rem; align-items: start; }
+  .cx-eyebrow { margin: 0 0 0.4rem; font-size: 0.85rem; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; color: var(--cx-accent); }
+  .cx-hero h1 { font-size: clamp(1.8rem, 4.2vw, 2.9rem); margin: 0 0 0.6em; }
+  .cx-hero h1 span { color: var(--cx-accent); }
+  .cx-lede { font-size: clamp(1.08rem, 1.4vw, 1.22rem); line-height: 1.6; margin: 0 0 1rem; max-width: 60ch; }
+  .cx-ticks { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.4rem; font-weight: 700; color: var(--cx-ink); font-size: 1.05rem; }
+  .cx-ticks li::before { content: '✓'; color: var(--cx-accent); margin-right: 0.5rem; font-weight: 900; }
+  .cx-card { background: #fff; border: 1px solid var(--cx-rule); border-top: 6px solid var(--cx-accent); border-radius: 14px; padding: 1.3rem; box-shadow: 0 10px 30px rgba(1, 20, 89, 0.08); }
+  .cx-card h2 { font-size: 1.45rem; margin: 0 0 0.8rem; }
+  .cx-card form { display: grid; gap: 0.75rem; }
+  .cx-card label { display: grid; gap: 0.25rem; font-weight: 700; font-size: 0.95rem; color: var(--cx-ink); }
+  .cx-card input:not([type=checkbox]):not([type=radio]) { min-height: 50px; padding: 0 0.8rem; border: 1px solid #b9c0d4; border-radius: 8px; font: inherit; font-size: 1.05rem; width: 100%; box-sizing: border-box; background: #fff; color: var(--cx-ink); }
+  .cx-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.75rem; }
+  .cx-opt { font-weight: 400; color: var(--cx-muted); }
+  .cx-step { margin: 0.3rem 0 0; font-weight: 800; color: var(--cx-ink); }
+  .cx-sessions { border: 0; padding: 0; margin: 0; display: grid; gap: 0.4rem; }
+  .cx-sessions legend { font-weight: 800; color: var(--cx-ink); margin-bottom: 0.45rem; }
+  .cx-tz { font-weight: 400; color: var(--cx-muted); font-size: 0.9rem; }
+  [data-session-radios] { display: grid; gap: 0.45rem; }
+  :global(.cx-radio) { display: flex !important; align-items: center; gap: 0.6rem; min-height: 50px; padding: 0.35rem 0.8rem; border: 1px solid #b9c0d4; border-radius: 8px; font-weight: 700 !important; cursor: pointer; background: #fff; }
+  :global(.cx-radio:has(input:checked)) { border-color: var(--cx-navy); box-shadow: inset 0 0 0 1px var(--cx-navy); background: var(--cx-wash); }
+  :global(.cx-radio input) { width: 20px; height: 20px; accent-color: var(--cx-accent); flex-shrink: 0; }
+  :global(.cx-radio em) { margin-left: 0.5rem; font-style: normal; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; background: var(--cx-accent); color: #fff; padding: 0.15rem 0.45rem; border-radius: 999px; }
+  .cx-loading { margin: 0; color: var(--cx-muted); }
+  .cx-hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; }
+  .cx-consent { display: flex !important; gap: 0.6rem; align-items: flex-start; font-weight: 400 !important; font-size: 0.78rem !important; line-height: 1.45; color: var(--cx-muted) !important; }
+  .cx-consent input { width: 20px; height: 20px; flex-shrink: 0; margin-top: 2px; accent-color: var(--cx-accent); }
+  .cx-err { margin: 0; color: var(--cx-accent-deep); font-weight: 700; }
+  .cx-btn, .cx-btn:visited { display: inline-flex; align-items: center; justify-content: center; min-height: 56px; padding: 0 1.4rem; border: 0; border-radius: 10px; background: var(--cx-accent); color: #fff; font: inherit; font-weight: 800; font-size: 1.15rem; text-decoration: none; cursor: pointer; width: 100%; box-sizing: border-box; text-align: center; }
+  .cx-btn:hover { background: var(--cx-accent-deep); }
+  .cx-btn[disabled] { opacity: 0.7; cursor: wait; }
+  .cx-btn--inline { width: auto; }
+  .cx-when { font-size: 1.1rem; }
+  .cx-small { font-size: 0.9rem; color: var(--cx-muted); }
+  .cx-cal { font-weight: 700; color: var(--cx-navy); }
+  .cx-sec { padding: clamp(2rem, 5vw, 3.5rem) 0; }
+  .cx-sec--wash { background: var(--cx-wash); }
+  .cx-sec h2 { font-size: clamp(1.6rem, 3vw, 2.2rem); margin: 0 0 0.8em; }
+  .cx-learn { list-style: none; counter-reset: l; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem 2rem; }
+  .cx-learn li { counter-increment: l; display: grid; gap: 0.25rem; padding-left: 3rem; position: relative; font-size: 1.05rem; line-height: 1.5; }
+  .cx-learn li::before { content: counter(l); position: absolute; left: 0; top: 0; width: 2.2rem; height: 2.2rem; border-radius: 50%; background: var(--cx-navy); color: #fff; font-weight: 800; display: grid; place-items: center; }
+  .cx-learn strong { color: var(--cx-ink); font-size: 1.12rem; }
+  .cx-center { text-align: center; margin-top: 1.6rem; }
+  .cx-host { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 2rem; align-items: center; }
+  .cx-host__photo { width: 220px; height: 260px; object-fit: cover; object-position: center 20%; border-radius: 14px; }
+  .cx-host p { font-size: 1.06rem; line-height: 1.6; }
+  .cx-faq { border-bottom: 1px solid var(--cx-rule); padding: 0.9rem 0; }
+  .cx-faq summary { font-weight: 800; color: var(--cx-ink); font-size: 1.1rem; cursor: pointer; min-height: 32px; }
+  .cx-faq p { margin: 0.6rem 0 0; font-size: 1.05rem; line-height: 1.6; }
+  .cx-foot { border-top: 1px solid var(--cx-rule); padding: 2rem 0 3rem; font-size: 0.82rem; line-height: 1.6; color: var(--cx-muted); }
+  .cx-foot a { color: inherit; }
+  @media (max-width: 860px) {
+    .cx-hero__grid, .cx-learn { grid-template-columns: 1fr; }
+    .cx-host { grid-template-columns: 1fr; }
+    .cx-host__photo { width: 140px; height: 170px; }
+  }
+  @media (max-width: 420px) {
+    .cx-row { grid-template-columns: 1fr; }
+    .cx-brand span { font-size: 1.05rem; }
+    .cx-head__call { font-size: 0.95rem; }
+  }
+</style>
