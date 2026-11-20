@@ -10,8 +10,6 @@ const nav = [
   { label: 'Medicare Plans', href: '/medicare-plans/', children: products.map((p) => ({ label: p.name, href: `/${p.slug}/`, blurb: p.blurb })) },
   { label: 'Free Tools', href: '/tools/' },
   { label: 'Service Area', href: '/service-area/' },
-  // 11/20/26: the Same Letter ads send people to 602medicare.com; this is their way to the rate check.
-  { label: 'Medigap Quote', href: '/medicare-supplement-quote/' },
   /**
    * `mobileOnly` — shown in the mobile panel and the footer, not in the
    * desktop row. The row now carries a third action (Medicare Intake) and the
@@ -112,15 +110,12 @@ const nav = [
         Schedule Appointment
       </a>
 
-      {/* The intake form, third in the row and the only outline button of the
-          three — it is the step BEFORE an appointment, not a competing CTA.
-          Hidden below 1240px because the brand + six nav links + two solid
-          buttons already fill the 1360px bar; below that it lives in the
-          mobile panel and the footer instead. Opens in a new tab: it is a
-          hosted form on RetireFlo, not a page on this site. */}
-      <a href={site.intake.url} class="btn btn--sm btn--ghost header__intake"
-         target="_blank" rel="noopener" data-cta="header-intake">
-        Medicare Intake
+      {/* 11/20/26 (Brian): the Medicare Intake button is gone from the header; a
+          Medigap quote button takes its slot (the Same Letter ads point people at
+          602medicare.com). The intake link still lives in the mobile panel and footer. */}
+      <a href="/medicare-supplement-quote/" class="btn btn--sm btn--ghost header__intake"
+         data-cta="header-quote">
+        Get a Quote
       </a>
 
       <button class="nav-toggle" data-nav-toggle aria-expanded="false"
@@ -142,13 +137,14 @@ const nav = [
       <li><a href="/about/">About Brian</a></li>
       <li><a href="/why-602medicare/">Why 602Medicare</a></li>
       <li><a href="/contact/">Contact</a></li>
+      <li><a href="/medicare-supplement-quote/" data-cta="header-quote">Get a Medigap Quote</a></li>
       <li><a href={site.intake.url} target="_blank" rel="noopener" data-cta="header-intake">Medicare Intake</a></li>
       <li><a href={site.enroll.url} target="_blank" rel="noopener nofollow" data-cta="header-enroll">Enroll Online</a></li>
     </ul>
     <div class="nav-mobile__foot">
       <a href={site.phone.href} class="btn btn--block btn--lg">Call {site.phone.display}</a>
-      <a href={site.intake.url} class="btn btn--block btn--lg btn--ghost" target="_blank"
-         rel="noopener" data-cta="header-intake">Medicare Intake</a>
+      <a href="/medicare-supplement-quote/" class="btn btn--block btn--lg btn--ghost"
+         data-cta="header-quote">Get a Medigap Quote</a>
       <p class="nav-mobile__note">{site.hours.display}</p>
     </div>
   </nav>

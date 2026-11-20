@@ -8,11 +8,11 @@
  *
  * The quoter shows ONE monthly rate for Plan G or Plan N with NO carrier name
  * (Brian 11/19: "don't quote AARP… just the rate"). Rates come from
- * public/data/medigap-rates-az.json, built offline by
+ * public/data/medigap-rates-az-v2.json, built offline by
  * ~/Claude/Projects/medsupp-quoter (harvest.mjs pulls CSG rates through X,
  * build.mjs keeps the lowest approved-carrier rate per ZIP3/age/gender and that
- * carrier's household-discount %). AARP/UHC, Bankers and Select Health are
- * excluded at build time. X's own household-rate math is wrong (returned 70%
+ * carrier's household-discount %). AARP/UHC and Select Health are excluded at
+ * build time; Bankers was added 11/20/26 (Brian: "quote bankers at the lower price"). X's own household-rate math is wrong (returned 70%
  * for a 7% discount), so the discount is computed here from the % alone.
  *
  * Lead step = booking (Brian 11/19: "schedule your appointment and reset your rate"):
@@ -163,7 +163,7 @@ const faqs = [
     (function () {
       var DATA = null, last = null;
       var money = function (n) { return '$' + n.toFixed(2); };
-      function load() { return DATA ? Promise.resolve(DATA) : fetch('/data/medigap-rates-az.json').then(function (r) { return r.json(); }).then(function (j) { DATA = j; return j; }); }
+      function load() { return DATA ? Promise.resolve(DATA) : fetch('/data/medigap-rates-az-v2.json').then(function (r) { return r.json(); }).then(function (j) { DATA = j; return j; }); }
       var qf = document.querySelector('[data-q]'), res = document.querySelector('[data-q-res]'), err = document.querySelector('[data-q-err]');
       function fail(msg) { err.textContent = msg; err.hidden = false; }
       qf.addEventListener('submit', function (e) {
