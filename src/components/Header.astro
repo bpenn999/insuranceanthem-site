@@ -10,6 +10,8 @@ const nav = [
   { label: 'Medicare Plans', href: '/medicare-plans/', children: products.map((p) => ({ label: p.name, href: `/${p.slug}/`, blurb: p.blurb })) },
   { label: 'Free Tools', href: '/tools/' },
   { label: 'Service Area', href: '/service-area/' },
+  // 11/20/26: the Same Letter ads send people to 602medicare.com; this is their way to the rate check.
+  { label: 'Medigap Quote', href: '/medicare-supplement-quote/' },
   /**
    * `mobileOnly` — shown in the mobile panel and the footer, not in the
    * desktop row. The row now carries a third action (Medicare Intake) and the
