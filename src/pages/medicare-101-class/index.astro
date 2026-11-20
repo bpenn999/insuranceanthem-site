@@ -222,6 +222,7 @@ const faqs = [
             if (s && s.soon) done.querySelector('[data-done-soon]').hidden = false;
             try { localStorage.setItem('cx_reg', b.id); } catch (e) {}
             window.dataLayer = window.dataLayer || []; window.dataLayer.push({ event: 'class_registered' });
+            if (typeof window.__capi === 'function') { var cc = { email: f.email, phone: f.phone, first: f.first, last: f.last, zip: f.zip || '' }; window.__capi('Lead', 'lead-' + b.id, cc, 'Medicare 101 Class'); window.__capi('CompleteRegistration', 'reg-' + b.id, cc, 'Medicare 101 Class'); }
             if (typeof window.fbq === 'function') {
               var ph = (f.phone || '').replace(/\D/g, ''); if (ph.length === 10) ph = '1' + ph;
               window.fbq('init', '1480958159463999', { em: String(f.email).trim().toLowerCase(), ph: ph, fn: String(f.first).trim().toLowerCase(), ln: String(f.last).trim().toLowerCase(), zp: String(f.zip || '').slice(0, 5) });

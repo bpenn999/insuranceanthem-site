@@ -51,6 +51,33 @@
     } catch { /* never let reporting break the page */ }
   };
 
+  // ── Meta Conversions API (2026-11-20) ──────────────────────────────────
+  // A Facebook ad click lands with ?fbclid=… Keep it for this session as the
+  // "fbc" value Meta uses to tie a server-side event back to the ad click —
+  // that is the whole point when the visitor's browser blocks the pixel.
+  try {
+    const fbclid = new URLSearchParams(location.search).get('fbclid');
+    if (fbclid) sessionStorage.setItem('ia_fbc', `fb.1.${Date.now()}.${fbclid}`);
+  } catch { /* storage blocked */ }
+  // window.__capi('Lead', 'lead-<id>', { email, phone, first, last, zip }, 'Medigap rate reset')
+  // Sends the event server-side through /api/capi. The pixel (where present)
+  // fires the same event with the same id, and Meta keeps one. Skipped if the
+  // visitor chose "No thanks" on the cookie card.
+  w.__capi = (event_name: string, event_id: string, c: Record<string, string> = {}, content_name = '') => {
+    try {
+      if (localStorage.getItem('ia_ads_consent') === 'decline') return;
+    } catch { /* no storage: proceed */ }
+    try {
+      const ck = (n: string) => (document.cookie.match(new RegExp('(?:^|; )' + n + '=([^;]*)')) || [])[1] || '';
+      let fbc = ck('_fbc');
+      try { fbc = fbc || sessionStorage.getItem('ia_fbc') || ''; } catch { /* ignore */ }
+      fetch('/api/capi', {
+        method: 'POST', keepalive: true, headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ event_name, event_id, ...c, fbc, fbp: ck('_fbp'), source_url: location.href, content_name }),
+      }).catch(() => {});
+    } catch { /* never let reporting break the page */ }
+  };
+
   // A tap on any phone number, anywhere on the site. Counted once per page per
   // session: a second tap on the same page is the same person trying again.
   document.addEventListener('click', (e) => {

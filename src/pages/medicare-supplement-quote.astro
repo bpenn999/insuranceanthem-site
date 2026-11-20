@@ -175,6 +175,7 @@ const faqs = [
           var cell = row && row[plan] && row[plan][g] && row[plan][g][age - 65];
           var cur = String(f.get('current') || ''), pay = String(f.get('paying') || '');
           var payLabel = (qf.querySelector('[name=paying]').selectedOptions[0] || {}).text || '';
+          window.__rateZip = zip;
           last = { zip: zip, plan: plan, age: age, gender: g, tobacco: !!f.get('tobacco'), current: cur, paying: pay };
           document.querySelector('[data-q-label]').textContent = 'Plan ' + plan + ' · ' + (age === 90 ? '90+' : age) + ' · ' + (g === 'F' ? 'female' : 'male') + ' · ' + zip;
           var price = document.querySelector('[data-q-price]'), hh = document.querySelector('[data-q-hh]');
@@ -203,7 +204,7 @@ const faqs = [
   </script>
   <script is:inline>
     /* Meta pixel "Turning 65" (1480958159463999), act_42845669 — Medigap same-letter ads (2026-11-19).
-       PageView on load; ViewContent when a rate is shown; Lead + Schedule on a booking (ia:booked); Contact on tel: tap. */
+       PageView on load; ViewContent when a rate is shown; Lead + Schedule on a booking (ia:booked, same event ids as the server-side /api/capi copy); Contact on tel: tap. */
     !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
     n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
     n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
@@ -211,7 +212,7 @@ const faqs = [
     document,'script','https://connect.facebook.net/en_US/fbevents.js');
     fbq('init','1480958159463999');fbq('track','PageView');
     document.addEventListener('rate:shown', function (e) { fbq('track', 'ViewContent', { content_name: 'Medigap rate quote', content_category: (e.detail && e.detail.plan) || '' }); });
-    document.addEventListener('ia:booked', function () { var id = 'rr-' + Date.now(); fbq('track', 'Lead', { content_name: 'Medigap rate reset' }, { eventID: 'lead-' + id }); fbq('track', 'Schedule', { content_name: 'Medigap rate reset' }, { eventID: 'sch-' + id }); });
+    document.addEventListener('ia:booked', function (e) { var id = (e.detail && e.detail.eventId) || ('rr-' + Date.now()); fbq('track', 'Lead', { content_name: 'Medigap rate reset' }, { eventID: 'lead-' + id }); fbq('track', 'Schedule', { content_name: 'Medigap rate reset' }, { eventID: 'sch-' + id }); });
     document.addEventListener('click', function (e) { var a = e.target.closest && e.target.closest('a[href^="tel:"]'); if (a) fbq('track', 'Contact', { content_name: 'Medigap rate page call' }); });
   </script>
 </BaseLayout>

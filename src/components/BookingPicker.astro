@@ -964,7 +964,17 @@ const weekdays = [
 
         const onBooked = (b: any) => {
           // Landing pages and /book/ listen for this to record a Google Ads conversion.
-          document.dispatchEvent(new CustomEvent('ia:booked', { detail: { t65 } }));
+          // eventId lets a page's Meta pixel and the server-side /api/capi send
+          // the SAME event ids ('lead-'+id, 'sch-'+id), so Meta counts it once.
+          const eventId = 'bk-' + Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+          document.dispatchEvent(new CustomEvent('ia:booked', { detail: { t65, eventId } }));
+          const capiContact = {
+            email: details.email, phone: details.phone, first: details.firstName, last: details.lastName,
+            zip: String((window as any).__rateZip || survey?.zip || ''),
+          };
+          const capiName = rateTopic ? 'Medigap rate reset' : classTopic ? 'Medicare 101 Class booking' : t65 ? 'Turning 65 booking' : 'Booking';
+          (window as any).__capi?.('Lead', 'lead-' + eventId, capiContact, capiName);
+          (window as any).__capi?.('Schedule', 'sch-' + eventId, capiContact, capiName);
           if (classReg) {
             fetch('/api/class', { method: 'POST', headers: { 'Content-Type': 'application/json' }, keepalive: true,
               body: JSON.stringify({ op: 'event', r: classReg, type: 'booked' }) }).catch(() => {});
