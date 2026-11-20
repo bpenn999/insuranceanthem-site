@@ -1,5 +1,5 @@
 /**
- * Render scripts/og-card.html to public/og-602medicare-badge.png (1200x630).
+ * Render scripts/og-card.html to public/og-602medicare-v3.png (1200x630).
  *
  *   node scripts/build-og.mjs
  *
@@ -23,7 +23,7 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const CHROME =
   process.env.CHROME || '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
 
-const badge = readFileSync(join(ROOT, 'public/logo/602medicare-logo-transparent.png'));
+const badge = readFileSync(join(ROOT, 'public/logo/v3/602medicare-logo-white-480.png'));
 const html = readFileSync(join(ROOT, 'scripts/og-card.html'), 'utf8').replace(
   '{{BADGE}}',
   `data:image/png;base64,${badge.toString('base64')}`,
@@ -55,7 +55,7 @@ if (res.status !== 0) {
   process.exit(1);
 }
 
-const out = join(ROOT, 'public/og-602medicare-badge.png');
+const out = join(ROOT, 'public/og-602medicare-v3.png');
 writeFileSync(out, readFileSync(shot));
 rmSync(work, { recursive: true, force: true });
-console.log(`wrote public/og-602medicare-badge.png (${statSync(out).size} bytes)`);
+console.log(`wrote public/og-602medicare-v3.png (${statSync(out).size} bytes)`);

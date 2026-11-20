@@ -21,7 +21,7 @@ import { tpmoText, nonAffiliation } from '../../data/compliance';
 
 const BRAND = {
   name: site.name,
-  logo: '/logo/badge-128.webp',
+  logo: '/logo/v3/602medicare-logo-240.png',
   phone: site.phone.display,
   tel: site.phone.href,
   photo: '/img/brian-penner-az-640.webp',
@@ -57,8 +57,7 @@ const faqs = [
     <header class="cx-head">
       <div class="cx-wrap cx-head__row">
         <a class="cx-brand" href="/" aria-label={`${BRAND.name} home`}>
-          <img src={BRAND.logo} width="48" height="48" alt="" />
-          <span>{BRAND.name}</span>
+          <img src={BRAND.logo} width="81" height="48" alt="" />
         </a>
         <a class="cx-head__call" href={BRAND.tel}>📞 {BRAND.phone}</a>
       </div>
@@ -259,7 +258,7 @@ const faqs = [
   .cx-head { border-bottom: 1px solid var(--cx-rule); background: #fff; }
   .cx-head__row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; padding-block: 0.6rem; }
   .cx-brand { display: flex; align-items: center; gap: 0.55rem; text-decoration: none; font-weight: 800; font-size: 1.25rem; color: var(--cx-navy); }
-  .cx-brand img { display: block; width: 48px; height: auto; }
+  .cx-brand img { display: block; height: 48px; width: auto; }
   .cx-head__call { font-weight: 800; color: var(--cx-navy); text-decoration: none; white-space: nowrap; }
   .cx-hero { background: var(--cx-wash); padding: clamp(1.5rem, 5vw, 3.5rem) 0; }
   .cx-hero__grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 460px); gap: 2.5rem; align-items: start; }

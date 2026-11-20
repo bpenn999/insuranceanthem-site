@@ -25,6 +25,7 @@
      is transparent inside its ring, so on a navy ground the mountains and the
      "602" — both navy — vanish into the background and all that survives is the
      red sun and the red "MEDICARE". The disc is the navy-ground variant. */
+  .newlogo { height: 150px; width: auto; display: block; }
   .disc {
     width: 152px; height: 152px;
     border-radius: 50%;
@@ -95,8 +96,7 @@
     <div class="lockup">
       <!-- Inlined as a data: URI by scripts/build-og.mjs — Chrome renders this
            from a temp directory, so a relative path would resolve to nothing. -->
-      <span class="disc"><img src="{{BADGE}}" alt="" /></span>
-      <div class="brand">602Medicare</div>
+      <img class="newlogo" src="{{BADGE}}" alt="" />
     </div>
 
     <h1>Medicare, explained by<br />someone who lives here.</h1>

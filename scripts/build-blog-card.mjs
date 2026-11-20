@@ -41,7 +41,7 @@ if (!name || !kicker || !title) {
 const esc = (s) =>
   s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 
-const badge = readFileSync(join(ROOT, 'public/logo/602medicare-logo-transparent.png'));
+const badge = readFileSync(join(ROOT, 'public/logo/v3/602medicare-logo-white-480.png'));
 const html = readFileSync(join(ROOT, 'scripts/blog-card.html'), 'utf8')
   .replace('{{BADGE}}', `data:image/png;base64,${badge.toString('base64')}`)
   .replace('{{KICKER}}', esc(kicker))

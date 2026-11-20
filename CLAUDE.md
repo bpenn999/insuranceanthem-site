@@ -228,6 +228,8 @@ Keep `frame-src https://my.gogurux.com` in `public/_headers` — the fallback is
 iframe, and dropping that hole renders it a blank box.
 
 ## Brand assets
+**New logo since 2026-11-20:** the swoosh lockup (cactus + mountains + italic "602" + red swoosh + "— MEDICARE —"), in `public/logo/v3/` (vector SVGs + PNGs; white version for navy grounds, so no white disc needed). Favicon = "602" + swoosh only. Header shows the logo image alone (no typed wordmark). Source pack: ~/Desktop/602-new-logo/. The old badge files in /logo/ are kept for old cached references only.
+
 Navy `#011459` + red `#D10A0F`, and **one rule: `--red` is only 3.0:1 on navy** — anything
 red on a navy ground uses `--red-lift #FF5A5F`. The badge PNG is transparent inside its
 ring, so every navy placement puts it on a white disc. Full reasoning in the repo's design

@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
 <title>Medicare Coverage Survey | 602Medicare</title>
-<link rel="icon" href="/logo/favicon-32-v2.png" sizes="32x32">
+<link rel="icon" href="/logo/v3/favicon-32.png" sizes="32x32">
 <style>
   /* Self-hosted: this site's CSP is font-src 'self' — Google Fonts are blocked. */
   @font-face{font-family:'Source Serif 4';font-style:normal;font-weight:200 900;font-display:swap;src:url('/fonts/source-serif-4-42c9a212.woff2') format('woff2');}
@@ -29,7 +29,7 @@
   .top{background:var(--paper); border-top:4px solid var(--red); border-bottom:1px solid var(--line);}
   .top-in{max-width:1120px; margin:0 auto; display:flex; align-items:center; gap:14px; padding:10px 16px; flex-wrap:wrap;}
   .brand{display:flex; align-items:center; gap:10px; text-decoration:none; margin-right:auto;}
-  .brand img{width:48px; height:48px;}
+  .brand img{width:auto; height:48px;}
   .brand .wm{font-family:'Source Serif 4',serif; font-weight:700; font-size:24px; line-height:1; color:var(--navy);}
   .brand .wm span{color:var(--red);}
   .brand .sub{display:block; font-family:'Inter',sans-serif; font-size:12.5px; font-weight:600; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-top:4px;}
@@ -230,7 +230,7 @@
     .grid2{grid-template-columns:1fr;}
     .btn{padding:14px 22px; font-size:18px;}
     .brand .sub{display:none;}
-    .brand .wm{font-size:21px;} .brand img{width:40px; height:40px;}
+    .brand .wm{font-size:21px;} .brand img{width:auto; height:40px;}
     a.call{font-size:15px; padding:7px 12px;}
   }
 
@@ -281,7 +281,7 @@
 <header class="top">
   <div class="top-in">
     <a class="brand" href="/" aria-label="602Medicare home">
-      <img src="/logo/602medicare-logo-transparent.png" alt="" width="48" height="48">
+      <img src="/logo/v3/602medicare-logo-480.png" alt="" width="81" height="48">
       <span><span class="wm"><span>602</span>Medicare</span><span class="sub">Medicare Coverage Survey</span></span>
     </a>
     <a class="call" href="tel:+16028446002"><svg class="ico" viewBox="0 0 24 24"><path d="M5 3.5h3.2l1.6 4.2-2.1 1.4a11 11 0 0 0 7.2 7.2l1.4-2.1 4.2 1.6V19a1.5 1.5 0 0 1-1.5 1.5C10.4 20.5 3.5 13.6 3.5 5A1.5 1.5 0 0 1 5 3.5Z"/></svg>(602) 844-6002</a>
@@ -822,7 +822,7 @@
     var pathName = path === 'supp' ? 'Original Medicare + a Medicare Supplement' : 'A Medicare Advantage plan';
     var area = areaLabel();
     var h = '';
-    h += '<div class="print-only p-hdr"><img src="/logo/602medicare-logo-transparent.png" alt="602Medicare"><div><h1>Your Medicare Umbrella Options</h1></div>' +
+    h += '<div class="print-only p-hdr"><img src="/logo/v3/602medicare-logo-480.png" alt="602Medicare"><div><h1>Your Medicare Umbrella Options</h1></div>' +
          '<div class="pm"><b>Prepared for:</b> ' + esc(full || '________________') + '<br><b>Date:</b> ' + new Date().toLocaleDateString('en-US') + '<br><b>Advisor:</b> Brian Penner</div></div>';
     if (RESTORED) h += '<div class="sent ok no-print" style="margin:0 0 14px">Saved survey results from ' + esc(RESTORED) + (A.zip ? ' \u00B7 ZIP ' + esc(A.zip) : '') + '</div>';
     h += '<div class="res-head"><div><h2 class="q" tabindex="-1">' + (name ? esc(name) + ', here' : 'Here') + ' are your umbrella options</h2>' +

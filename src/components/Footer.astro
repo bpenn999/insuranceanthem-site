@@ -151,17 +151,9 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
       <!-- NAP — one office, structured for both humans and parsers -->
       <div class="foot__col foot__col--contact">
         <h2 class="foot__heading">Contact</h2>
-        {/* The badge over the NAP, on its own white disc. The shipped PNG is
-            transparent inside its ring, so dropped straight onto this navy the
-            mountains and the "602" — both navy — disappear and only the red sun
-            and red "MEDICARE" survive. The disc IS the navy-ground variant. */}
-        <span class="foot__disc" aria-hidden="true">
-          <picture>
-            <source srcset="/logo/badge-128.webp" type="image/webp" />
-            <img src="/logo/badge-128.png" alt="" width="128" height="128"
-                 loading="lazy" decoding="async" />
-          </picture>
-        </span>
+        {/* New swoosh logo (11/20/26), white + red version made for navy grounds. */}
+        <img class="foot__logo" src="/logo/v3/602medicare-logo-white-480.png" alt=""
+             width="480" height="286" loading="lazy" decoding="async" />
         <address class="foot__nap">
           <p class="foot__nap-name">{site.legalName}</p>
           {/* City and state only — there is no published street address, and
@@ -256,17 +248,7 @@ const learnAll = (await getCollection('learn', ({ data }) => !data.draft)).sort(
   /* The white disc behind the badge. See the note on the markup: the PNG is
      transparent inside its ring, so this is not decoration — without it half
      the mark is navy-on-navy and simply not there. */
-  .foot__disc {
-    display: grid;
-    place-items: center;
-    width: 68px;
-    height: 68px;
-    border-radius: 50%;
-    background: #fff;
-    margin-bottom: var(--s-4);
-  }
-  .foot__disc picture { display: block; line-height: 0; }
-  .foot__disc img { width: 62px; height: 62px; }
+  .foot__logo { display: block; width: 160px; height: auto; margin-bottom: var(--s-4); }
 
   .foot__nap { font-style: normal; display: grid; gap: 0.3rem; align-content: start; }
   .foot__nap-serving { color: #B7C0E0; font-size: var(--t-xs); line-height: 1.5; }

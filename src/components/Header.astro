@@ -35,17 +35,6 @@ const nav = [
   { label: 'Contact', href: '/contact/' },
 ];
 
-/**
- * The wordmark is two-tone: "602" in the badge red, "Medicare" in the badge
- * navy. The halves come from `site.wordmark` rather than from splitting
- * `site.name` — the name is one word with no space to split on, and the lockup
- * sets the two halves flush against each other on purpose.
- *
- * Note the colors are the INVERSE of the badge itself, where "602" is navy and
- * "MEDICARE" is red. That is deliberate: side by side, matching them made the
- * lockup read as one long doubled word.
- */
-const { mark, product } = site.wordmark;
 ---
 
 <div class="header-sentinel" aria-hidden="true"></div>
@@ -53,34 +42,20 @@ const { mark, product } = site.wordmark;
 <header class="site-header">
   <div class="wrap--wide header__inner">
     <a href="/" class="brand" aria-label={`${site.name} — home`}>
-      {/* The badge. Decorative here — the wordmark beside it already carries the
-          name, and the <a> has its own aria-label — so it is alt="" rather than
-          a second announcement of "602Medicare". Explicit width/height reserve
-          the box before the PNG lands; `fetchpriority=high` because it is the
-          one image above the fold on every page. */}
-      {/* 128px source for a 44px box — 2x for retina and no more. The full
-          464px master was 147 KB downloaded above the fold on every page to
-          fill 44 CSS pixels; this is 10 KB. WebP with a PNG fallback, because
-          the one browser that matters here (an older iPad in a kitchen) may
-          predate WebP. */}
-      <picture>
-        <source srcset="/logo/badge-128.webp" type="image/webp" />
-        <img
-          class="brand__mark"
-          src="/logo/badge-128.png"
-          alt=""
-          width="128"
-          height="128"
-          decoding="async"
-          fetchpriority="high"
-        />
-      </picture>
-      <span class="brand__text">
-        <span class="brand__name">
-          <span class="brand__name-mark">{mark}</span><span class="brand__name-product">{product}</span><sup class="brand__tm" aria-hidden="true">{site.trademarkSymbol}</sup>
-        </span>
-        <span class="brand__sub">Medicare, done locally</span>
-      </span>
+      {/* 11/20/26: new swoosh logo (cactus + mountains + "602 MEDICARE"). The
+          lockup carries the name itself, so the old badge + typed wordmark pair
+          is gone. 240px PNG for a ~94px box = 2x retina; new /logo/v3/ path
+          because /*.png is cached for 7 days. */}
+      <img
+        class="brand__logo"
+        src="/logo/v3/602medicare-logo-240.png"
+        alt=""
+        width="240"
+        height="143"
+        decoding="async"
+        fetchpriority="high"
+      />
+      <sup class="brand__tm" aria-hidden="true">{site.trademarkSymbol}</sup>
     </a>
 
     <nav class="nav-desktop" aria-label="Main">
@@ -224,54 +199,34 @@ const { mark, product } = site.wordmark;
   /* --- brand --- */
   .brand {
     display: inline-flex;
-    align-items: center;
-    gap: 0.7rem;
+    align-items: flex-start;
+    gap: 0.1rem;
     color: var(--navy);
     flex: none;
   }
-  /* The badge, capped at 44px tall — under the 48px brief, and it keeps the
-     header row at its existing 4.5rem without the lockup crowding the nav.
-     Square source (464×464), so width follows height. */
-  .brand picture { display: block; flex: none; line-height: 0; }
-  .brand__mark {
-    height: 44px;
-    width: 44px;
+  /* The swoosh logo (240x143 source), 62px tall, so about 104px wide. */
+  .brand__logo {
+    height: 62px;
+    width: auto;
     flex: none;
+    display: block;
   }
   @media (max-width: 400px) {
-    .brand__mark { height: 38px; width: 38px; }
+    .brand__logo { height: 48px; }
   }
 
-  .brand__text { display: flex; flex-direction: column; line-height: 1.1; }
-  .brand__name {
-    font-family: var(--font-display);
-    font-size: 1.3rem;
-    font-weight: 600;
-    letter-spacing: -0.025em;
-  }
-  /* Tight lockup: no margin, no space, no word break between the halves — they
-     are two colors of ONE word. Both are real text colors on white (red
-     5.6:1, navy 16.9:1), which the old gold half never was. */
-  .brand__name-mark { color: var(--red); }
-  .brand__name-product { color: var(--navy); }
   /* Small, raised, muted — present for the legal notice, never competing with
      the name. vertical-align on a fixed font-size (not <sup> defaults) so the
      line box doesn't grow and nudge the header height. */
   .brand__tm {
-    font-size: 0.42em;
-    vertical-align: 0.95em;
+    font-size: 0.6rem;
+    vertical-align: 0;
+    margin-top: 0.15rem;
     line-height: 0;
     margin-left: 0.08em;
     color: var(--navy);
     opacity: 0.7;
     font-weight: 400;
-  }
-  .brand__sub {
-    font-size: 0.6875rem;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    font-weight: 500;
   }
 
   /* --- desktop nav --- */
@@ -417,8 +372,7 @@ const { mark, product } = site.wordmark;
     .header__cta { display: inline-flex; }
   }
   @media (min-width: 1100px) {
-    .brand__sub { display: block; }
-  }
+    }
   .header__intake { display: none; }
   /* 1260px is where the row measures out: brand 217 + four links 433 + three
      buttons 507 + 32px of gaps = 1189, inside the 1212px bar a 1260px viewport
@@ -429,6 +383,5 @@ const { mark, product } = site.wordmark;
     .header__inner { gap: 1rem; }
   }
   @media (max-width: 400px) {
-    .brand__sub { display: none; }
-  }
+    }
 </style>

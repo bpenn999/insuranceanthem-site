@@ -19,7 +19,7 @@ const {
   title,
   description,
   path = Astro.url.pathname,
-  image = '/og-602medicare-badge.png',
+  image = '/og-602medicare-v3.png',
   type = 'website',
   noindex = false,
   publishedAt,
@@ -115,6 +115,8 @@ const fontFaceCss = `
 <meta name="theme-color" content="#011459" />
 
 <!--
+  Icons: the swoosh logo since 2026-11-20 (/logo/v3/; favicon = "602" + swoosh only,
+  touch/manifest icons = full logo on white). History below is the old badge.
   Icons — the real badge, shipped 2026-08-07. Every file comes straight out of
   602medicare-logo-pack.zip and lives under /logo/, a path that has never been
   served before. That is on purpose: public/_headers caches `/*.png` for seven
@@ -132,8 +134,8 @@ const fontFaceCss = `
   the seven days. Any future re-encode needs another new name.
 -->
 <link rel="icon" href="/favicon.ico" sizes="any" />
-<link rel="icon" type="image/png" sizes="32x32" href="/logo/favicon-32-v2.png" />
-<link rel="apple-touch-icon" sizes="180x180" href="/logo/apple-touch-icon-180-v2.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/logo/v3/favicon-32.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/logo/v3/icon-180.png" />
 <link rel="manifest" href="/site.webmanifest" />
 <link rel="sitemap" href="/sitemap-index.xml" />
 
