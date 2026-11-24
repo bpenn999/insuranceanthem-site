@@ -8,7 +8,7 @@
  *
  * The quoter shows ONE monthly rate for Plan G or Plan N with NO carrier name
  * (Brian 11/19: "don't quote AARP… just the rate"). Rates come from
- * public/data/medigap-rates-az-v2.json, built offline by
+ * public/data/medigap-rates-az-v3.json, built offline by
  * ~/Claude/Projects/medsupp-quoter (harvest.mjs pulls CSG rates through X,
  * build.mjs keeps the lowest approved-carrier rate per ZIP3/age/gender and that
  * carrier's household-discount %). AARP/UHC and Select Health are excluded at
@@ -163,7 +163,7 @@ const faqs = [
     (function () {
       var DATA = null, last = null;
       var money = function (n) { return '$' + n.toFixed(2); };
-      function load() { return DATA ? Promise.resolve(DATA) : fetch('/data/medigap-rates-az-v2.json').then(function (r) { return r.json(); }).then(function (j) { DATA = j; return j; }); }
+      function load() { return DATA ? Promise.resolve(DATA) : fetch('/data/medigap-rates-az-v3.json').then(function (r) { return r.json(); }).then(function (j) { DATA = j; return j; }); }
       var qf = document.querySelector('[data-q]'), res = document.querySelector('[data-q-res]'), err = document.querySelector('[data-q-err]');
       function fail(msg) { err.textContent = msg; err.hidden = false; }
       qf.addEventListener('submit', function (e) {
